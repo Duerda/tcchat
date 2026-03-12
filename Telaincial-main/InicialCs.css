@@ -82,7 +82,7 @@ body {
     align-items: center;
     margin-bottom: 10px;
 }
-#Aluno {
+#Aluno-1 {
     text-align: center;
     padding: 9px;
     width: 156px;
@@ -93,7 +93,7 @@ body {
     border:1px solid hsl(210,82%,58%);
     margin-right: 7px;
 }
-#Professor {
+#Aluno-2 {
     text-align: center;
     padding: 9px;
     width: 156px;
@@ -103,6 +103,28 @@ body {
     border-radius: 8px;
     border:1px solid rgb(255 255 255 / 7%);
     cursor: pointer;
+}
+#Professor-1 {
+    text-align: center;
+    padding: 9px;
+    width: 156px;
+    height: 20px;
+    background: #0c1018;
+    color: #7a8699;
+    border-radius: 8px;
+    border:1px solid rgb(255 255 255 / 7%);
+    cursor: pointer;
+}
+#Professor-2 {
+    text-align: center;
+    padding: 9px;
+    width: 156px;
+    height: 20px;
+    background: hsl(210deg 82% 58% / 15%);
+    color: hsl(210,82%,58%);
+    border-radius: 8px;
+    border:1px solid hsl(210,82%,58%);
+    margin-left: 7px;
 }
 #Email label {
     display: block;
@@ -156,7 +178,7 @@ body {
     cursor: pointer; }
 
 #Coor-head {
-
+    display: flex;
     text-align: initial;
     margin-top: 20px; 
     width: 340px;
@@ -167,4 +189,13 @@ body {
     border-radius: 8px;
     border: 1px solid rgb(255 255 255 / 7%);
     cursor: pointer;
+}
+#Coor-head  #Ctex {
+    font-size: 13px;
+    font-weight: 500;
+    flex:1 ;
+}
+a {
+    text-decoration: none;
+    color: inherit;
 }
