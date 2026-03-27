@@ -1,5 +1,5 @@
 function Entrar(){
-    window.location.href = "../../Aluno/index.html";
+    window.location.href = "../../Aluno/Turma.html";
 }
 function Professor(){
     window.location.href = "Log-Prof.html";

@@ -17,9 +17,22 @@
             <div id="Aluno-2" onclick="Aluno()"><a>Aluno</a></div>
             <div id="Professor-2">Professor</div>
             </div>
-            <div id="Email"><label>E-mail</label><input type="email"  placeholder="Professor.106@Etec.sp.gov.br"></div>
-            <div id="Senha"><label>Senha</label><input type="password"  placeholder="Minimo de 8 digitos"></div>
-            <div id="Entrar-al"><input type="button"  value="Entrar"onclick="Entrar()"></div>
+            <form action="" method="post">
+
+            <div id="Email">
+                <label for="E-mail">E-mail</label>
+                <input type="email" id="E-mail" required placeholder="Professor.106@Etec.sp.gov.br">
+            </div>
+
+            <div id="Senha">
+                <label for="Senhas">Senha</label>
+                <input type="password" id="Senhas" required placeholder="Minimo de 8 digitos">
+            </div>
+
+            <div id="Entrar-al">
+                <input type="submit"  value="Entrar" onclick="Entrar()">
+            </div>
+            </form>
             <div id="Coor-head"> <span id="">Coordenador</span> <span>▼</span></div>
         </div>
       </div>
