@@ -70,6 +70,21 @@ body {
     border: none;
     cursor: pointer;
 }
+ /*#Entrar:hover ele serve para quando o mouse passar por cima ele muda uma coisa que eu colocar aqui*/
+#Cadastrar:hover {
+    width: 176px;
+    height: 36px;
+    background: #161d2a;
+    color: #e4e9f4;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    margin-right: 2px;
+    /*transform serve para aumentar o botão quando passar o mouse por cima dele mais especificamente o scale*/
+    transform: scale(1.00);
+    /*transition Serve principalmente para suavizar meio que sendo tipo uma pequena animação*/
+    transition: all 0.3s;
+}
 #Entre {
     font-size: 14px;
     color: #7a8699;
@@ -199,3 +214,8 @@ a {
     text-decoration: none;
     color: inherit;
 }
+
+    #Entrar-al input:hover {
+        transform: scale(1.05);
+        transition: all 0.5s;
+     }
