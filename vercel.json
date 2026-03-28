@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/Inicial-tela/Login/Log-aluno.html"
+    }
+  ]
+}
