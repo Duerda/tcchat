@@ -16,10 +16,12 @@
             <div id="Al-Pro">
             <div id="Aluno-1">Aluno</div>
             <div id="Professor-1" onclick="Professor()">Professor</div>
-            </div>
-            <div id="Email"><label>E-mail</label><input type="email"  placeholder="Aluno.16@Etec.sp.gov.br"></div>
+            </div><!-- Básicamente serve para que novalidate não use o required do html5 para ver se está tudo preenchido e sim utilize o do js -->
+            <form action="" method="post" onsubmit="return Formulario(event);" novalidate>
+            <div id="Email"><label>E-mail</label><input type="email"  placeholder="Aluno.106@Etec.sp.gov.br"></div>
             <div id="Senha"><label>Senha</label><input type="password"  placeholder="Minimo de 8 digitos"></div>
-            <div id="Entrar-al"><input type="button" value="Entrar" onclick="Entrar()"></div>
+            <div id="Entrar-al"><input type="submit" value="Entrar"></div>
+            </form>
             <div id="Coor-head"> <span id="">Coordenador</span> <span>▼</span></div>
         </div>
       </div>
