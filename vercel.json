@@ -4,5 +4,16 @@
       "source": "/",
       "destination": "/Inicial-tela/Login/Log-aluno.html"
     }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/html"
+        }
+      ]
+    }
   ]
 }
