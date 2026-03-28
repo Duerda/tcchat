@@ -1,5 +1,5 @@
 function Entrar(){
-    window.location.href = "../Login/Log-aluno.html";
+    window.location.href = "../Login/index.html";
 }
 function Cadastrado(){
     window.location.href = "";
