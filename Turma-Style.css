@@ -1,11 +1,34 @@
 #Geral {
     display: flex;
 }
+:root {
+    --cinza-escuro: #111520;
+    --main-color: #080B12;
+    --red1: #EC3C3C;
+    --red2: #ec3c3c34;
+    --textcolor: #3D4D61;
+    --texlight: #7a8699;
+    --cinza-claro: #161d2a;
+    --azul-letra: #3c94ec;
+    --amarelo-letra: #fbbf24;
+    --fundo-amarelo: #fbbe245e 8%;
+    --borda-amarelo: #fbbe24c0 25%;
+    --borda: #ffffff73 7%;
+    --white: #ffffff;
+}
 body {
     margin: 0px;
     padding: 0px;
 }
-
+.tudo{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    min-height: 100vh;
+    background-color: #080b12;
+}
 #lateral {
     padding-bottom: 18px;
     padding-top: 18px;
@@ -149,65 +172,45 @@ h2 {
     background-color: #0062ff;
     margin-right: 8px;
 }
-#bisao {
-background: hsl(210deg 82% 58% / 15%);
-    color: white;
-    border:1px solid hsl(210,82%,58%);
-    cursor: pointer;
-    transform: scale(1.02);
-    transition: all 0.5s;
-}
-#bisao:hover {
-    cursor: unset;
-}
-
-/*Faz o conteudo ocupar o espaço restante da tela, e adiciona um fundo escuro*/
-#conteudo {
+.main {
     flex: 1;
-    background-color: #080b12 ;
+    background-color: var(--main-color); 
     padding: 20px;
-    padding-top: 18px;
+    overflow-y: auto;
+    padding-top: 40px;
     padding-left: 40px;
 }
-#conteudo-superior p {
-    color: #7a8699;
-    margin-top: 7px;
+.T1 h3 {
+    color: var(--textcolor);
+    font-size: 30px;
+    font-weight: 100;
 }
-span {
-    color: white;
-}
-h1 {
-    color:hsl(210,82%,58%) ;
-        margin-top: 7px;
-        margin-bottom: 5px;
-}
-#Informacoes {
-    /*O grid seria uma forma de organizar os elementos em uma grade nesse caso tá para coluna, mas se eu coloca-se mais divs ele ficaria como uma especie de grade*/
-    display: grid;
-    /*Isso aqui serve para deixar os grupos em uma linha reta e a cada 4 itens ele vai deixar a coluna naquele jeito o "0fr" aparentemente seria tipo o gap só que para o grid não entendi bem a função*/
-    grid-template-columns: repeat(4, 0fr);
-    gap: 10px;
-    margin-bottom: 10px;
-}
-.Grupos {
-    background-color: #111520;
-    border: 1px solid #7a8699;
-    border-radius: 7px;
-    padding: 10px;
-    margin-top: 3px;
-    display: flex;
-    min-height: 70px;
-    width: 157px;
-}
-.Grupos h5 {
-    margin-top: 0px;
-    margin-right: 0px;
-    margin-left: 0px;
-    margin-bottom: 3px;
-    color: #3D4D61;
 
+.T1 span {
+    color: var(--red1);
 }
-.Grupos h3 {
-    margin: 0px;
-    color: #3D4D61;
+
+.T1 p {
+    color: var(--textcolor);
+    padding-left: 3px;
+    padding-top: 5px;
+}
+
+.blocos-container {
+    display: grid;
+    gap: 20px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.bloco {
+    background: var(--cinza-claro);
+    border-radius: 8px;
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--borda);
+    color: var(--textcolor);
+    text-align: center;
 }
