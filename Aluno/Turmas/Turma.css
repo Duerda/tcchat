@@ -1,3 +1,4 @@
+
 * {
     margin: 0;
     padding: 0;
@@ -30,20 +31,20 @@
 
 body {
     background: var(--main-color);
-    height: 100vh; 
+    height: 10vh; 
     margin: 0;
     overflow: hidden;
 }
 
 .app-container {
     display: flex;
-    height: 100vh;
+    height: 1000px;
     width: 100%;
 }
 
 .lateral {
     background: var(--cinza-escuro);
-    height: 100vh;
+    height: 200vh;
     width: 300px;
     flex-shrink: 0;
 }
@@ -116,10 +117,8 @@ button:hover {
     background-color: var(--main-color); 
     padding: 20px;
     overflow-y: auto;
-    height: 100vh;
     padding-top: 40px;
     padding-left: 40px;
-}
 
 h3 {
     color: var(--textcolor);
