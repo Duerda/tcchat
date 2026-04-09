@@ -40,12 +40,19 @@ function Formulario (event){
         document.querySelector("#Senha input").style.border = "none"; // Restaura a cor original se a senha for válida
     }
 
-    if (email.includes("@Etec.sp.gov.br") || email === "Aluno.106@Etec.sp.gov.br") {   //Aqui é para validar onde vai dependendo do email que você colocou
-        window.location.href = "../../Aluno/Turma.html";
-    } else if (email.includes("@Etec.sp.gov.br") || email === "Professor.106@Etec.sp.gov.br") {
-        window.location.href = "../../Professor/Index.html";
+     if (email.includes("@Aluno.cps.sp.gov.br")) {
+        // Extrai o prefixo (antes do @)
+        const prefixo = email.split("@")[0];
+        const partes = prefixo.split(".");
+
+        // Verifica se tem exatamente duas partes (Nome.Sobrenome)
+        let iniciais = "";
+        if (partes.length === 2) {
+            iniciais = partes[0].charAt(0).toUpperCase() + partes[1].charAt(0).toUpperCase();
+        }
+    localStorage.setItem("iniciaisUsuario", iniciais); // Salvo imediatamente
+    window.location.href = "../../Professor/Index.html"; // Redireciona depois
     } else {
         alert("Email ou senha incorretos. Por favor, tente novamente.");
-    } 
-    return true; // Permite o envio do formulário
+    }
 }

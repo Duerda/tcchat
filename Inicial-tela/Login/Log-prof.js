@@ -40,17 +40,19 @@ function Formulario (event){
         document.querySelector("#Senha input").style.border = "none"; // Restaura a cor original se a senha for válida
     }
 
- // Isso aqui vai verificar se o email é igual a um desses dois, e tem que digitar exatamente igual para ir em uma determinada página que fizemos
-    if(email === "Aluno.106@Etec.sp.gov.br"){
-        window.location.href = "../../Aluno/Turma.html";
-    } 
-    else if(email === "Professor.106@Etec.sp.gov.br"){
-        window.location.href = "../../Professor/Index.html";
+     if (email.includes("@Professor.cps.sp.gov.br")) {
+        // Extrai o prefixo (antes do @)
+        const prefixo = email.split("@")[0];
+        const partes = prefixo.split(".");
+
+        // Verifica se tem exatamente duas partes (Nome.Sobrenome)
+        let iniciais = "";
+        if (partes.length === 2) {
+            iniciais = partes[0].charAt(0).toUpperCase() + partes[1].charAt(0).toUpperCase();
+        }
+    localStorage.setItem("iniciaisUsuario", iniciais); // Salvo imediatamente
+    window.location.href = "../../Professor/Index.html"; // Redireciona depois
+    } else {
+        alert("Email ou senha incorretos. Por favor, tente novamente.");
     }
-    else {
-        alert("Email não foi cadastrado! Use:\n- Aluno.106@Etec.sp.gov.br\n- Professor.106@Etec.sp.gov.br");
-        return false;
-    }
-    
-    return true;
 }

@@ -130,24 +130,31 @@ h2 {
     transform: scale(1.02);
     transition: all 0.5s;
 }
-#lateral-inferior {
-    margin: auto;
-    padding: 10px;
+.lateral-inferior {
+    padding: 7px;
     border-top: 1px solid rgb(255 255 255 / 7%);
 }
 
-#Usuario {
+.Usuario {
     display: flex;      
-    align-items: center;
+
 }
 #foto {
-    align-items: normal;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
     gap: 10px;
     width: 40px;
     height: 40px;
     border-radius: 100%;
     background-color: #0062ff;
     margin-right: 8px;
+}
+#foto p {
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
 }
 #bisao {
 background: hsl(210deg 82% 58% / 15%);
@@ -187,7 +194,7 @@ h1 {
     /*Isso aqui serve para deixar os grupos em uma linha reta e a cada 4 itens ele vai deixar a coluna naquele jeito o "0fr" aparentemente seria tipo o gap só que para o grid não entendi bem a função*/
     grid-template-columns: repeat(4, 0fr);
     gap: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 .Grupos {
     background-color: #111520;
@@ -205,9 +212,31 @@ h1 {
     margin-left: 0px;
     margin-bottom: 3px;
     color: #3D4D61;
+    font-size: 13px;
 
 }
 .Grupos h3 {
     margin: 0px;
     color: #3D4D61;
+    font-size: 30px;
 }
+#turmas {
+background: hsl(210deg 82% 58% / 15%);
+    color: white;
+    border:1px solid hsl(210,82%,58%);
+    cursor: pointer;
+    transform: scale(1.02);
+    transition: all 0.5s;
+}
+#turmas:hover {
+    cursor: unset;
+}
+.Grupos div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+#voltar:hover {
+    color: white;
+    cursor: pointer;
+}   

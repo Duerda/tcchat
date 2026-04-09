@@ -8,13 +8,16 @@
 </head>
 <body>
     <div id="Geral">
-
+        <!--Incio da sessão lateral-->
         <div id="lateral">
             <div id="lateral-superior">
                 <div><h2 style="margin-top: 2px;">T<span>CCHAT</span></h2></div>
                 <div id="Logo-de-professor">PROFESSOR</div>
             </div>
+            
+            <!-- VGABF = Visão Geral, Grupos, Avaliações, Biblioteca e Fórum -->
             <div class="VGABF">
+
                 <div id="painel">Navegação</div>
                 <div><button onclick="VisaoGeral ()" id="bisao">Visão Geral</button></div>
                 <div><button onclick="Grupos ()">Grupos</button></div>
@@ -23,27 +26,41 @@
                 <div><button onclick="Forum ()">Fórum</button></div>
             </div>
             <div id="sistema"><button onclick="Configuracoes ()" id="configuracao">Configurações</button></div>
-            <div class="lateral-inferior"><div class="Usuario"><div id="foto">Coisa</div></div></div>
-        </div>
-        <div id="conteudo">
-            <div id="conteudo-superior"><h1><span>Visão</span> Geral</h1><p>Seus orientandos e outros</p>
+            <div class="lateral-inferior">
+                <div class="Usuario">
+                    <div id="foto"><span style="margin: 0px;">ET</span></div>
+                    <div>
+                        <h4 style="margin: 0; color: #e4e9f4; width: 100px;">Eduarda</h4> 
+                        <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;">Desenvolvimento de Sistemas</h5> 
+                    </div>
+                    <p id="voltar" style="margin-top: 31px; margin-bottom: 0px; margin-left: 30px;" onclick="Voltar ()">↩️</p>
+                </div>
 
+            </div>
         </div>
+        <!--Fim da sessão lateral-->
+
+        <div id="conteudo">
+            <div id="conteudo-superior">
+                <h1><span>Visão</span> Geral</h1><p>Seus orientandos e outros</p>
+            </div>
         <div id="Informacoes">
             <div class="Grupos">
-                <h5>GRUPOS ORIENTADOS</h5>
-                <h3>0
-                    
-                </h3>
+                <div><h5>GRUPOS ORIENTADOS</h5><h3 style="text-align: initial; color:#e4e9f4;">0</h3></div>
             </div>
-            <div class="Grupos"></div>
-            <div class="Grupos"></div>
-            <div class="Grupos"></div>
-            
+            <div class="Grupos">
+                <div><h5>ENTREGAS PENDENTES</h5><h3 style="text-align: initial; color: #fbbf24;">0</h3></div>
+            </div>
+            <div class="Grupos">
+                <div><h5>DÚVIDA NA CAIXA</h5><h3 style="text-align: initial; color: hsl(210,82%,58%);">0</h3></div>
+            </div>
+            <div class="Grupos"><div>
+                <h5>GRUPOS EM ATRASO</h5><h3 style="text-align: initial; color: #f87171;">0</h3></div>
+        </div>
             <div id="conteudo-inferior"></div>
         </div>
-
-</div>
+        <h1>Meus Orientados</h1>
+    </div>
 
 </body>
 <script src="script.js"></script>
