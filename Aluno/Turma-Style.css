@@ -1,14 +1,6 @@
-* {
-    margin: 0;
-    padding: 0;
-    outline: none;
-    border: none;
-    text-decoration: none;
-    text-transform: capitalize;
-    transition: 0.2s linear;
-    font-family: "Roboto", sans-serif;
+#Geral {
+    display: flex;
 }
-
 :root {
     --cinza-escuro: #111520;
     --main-color: #080B12;
@@ -24,100 +16,171 @@
     --borda: #ffffff73 7%;
     --white: #ffffff;
 }
-
 body {
-    background: var(--main-color);
-    height: 100vh; 
-    margin: 0;
-    overflow: hidden;
+    margin: 0px;
+    padding: 0px;
 }
-
-.app-container {
+.tudo{
     display: flex;
-    height: 100vh;
-    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    min-height: 100vh;
+    background-color: #080b12;
 }
-
-.lateral {
-    background: var(--cinza-escuro);
-    height: 100vh;
-    width: 300px;
-    flex-shrink: 0;
+#lateral {
+    padding-bottom: 18px;
+    padding-top: 18px;
+    display: flex;
+    flex-direction: column;
+    left: 0px;
+    top: 0px;
+    width: 229px;
+    height: 915px;
+    background-color: #0c1018;
 }
-
-.L1 h1 {
-    color: var(--textcolor);
-    font-weight: 100;
-    padding-left: 25px;
-    font-size: 50px;
-    padding-top: 10px;
-    padding-bottom: 0;
+#lateral-superior {
+    width: 197px;
+    height: 59px;
+    padding-top: 0px;
+    padding-bottom: 18px;
+    padding-left: 16px;
+    padding-right:16px ;    
+    border-bottom: 1px solid rgb(255 255 255 / 7%);
+    margin-bottom: 8px;
 }
-
-.L1 h2 {
+#lateral-superior div {
+    display: flex;
+    align-items: center;
+}
+h2 {
+    font-size: 32px;
+    color: #fff;
+    margin-left: 8px;
+}
+#lateral-superior div h2 {
+    font-size: 32px;
+    color: #fff;
+}
+#lateral-superior div span {
+    font-size: 32px;
+    color: var(--red1);
+}
+#lateral-superior div h2 {
+    margin-bottom: 5px;
+}
+#Logo-de-professor {
+    display: inline-flex;
+    font-size: 11px;
+    color: #fff;
+    margin-left: 8px;
+    align-items: center;
+    margin-top: 3px;
+    background-color: hsl(210deg 82% 58% / 15%);
+    color: var(--red1);
+    letter-spacing: 0.7px;
     text-align: center;
-    color: var(--red1);
-    font-weight: 400;
-    font-size: 30px;
+    border-radius: 10px;
+    padding-top: 3px;
+    padding-right: 8px;
+    padding-bottom: 3px;
+    padding-left: 8px;
+    width: 75px;
+    font-family: "Roboto", sans-serif;
 }
-
-.L1 span {
-    color: var(--red1);
+#VGABF {
+    padding-top: 2px;
+    padding-right: 8px;
+    padding-bottom: 2px;
+    padding-left: 8px;
+    margin-bottom: 4px;
 }
+#painel {
+    font-weight: 700;
+    font-size: 14px;
+    color: #3d4d61;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+    border-radius: 10px;
 
-.line {
-    background-color: var(--red1);
-    height: 3px;
-    width: 100%;
-    border: 10px;
 }
-
-.L1 div {
-    background: var(--red2);
-    width: 100px;
-    height: 35px;
-    margin-left: 25px;
-    margin-bottom: 25px;
-    border-radius: 100px;
+.VGABF {
+    padding-top: 0px;
+    padding-right: 8px;
+    padding-bottom: 0px;
+    padding-left: 16px;
 }
-
-.Nav {
-    color: var(--textcolor);
-    padding-top: 10px;
-    font-size: 10px;
-    padding-left: 25px;
+.VGABF div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
 }
-
-button {
-    margin-top: 20px;
-    width: 240px;
-    height: 45px;
-    background: var(--cinza-claro);
-    color: var(--texlight);
+.VGABF div button {
+    width: 220px;
+    height: 36px;
+    background: #0c1018;
+    color: #7a8699;
     padding: 10px;
     border-radius: 8px;
     border: none;
-    text-align: left;
-    padding-left: 30px;
+}
+.VGABF div button:hover {
+    background: hsl(210deg 82% 58% / 15%);
+    color: white;
+    border:1px solid var(--red1);
     cursor: pointer;
+    transform: scale(1.02);
+    transition: all 0.5s;
+}
+#sistema { 
+    margin: auto;
+    padding-top: 6px;
+}
+#configuracao {
+    width: 220px;
+    height: 36px;
+    background: #0c1018;
+    color: #7a8699;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+}
+#configuracao:hover {
+    background: hsl(210deg 82% 58% / 15%);
+    color: white;
+    border:1px solid var(--red1);
+    cursor: pointer;
+    transform: scale(1.02);
+    transition: all 0.5s;
+}
+#lateral-inferior {
+    margin: auto;
+    padding: 10px;
+    border-top: 1px solid rgb(255 255 255 / 7%);
 }
 
-button:hover {
-    background: var(--red1);
-    color: var(--white);
+#Usuario {
+    display: flex;      
+    align-items: center;
 }
-
-
+#foto {
+    align-items: normal;
+    gap: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    background-color: #0062ff;
+    margin-right: 8px;
+}
 .main {
     flex: 1;
     background-color: var(--main-color); 
     padding: 20px;
     overflow-y: auto;
-    height: 100vh;
     padding-top: 40px;
     padding-left: 40px;
 }
-
 .T1 h3 {
     color: var(--textcolor);
     font-size: 30px;
@@ -135,10 +198,11 @@ button:hover {
 }
 
 .blocos-container {
-    display: grid;
+    display: flex;
     gap: 20px;
     margin-top: 20px;
-    width: 100%;
+    width: 1200px;
+    height: 100px;
 }
 
 .bloco {
@@ -151,4 +215,19 @@ button:hover {
     border: 1px solid var(--borda);
     color: var(--textcolor);
     text-align: center;
+}
+
+.jjj h2 {
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+}
+
+.mago {
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+}
+
+.p {
+    font-family: "DM Sans:Regular", sans-serif;
+    font-weight: 200;
 }
