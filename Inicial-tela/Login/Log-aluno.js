@@ -51,7 +51,7 @@ function Formulario (event){
             iniciais = partes[0].charAt(0).toUpperCase() + partes[1].charAt(0).toUpperCase();
         }
     localStorage.setItem("iniciaisUsuario", iniciais); // Salvo imediatamente
-    window.location.href = "../../Professor/Index.html"; // Redireciona depois
+    window.location.href = "../../Aluno/Turma.html"; // Redireciona depois
     } else {
         alert("Email ou senha incorretos. Por favor, tente novamente.");
     }
