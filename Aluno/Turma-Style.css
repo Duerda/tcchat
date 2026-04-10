@@ -295,3 +295,38 @@ background: hsl(210deg 82% 58% / 15%);
     cursor: pointer;
 }   
 
+.title-gp h3 {
+    color: var(--textcolor);
+    font-weight: 500;
+    font-size: 35px;
+    font-family: "Roboto", sans-serif;
+}
+
+.GT {
+    background-color: var(--cinza-claro);
+    border-radius: 8px;
+    flex: 1;
+
+}
+
+.Grupos {
+    display: flex;
+    gap: 20px;
+    height: 350px;
+    width: 1300px;
+}
+
+.sub-title-gp h3 {
+    padding-left: 12px;
+    color: var(--textcolor);
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-size: 25px;
+    margin-top: 15px;
+}
+
+.GT-int {
+    background-color: var(--cinza-escuro);
+    width: 200px;
+    height: 300px;
+}
