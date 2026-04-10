@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 <head>
     <link rel="stylesheet" href="Turma-Style.css">
     <meta charset="UTF-8">
@@ -7,43 +7,73 @@
     <title>Document</title>
 </head>
 <body>
-    <div id="Geral">
-        <div id="lateral">
+<div id="Geral">
+       <div id="lateral">
             <div id="lateral-superior">
-                <div class=" jjj"><h2 style="margin-top: 2px;">T<span>CCHAT</span></h2></div>
-                <div id="Logo-de-professor">PROFESSOR</div>
+                <div><h2 style="margin-top: 2px;">T<span>CCHAT</span></h2></div>
+                <div id="Logo-de-professor">ALUNO</div>
             </div>
+            
+            <!-- VGABF = Visão Geral, Grupos, Avaliações, Biblioteca e Fórum -->
             <div class="VGABF">
-                <div id="painel">Painel</div>
-                <div><button onclick="Turmas ()">Turmas</button></div>
+                               <div id="painel">Painel</div>
+                <div><button onclick="Turmas ()" id="bisao">Turmas</button></div>
                 <div><button onclick="Grupo ()">Meu Grupo</button></div>
                 <div><button onclick="Forum ()">Forum</button></div>
                 <div><button onclick="Inspiracoes ()">inspirações </button></div>
             </div>
             <div id="sistema"><button onclick="Configuracoes ()" id="configuracao">Configurações</button></div>
-            <div class="lateral-inferior"><div class="Usuario"><div id="foto">Coisa</div></div></div>
+            <div class="lateral-inferior">
+                <div class="Usuario">
+                    <div id="foto"><span style="margin: 0px;"></span></div>
+                    <div>
+                        <h4 style="margin: 0; color: #e4e9f4; width: 100px;">Eduarda</h4> 
+                        <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;">Desenvolvimento de Sistemas</h5> 
+                    </div>
+                    <p id="voltar" style="margin-top: 31px; margin-bottom: 0px; margin-left: 30px;" onclick="Voltar ()">↩️</p>
+                </div>
+
+            </div>
         </div>
          <section class="main">
             <div class="T1">
                 <h3 class="mago">Turma <span>2026.1</span></h3>
                 <p class="p">Acompanhe todos os grupos e o andamento dos TCCs</p>
             </div>
+
             <div class="blocos-container">
-                <div class="bloco">Grupos
-                    <div><h1>31231</h1></div>
-                </div>
-                <div class="bloco">No Prazo</div>
                 <div class="bloco">
-                <div interior-bloco>
+                    <div class="interior-bloco">
+                        <h1>Grupos</h1>
+                        <p style="color: white;">8</p>
+                    </div>
+                
+                </div>
+                <div class="bloco">
+                    <div class="interior-bloco">
+                        <h1>No Prazo</h1>
+                        <p style="color: #34d399;">5</p>
+                    </div>
+                </div>
+
+                <div class="bloco">
+                <div class="interior-bloco">
                     <h1>Atenção</h1>
-                    <p>dasda</p>
+                    <p style="color: #fbbf24;">0</p>
+                </div>
+            
+            </div>
+                <div class="bloco">
+                    <div class="interior-bloco">
+                        <h1>Pendentes</h1>
+                        <p style="color: #EC3C3C;">1</p>
+                    </div>
                 </div>
             </div>
-                <div class="bloco">Atrasados</div>
-            </div>
+        
         </section>
 </div>
     
 </body>
-<script></script>
+<script src="Turma.js"></script>
 </html>
