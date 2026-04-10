@@ -15,6 +15,8 @@
     --borda-amarelo: #fbbe24c0 25%;
     --borda: #ffffff73 7%;
     --white: #ffffff;
+    --green: 
+    ;
 }
 body {
     margin: 0px;
@@ -86,7 +88,7 @@ h2 {
     padding-right: 8px;
     padding-bottom: 3px;
     padding-left: 8px;
-    width: 75px;
+    width: 40px;
     font-family: "Roboto", sans-serif;
 }
 #VGABF {
@@ -231,3 +233,65 @@ h2 {
     font-family: "DM Sans:Regular", sans-serif;
     font-weight: 200;
 }
+
+.interior-bloco {
+    width: 100%;
+}
+
+.interior-bloco h1 {
+    font-size: 20px;
+    text-align: left;
+    font-family: "DM Sans:Regular", sans-serif;
+    font-weight: 500;
+    margin: 0;
+    padding: 0;
+    padding-bottom: 20px;
+}
+
+.interior-bloco p {
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    font-size: 20px;
+    padding-left: 3px;
+    font-size: 30px;
+    font-family: "DM Sans:Regular", sans-serif;
+    font-weight: 500;
+}
+.Usuario {
+    display: flex;      
+
+}
+#foto {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    background-color: #0062ff;
+    margin-right: 8px;
+}
+#foto p {
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+}
+#bisao {
+background: hsl(210deg 82% 58% / 15%);
+    color: white;
+    border:1px solid hsl(210,82%,58%);
+    cursor: pointer;
+    transform: scale(1.02);
+    transition: all 0.5s;
+}
+#bisao:hover {
+    cursor: unset;
+}
+#voltar:hover {
+    color: white;
+    cursor: pointer;
+}   
+
