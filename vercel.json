@@ -1,1 +1,8 @@
-
+{
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "inicial-tela/index.html"
+    }
+  ]
+}
