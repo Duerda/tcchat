@@ -1,11 +1,11 @@
 function Entrar(){
-    window.location.href = "../../Professor/index.html";
+    window.location.href = "./Professor/index.html";
 }
 function Aluno(){
     window.location.href = "index.html";
 }
 function Cadastrar(){
-    window.location.href = "../Cadastro/Cad.html";
+    window.location.href = "/Inicial-tela/Cadastro/Cad.html";
 }
 
 function Formulario (event){
@@ -64,7 +64,7 @@ function Formulario (event){
         localStorage.setItem("nomeUsuario", nomeUsuario);
         
         // Redireciona
-        window.location.href = "../../Professor/index.html";
+        window.location.href = "/Professor/index.html";
         
     } else {
         alert("Email inválido. Use um email @Professor.cps.sp.gov.br");

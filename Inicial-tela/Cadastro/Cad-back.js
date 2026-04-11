@@ -1,10 +1,10 @@
 console.log("Arquivo JS carregou com sucesso!"); // TESTE
 
 function Entraralpr() {
-    window.location.href = "../../Professor/index.html";
+    window.location.href = "/Professor/index.html";
 }
 function Logar() {
-    window.location.href = "../Login/index.html";
+    window.location.href = "/Inicial-tela/Login/index.html";
 }
 function traduzirCurso(codigo) {
     const cursos = {
@@ -83,7 +83,7 @@ function Formulario(event) {
             iniciais = partes[0].charAt(0).toUpperCase() + partes[1].charAt(0).toUpperCase();
         } 
     localStorage.setItem("iniciaisUsuario", iniciais); // Salvo imediatamente
-    window.location.href = "../../Professor/Index.html"; // Redireciona depois
+    window.location.href = "/Professor/Index.html"; // Redireciona depois
     }
     else if (email.includes("@Aluno.cps.sp.gov.br")) {
          // Extrai o prefixo (antes do @)
@@ -96,7 +96,7 @@ function Formulario(event) {
             iniciais = partes[0].charAt(0).toUpperCase() + partes[1].charAt(0).toUpperCase();
         } 
     localStorage.setItem("iniciaisUsuario", iniciais); // Salvo imediatamente
-    window.location.href = "../../Aluno/Turma.html"; // Redireciona depois
+    window.location.href = "/Aluno/Turma.html"; // Redireciona depois
     }
 }
 

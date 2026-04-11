@@ -1,11 +1,11 @@
 function Entrar(){
-    window.location.href = "../../Aluno/Turma.html";
+    window.location.href = "./Aluno/Turma.html";
 }
 function Professor(){
     window.location.href = "Log-Prof.html";
 }
 function Cadastrar(){
-    window.location.href = "../Cadastro/Cad.html";
+    window.location.href = "/Inicial-tela/Cadastro/Cad.html";
 }
 
 function Formulario (event){
@@ -64,7 +64,7 @@ if (email.includes("@Aluno.cps.sp.gov.br")) {
         localStorage.setItem("nomeUsuario", nomeUsuario);
         
         // Redireciona
-        window.location.href = "../../Aluno/Turma.html";
+        window.location.href = "/Aluno/Turma.html";
         
     } else {
         alert("Email inválido. Use um email @Aluno.cps.sp.gov.br");
