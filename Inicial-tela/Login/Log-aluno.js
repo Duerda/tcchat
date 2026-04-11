@@ -39,20 +39,35 @@ function Formulario (event){
     else {
         document.querySelector("#Senha input").style.border = "none"; // Restaura a cor original se a senha for válida
     }
-
-     if (email.includes("@Aluno.cps.sp.gov.br")) {
+if (email.includes("@Aluno.cps.sp.gov.br")) {
         // Extrai o prefixo (antes do @)
         const prefixo = email.split("@")[0];
         const partes = prefixo.split(".");
 
         // Verifica se tem exatamente duas partes (Nome.Sobrenome)
         let iniciais = "";
+
         if (partes.length === 2) {
             iniciais = partes[0].charAt(0).toUpperCase() + partes[1].charAt(0).toUpperCase();
         }
-    localStorage.setItem("iniciaisUsuario", iniciais); // Salvo imediatamente
-    window.location.href = "../../Aluno/Turma.html"; // Redireciona depois
+        
+        // Pega o nome do usuário (antes do primeiro ponto)
+        let nomeUsuario = "";
+        if (prefixo.includes(".")) {
+            nomeUsuario = prefixo.split(".")[0];
+        } else {
+            nomeUsuario = prefixo; // Se não tem ponto, pega o prefixo todo
+        }
+        
+        // Salva no localStorage
+        localStorage.setItem("iniciaisUsuario", iniciais);
+        localStorage.setItem("nomeUsuario", nomeUsuario);
+        
+        // Redireciona
+        window.location.href = "../../Aluno/Turma.html";
+        
     } else {
-        alert("Email ou senha incorretos. Por favor, tente novamente.");
+        alert("Email inválido. Use um email @Aluno.cps.sp.gov.br");
+        return false;
     }
 }

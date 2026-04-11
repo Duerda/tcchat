@@ -16,6 +16,8 @@ body {
     width: 229px;
     height: 915px;
     background-color: #0c1018;
+    position: sticky;
+    top: 0;
 }
 #lateral-superior {
     width: 197px;
@@ -240,3 +242,51 @@ background: hsl(210deg 82% 58% / 15%);
     color: white;
     cursor: pointer;
 }   
+.Cards {
+background: #111520;
+    border: 1px solid rgb(255 255 255 / 7%);
+    border-radius: 13px;
+    padding: 17px;
+    cursor: pointer;
+    margin-bottom: 9px;
+}
+#top-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+.Estado {
+    background: rgb(52 211 153 / 12%);
+    color: #34d399;
+    padding: 8px;
+    border-radius: 20px;
+    text-align: center;
+    text-transform: smaller;
+}
+.Duvidas {
+    background: #111520;
+    border: 1px solid rgb(255 255 255 / 7%);
+    border-left: 3px solid hsl(210,82%,58%);
+    padding: 11px;
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+}
+.Duvidas:hover{
+    cursor: pointer;
+    transition: .2;
+    border-color: hsl(210,82%,58%);
+}
+#Pontinho {
+    width: 7px;
+    height: 7px;
+    background-color: hsl(210,82%,58%);
+    border-radius: 50%;
+    margin-top: 8px;
+}
+#Top-duvidas {
+    flex: 1;
+}
