@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "inicial-tela/index.html"
+      "destination": "/Inicial-tela/Login/index.html"
     }
   ]
 }
