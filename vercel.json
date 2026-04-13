@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/cadastro",
+      "destination": "/api/cadastro.js"
+    },
+    {
       "source": "/aluno",
       "destination": "/Aluno/Turma.html"
     },
