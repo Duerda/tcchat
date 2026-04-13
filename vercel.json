@@ -11,32 +11,6 @@
     {
       "source": "/cadastro",
       "destination": "/Inicial-tela/Cadastro/Cad.html"
-    },
-    {
-      "source": "/login-professor",
-      "destination": "/Inicial-tela/Login/Log-Prof.html"
-    },
-    {
-      "source": "/professor",
-      "destination": "/Professor/Index.html"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/$1"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/(.*\\.css)",
-      "headers": [
-        { "key": "Content-Type", "value": "text/css" }
-      ]
-    },
-    {
-      "source": "/(.*\\.js)",
-      "headers": [
-        { "key": "Content-Type", "value": "application/javascript" }
-      ]
     }
   ]
 }
