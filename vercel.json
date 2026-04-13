@@ -1,6 +1,22 @@
 {
   "rewrites": [
     {
+      "source": "/aluno",
+      "destination": "/Aluno/Turma.html"
+    },
+    {
+      "source": "/cadastro",
+      "destination": "/Inicial-tela/Cadastro/Cad.html"
+    },
+    {
+      "source": "/login-professor",
+      "destination": "/Inicial-tela/Login/Log-Prof.html"
+    },
+    {
+      "source": "/professor",
+      "destination": "/Professor/Index.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/Inicial-tela/Login/index.html"
     }
