@@ -16,89 +16,86 @@ function traduzirCurso(codigo) {
     };
     return cursos[codigo.toUpperCase()] || codigo;
 }
-
-async function Formulario(event) {
-    event.preventDefault(); // Impede o envio padrão do formulário
-
+function extrairInfoCodigo(codigoCompleto) {
+    // Remove espaços extras e converte para maiúsculo
+    codigoCompleto = codigoCompleto.trim().toUpperCase();
+    
+    // Divide o código pelo hífen
+    const partes = codigoCompleto.split('-');
+    
+    if (partes.length === 3) {
+        const curso = partes[0];      // Ex: "DS"
+        const ano = partes[1];        // Ex: "2026"
+        const estado = partes[2];     // Ex: "PR" ou "AL"
+        
+        return {
+            curso: curso,
+            ano: ano,
+            estado: estado,
+            completo: true
+        };
+    }
+    
+    return {
+        completo: false,
+        curso: codigoCompleto,
+        estado: null
+    };
+}
+function Formulario(event) {
+    // Pega as informações dos inputs que tem required (todos)
     const campos = document.querySelectorAll("input[required]");
     let camposVazios = false;
-
+    // Vai verificar se tem algum campo vazio
     campos.forEach((campo) => {
+        event.preventDefault(); // Impede o envio do formulário para verificar os campos
         if (campo.value === "") {
             camposVazios = true;
-            campo.style.border = "1px solid red";
-        } else {
-            campo.style.border = "none";
+            campo.style.border = "1px solid red"; //Vai destacar em vermelho campo que está vazio
         }
+        else {
+            campo.style.border = "none"; // É para caso ele não esteja não vai colocar nada
+        }
+
     });
-
-    if (camposVazios) {
-        alert("Por favor, preencha todos os campos obrigatórios.");
-        return false;
-    }
-
-    const nome = document.getElementById("Nome-da-pessoa").value;
-    const email = document.getElementById("Email").value;
     const senha = document.getElementById("Senha").value;
     const repitaSenha = document.getElementById("RepitaSenha").value;
-    const codigoCurso = document.getElementById("Codigo-da-pessoa").value;
-
     if (senha !== repitaSenha) {
         alert("As senhas não coincidem. Por favor, tente novamente.");
-        const campoRepetir = document.getElementById("RepitaSenha");
-        campoRepetir.style.border = "1px solid red";
-        campoRepetir.focus();
+        const campoRepetir = document.getElementById("RepitaSenha"); campoRepetir.style.border = "1px solid red";
+        campoRepetir.focus(); // Coloca o cursor no campo errado
+        event.preventDefault(); // Impede o envio do formulário
         return false;
+    }  
+
+    const email = document.querySelector("#Email input").value;
+    const codigoCurso = document.getElementById("Codigo-da-pessoa").value;
+
+    const nomeCursoTraduzido = traduzirCurso(codigoCurso);
+    if (email.includes("@Professor.cps.sp.gov.br")) {
+        // Extrai o prefixo (antes do @)
+        const prefixo = email.split("@")[0];
+        const partes = prefixo.split(".");
+
+        // Verifica se tem exatamente duas partes (Nome.Sobrenome)
+        let iniciais = "";
+        if (partes.length === 2) {
+            iniciais = partes[0].charAt(0).toUpperCase() + partes[1].charAt(0).toUpperCase();
+        } 
+    localStorage.setItem("iniciaisUsuario", iniciais); // Salvo imediatamente
+    window.location.href = "../../Professor/Index.html"; // Redireciona depois
     }
+    else if (email.includes("@Aluno.cps.sp.gov.br")) {
+         // Extrai o prefixo (antes do @)
+        const prefixo = email.split("@")[0];
+        const partes = prefixo.split(".");
 
-    // Preparar dados para enviar para a API
-    const dados = {
-        nome: nome,
-        email: email,
-        senha: senha,
-        codigo: codigoCurso
-    };
-
-    try {
-        // Enviar dados para a Vercel Serverless Function
-        const response = await fetch('/api/cadastro', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(dados)
-        });
-
-        if (response.ok) {
-            const resultado = await response.json();
-            console.log("Sucesso:", resultado);
-
-            // Lógica de iniciais e redirecionamento
-            const prefixo = email.split("@")[0];
-            const partes = prefixo.split(".");
-            let iniciais = "";
-            if (partes.length >= 2) {
-                iniciais = partes[0].charAt(0).toUpperCase() + partes[1].charAt(0).toUpperCase();
-            } else {
-                iniciais = nome.charAt(0).toUpperCase() + (partes[0].charAt(1) || "").toUpperCase();
-            }
-
-            localStorage.setItem("iniciaisUsuario", iniciais);
-            localStorage.setItem("usuarioLogado", JSON.stringify(resultado.user));
-
-            if (email.includes("@Professor.cps.sp.gov.br")) {
-                window.location.href = "/Professor/Index.html";
-            } else if (email.includes("@Aluno.cps.sp.gov.br")) {
-                window.location.href = "/Aluno/Turma.html";
-            } else {
-                alert("Cadastro realizado! Use um e-mail institucional para acessar as áreas restritas.");
-            }
-        } else {
-            const erro = await response.json();
-            alert("Erro no cadastro: " + (erro.error || "Tente novamente mais tarde."));
-        }
-    } catch (error) {
-        console.error("Erro na requisição:", error);
-        alert("Erro ao conectar com o servidor. Verifique sua conexão.");
+        // Verifica se tem exatamente duas partes (Nome.Sobrenome)
+        let iniciais = "";
+        if (partes.length === 2) {
+            iniciais = partes[0].charAt(0).toUpperCase() + partes[1].charAt(0).toUpperCase();
+        } 
+    localStorage.setItem("iniciaisUsuario", iniciais); // Salvo imediatamente
+    window.location.href = "../../Aluno/Turma.html"; // Redireciona depois
     }
 }
