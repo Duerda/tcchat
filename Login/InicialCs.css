@@ -1,0 +1,222 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #080b12;
+    color: #fff;
+}
+#Telaprin{
+    position: absolute;
+    inset: 0; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #080b12;
+    width: 100%;
+}
+.Card  {
+    background-color: #111520;
+    padding-left: 38px;
+    padding-top: 42px;
+    padding-right: 38px;
+    padding-bottom: 42px;
+    border-radius: 22px;
+    width: 360px;
+    height: 570px;
+    border: 1px solid rgb(255 255 255 / 7%);
+    overflow: hidden;
+}   
+.Borcima{
+    position: absolute;
+    inset: 0; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #080b12;
+    width: 100%;
+}
+.logo h1 span {
+    color: hsl(210,82%,58%);
+}
+.logo {
+    width: 362px;
+    height: 42px;
+    margin-bottom: 20px;
+}
+#EnCad {
+
+    background-color: #0c1018;
+    border-radius: 8px;
+    display: flex;
+    padding: 3px;
+    margin-bottom: 20px;
+}
+#Entrar {   
+    width: 176px;
+    height: 36px;
+    background: #161d2a;
+    color: #e4e9f4;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    margin-right: 2px;
+}
+#Cadastrar {
+    width: 176px;
+    height: 36px;
+    background: #0c1018;
+    color: #e4e9f4;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+ /*#Entrar:hover ele serve para quando o mouse passar por cima ele muda uma coisa que eu colocar aqui*/
+#Cadastrar:hover {
+    width: 176px;
+    height: 36px;
+    background: #161d2a;
+    color: #e4e9f4;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    margin-right: 2px;
+    /*transform serve para aumentar o botão quando passar o mouse por cima dele mais especificamente o scale*/
+    transform: scale(1.00);
+    /*transition Serve principalmente para suavizar meio que sendo tipo uma pequena animação*/
+    transition: all 0.3s;
+}
+#Entre {
+    font-size: 14px;
+    color: #7a8699;
+    margin-bottom: 7px;
+}
+
+#Al-Pro {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+#Aluno-1 {
+    text-align: center;
+    padding: 9px;
+    width: 156px;
+    height: 20px;
+    background: hsl(210deg 82% 58% / 15%);
+    color: hsl(210,82%,58%);
+    border-radius: 8px;
+    border:1px solid hsl(210,82%,58%);
+    margin-right: 7px;
+}
+#Aluno-2 {
+    text-align: center;
+    padding: 9px;
+    width: 156px;
+    height: 20px;
+    background: #0c1018;
+    color: #7a8699;
+    border-radius: 8px;
+    border:1px solid rgb(255 255 255 / 7%);
+    cursor: pointer;
+}
+#Professor-1 {
+    text-align: center;
+    padding: 9px;
+    width: 156px;
+    height: 20px;
+    background: #0c1018;
+    color: #7a8699;
+    border-radius: 8px;
+    border:1px solid rgb(255 255 255 / 7%);
+    cursor: pointer;
+}
+#Professor-2 {
+    text-align: center;
+    padding: 9px;
+    width: 156px;
+    height: 20px;
+    background: hsl(210deg 82% 58% / 15%);
+    color: hsl(210,82%,58%);
+    border-radius: 8px;
+    border:1px solid hsl(210,82%,58%);
+    margin-left: 7px;
+}
+#Email label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 14px;
+    color: #7a8699;
+}
+#Email input {
+    width: 332px;
+    height: 18px;
+    padding-top: 11px;
+    padding-bottom: 11px;
+    padding-left: 14px;
+    padding-right: 14px;
+    background: #0c1018;
+    color: #e4e9f4;
+    border-radius: 8px;
+    outline: none;
+    border: 1px solid rgb(255 255 255 / 7%);
+    margin-bottom: 10px;
+}
+#Senha label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 14px;
+    color: #7a8699;
+}
+#Senha input {
+    width: 332px;
+    height: 18px;
+    padding-top: 11px;
+    padding-bottom: 11px;
+    padding-left: 14px;
+    padding-right: 14px;
+    background: #0c1018;
+    color: #e4e9f4;
+    border-radius: 8px;
+    /*outline serve para retirar a parte de fora do Input*/
+    outline: none;
+    border: 1px solid rgb(255 255 255 / 7%);
+}
+#Entrar-al input {
+    margin-top: 20px;
+    width: 100%;
+    height: 40px;
+    background: hsl(210deg 82% 58%);
+    color: #e4e9f4;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer; }
+
+#Coor-head {
+    display: flex;
+    text-align: initial;
+    margin-top: 20px; 
+    width: 340px;
+    height: 20px;
+    padding: 10px;
+    background: #0c1018;
+    color: #7a8699;
+    border-radius: 8px;
+    border: 1px solid rgb(255 255 255 / 7%);
+    cursor: pointer;
+    gap:235px;
+}
+#Coor-head  #Ctex {
+    font-size: 13px;
+    font-weight: 500;
+    flex:1 ;
+}
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+    #Entrar-al input:hover {
+        transform: scale(1.05);
+        transition: all 0.5s;
+     }
