@@ -64,7 +64,7 @@ function Formulario (event){
         localStorage.setItem("nomeUsuario", nomeUsuario);
         
         // Redireciona
-        window.location.href = "/Professor/index.html";
+        window.location.href = "/Professor/Index.html";
         
     } else {
         alert("Email inválido. Use um email @Professor.cps.sp.gov.br");
