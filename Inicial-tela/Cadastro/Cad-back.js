@@ -4,7 +4,7 @@ function Entraralpr() {
     window.location.href = "/Professor/index.html";
 }
 function Logar() {
-    window.location.href = "/Inicial-tela/Login/index.html";
+    window.location.href = "/index.html";
 }
 function traduzirCurso(codigo) {
     const cursos = {
