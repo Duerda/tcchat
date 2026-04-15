@@ -7,8 +7,7 @@ export default function handler(req, res) {
       return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
     }
 
-    // Aqui você conectaria com um banco de dados real (como MongoDB, PostgreSQL, etc.)
-    // Para este exemplo, vamos apenas simular o sucesso.
+    // Aqui conectaria com um banco de dados real
     console.log('Usuário cadastrado:', { nome, email, codigo });
 
     return res.status(200).json({ 
