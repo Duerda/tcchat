@@ -1,8 +1,8 @@
 function Voltar(){
     window.location.href = "/Inicial-tela/Cadastro/Cad.html";
 }
-function Avaliacoes(){
-    window.location.href = "/Professor/Avaliacoes/ava.html";
+function VisaoGeral(){
+    window.location.href = "/Professor/index.html";
 }
 document.addEventListener('DOMContentLoaded', function() {
     const spanIniciais = document.getElementById("foto").querySelector("span"); // Seleciona o span dentro de #foto

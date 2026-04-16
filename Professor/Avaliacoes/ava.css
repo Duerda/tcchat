@@ -1,0 +1,253 @@
+#Geral {
+    display: flex;
+}
+body {
+    margin: 0px;
+    padding: 0px;
+}
+
+#lateral {
+    padding-bottom: 18px;
+    padding-top: 18px;
+    display: flex;
+    flex-direction: column;
+    left: 0px;
+    top: 0px;
+    width: 229px;
+    height: 915px;
+    background-color: #0c1018;
+    position: sticky;
+    top: 0;
+}
+#lateral-superior {
+    width: 197px;
+    height: 59px;
+    padding-top: 0px;
+    padding-bottom: 18px;
+    padding-left: 16px;
+    padding-right:16px ;    
+    border-bottom: 1px solid rgb(255 255 255 / 7%);
+    margin-bottom: 8px;
+}
+#lateral-superior div {
+    display: flex;
+    align-items: center;
+}
+h2 {
+    font-size: 32px;
+    color: #fff;
+    margin-left: 8px;
+}
+#lateral-superior div h2 {
+    font-size: 32px;
+    color: #fff;
+}
+#lateral-superior div span {
+    font-size: 32px;
+    color: hsl(210,82%,58%);
+}
+#lateral-superior div h2 {
+    margin-bottom: 5px;
+}
+.lateral-inferior {
+    padding: 7px;
+    border-top: 1px solid rgb(255 255 255 / 7%);
+}
+#VGABF {
+    padding-top: 2px;
+    padding-right: 8px;
+    padding-bottom: 2px;
+    padding-left: 8px;
+    margin-bottom: 4px;
+}
+#painel {
+    font-weight: 700;
+    font-size: 14px;
+    color: #3d4d61;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+    border-radius: 10px;
+
+}
+.VGABF {
+    padding-top: 0px;
+    padding-right: 8px;
+    padding-bottom: 0px;
+    padding-left: 16px;
+}
+.VGABF div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+}
+.VGABF div button {
+    width: 220px;
+    height: 36px;
+    background: #0c1018;
+    color: #7a8699;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+}
+.VGABF div button:hover {
+    background: hsl(210deg 82% 58% / 15%);
+    color: white;
+    border:1px solid hsl(210,82%,58%);
+    cursor: pointer;
+    transform: scale(1.02);
+    transition: all 0.5s;
+}
+#sistema { 
+    margin: auto;
+    padding-top: 6px;
+}
+.Usuario {
+    display: flex;      
+
+}
+#foto {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    background-color: #0062ff;
+    margin-right: 8px;
+}
+#foto p {
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+}
+#Logo-de-professor {
+    display: inline-flex;
+    font-size: 12px;
+    color: #fff;
+    margin-left: 8px;
+    align-items: center;
+    margin-top: 3px;
+    background-color: hsl(210deg 82% 58% / 15%);
+    color: hsl(210,82%,58%);
+    letter-spacing: 0.7px;
+    text-align: center;
+    border-radius: 10px;
+    padding-top: 3px;
+    padding-right: 8px;
+    padding-bottom: 3px;
+    padding-left: 8px;
+    width: 75px;
+}
+#configuracao {
+    width: 220px;
+    height: 36px;
+    background: #0c1018;
+    color: #7a8699;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+}
+#configuracao:hover {
+    background: hsl(210deg 82% 58% / 15%);
+    color: white;
+    border:1px solid hsl(210,82%,58%);
+    cursor: pointer;
+    transform: scale(1.02);
+    transition: all 0.5s;
+}
+#voltar:hover {
+    color: white;
+    cursor: pointer;
+}   
+#Avaliacoes {
+background: hsl(210deg 82% 58% / 15%);
+    color: white;
+    border:1px solid hsl(210,82%,58%);
+    cursor: pointer;
+    transform: scale(1.02);
+    transition: all 0.5s;
+}
+#Avaliacoes:hover {
+    cursor: unset;
+}
+
+/* Aqui é a outra parte no caso o conteúdo do site */
+#conteudo {
+    flex: 1;
+    background-color: #080b12 ;
+    padding: 20px;
+    padding-top: 18px;
+    padding-left: 40px;
+}
+#conteudo-superior p {
+    color: #7a8699;
+    margin-top: 7px;
+}
+h1 {
+    color:hsl(210,82%,58%) ;
+        margin-top: 7px;
+        margin-bottom: 5px;
+}
+
+#EnCad {
+    background-color: #0c1018;
+    border-radius: 8px;
+    display: flex;
+    padding: 3px;
+    margin-bottom: 20px;
+    width: 350px;
+    border: 1px solid rgb(255 255 255 / 7%);
+}
+
+#Entrar {   
+    width: 176px;
+    height: 36px;
+    background: #161d2a;
+    color: #e4e9f4;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    margin-right: 2px;
+}
+#Cadastrar {
+    width: 176px;
+    height: 36px;
+    background: #0c1018;
+    color: #e4e9f4;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+ /*#Entrar:hover ele serve para quando o mouse passar por cima ele muda uma coisa que eu colocar aqui*/
+#Cadastrar:hover {
+    width: 176px;
+    height: 36px;
+    background: #161d2a;
+    color: #e4e9f4;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    margin-right: 2px;
+    /*transform serve para aumentar o botão quando passar o mouse por cima dele mais especificamente o scale*/
+    transform: scale(1.00);
+    /*transition Serve principalmente para suavizar meio que sendo tipo uma pequena animação*/
+    transition: all 0.3s;
+}
+
+.Cards {
+background: #111520;
+    border: 1px solid rgb(255 255 255 / 7%);
+    border-radius: 13px;
+    padding: 17px;
+    cursor: pointer;
+    margin-bottom: 9px;
+}
+#top-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}

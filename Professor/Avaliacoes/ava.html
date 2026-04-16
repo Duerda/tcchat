@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="stylesheet" href="ava.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="Geral">
+        <!--Incio da sessão lateral-->
+        <div id="lateral">
+            <div id="lateral-superior">
+                <div><h2 style="margin-top: 2px;">T<span>CCHAT</span></h2></div>
+                <div id="Logo-de-professor">PROFESSOR</div>
+            </div>
+            
+            <!-- VGABF = Visão Geral, Grupos, Avaliações, Biblioteca e Fórum -->
+            <div class="VGABF">
+
+                <div id="painel">Navegação</div>
+                <div><button onclick="VisaoGeral ()" >Visão Geral</button></div>
+                <div><button onclick="Grupos ()">Grupos</button></div>
+                <div><button onclick="Avaliacoes ()" id="Avaliacoes">Avaliações</button></div>
+                <div><button onclick="Biblioteca ()">Biblioteca</button></div>
+                <div><button onclick="Forum ()">Fórum</button></div>
+            </div>
+            <div id="sistema"><button onclick="Configuracoes ()" id="configuracao">Configurações</button></div>
+            <div class="lateral-inferior">
+                <div class="Usuario">
+                    <div id="foto"><span style="margin: 0px;"></span></div>
+                    <div id="NomeUC">
+                        <h4 style="margin: 0; color: #e4e9f4; width: 100px;">Eduarda</h4> 
+                        <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;">Desenvolvimento de Sistemas</h5> 
+                    </div>
+                    <p id="voltar" style="margin-top: 31px; margin-bottom: 0px; margin-left: 30px;" onclick="Voltar ()">↩️</p>
+                </div>
+
+            </div>
+        </div>
+        <!--Fim da sessão lateral-->
+
+        <div id="conteudo">
+            <div id="conteudo-superior">
+                <h1>Avaliações</h1><p>Entregas aguardando nota</p>
+            </div>
+        
+            <div id="EnCad"> <button id="Entrar">Pendentes</button> <button id="Cadastrar" onclick="Cadastrar ()">Históricos</button></div>
+
+            <h1>Avaliações</h1>
+        <div class="Cards">
+            <div id="top-card">
+                <div>
+               <h3 style="margin-top: 0px; margin-bottom: 5px; color: #e4e9f4;"> Nome do TCC </h3>
+               <span style="color: #3d4d61 ;">Prévia do que eles entregaram o nome do arquivo ou da atividade</span>
+               </div>
+               <Span class="Estado" style="font-size: smaller;">No Prazo/Atenção/Atrazado</Span>
+            </div>
+            <div><p style="color: #7a8699;">Descrição completa do TCC dos caras</p></div>
+            <div style="color: #7a8699;">Aqui ou fica atividade que tem que ser entregue ainda ou fica a próxima vez que voce tem que dar uma olhada no grupo deles não sei ainda e depdendo de quanto dias falte isso aqui mude de cor</div>
+        </div>
+</body>
+<script src="ava.js"></script>
+</html>
