@@ -1,8 +1,16 @@
 {
   "rewrites": [
     {
-      "source": "/(.*)",
-      "destination": "inicial-tela/index.html"
+      "source": "/api/cadastro",
+      "destination": "/api/cadastro.js"
+    },
+    {
+      "source": "/aluno",
+      "destination": "/Aluno/Turma.html"
+    },
+    {
+      "source": "/cadastro",
+      "destination": "/Inicial-tela/Cadastro/Cad.html"
     }
   ]
 }
