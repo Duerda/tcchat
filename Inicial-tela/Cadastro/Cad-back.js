@@ -72,7 +72,7 @@ function Formulario(event) {
     const codigoCurso = document.getElementById("Codigo-da-pessoa").value;
 
     const nomeCursoTraduzido = traduzirCurso(codigoCurso);
-    if (email.includes("@Professor.cps.sp.gov.br")) {
+    if (email.includes("@professor.cps.sp.gov.br")) {
         // Extrai o prefixo (antes do @)
         const prefixo = email.split("@")[0];
         const partes = prefixo.split(".");
@@ -85,7 +85,7 @@ function Formulario(event) {
     localStorage.setItem("iniciaisUsuario", iniciais); // Salvo imediatamente
     window.location.href = "../../Professor/Index.html"; // Redireciona depois
     }
-    else if (email.includes("@Aluno.cps.sp.gov.br")) {
+    else if (email.includes("@aluno.cps.sp.gov.br")) {
          // Extrai o prefixo (antes do @)
         const prefixo = email.split("@")[0];
         const partes = prefixo.split(".");

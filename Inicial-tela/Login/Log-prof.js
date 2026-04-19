@@ -7,7 +7,16 @@ function Aluno(){
 function Cadastrar(){
     window.location.href = "/Inicial-tela/Cadastro/Cad.html";
 }
+function toggleCoor() {
+    const box = document.getElementById("Coor-box");
+    const seta = document.getElementById("seta");
 
+    box.classList.toggle("ativo");
+
+    seta.style.transform = box.classList.contains("ativo")
+        ? "rotate(180deg)"
+        : "rotate(0deg)";
+}
 function Formulario (event){
     //Impede que seja enviado por padrão do formulario, ou seja, impede que a página seja recarregada
     event.preventDefault();
@@ -17,17 +26,18 @@ function Formulario (event){
 
     //Validação do email e senha, aqui é onde você pode adicionar a lógica para verificar as credenciais do usuário
 
+    
     if (email === "" || senha === "") {
         alert("Por favor, preencha todos os campos.");
         if (email === "") {
-            document.querySelector("#Email input").style.borderColor = "1px solid red";
+            document.querySelector("#Email input").style.border = "1px solid red";
         } else {
-            document.querySelector("#Email input").style.borderColor = "none"; // Restaura a cor original se o campo for preenchido
+            document.querySelector("#Email input").style.border = "none"; // Restaura a cor original se o campo for preenchido
         }
         if (senha === "") {
-            document.querySelector("#Senha input").style.borderColor = "1px solid red";
+            document.querySelector("#Senha input").style.border = "1px solid red";
         } else {
-            document.querySelector("#Senha input").style.borderColor = "none";
+            document.querySelector("#Senha input").style.border = "none";
         }
         return false; // Impede o envio do formulário
     }
@@ -39,7 +49,7 @@ function Formulario (event){
     else {
         document.querySelector("#Senha input").style.border = "none"; // Restaura a cor original se a senha for válida
     }
-    if (email.includes("@Professor.cps.sp.gov.br")) {
+    if (email.includes("@professor.cps.sp.gov.br")) {
         // Extrai o prefixo (antes do @)
         const prefixo = email.split("@")[0];
         const partes = prefixo.split(".");
@@ -67,7 +77,7 @@ function Formulario (event){
         window.location.href = "/Professor/Index.html";
         
     } else {
-        alert("Email inválido. Use um email @Professor.cps.sp.gov.br");
+        alert("Email inválido. Use um email @professor.cps.sp.gov.br");
         return false;
     }
 }

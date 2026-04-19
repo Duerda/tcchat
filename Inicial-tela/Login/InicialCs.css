@@ -194,15 +194,14 @@ body {
 
 #Coor-head {
     display: flex;
+    justify-content: space-between;
     text-align: initial;
-    margin-top: 20px; 
     width: 340px;
     height: 20px;
     padding: 10px;
     background: #0c1018;
     color: #7a8699;
     border-radius: 8px;
-    border: 1px solid rgb(255 255 255 / 7%);
     cursor: pointer;
     gap:235px;
 }
@@ -216,7 +215,40 @@ a {
     color: inherit;
 }
 
-    #Entrar-al input:hover {
-        transform: scale(1.05);
-        transition: all 0.5s;
-     }
+#Entrar-al input:hover {
+   transform: scale(1.05);
+   transition: all 0.5s;
+}
+
+ #Coor-box {
+    background: #0c1018;
+    border-radius: 8px;
+    border: 1px solid rgb(255 255 255 / 7%);
+    overflow: hidden;
+    transition: all 0.4s ease;
+        margin-top: 20px;
+}
+/* Corpo escondido */
+#Coor-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+    padding: 0 10px;
+    
+}
+
+/* Quando abre */
+#Coor-box.ativo #Coor-body {
+    max-height: 80px;
+    padding-bottom: 10px;
+}
+#Coor-body input {
+    width: 100%;
+    box-sizing: border-box; /* ESSENCIAL */
+    padding: 10px;
+    background: #080b12;
+    border: 1px solid rgb(255 255 255 / 7%);
+    border-radius: 8px;
+    color: #fff;
+    margin-top: 10px;
+}

@@ -200,7 +200,14 @@ h1 {
     width: 350px;
     border: 1px solid rgb(255 255 255 / 7%);
 }
-
+.Estado {
+    background: rgb(52 211 153 / 12%);
+    color: #34d399;
+    padding: 8px;
+    border-radius: 20px;
+    text-align: center;
+    text-transform: smaller;
+}
 #Entrar {   
     width: 176px;
     height: 36px;
@@ -242,7 +249,6 @@ background: #111520;
     border: 1px solid rgb(255 255 255 / 7%);
     border-radius: 13px;
     padding: 17px;
-    cursor: pointer;
     margin-bottom: 9px;
 }
 #top-card {
@@ -250,4 +256,18 @@ background: #111520;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 8px;
+}
+
+.Avaliacoes {
+    padding: 13px;
+    background-color: #161d2a;
+    border: 1px solid rgb(255 255 255 / 7%);
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 7px;
+}
+#DT-CD {
+    display: flex;
+    gap: 10px;
 }

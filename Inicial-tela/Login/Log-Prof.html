@@ -21,7 +21,7 @@
 
             <div id="Email">
                 <label for="E-mail">E-mail</label>
-                <input type="email" id="E-mail" required placeholder="Professor.106@Etec.sp.gov.br">
+                <input type="email" id="E-mail" required placeholder="Professor.Sobrenome@professor.cps.sp.gov.br">
             </div>
 
             <div id="Senha">
@@ -33,7 +33,17 @@
                 <input type="submit"  value="Entrar">
             </div>
             </form>
-            <div id="Coor-head"> <span id="">Coordenador</span> <span>▼</span></div>
+            <div id="Coor-box">
+    <div id="Coor-head" onclick="toggleCoor()">
+        <span>Coordenador</span>
+        <span id="seta">▼</span>
+    </div>
+
+    <div id="Coor-body">
+        <input type="text" placeholder="Digite o código do coordenador">
+    </div>
+</div>
+</div>
         </div>
       </div>
     </div>

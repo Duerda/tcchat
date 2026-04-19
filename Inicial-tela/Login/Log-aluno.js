@@ -20,14 +20,14 @@ function Formulario (event){
     if (email === "" || senha === "") {
         alert("Por favor, preencha todos os campos.");
         if (email === "") {
-            document.querySelector("#Email input").style.borderColor = "1px solid red";
+            document.querySelector("#Email input").style.border = "1px solid red";
         } else {
-            document.querySelector("#Email input").style.borderColor = "none"; // Restaura a cor original se o campo for preenchido
+            document.querySelector("#Email input").style.border = "none"; // Restaura a cor original se o campo for preenchido
         }
         if (senha === "") {
-            document.querySelector("#Senha input").style.borderColor = "1px solid red";
+            document.querySelector("#Senha input").style.border = "1px solid red";
         } else {
-            document.querySelector("#Senha input").style.borderColor = "none"; // Restaura a cor original se o campo for preenchido
+            document.querySelector("#Senha input").style.border = "none"; // Restaura a cor original se o campo for preenchido
         }
         return false; // Impede o envio do formulário
     }
@@ -39,7 +39,7 @@ function Formulario (event){
     else {
         document.querySelector("#Senha input").style.border = "none"; // Restaura a cor original se a senha for válida
     }
-if (email.includes("@Aluno.cps.sp.gov.br")) {
+if (email.includes("@aluno.cps.sp.gov.br")) {
         // Extrai o prefixo (antes do @)
         const prefixo = email.split("@")[0];
         const partes = prefixo.split(".");
@@ -67,7 +67,7 @@ if (email.includes("@Aluno.cps.sp.gov.br")) {
         window.location.href = "/Aluno/Turma.html";
         
     } else {
-        alert("Email inválido. Use um email @Aluno.cps.sp.gov.br");
+        alert("Email inválido. Use um email @aluno.cps.sp.gov.br");
         return false;
     }
 }
