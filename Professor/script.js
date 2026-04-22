@@ -4,6 +4,9 @@ function Voltar(){
 function Avaliacoes(){
     window.location.href = "/Professor/Avaliacoes/ava.html";
 }
+function Biblioteca(){
+    window.location.href = "/Professor/Biblioteca/Bib.html";
+}
 document.addEventListener('DOMContentLoaded', function() {
     const spanIniciais = document.getElementById("foto").querySelector("span"); // Seleciona o span dentro de #foto
     const iniciaisSalvas = localStorage.getItem("iniciaisUsuario");

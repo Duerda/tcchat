@@ -161,7 +161,7 @@ h2 {
     color: white;
     cursor: pointer;
 }   
-#Avaliacoes {
+#Biblioteca {
 background: hsl(210deg 82% 58% / 15%);
     color: white;
     border:1px solid hsl(210,82%,58%);
@@ -169,7 +169,7 @@ background: hsl(210deg 82% 58% / 15%);
     transform: scale(1.02);
     transition: all 0.5s;
 }
-#Avaliacoes:hover {
+#Biblioteca:hover {
     cursor: unset;
 }
 
@@ -191,92 +191,37 @@ h1 {
         margin-bottom: 5px;
 }
 
-#EnCad {
-    background-color: #0c1018;
-    border-radius: 8px;
-    display: flex;
-    padding: 3px;
-    margin-bottom: 20px;
-    width: 350px;
-    border: 1px solid rgb(255 255 255 / 7%);
-}
-.Estado {
-    background: rgb(52 211 153 / 12%);
-    color: #34d399;
-    padding: 8px;
-    border-radius: 20px;
-    text-align: center;
-    text-transform: smaller;
-}
-#Entrar {   
-    width: 176px;
+.Cursos {
+    width: 145px;
     height: 36px;
-    background: #161d2a;
-    color: #e4e9f4;
+    background: hsl(210,82%,58%) ;
+    color: #fff;
     padding: 10px;
     border-radius: 8px;
     border: none;
-    margin-right: 2px;
+    margin-right: 10px;
 }
-#Cadastrar {
-    width: 176px;
-    height: 36px;
-    background: #0c1018;
-    color: #e4e9f4;
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
+
+#Link:hover {
+    background: hsl(210deg 82% 58% / 15%);
+    color: white;
+    border:1px solid hsl(210,82%,58%);
+    cursor: pointer;
+
+}
+#ArquivoModelo:hover {
+    background: hsl(210deg 82% 58% / 15%);
+    color: white;
+    border:1px solid hsl(210,82%,58%);
     cursor: pointer;
 }
- /*#Entrar:hover ele serve para quando o mouse passar por cima ele muda uma coisa que eu colocar aqui*/
-#Cadastrar:hover {
-    width: 176px;
-    height: 36px;
-    background: #161d2a;
-    color: #e4e9f4;
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
-    margin-right: 2px;
-    /*transform serve para aumentar o botão quando passar o mouse por cima dele mais especificamente o scale*/
-    transform: scale(1.00);
-    /*transition Serve principalmente para suavizar meio que sendo tipo uma pequena animação*/
-    transition: all 0.3s;
-}
-
-.Cards {
-background: #111520;
+#links{
+    display: flex;
+    gap: 5px;
     border: 1px solid rgb(255 255 255 / 7%);
-    border-radius: 13px;
-    padding: 17px;
-    margin-bottom: 9px;
-}
-#top-card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 8px;
-}
-
-.Avaliacoes {
-    padding: 13px;
-    background-color: #161d2a;
-    border: 1px solid rgb(255 255 255 / 7%);
+    background: #0c1018 ;
     border-radius: 7px;
-    display: flex;
-    align-items: center;
-    margin-bottom: 7px;
-}
-#DT-CD {
-    display: flex;
-    gap: 10px;
-}
-#nota {
-    background: #0c1018;
-    width: 70px;
-    height: 37px;
-    border: 1px solid #3d4d61;
-    border-radius: 7px;
-    text-align: center;
-    color: #e4e9f4;
+    height: 50px;
+    width: 200px;
+    flex-direction:row;
 }

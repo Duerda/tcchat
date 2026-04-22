@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="stylesheet" href="Bib.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="Geral">
+        <!--Incio da sessão lateral-->
+        <div id="lateral">
+            <div id="lateral-superior">
+                <div><h2 style="margin-top: 2px;">T<span>CCHAT</span></h2></div>
+                <div id="Logo-de-professor">PROFESSOR</div>
+            </div>
+            
+            <!-- VGABF = Visão Geral, Grupos, Avaliações, Biblioteca e Fórum -->
+            <div class="VGABF">
+
+                <div id="painel">Navegação</div>
+                <div><button onclick="VisaoGeral ()" >Visão Geral</button></div>
+                <div><button onclick="Grupos ()">Grupos</button></div>
+                <div><button onclick="Avaliacoes ()" >Avaliações</button></div>
+                <div><button onclick="Biblioteca ()" id="Biblioteca">Biblioteca</button></div>
+                <div><button onclick="Forum ()">Fórum</button></div>
+            </div>
+            <div id="sistema"><button onclick="Configuracoes ()" id="configuracao">Configurações</button></div>
+            <div class="lateral-inferior">
+                <div class="Usuario">
+                    <div id="foto"><span style="margin: 0px;"></span></div>
+                    <div id="NomeUC">
+                        <h4 style="margin: 0; color: #e4e9f4; width: 100px;">Eduarda</h4> 
+                        <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;">Desenvolvimento de Sistemas</h5> 
+                    </div>
+                    <p id="voltar" style="margin-top: 31px; margin-bottom: 0px; margin-left: 30px;" onclick="Voltar ()">↩️</p>
+                </div>
+
+            </div>
+        </div>
+        <!--Fim da sessão lateral-->
+
+        <div id="conteudo">
+            <div id="conteudo-superior">
+                <h1>Biblioteca</h1><p>Material de apoio para os alunos</p>
+            </div>
+
+            <!-- Isso aqui só muda para os alunos que o professor está orientando, mais nenhum grupo, já o do Coordenador seria para todos os alunos do curso que ele coordena.-->
+        <button  class="Cursos" id="Link">+Link</button> 
+        <button class="Cursos" id="ArquivoModelo">+ Arquivo/Modelo</button>
+        <h3 style="color: #e4e9f4;">Links webs</h3>
+    <div id="links">
+        <div style="width: 30px; height: 30px; background: hsl(210deg 82% 58% / 15%); margin: 10px; border-radius: 9px; border:1px solid hsl(210, 82%, 58%);"> icone
+        </div>
+        <p style="color: #e4e9f4; font-size: 12px; margin: 0px; margin-top: 10px;">Nome do site</p>
+        <p style="color: #f87171; margin: 0px; margin-top: 15px; margin-left: auto; margin-right: 10PX;">X</p>
+    </div>
+</body>
+<script src="Bib.js"></script>
+</html>

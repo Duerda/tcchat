@@ -57,12 +57,16 @@
                <Span class="Estado" style="font-size: smaller;">No Prazo/Atenção/Atrazado</Span>
             </div>
             <div class="Avaliacoes"><p style="color: #7a8699; margin: 0px;">Arquivo que vai ser avaliado</p> <span style="margin-left: auto; color: hsl(210,82%,58%); font-size: 12px; cursor: pointer;">Baixar</span></div>
-            <div id="DT-CD">
+            <form action="" method="get"><div id="DT-CD">
                 <div>
-                    <p style="font-size: 11px; color: #7a8699; margin-bottom: 4px;">
+                    <p style="font-size: 15px; color: #7a8699; margin-bottom: 4px;">
                     Nota (0-10)</p>
+                 <input type="number" name="nota" id="nota" min="0" max="10" placeholder="---">
                 </div>
-            </div>
+                <div><p style="font-size: 15px; color: #7a8699; margin-bottom: 4px;">Feedback</p> <textarea name="" id=""style="background: #0c1018; color: #e4e9f4; border: 1px solid #3d4d61; border-radius: 7px; padding: 10px; width: 950px; height: 45px;" placeholder="Comentários..." ></textarea></div>
+
+            </div> <input type="button" value="Salvar Avaliação" style="background: hsl(210,82%,58%); color: #e4e9f4; border: none; border-radius: 7px; padding: 10px 20px; cursor: pointer; margin-top: 10px;">
+            </form>
         </div>
 </body>
 <script src="ava.js"></script>
