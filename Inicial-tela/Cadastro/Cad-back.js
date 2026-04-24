@@ -1,3 +1,4 @@
+import { supabase } from '../../api/config.js'
 console.log("Arquivo JS carregou com sucesso!"); // TESTE
 
 function Entraralpr() {
