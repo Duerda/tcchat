@@ -1,3 +1,4 @@
+import { supabase } from '../../api/config.js'
 function Entrar(){
     window.location.href = "./Professor/index.html";
 }
