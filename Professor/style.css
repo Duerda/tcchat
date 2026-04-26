@@ -44,7 +44,7 @@ h2 {
 }
 #lateral-superior div span {
     font-size: 32px;
-    color: hsl(210,82%,58%);
+    color: rgb(236, 60, 60);
 }
 #lateral-superior div h2 {
     margin-bottom: 5px;
@@ -56,8 +56,8 @@ h2 {
     margin-left: 8px;
     align-items: center;
     margin-top: 3px;
-    background-color: hsl(210deg 82% 58% / 15%);
-    color: hsl(210,82%,58%);
+    background-color: hsl(0deg 82% 58% / 16%);
+    color: rgb(236, 60, 60);
     letter-spacing: 0.7px;
     text-align: center;
     border-radius: 10px;
@@ -104,9 +104,9 @@ h2 {
     border: none;
 }
 .VGABF div button:hover {
-    background: hsl(210deg 82% 58% / 15%);
+    background: hsl(0deg 82% 58% / 16%);
     color: white;
-    border:1px solid hsl(210,82%,58%);
+    border:1px solid rgb(236, 60, 60);
     cursor: pointer;
     transform: scale(1.02);
     transition: all 0.5s;
@@ -125,9 +125,9 @@ h2 {
     border: none;
 }
 #configuracao:hover {
-    background: hsl(210deg 82% 58% / 15%);
+    background: hsl(0deg 82% 58% / 16%);
     color: white;
-    border:1px solid hsl(210,82%,58%);
+    border:1px solid rgb(236, 60, 60);
     cursor: pointer;
     transform: scale(1.02);
     transition: all 0.5s;
@@ -159,9 +159,9 @@ h2 {
     font-weight: 700;
 }
 #bisao {
-background: hsl(210deg 82% 58% / 15%);
+background: hsl(0deg 82% 58% / 16%);
     color: white;
-    border:1px solid hsl(210,82%,58%);
+    border:1px solid rgb(236, 60, 60);
     cursor: pointer;
     transform: scale(1.02);
     transition: all 0.5s;
@@ -186,7 +186,7 @@ span {
     color: white;
 }
 h1 {
-    color:hsl(210,82%,58%) ;
+    color:rgb(236, 60, 60);
         margin-top: 7px;
         margin-bottom: 5px;
 }
@@ -223,13 +223,14 @@ h1 {
     font-size: 30px;
 }
 #turmas {
-background: hsl(210deg 82% 58% / 15%);
+background: hsl(0deg 82% 58% / 16%);
     color: white;
-    border:1px solid hsl(210,82%,58%);
+    border:1px solid rgb(236, 60, 60);
     cursor: pointer;
     transform: scale(1.02);
     transition: all 0.5s;
 }
+
 #turmas:hover {
     cursor: unset;
 }
@@ -238,8 +239,14 @@ background: hsl(210deg 82% 58% / 15%);
     flex-direction: column;
     gap: 5px;
 }
+#voltar {
+    margin-top: 31px;
+    margin-bottom: 0px; 
+    margin-left: 30px;
+    color: #e4e9f4;
+}
 #voltar:hover {
-    color: white;
+    color: red;
     cursor: pointer;
 }   
 .Cards {
@@ -267,7 +274,7 @@ background: #111520;
 .Duvidas {
     background: #111520;
     border: 1px solid rgb(255 255 255 / 7%);
-    border-left: 3px solid hsl(210,82%,58%);
+    border-left: 3px solid rgb(236, 60, 60);
     padding: 11px;
     display: flex;
     align-items: flex-start;
@@ -278,16 +285,15 @@ background: #111520;
 .Duvidas:hover{
     cursor: pointer;
     transition: .2;
-    border-color: hsl(210,82%,58%);
+    border-color: rgb(236, 60, 60);
 }
 #Pontinho {
     width: 7px;
     height: 7px;
-    background-color: hsl(210,82%,58%);
+    background-color: rgb(236, 60, 60);
     border-radius: 50%;
     margin-top: 8px;
 }
 #Top-duvidas {
     flex: 1;
 }
-

@@ -27,7 +27,7 @@ body {
 }   
 
 .logo h1 span {
-    color: hsl(210,82%,58%);
+    color: #EC3C3C;
 }
 .logo {
     width: 362px;
@@ -163,7 +163,7 @@ body {
     margin-top: 20px;
     width: 100%;
     height: 40px;
-    background: hsl(210deg 82% 58%);
+    background: #EC3C3C;
     color: #e4e9f4;
     padding: 10px;
     border-radius: 8px;

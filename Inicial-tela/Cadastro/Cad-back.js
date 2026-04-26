@@ -44,21 +44,27 @@ function extrairInfoCodigo(codigoCompleto) {
     };
 }
 function Formulario(event) {
-    // Pega as informações dos inputs que tem required (todos)
+        // Pega as informações dos inputs que tem required (todos)
     const campos = document.querySelectorAll("input[required]");
     let camposVazios = false;
+    let codigo = document.getElementById("Codigo-da-pessoa").value;
+    localStorage.setItem("codigoCurso", codigo); // Salva o código do curso no localStorage
     // Vai verificar se tem algum campo vazio
     campos.forEach((campo) => {
         event.preventDefault(); // Impede o envio do formulário para verificar os campos
         if (campo.value === "") {
             camposVazios = true;
             campo.style.border = "1px solid red"; //Vai destacar em vermelho campo que está vazio
+            campo.focus();
         }
         else {
             campo.style.border = "none"; // É para caso ele não esteja não vai colocar nada
         }
-
     });
+    if (camposVazios) {
+        alert("Por favor, preencha todos os campos obrigatórios.");
+        return false; // Impede o envio do formulário
+    }
     const senha = document.getElementById("Senha").value;
     const repitaSenha = document.getElementById("RepitaSenha").value;
     if (senha !== repitaSenha) {

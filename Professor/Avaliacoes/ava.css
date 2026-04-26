@@ -44,7 +44,7 @@ h2 {
 }
 #lateral-superior div span {
     font-size: 32px;
-    color: hsl(210,82%,58%);
+    color: rgb(236, 60, 60);
 }
 #lateral-superior div h2 {
     margin-bottom: 5px;
@@ -90,9 +90,9 @@ h2 {
     border: none;
 }
 .VGABF div button:hover {
-    background: hsl(210deg 82% 58% / 15%);
+    background: hsl(0deg 82% 58% / 16%);
     color: white;
-    border:1px solid hsl(210,82%,58%);
+    border:1px solid rgb(236, 60, 60);
     cursor: pointer;
     transform: scale(1.02);
     transition: all 0.5s;
@@ -129,8 +129,8 @@ h2 {
     margin-left: 8px;
     align-items: center;
     margin-top: 3px;
-    background-color: hsl(210deg 82% 58% / 15%);
-    color: hsl(210,82%,58%);
+    background-color: hsl(0deg 82% 58% / 16%);
+    color: rgb(236, 60, 60);
     letter-spacing: 0.7px;
     text-align: center;
     border-radius: 10px;
@@ -150,21 +150,27 @@ h2 {
     border: none;
 }
 #configuracao:hover {
-    background: hsl(210deg 82% 58% / 15%);
+    background: hsl(0deg 82% 58% / 16%);
     color: white;
-    border:1px solid hsl(210,82%,58%);
+    border:1px solid rgb(236, 60, 60);
     cursor: pointer;
     transform: scale(1.02);
     transition: all 0.5s;
 }
+#voltar {
+    margin-top: 31px;
+    margin-bottom: 0px; 
+    margin-left: 30px;
+    color: #e4e9f4;
+}
 #voltar:hover {
-    color: white;
+    color: red;
     cursor: pointer;
 }   
 #Avaliacoes {
-background: hsl(210deg 82% 58% / 15%);
+background: hsl(0deg 82% 58% / 16%);
     color: white;
-    border:1px solid hsl(210,82%,58%);
+    border:1px solid rgb(236, 60, 60);
     cursor: pointer;
     transform: scale(1.02);
     transition: all 0.5s;
@@ -186,7 +192,7 @@ background: hsl(210deg 82% 58% / 15%);
     margin-top: 7px;
 }
 h1 {
-    color:hsl(210,82%,58%) ;
+    color:rgb(236, 60, 60);
         margin-top: 7px;
         margin-bottom: 5px;
 }
