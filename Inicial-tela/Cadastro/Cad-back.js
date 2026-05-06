@@ -1,5 +1,18 @@
-import { supabase } from '../../api/config.js';
 
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+const SUPABASE_URL = "https://ktnlazcmojcrzxspggyf.supabase.co"; 
+const SUPABASE_KEY = "sb_publishable_NT8jHzUdqXM8lgL2Pfn2UQ_1W0IzCWH"; 
+
+export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY );
+
+window.Entraralpr = function () {
+    window.location.href = "/Professor/index.html";
+}
+window.Logar = function () {
+    window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+}
+document.getElementById("formCadastro").addEventListener("submit", Formulario);
 async function Formulario(event) {
     event.preventDefault();
 

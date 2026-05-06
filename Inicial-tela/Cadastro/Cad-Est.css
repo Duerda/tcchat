@@ -97,13 +97,13 @@ body {
     border: 1px solid rgb(255 255 255 / 7%);
     margin-bottom: 10px;
 }
-#Email label {
+#Campo-Email label {
     display: block;
     margin-bottom: 7px;
     font-size: 14px;
     color: #7a8699;
 }
-#Email input {
+#Campo-Email input {
     width: 332px;
     height: 18px;
     padding-top: 11px;

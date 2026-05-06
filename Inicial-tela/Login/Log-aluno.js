@@ -1,14 +1,18 @@
-import { supabase } from '../../api/config.js';
 
-function Entrar(){
-    window.location.href = "./Aluno/Turma.html";
+
+const SUPABASE_URL = "https://ktnlazcmojcrzxspggyf.supabase.co"; 
+const SUPABASE_KEY = "sb_publishable_NT8jHzUdqXM8lgL2Pfn2UQ_1W0IzCWH"; 
+
+
+window.Entrar = function (){
+    window.location.href = "/Aluno/Turma.html";
 }
 
-function Professor(){
+window.Professor = function (){
     window.location.href = "Log-Prof.html";
 }
 
-function Cadastrar(){
+window.Cadastrar = function (){
     window.location.href = "/Inicial-tela/Cadastro/Cad.html";
 }
 
