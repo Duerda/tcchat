@@ -33,15 +33,75 @@ document.addEventListener('DOMContentLoaded', function() {
     spanIniciais.textContent = nomeUsuario || ""; // Define o texto ou vazio
 });
 
-const botaoenviar= document.getElementById("Salvar Avaliação");
+const botaoSalvar = document.getElementById("salvar-avaliacao");
+const botaoVoltar = document.getElementById("voltar-avaliacao");
 
-botaoenviar.addEventListener("click", enviarFormulario);
+const card = document.getElementById("card-avaliacao");
+const arquivo = document.getElementById("arquivo-avaliacao");
 
-function enviarFormulario(){
+const nota = document.getElementById("nota");
+const feedback = document.getElementById("feedback");
 
-    // Perguntas
-    let salvar = confirm("Deseja salvar a avaliação?");
+botaoSalvar.addEventListener("click", salvarAvaliacao);
 
-    if(!salvar){
-        return true;
-    }}
+function salvarAvaliacao() {
+
+    let confirmar = confirm("Deseja salvar a avaliação?");
+
+    if (!confirmar) {
+        return;
+    }
+
+    // Verifica se os campos foram preenchidos
+    if (nota.value === "" || feedback.value === "") {
+        alert("Preencha a nota e o feedback.");
+        return;
+    }
+
+    // Esconde o arquivo
+    arquivo.classList.add("oculto");
+
+    // Escurece o card
+    card.classList.add("card-enviado");
+
+    // Bloqueia edição
+    nota.disabled = true;
+    feedback.disabled = true;
+
+    // Esconde botão salvar
+    botaoSalvar.style.display = "none";
+
+    // Mostra botão voltar
+    botaoVoltar.style.display = "inline-block";
+
+    // Salva localmente
+    localStorage.setItem("notaSalva", nota.value);
+    localStorage.setItem("feedbackSalvo", feedback.value);
+}
+
+botaoVoltar.addEventListener("click", voltarAvaliacao);
+
+function voltarAvaliacao() {
+
+    let confirmar = confirm("Deseja voltar a avaliação?");
+
+    if (!confirmar) {
+        return;
+    }
+
+    // Mostra arquivo novamente
+    arquivo.classList.remove("oculto");
+
+    // Remove escurecimento
+    card.classList.remove("card-enviado");
+
+    // Libera edição
+    nota.disabled = false;
+    feedback.disabled = false;
+
+    // Mostra salvar
+    botaoSalvar.style.display = "inline-block";
+
+    // Esconde voltar
+    botaoVoltar.style.display = "none";
+}

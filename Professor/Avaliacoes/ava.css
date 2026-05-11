@@ -286,3 +286,39 @@ background: #111520;
     text-align: center;
     color: #e4e9f4;
 }
+
+/* Card após salvar */
+.card-enviado {
+    background: #0b0f18;
+    transition: 0.4s;
+}
+
+/* Esconde o arquivo */
+.oculto {
+    display: none;
+}
+
+/* Botão salvar */
+.botao-salvar {
+    background: hsl(210,82%,58%);
+    color: #e4e9f4;
+    border: none;
+    border-radius: 7px;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+/* Botão voltar */
+.botao-voltar {
+    background: rgb(236, 60, 60);
+    color: white;
+    border: none;
+    border-radius: 7px;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-left: 10px;
+
+    display: none;
+}

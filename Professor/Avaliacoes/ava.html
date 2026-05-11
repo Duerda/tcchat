@@ -48,26 +48,87 @@
             <div id="EnCad"> <button id="Entrar">Pendentes</button> <button id="Cadastrar" onclick="Cadastrar ()">Históricos</button></div>
 
             <h1>Avaliações</h1>
-        <div class="Cards">
-            <div id="top-card">
-                <div>
-               <h3 style="margin-top: 0px; margin-bottom: 5px; color: #e4e9f4;"> Nome do TCC </h3>
-               <span style="color: #3d4d61 ;">Prévia do que eles entregaram o nome do arquivo ou da atividade</span>
-               </div>
-               <Span class="Estado" style="font-size: smaller;">No Prazo/Atenção/Atrazado</Span>
-            </div>
-            <div class="Avaliacoes"><p style="color: #7a8699; margin: 0px;">Arquivo que vai ser avaliado</p> <span style="margin-left: auto; color: hsl(210,82%,58%); font-size: 12px; cursor: pointer;">Baixar</span></div>
-            <form action="" method="get"><div id="DT-CD">
-                <div>
-                    <p style="font-size: 15px; color: #7a8699; margin-bottom: 4px;">
-                    Nota (0-10)</p>
-                 <input type="number" name="nota" id="nota" min="0" max="10" placeholder="---">
-                </div>
-                <div><p style="font-size: 15px; color: #7a8699; margin-bottom: 4px; word-break: normal;">Feedback</p> <textarea name="" id=""style="background: #0c1018; color: #e4e9f4; border: 1px solid #3d4d61; border-radius: 7px; padding: 10px; width: 978px; height: 45px;" placeholder="Comentários..." ></textarea></div>
 
-            </div> <input type="button" id = "Salvar Avaliação" value="Salvar Avaliação" style="background: hsl(210,82%,58%); color: #e4e9f4; border: none; border-radius: 7px; padding: 10px 20px; cursor: pointer; margin-top: 10px;">
-            </form>
+        <div class="Cards" id="card-avaliacao">
+
+    <div id="top-card">
+        <div>
+            <h3 style="margin-top: 0px; margin-bottom: 5px; color: #e4e9f4;">
+                Nome do TCC
+            </h3>
+
+            <span style="color: #3d4d61 ;">
+                Prévia do que eles entregaram
+            </span>
         </div>
+
+        <span class="Estado">
+            No Prazo
+        </span>
+    </div>
+
+    <!-- DIV DO ARQUIVO -->
+    <div class="Avaliacoes" id="arquivo-avaliacao">
+        <p style="color: #7a8699; margin: 0px;">
+            Arquivo que vai ser avaliado
+        </p>
+
+        <span style="margin-left: auto; color: hsl(210,82%,58%); font-size: 12px; cursor: pointer;">
+            Baixar
+        </span>
+    </div>
+
+    <form>
+
+        <div id="DT-CD">
+
+            <div>
+                <p style="font-size: 15px; color: #7a8699; margin-bottom: 4px;">
+                    Nota (0-10)
+                </p>
+
+                <input
+                    type="number"
+                    id="nota"
+                    min="0"
+                    max="10"
+                    placeholder="---"
+                >
+            </div>
+
+            <div>
+                <p style="font-size: 15px; color: #7a8699; margin-bottom: 4px;">
+                    Feedback
+                </p>
+
+                <textarea
+                    id="feedback"
+                    style="background: #0c1018; color: #e4e9f4; border: 1px solid #3d4d61; border-radius: 7px; padding: 10px; width: 978px; height: 45px;"
+                    placeholder="Comentários..."
+                ></textarea>
+            </div>
+
+        </div>
+
+        <!-- BOTÃO SALVAR -->
+        <input
+            type="button"
+            id="salvar-avaliacao"
+            value="Salvar Avaliação"
+            class="botao-salvar"
+        >
+
+        <!-- BOTÃO VOLTAR -->
+        <button
+            type="button"
+            id="voltar-avaliacao"
+            class="botao-voltar"
+        >
+            Voltar Avaliação
+        </button>
+
+    </form>
+</div>
 </body>
 <script src="ava.js"></script>
 </html>
