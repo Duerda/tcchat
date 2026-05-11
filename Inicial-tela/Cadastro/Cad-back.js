@@ -23,21 +23,36 @@ async function Formulario(event) {
     const codigo = document.getElementById("Codigo-da-pessoa").value;
 
     // VALIDAÇÕES
-    if (!nome || !email || !senha || !repitaSenha || !codigo) {
-        alert("Preencha todos os campos!");
-        return;
-    }
 
+     if (!nome || !email || !senha || !repitaSenha || !codigo )
+     {
+     alert("Preencha todos os campos!")
+        return;
+     }
     if (senha !== repitaSenha) {
         alert("As senhas não coincidem!");
+        document.getElementById("Senha").style.border = "1px solid red";
+        document.getElementById("RepitaSenha").style.border = "1px solid red";
+        document.getElementById("RepitaSenha").focus();
         return;
     }
 
     if (senha.length < 8) {
         alert("Senha mínima de 8 caracteres!");
+        document.getElementById("Senha").style.border = "1px solid red";
+        document.getElementById("Senha").focus();
         return;
     }
 
+    if (!codigo) {
+        alert("Preencha o campo do código!");
+        document.getElementById("Codigo-da-pessoa").focus();
+        document.getElementById("Codigo-da-pessoa").style.border = "1px solid red";
+        return;
+    }
+
+
+    
     // DEFINIR TIPO
     let tipo = "";
 

@@ -114,23 +114,42 @@ body {
     padding: 9px;
     width: 156px;
     height: 20px;
-    background: #0c1018;
     color: #7a8699;
     border-radius: 8px;
     border:1px solid rgb(255 255 255 / 7%);
     cursor: pointer;
+     background: linear-gradient(to right, hsl(0deg 82% 58% / 16%) 50%, #0c1018 50%);
+  background-size: 201% 100%;
+  background-position: right;
+  background-repeat: no-repeat;
+  transition: background-position 1s ease;
+}
+#Aluno-2:hover {
+    background-position: left;
+    border:1px solid rgb(236, 60, 60);
+    color: #EC3C3C;
 }
 #Professor-1 {
     text-align: center;
     padding: 9px;
     width: 156px;
     height: 20px;
-    background: #0c1018;
     color: #7a8699;
     border-radius: 8px;
     border:1px solid rgb(255 255 255 / 7%);
     cursor: pointer;
+   background: linear-gradient(to right, hsl(0deg 82% 58% / 16%) 50%, #0c1018 50%);
+   background-size: 201% 100%;
+   background-position: right;
+   background-repeat: no-repeat;
+   transition: background-position 1s ease;
 }
+#Professor-1:hover {
+    background-position: left;
+    border:1px solid rgb(236, 60, 60);
+    color: #EC3C3C;
+}
+
 #Professor-2 {
     text-align: center;
     padding: 9px;
