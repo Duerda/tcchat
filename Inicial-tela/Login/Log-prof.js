@@ -1,11 +1,18 @@
 
-function Entrar(){
-    window.location.href = "./Professor/index.html";
+
+
+const SUPABASE_URL = "https://ktnlazcmojcrzxspggyf.supabase.co"; 
+const SUPABASE_KEY = "sb_publishable_NT8jHzUdqXM8lgL2Pfn2UQ_1W0IzCWH"; 
+
+
+
+window.Entrar = function(){
+    window.location.href = "/Professor/Index.html";
 }
-function Aluno(){
+window.Aluno = function(){
     window.location.href = "Log-aluno.html";
 }
-function Cadastrar(){
+window.Cadastrar = function (){
     window.location.href = "/Inicial-tela/Cadastro/Cad.html";
 }
 function toggleCoor() {
@@ -73,12 +80,22 @@ function Formulario (event){
         // Salva no localStorage
         localStorage.setItem("iniciaisUsuario", iniciais);
         localStorage.setItem("nomeUsuario", nomeUsuario);
-        
-        // Redireciona
+        //Login com Supabase
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: senha,
+        });
+
+        if (error) {
+            alert("Erro: " + error.message);
+            return;
+        }
+
+        alert("Bem-vindo!");
         window.location.href = "/Professor/Index.html";
-        
+
     } else {
         alert("Email inválido. Use um email @professor.cps.sp.gov.br");
-        return false;
+        return;
     }
 }

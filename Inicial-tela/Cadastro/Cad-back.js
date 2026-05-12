@@ -1,102 +1,108 @@
 
-console.log("Arquivo JS carregou com sucesso!"); // TESTE
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-function Entraralpr() {
+const SUPABASE_URL = "https://ktnlazcmojcrzxspggyf.supabase.co"; 
+const SUPABASE_KEY = "sb_publishable_NT8jHzUdqXM8lgL2Pfn2UQ_1W0IzCWH"; 
+
+export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY );
+
+window.Entraralpr = function () {
     window.location.href = "/Professor/index.html";
 }
-function Logar() {
+window.Logar = function () {
     window.location.href = "/Inicial-tela/Login/Log-aluno.html";
 }
-function traduzirCurso(codigo) {
-    const cursos = {
-        "TMA": "Técnico em Meio Ambiente",
-        "DS": "Desenvolvimento de Sistemas",
-        "ADM": "Administração",
-        "SRC": "Secretariado",
-        "TDS": "Técnico de Design de Interiores"
-    };
-    return cursos[codigo.toUpperCase()] || codigo;
-}
-function extrairInfoCodigo(codigoCompleto) {
-    // Remove espaços extras e converte para maiúsculo
-    codigoCompleto = codigoCompleto.trim().toUpperCase();
-    
-    // Divide o código pelo hífen
-    const partes = codigoCompleto.split('-');
-    
-    if (partes.length === 3) {
-        const curso = partes[0];      // Ex: "DS"
-        const ano = partes[1];        // Ex: "2026"
-        const estado = partes[2];     // Ex: "PR" ou "AL"
-        
-        return {
-            curso: curso,
-            ano: ano,
-            estado: estado,
-            completo: true
-        };
-    }
-    
-    return {
-        completo: false,
-        curso: codigoCompleto,
-        estado: null
-    };
-}
-function Formulario(event) {
-    // Pega as informações dos inputs que tem required (todos)
-    const campos = document.querySelectorAll("input[required]");
-    let camposVazios = false;
-    // Vai verificar se tem algum campo vazio
-    campos.forEach((campo) => {
-        event.preventDefault(); // Impede o envio do formulário para verificar os campos
-        if (campo.value === "") {
-            camposVazios = true;
-            campo.style.border = "1px solid red"; //Vai destacar em vermelho campo que está vazio
-        }
-        else {
-            campo.style.border = "none"; // É para caso ele não esteja não vai colocar nada
-        }
+document.getElementById("formCadastro").addEventListener("submit", Formulario);
+async function Formulario(event) {
+    event.preventDefault();
 
-    });
+    const nome = document.getElementById("Nome-da-pessoa").value;
+    const email = document.getElementById("Email").value;
     const senha = document.getElementById("Senha").value;
     const repitaSenha = document.getElementById("RepitaSenha").value;
+    const codigo = document.getElementById("Codigo-da-pessoa").value;
+
+    // VALIDAÇÕES
+
+     if (!nome || !email || !senha || !repitaSenha || !codigo )
+     {
+     alert("Preencha todos os campos!")
+        return;
+     }
     if (senha !== repitaSenha) {
-        alert("As senhas não coincidem. Por favor, tente novamente.");
-        const campoRepetir = document.getElementById("RepitaSenha"); campoRepetir.style.border = "1px solid red";
-        campoRepetir.focus(); // Coloca o cursor no campo errado
-        event.preventDefault(); // Impede o envio do formulário
-        return false;
-    }  
-
-    const email = document.querySelector("#Email input").value;
-    const codigoCurso = document.getElementById("Codigo-da-pessoa").value;
-
-    const nomeCursoTraduzido = traduzirCurso(codigoCurso);
-    if (email.includes("@professor.cps.sp.gov.br")) {
-        // Extrai o prefixo (antes do @)
-        const prefixo = email.split("@")[0];
-        const partes = prefixo.split(".");
-
-        // Verifica se tem exatamente duas partes (Nome.Sobrenome)
-        let iniciais = "";
-        if (partes.length === 2) {
-            iniciais = partes[0].charAt(0).toUpperCase() + partes[1].charAt(0).toUpperCase();
-        } 
-    localStorage.setItem("iniciaisUsuario", iniciais); // Salvo imediatamente
-    window.location.href = "../../Professor/Index.html"; // Redireciona depois
+        alert("As senhas não coincidem!");
+        document.getElementById("Senha").style.border = "1px solid red";
+        document.getElementById("RepitaSenha").style.border = "1px solid red";
+        document.getElementById("RepitaSenha").focus();
+        return;
     }
-    else if (email.includes("@aluno.cps.sp.gov.br")) {
-         // Extrai o prefixo (antes do @)
-        const prefixo = email.split("@")[0];
-        const partes = prefixo.split(".");
 
-        // Verifica se tem exatamente duas partes (Nome.Sobrenome)
-        let iniciais = "";
-        if (partes.length === 2) {
-            iniciais = partes[0].charAt(0).toUpperCase() + partes[1].charAt(0).toUpperCase();
-        } 
-    localStorage.setItem("iniciaisUsuario", iniciais); // Salvo imediatamente
-    window.location.href = "../../Aluno/Turma.html"; // Redireciona depois
+    if (senha.length < 8) {
+        alert("Senha mínima de 8 caracteres!");
+        document.getElementById("Senha").style.border = "1px solid red";
+        document.getElementById("Senha").focus();
+        return;
+    }
+
+    if (!codigo) {
+        alert("Preencha o campo do código!");
+        document.getElementById("Codigo-da-pessoa").focus();
+        document.getElementById("Codigo-da-pessoa").style.border = "1px solid red";
+        return;
+    }
+
+
+    
+    // DEFINIR TIPO
+    let tipo = "";
+
+    if (email.includes("@aluno.cps.sp.gov.br")) {
+        tipo = "aluno";
+    } else if (email.includes("@professor.cps.sp.gov.br")) {
+        tipo = "professor";
+    } else {
+        alert("Use um email institucional válido!");
+        return;
+    }
+
+    // INICIAIS
+    const prefixo = email.split("@")[0];
+    const partes = prefixo.split(".");
+    let iniciais = "";
+
+    if (partes.length === 2) {
+        iniciais = partes[0][0].toUpperCase() + partes[1][0].toUpperCase();
+    }
+
+    // CADASTRAR NO SUPABASE
+    const { data, error } = await supabase.auth.signUp({
+        email: email,
+        password: senha,
+        options: {
+            data: {
+                nome: nome,
+                tipo: tipo,
+                codigo: codigo
+            }
+        }
+    });
+
+    if (error) {
+        alert("Erro: " + error.message);
+        return;
+    }
+
+    // LOCAL STORAGE
+    localStorage.setItem("iniciaisUsuario", iniciais);
+    localStorage.setItem("tipoUsuario", tipo);
+    localStorage.setItem("codigoCurso", codigo);
+
+    alert("Cadastro realizado com sucesso!");
+
+    // REDIRECIONAMENTO
+    if (tipo === "professor") {
+        window.location.href = "../../Professor/index.html";
+    } else {
+        window.location.href = "../../Aluno/Turma.html";
     }
 }

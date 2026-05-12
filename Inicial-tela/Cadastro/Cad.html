@@ -13,12 +13,14 @@
             <div class="logo"> <h1>T<span>CCHAT</span></h1></div>
             <div id="EnCad"> <button id="Entrar" onclick="Logar()">Entrar</button>
             <button id="Cadastrar">Cadastrar</button></div>
-            <form action="" method="get" onsubmit=" return Formulario(event)" novalidate>
+
+            <form action="" id="formCadastro" novalidate>
+
             <div id="Nome">
                 <label for="Nome-da-pessoa">Nome</label>
                 <input id="Nome-da-pessoa" type="text"  placeholder="Seu nome completo" required >
             </div>
-            <div id="Email">
+            <div id="Campo-Email">
                 <label for="Email">E-mail</label>
                 <input id="Email" type="email"  placeholder="aluno.sobrenome@aluno.cps.sp.gov.br" required  >
             </div>
@@ -42,5 +44,6 @@
         </div>
     </div>
 </body>
-<script src="Cad-back.js"></script>
+<script type="module" src="../../api/config.js"></script>
+<script type="module" src="Cad-back.js"></script>
 </html>

@@ -44,7 +44,7 @@ h2 {
 }
 #lateral-superior div span {
     font-size: 32px;
-    color: hsl(210,82%,58%);
+    color: rgb(236, 60, 60);
 }
 #lateral-superior div h2 {
     margin-bottom: 5px;
@@ -90,9 +90,9 @@ h2 {
     border: none;
 }
 .VGABF div button:hover {
-    background: hsl(210deg 82% 58% / 15%);
+    background: hsl(0deg 82% 58% / 16%);
     color: white;
-    border:1px solid hsl(210,82%,58%);
+    border:1px solid rgb(236, 60, 60);
     cursor: pointer;
     transform: scale(1.02);
     transition: all 0.5s;
@@ -129,8 +129,8 @@ h2 {
     margin-left: 8px;
     align-items: center;
     margin-top: 3px;
-    background-color: hsl(210deg 82% 58% / 15%);
-    color: hsl(210,82%,58%);
+    background-color: hsl(0deg 82% 58% / 16%);
+    color: rgb(236, 60, 60);
     letter-spacing: 0.7px;
     text-align: center;
     border-radius: 10px;
@@ -150,21 +150,27 @@ h2 {
     border: none;
 }
 #configuracao:hover {
-    background: hsl(210deg 82% 58% / 15%);
+    background: hsl(0deg 82% 58% / 16%);
     color: white;
-    border:1px solid hsl(210,82%,58%);
+    border:1px solid rgb(236, 60, 60);
     cursor: pointer;
     transform: scale(1.02);
     transition: all 0.5s;
 }
+#voltar {
+    margin-top: 31px;
+    margin-bottom: 0px; 
+    margin-left: 30px;
+    color: #e4e9f4;
+}
 #voltar:hover {
-    color: white;
+    color: red;
     cursor: pointer;
 }   
 #Biblioteca {
-background: hsl(210deg 82% 58% / 15%);
+background: hsl(0deg 82% 58% / 16%);
     color: white;
-    border:1px solid hsl(210,82%,58%);
+    border:1px solid rgb(236, 60, 60);
     cursor: pointer;
     transform: scale(1.02);
     transition: all 0.5s;
@@ -186,7 +192,7 @@ background: hsl(210deg 82% 58% / 15%);
     margin-top: 7px;
 }
 h1 {
-    color:hsl(210,82%,58%) ;
+    color:rgb(236, 60, 60);
         margin-top: 7px;
         margin-bottom: 5px;
 }
@@ -194,7 +200,7 @@ h1 {
 .Cursos {
     width: 145px;
     height: 36px;
-    background: hsl(210,82%,58%) ;
+    background: rgb(236, 60, 60);
     color: #fff;
     padding: 10px;
     border-radius: 8px;
@@ -203,25 +209,63 @@ h1 {
 }
 
 #Link:hover {
-    background: hsl(210deg 82% 58% / 15%);
+    background: hsl(0deg 82% 58% / 16%);
     color: white;
-    border:1px solid hsl(210,82%,58%);
+    border:1px solid rgb(236, 60, 60);
     cursor: pointer;
 
 }
 #ArquivoModelo:hover {
-    background: hsl(210deg 82% 58% / 15%);
+    background: hsl(0deg 82% 58% / 16%);
     color: white;
-    border:1px solid hsl(210,82%,58%);
+    border:1px solid rgb(236, 60, 60);
     cursor: pointer;
 }
 #links{
-    display: flex;
-    gap: 5px;
-    border: 1px solid rgb(255 255 255 / 7%);
-    background: #0c1018 ;
-    border-radius: 7px;
-    height: 50px;
-    width: 200px;
+ display:flex;
     flex-direction:row;
+    gap:10px;
+    margin-top:15px;
+    max-width: 1000px;
+     flex-wrap: wrap;
+}
+.card-link{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    border:1px solid rgb(255 255 255 / 7%);
+    background:#0c1018;
+    border-radius:7px;
+    height:50px;
+    width:200px;
+}
+
+.icone-box{
+    width:30px;
+    height:30px;
+    background:hsl(0deg 82% 58% / 16%);
+    margin:10px;
+    border-radius:9px;
+    border:1px solid rgb(236, 60, 60);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.nome-link{
+    color:#e4e9f4;
+    font-size:12px;
+    text-decoration:none;
+}
+
+.excluir{
+    color:#f87171;
+    margin-left:auto;
+    margin-right:10px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.excluir:hover{
+    transform:scale(1.1);
 }

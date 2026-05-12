@@ -17,3 +17,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const nomeUsuario = localStorage.getItem("nomeUsuario");
     spanIniciais.textContent = nomeUsuario || ""; // Define o texto ou vazio
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    let nomeCurso = document.getElementById("NomeUC").querySelector("h5");
+
+    let codigoSalvo = localStorage.getItem("codigoCurso");
+
+    let cursos = {
+        "TMA": "Técnico em Meio Ambiente",
+        "DS": "Desenvolvimento de Sistemas",
+        "ADM": "Administração",
+        "SRC": "Secretariado",
+        "TDS": "Técnico de Design de Interiores"
+    };
+    nomeCurso.textContent = cursos[codigoSalvo] || "";
+});
