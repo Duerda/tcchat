@@ -52,6 +52,7 @@
 body {
     font-family: "Poppins", sans-serif;
     background: linear-gradient(var(--cinza-claro) 0%, var(--main-color) 100%);
+    
 }
 
 nav {
@@ -64,10 +65,14 @@ nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 60px;
+    height: 80px;
+    position: sticky;
+    left: 0px;
+    top: 0px;
+    border-bottom: 2px solid var(--red1);
 }
 
-.navlink {
+.navb {
     list-style: none;
     display: flex;
     gap: 2rem;
@@ -78,19 +83,21 @@ nav .nav-group {
     gap: 2rem;
 }
 
-.navlink li a {
+.navb button {
     position: relative;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
     text-decoration: none;
     color: var(--texlight);
     font-family: 'Segoe UI';
+    background: transparent;
 }
 
-.navlink a:hover {
+.navb button:hover {
     color: var(--red-hover);
     text-shadow: var(--shadow-red);
     text-shadow: 0 0 10px #EC3C3C;
+    cursor: pointer;
 }
 
 header {
@@ -138,6 +145,7 @@ p {
 }
 
 .btn {
+    border-radius: 5px;
     background: var(--red1);
     color: #F1F5F9;
     padding: 8px 32px;
@@ -150,19 +158,22 @@ p {
 }
 
 .btn-outline {
+    border-radius: 5px;
+    background: linear-gradient(to right, #EC3C3C 20%, #080B12 50%);
+    background-size: 400% 200%;
+    background-position: right;
     color: var(--red1);
-    background: var(--main-color);
     padding: 8px 32px;
     display: inline-block;
     font-weight: 500;
-    transition: all 300ms ease;
+    transition: background-position 2s ease;
     text-decoration: none;
     cursor: pointer;
     border: 2px solid var(--red1);
 }
 
 .btn-outline:hover {
-    background: var(--red1);
+    background-position: left;
     color: #fff
 }
 
@@ -180,8 +191,11 @@ header .right {
 }
 
 header .right img {
-    height: 600px;
+    height: 400px;
     object-fit: cover;
+    margin-bottom: 210px;
+    margin-right: 120px;
+    width: 400px;
 }
 
 header .bg-color {
@@ -199,4 +213,9 @@ header .bg-color {
 
 .right img {
     align-items: center;
+}
+
+.sobre {
+    width: 1356px;
+    height: 1057px;
 }
