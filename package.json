@@ -20,6 +20,7 @@
   "homepage": "https://github.com/Duerda/tcchat#readme",
   "dependencies": {
     "@supabase/supabase-js": "^2.103.3",
-    "bcryptjs": "^3.0.3"
+    "bcryptjs": "^3.0.3",
+    "express": "^5.2.1"
   }
 }
