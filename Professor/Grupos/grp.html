@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <link rel="stylesheet" href="Bib.css">
+    <link rel="stylesheet" href="grp.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
@@ -19,10 +19,10 @@
             <div class="VGABF">
 
                 <div id="painel">Navegação</div>
-                <div><button onclick="VisaoGeral ()" >Visão Geral</button></div>
-                <div><button onclick="Grupos ()">Grupos</button></div>
-                <div><button onclick="Avaliacoes ()" >Avaliações</button></div>
-                <div><button onclick="Biblioteca ()" id="Biblioteca">Biblioteca</button></div>
+                <div><button onclick="VisaoGeral ()" id="bisao">Visão Geral</button></div>
+                <div><button onclick="Grupos ()" id = "Grupos">Grupos</button></div>
+                <div><button onclick="Avaliacoes ()">Avaliações</button></div>
+                <div><button onclick="Biblioteca ()">Biblioteca</button></div>
                 <div><button onclick="Forum ()">Fórum</button></div>
             </div>
             <div id="sistema"><button onclick="Configuracoes ()" id="configuracao">Configurações</button></div>
@@ -31,30 +31,21 @@
                     <div id="foto"><span style="margin: 0px;"></span></div>
                     <div id="NomeUC">
                         <h4 style="margin: 0; color: #e4e9f4; width: 100px;">Eduarda</h4> 
-                        <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;">Desenvolvimento de Sistemas</h5> 
+                        <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;"></h5> 
                     </div>
-                    <p id="voltar"  onclick="Voltar ()">X</p>
+                    <p id="voltar" style="margin-top: 31px; margin-bottom: 0px; margin-left: 30px;" onclick="Voltar ()">X</p>
                 </div>
 
             </div>
         </div>
         <!--Fim da sessão lateral-->
-
-        <div id="conteudo">
+         <div id="conteudo">
             <div id="conteudo-superior">
-                <h1>Biblioteca</h1><p>Material de apoio para os alunos</p>
+                <h1>Grupos</h1><p>Todos os grupos dos cursos</p>
             </div>
-
-            <!-- Isso aqui só muda para os alunos que o professor está orientando, mais nenhum grupo, já o do Coordenador seria para todos os alunos do curso que ele coordena.-->
-        <button  class="Cursos" id="Link">+Link</button> 
-        <button class="Cursos" id="ArquivoModelo">+ Arquivo/Modelo</button>
-        <h3 style="color: #e4e9f4;">Links <span style="color: rgb(236, 60, 60);">webs</span></h3>
-    <div id="links">
-    </div>
-    <h3 style="color: rgb(236, 60, 60); margin-top:50px">Arquivos e Modelos</h3>
-    <div id="arquivos"> 
-        
+            <h2 style="color: #7a8699;">Turmas</h2>
+        </div>
     </div>
 </body>
-<script src="Bib.js"></script>
+<script src="grp.js"></script>
 </html>
