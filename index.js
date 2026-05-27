@@ -4,3 +4,6 @@ function Login(){
 function Cadastrar(){
     window.location.href = "/Inicial-tela/Cadastro/Cad.html";
 }
+function Professor(){
+   window.location.href = "/Professor/index.html";
+}
