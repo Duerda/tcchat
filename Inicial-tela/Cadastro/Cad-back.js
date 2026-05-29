@@ -1,6 +1,4 @@
-import { auth, db } from './firebaseConfig.js'; // Ajuste o caminho conforme necessário
-import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { doc, setDoc, collection, query, where, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
 
 window.Entraralpr = function () {
     window.location.href = "/Professor/index.html";
