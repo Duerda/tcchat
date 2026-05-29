@@ -1,31 +1,27 @@
 
-
 window.Entraralpr = function () {
     window.location.href = "/Professor/index.html";
 }
-
 window.Logar = function () {
     window.location.href = "/Inicial-tela/Login/Log-aluno.html";
 }
-
 document.getElementById("formCadastro").addEventListener("submit", Formulario);
-
 async function Formulario(event) {
     event.preventDefault();
 
-    // Capturando os valores usando seus IDs originais
     const nome = document.getElementById("Nome-da-pessoa").value;
     const email = document.getElementById("Email").value;
     const senha = document.getElementById("Senha").value;
     const repitaSenha = document.getElementById("RepitaSenha").value;
     const codigo = document.getElementById("Codigo-da-pessoa").value;
 
-    // --- VALIDAÇÕES ORIGINAIS ---
-    if (!nome || !email || !senha || !repitaSenha || !codigo) {
-        alert("Preencha todos os campos!");
-        return;
-    }
+    // VALIDAÇÕES
 
+     if (!nome || !email || !senha || !repitaSenha || !codigo )
+     {
+     alert("Preencha todos os campos!")
+        return;
+     }
     if (senha !== repitaSenha) {
         alert("As senhas não coincidem!");
         document.getElementById("Senha").style.border = "1px solid red";
@@ -41,8 +37,18 @@ async function Formulario(event) {
         return;
     }
 
-    // --- DEFINIR TIPO (Sua lógica institucional) ---
+    if (!codigo) {
+        alert("Preencha o campo do código!");
+        document.getElementById("Codigo-da-pessoa").focus();
+        document.getElementById("Codigo-da-pessoa").style.border = "1px solid red";
+        return;
+    }
+
+
+    
+    // DEFINIR TIPO
     let tipo = "";
+
     if (email.includes("@aluno.cps.sp.gov.br")) {
         tipo = "aluno";
     } else if (email.includes("@professor.cps.sp.gov.br")) {
@@ -52,14 +58,44 @@ async function Formulario(event) {
         return;
     }
 
-    // --- LÓGICA DE INICIAIS ---
+    // INICIAIS
     const prefixo = email.split("@")[0];
     const partes = prefixo.split(".");
     let iniciais = "";
-    if (partes.length >= 2) {
+
+    if (partes.length === 2) {
         iniciais = partes[0][0].toUpperCase() + partes[1][0].toUpperCase();
-    } else {
-        iniciais = nome.substring(0, 2).toUpperCase(); // Fallback caso o email não tenha ponto
     }
 
+    // CADASTRAR NO SUPABASE
+    const { data, error } = await supabase.auth.signUp({
+        email: email,
+        password: senha,
+        options: {
+            data: {
+                nome: nome,
+                tipo: tipo,
+                codigo: codigo
+            }
+        }
+    });
+
+    if (error) {
+        alert("Erro: " + error.message);
+        return;
+    }
+
+    // LOCAL STORAGE
+    localStorage.setItem("iniciaisUsuario", iniciais);
+    localStorage.setItem("tipoUsuario", tipo);
+    localStorage.setItem("codigoCurso", codigo);
+
+    alert("Cadastro realizado com sucesso!");
+
+    // REDIRECIONAMENTO
+    if (tipo === "professor") {
+        window.location.href = "../../Professor/index.html";
+    } else {
+        window.location.href = "../../Aluno/Turma.html";
+    }
 }
