@@ -67,19 +67,6 @@ async function Formulario(event) {
         iniciais = partes[0][0].toUpperCase() + partes[1][0].toUpperCase();
     }
 
-    // CADASTRAR NO SUPABASE
-    const { data, error } = await supabase.auth.signUp({
-        email: email,
-        password: senha,
-        options: {
-            data: {
-                nome: nome,
-                tipo: tipo,
-                codigo: codigo
-            }
-        }
-    });
-
     if (error) {
         alert("Erro: " + error.message);
         return;
