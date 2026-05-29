@@ -1,4 +1,3 @@
-// Importações necessárias do Firebase (Certifique-se de que o Firebase foi inicializado no seu arquivo principal)
 import { auth, db } from './firebaseConfig.js'; // Ajuste o caminho conforme necessário
 import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, setDoc, collection, query, where, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
