@@ -1,48 +1,89 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+window.Entraralpr = function () {
+    window.location.href = "/Professor/index.html";
+};
 
-<head>
-    <link rel="stylesheet" href="Cad-Est.css">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <div id="Telaprin">
-        <div class="Card">
-            <div class="logo"> <h1>T<span>CCHAT</span></h1></div>
-            <div id="EnCad"> <button id="Entrar" onclick="Logar()">Entrar</button>
-            <button id="Cadastrar">Cadastrar</button></div>
+window.Logar = function () {
+    window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+};
 
-            <form action="" id="formCadastro" novalidate>
+document.getElementById("formCadastro").addEventListener("submit", Formulario);
 
-            <div id="Nome">
-                <label for="Nome-da-pessoa">Nome</label>
-                <input id="Nome-da-pessoa" type="text"  placeholder="Seu nome completo" required >
-            </div>
-            <div id="Campo-Email">
-                <label for="Email">E-mail</label>
-                <input id="Email" type="email"  placeholder="aluno.sobrenome@aluno.cps.sp.gov.br" required  >
-            </div>
-            <div class="Senha">
-                <label for="Senha">Senha</label>
-                <input id="Senha" type="password"  placeholder="Minimo de 8 digitos" required  >
-            </div>
+function Formulario(event) {
+    event.preventDefault();
 
-            <div class="Senha">
-                <label for="RepitaSenha">Repita a Senha</label>
-                <input id="RepitaSenha" type="password"  placeholder="Repita a senha" required  >
-            </div>
-                <div id="Codigo">
-                <label for="Codigo-da-pessoa">Código</label>
-                <input id="Codigo-da-pessoa" type="text"  placeholder="Código fornecido pelo Coordenador"required  >
-            </div>
-            <div id="Entrar-al">
-                <input type="submit" value="Entrar" >
-            </div>
-            </Form>
-        </div>
-    </div>
-</body>
-<script type="module" src="Cad-back.js"></script>
-</html>
+    const nome = document.getElementById("Nome-da-pessoa").value.trim();
+    const email = document.getElementById("Email").value.trim();
+    const senha = document.getElementById("Senha").value;
+    const repitaSenha = document.getElementById("RepitaSenha").value;
+    const codigo = document.getElementById("Codigo-da-pessoa").value.trim();
+
+    // Remove bordas vermelhas anteriores
+    document.getElementById("Senha").style.border = "";
+    document.getElementById("RepitaSenha").style.border = "";
+    document.getElementById("Codigo-da-pessoa").style.border = "";
+
+    // VALIDAÇÃO DOS CAMPOS
+    if (!nome || !email || !senha || !repitaSenha || !codigo) {
+        alert("Preencha todos os campos!");
+        return;
+    }
+
+    // VALIDAÇÃO DE SENHA
+    if (senha !== repitaSenha) {
+        alert("As senhas não coincidem!");
+
+        document.getElementById("Senha").style.border = "1px solid red";
+        document.getElementById("RepitaSenha").style.border = "1px solid red";
+        document.getElementById("RepitaSenha").focus();
+
+        return;
+    }
+
+    if (senha.length < 8) {
+        alert("A senha deve ter no mínimo 8 caracteres!");
+
+        document.getElementById("Senha").style.border = "1px solid red";
+        document.getElementById("Senha").focus();
+
+        return;
+    }
+
+    // DEFINIR TIPO DE USUÁRIO
+    let tipo = "";
+
+    if (email.endsWith("@aluno.cps.sp.gov.br")) {
+        tipo = "aluno";
+    } else if (email.endsWith("@professor.cps.sp.gov.br")) {
+        tipo = "professor";
+    } else {
+        alert("Use um e-mail institucional válido!");
+        return;
+    }
+
+    // GERAR INICIAIS
+    const prefixo = email.split("@")[0];
+    const partes = prefixo.split(".");
+    let iniciais = "";
+
+    if (partes.length >= 2) {
+        iniciais =
+            partes[0].charAt(0).toUpperCase() +
+            partes[1].charAt(0).toUpperCase();
+    } else {
+        iniciais = prefixo.substring(0, 2).toUpperCase();
+    }
+
+    // SALVAR NO LOCAL STORAGE
+    localStorage.setItem("iniciaisUsuario", iniciais);
+    localStorage.setItem("tipoUsuario", tipo);
+    localStorage.setItem("codigoCurso", codigo);
+
+    alert("Cadastro realizado com sucesso!");
+
+    // REDIRECIONAMENTO
+    if (tipo === "professor") {
+        window.location.href = "../../Professor/index.html";
+    } else {
+        window.location.href = "../../Aluno/Turma.html";
+    }
+}
