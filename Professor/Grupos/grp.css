@@ -206,3 +206,41 @@ h1 {
         margin-top: 7px;
         margin-bottom: 5px;
 }
+#turmas {
+    width: 271px;
+    height: 244px;
+    border-radius: 10px;
+    border: 1px solid rgb(255 255 255 / 7%);
+    background-color: #0c1018;
+}
+#turmas:hover {
+    border: 1px solid rgb(236, 60, 60);
+    cursor: pointer;
+    transform: scale(1.02);
+    transition: all 0.5s;
+}
+ul li{
+ margin-bottom: 5px;
+ color: #7a8699;
+}
+#progresso { 
+    border-radius: 10px;
+    width: 70px;
+    background-color: rgb(52 211 153 / 12%);
+    color:#34d399;
+    align-items: center;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: small;
+    margin-left: 20px;
+}
+#Tcc-conteudo-inferior {
+    display: flex;
+    gap: 90px;
+    margin-top: 20px;
+}
+#Orientador {
+    text-transform:inherit;
+    color: #3d4d61;
+    font-size: 11px
+}

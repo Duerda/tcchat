@@ -7,6 +7,12 @@ function Avaliacoes(){
 function Biblioteca(){
     window.location.href = "/Professor/Biblioteca/Bib.html";
 }
+function Grupos(){
+    window.location.href = "/Professor/Grupos/grp.html";
+}
+function Forum(){
+    window.location.href = "/Professor/Forum/Avisos.html";
+}
 document.addEventListener('DOMContentLoaded', function() {
     const spanIniciais = document.getElementById("foto").querySelector("span"); // Seleciona o span dentro de #foto
     const iniciaisSalvas = localStorage.getItem("iniciaisUsuario");

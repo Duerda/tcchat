@@ -175,7 +175,7 @@ h2 {
     color: red;
     cursor: pointer;
 }   
-#Avaliacoes {
+#Forum {
 background: hsl(0deg 82% 58% / 16%);
     color: white;
     border:1px solid rgb(236, 60, 60);
@@ -183,7 +183,7 @@ background: hsl(0deg 82% 58% / 16%);
     transform: scale(1.02);
     transition: all 0.5s;
 }
-#Avaliacoes:hover {
+#Forum:hover {
     cursor: unset;
 }
 
@@ -266,7 +266,6 @@ background: #111520;
     border-radius: 13px;
     padding: 17px;
     margin-bottom: 9px;
-    max-width: 1235px;
 }
 #top-card {
     display: flex;
@@ -275,7 +274,7 @@ background: #111520;
     margin-bottom: 8px;
 }
 
-.Avaliacoes {
+.Forum {
     padding: 13px;
     background-color: #161d2a;
     border: 1px solid rgb(255 255 255 / 7%);
@@ -284,52 +283,26 @@ background: #111520;
     align-items: center;
     margin-bottom: 7px;
 }
-#DT-CD {
-    display: flex;
-    gap: 10px;
-}
-#nota {
+#novo-aviso{
+    width: 120px;
+    height: 36px;
     background: #0c1018;
-    width: 70px;
-    height: 37px;
-    border: 1px solid #3d4d61;
-    border-radius: 7px;
-    text-align: center;
     color: #e4e9f4;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    transition: all 0.8s ;
+    transform: scale(1.00);
 }
-
-/* Card após salvar */
-.card-enviado {
-    background: #0b0f18;
-    transition: 0.4s;
-}
-
-/* Esconde o arquivo */
-.oculto {
-    display: none;
-}
-
-/* Botão salvar */
-.botao-salvar {
-    background: hsl(210,82%,58%);
+#novo-aviso:hover {
+    width: 120px;
+    height: 36px;
+    background: #161d2a;
     color: #e4e9f4;
+    padding: 10px;
+    border-radius: 8px;
     border: none;
-    border-radius: 7px;
-    padding: 10px 20px;
     cursor: pointer;
-    margin-top: 10px;
-}
-
-/* Botão voltar */
-.botao-voltar {
-    background: rgb(236, 60, 60);
-    color: white;
-    border: none;
-    border-radius: 7px;
-    padding: 10px 20px;
-    cursor: pointer;
-    margin-top: 10px;
-    margin-left: 10px;
-
-    display: none;
+    transition: all 0.8s ;
+    transform: scale(1.05);
 }

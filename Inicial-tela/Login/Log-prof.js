@@ -1,3 +1,9 @@
+window.Aluno = function () {
+    window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+};
+window.Cadastrar = function () {
+    window.location.href = "/Inicial-tela/Cadastro/Cad.html";
+}
 
 function toggleCoor() {
     const box = document.getElementById("Coor-box");
@@ -64,17 +70,7 @@ function Formulario (event){
         // Salva no localStorage
         localStorage.setItem("iniciaisUsuario", iniciais);
         localStorage.setItem("nomeUsuario", nomeUsuario);
-        //Login com Supabase
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: senha,
-        });
-
-        if (error) {
-            alert("Erro: " + error.message);
-            return;
-        }
-
+        
         alert("Bem-vindo!");
         window.location.href = "/Professor/Index.html";
 

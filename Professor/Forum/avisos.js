@@ -7,12 +7,13 @@ function VisaoGeral(){
 function Biblioteca(){
     window.location.href = "/Professor/Biblioteca/Bib.html";
 }
+function Avaliacoes(){  
+    window.location.href = "/Professor/Avaliacoes/ava.html";
+}
 function Grupos(){
     window.location.href = "/Professor/Grupos/grp.html";
 }
-function Forum(){
-    window.location.href = "/Professor/Forum/Avisos.html";
-}
+
 document.addEventListener('DOMContentLoaded', function() {
     let nomeCurso = document.getElementById("NomeUC").querySelector("h5");
 
