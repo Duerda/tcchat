@@ -25,3 +25,5 @@ const db = getFirestore(app)
 export {app, firebaseConfig, db}
 
 //https://firebase.google.com/docs/web/setup?hl=pt-br
+
+//teste
