@@ -82,8 +82,8 @@ function Formulario(event) {
 
     // REDIRECIONAMENTO
     if (tipo === "professor") {
-        window.location.href = "../../Professor/index.html";
+        window.location.href = "/Professor/index.html";
     } else {
-        window.location.href = "../../Aluno/Turma.html";
+        window.location.href = "/Aluno/Turma.html";
     }
 }
