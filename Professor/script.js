@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
     spanIniciais.textContent = nomeUsuario || ""; // Define o texto ou vazio
 });
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMCon tentLoaded', function() {
     let nomeCurso = document.getElementById("NomeUC").querySelector("h5");
 
     let codigoSalvo = localStorage.getItem("codigoCurso");

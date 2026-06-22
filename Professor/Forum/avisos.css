@@ -1,3 +1,25 @@
+:root {
+    --cor-fundo-principal: #080b12;
+    --cor-fundo-secundario: #0c1018;
+    --cor-fundo-hover: #161d2a;
+    --cor-fundo-card: #111520;
+
+    --cor-branco: #fff;
+    --cor-texto: #e4e9f4;
+    --cor-texto-secundario: #7a8699;
+    --cor-texto-fraco: #3d4d61;
+
+    --cor-vermelho: rgb(236, 60, 60);
+    --cor-vermelho-transparente: hsl(0deg 82% 58% / 16%);
+
+    --cor-verde: #34d399;
+    --cor-verde-transparente: rgb(52 211 153 / 12%);
+
+    --cor-azul: #0062ff;
+
+    --cor-borda: rgb(255 255 255 / 7%);
+}
+
 #Geral {
     display: flex;
 }
@@ -15,7 +37,7 @@ body {
     top: 0px;
     width: 229px;
     height: 915px;
-    background-color: #0c1018;
+    background-color: var(--cor-fundo-secundario);
     position: sticky;
     top: 0;
 }
@@ -26,7 +48,7 @@ body {
     padding-bottom: 18px;
     padding-left: 16px;
     padding-right:16px ;    
-    border-bottom: 1px solid rgb(255 255 255 / 7%);
+    border-bottom: 1px solid var(--cor-borda);
     margin-bottom: 8px;
 }
 #lateral-superior div {
@@ -35,23 +57,23 @@ body {
 }
 h2 {
     font-size: 32px;
-    color: #fff;
+    color: var(--cor-branco)        ;
     margin-left: 8px;
 }
 #lateral-superior div h2 {
     font-size: 32px;
-    color: #fff;
+    color: var(--cor-branco);
 }
 #lateral-superior div span {
     font-size: 32px;
-    color: rgb(236, 60, 60);
+    color: var(--cor-vermelho);
 }
 #lateral-superior div h2 {
     margin-bottom: 5px;
 }
 .lateral-inferior {
     padding: 7px;
-    border-top: 1px solid rgb(255 255 255 / 7%);
+    border-top: 1px solid var(--cor-borda);
 }
 #VGABF {
     padding-top: 2px;
@@ -63,7 +85,7 @@ h2 {
 #painel {
     font-weight: 700;
     font-size: 14px;
-    color: #3d4d61;
+    color: var(--cor-texto-fraco);
     margin-bottom: 4px;
     letter-spacing: 0.5px;
     border-radius: 10px;
@@ -83,11 +105,11 @@ h2 {
 .VGABF div button {
     width: 220px;
     height: 36px;
-    color: #7a8699;
+    color: var(--cor-texto-secundario);
     padding: 10px;
     border-radius: 8px;
     border: none;
-    background: linear-gradient(to right, hsl(0deg 82% 58% / 16%) 50%, #0c1018 50%);
+    background: linear-gradient(to right, var(--cor-vermelho-transparente) 50%, var(--cor-fundo-secundario)  50%);
     background-size: 201% 100%;
     background-position: right;
     background-repeat: no-repeat;
@@ -95,7 +117,7 @@ h2 {
 }
 .VGABF div button:hover {
     background-position: left;
-    border:1px solid rgb(236, 60, 60);
+    border:1px solid var(--cor-vermelho);
     color: white;
     cursor: pointer;
     transform: scale(1.02);
@@ -118,7 +140,7 @@ h2 {
     width: 40px;
     height: 40px;
     border-radius: 100%;
-    background-color: #0062ff;
+    background-color: var(--cor-azul);
     margin-right: 8px;
 }
 #foto p {
@@ -129,12 +151,12 @@ h2 {
 #Logo-de-professor {
     display: inline-flex;
     font-size: 12px;
-    color: #fff;
+    color: var(--cor-branco);
     margin-left: 8px;
     align-items: center;
     margin-top: 3px;
-    background-color: hsl(0deg 82% 58% / 16%);
-    color: rgb(236, 60, 60);
+    background-color: var(--cor-vermelho-transparente);
+    color: var(--cor-vermelho);
     letter-spacing: 0.7px;
     text-align: center;
     border-radius: 10px;
@@ -147,11 +169,11 @@ h2 {
 #configuracao {
     width: 220px;
     height: 36px;
-    color: #7a8699;
+    color: var(--cor-texto-secundario);
     padding: 10px;
     border-radius: 8px;
     border: none;
-    background: linear-gradient(to right, hsl(0deg 82% 58% / 16%) 50%, #0c1018 50%);
+    background: linear-gradient(to right, var(--cor-vermelho-transparente) 50%, var(--cor-fundo-secundario)  50%);
     background-size: 201% 100%;
     background-position: right;
     background-repeat: no-repeat;
@@ -160,7 +182,7 @@ h2 {
 #configuracao:hover {
     background-position: left;
     color: white;
-    border:1px solid rgb(236, 60, 60);
+    border:1px solid var(--cor-vermelho);
     cursor: pointer;
     transform: scale(1.02);
     transition: all 0.5s;
@@ -169,16 +191,16 @@ h2 {
     margin-top: 31px;
     margin-bottom: 0px; 
     margin-left: 30px;
-    color: #e4e9f4;
+    color: var(--cor-texto);
 }
 #voltar:hover {
-    color: red;
+    color: var(--cor-vermelho-claro);
     cursor: pointer;
 }   
 #Forum {
-background: hsl(0deg 82% 58% / 16%);
+background: var(--cor-vermelho-transparente);
     color: white;
-    border:1px solid rgb(236, 60, 60);
+    border:1px solid var(--cor-vermelho);
     cursor: pointer;
     transform: scale(1.02);
     transition: all 0.5s;
@@ -190,33 +212,33 @@ background: hsl(0deg 82% 58% / 16%);
 /* Aqui é a outra parte no caso o conteúdo do site */
 #conteudo {
     flex: 1;
-    background-color: #080b12 ;
+    background-color: var(--cor-fundo-principal);
     padding: 20px;
     padding-top: 18px;
     padding-left: 40px;
 }
 #conteudo-superior p {
-    color: #7a8699;
+    color: var(--cor-texto-secundario);
     margin-top: 7px;
 }
 h1 {
-    color:rgb(236, 60, 60);
+    color:var(--cor-vermelho);
         margin-top: 7px;
         margin-bottom: 5px;
 }
 
 #EnCad {
-    background-color: #0c1018;
+    background-color: var(--cor-fundo-secundario);
     border-radius: 8px;
     display: flex;
     padding: 3px;
     margin-bottom: 20px;
     width: 350px;
-    border: 1px solid rgb(255 255 255 / 7%);
+    border: 1px solid var(--cor-borda);
 }
 .Estado {
-    background: rgb(52 211 153 / 12%);
-    color: #34d399;
+    background: var(--cor-verde-transparente);
+    color: var(--cor-verde);
     padding: 8px;
     border-radius: 20px;
     text-align: center;
@@ -225,8 +247,8 @@ h1 {
 #Entrar {   
     width: 176px;
     height: 36px;
-    background: #161d2a;
-    color: #e4e9f4;
+    background: var(--cor-fundo-secundario);
+    color: var(--cor-texto);
     padding: 10px;
     border-radius: 8px;
     border: none;
@@ -235,8 +257,8 @@ h1 {
 #Cadastrar {
     width: 176px;
     height: 36px;
-    background: #0c1018;
-    color: #e4e9f4;
+    background: var(--cor-fundo-hover);
+    color: var(--cor-texto);
     padding: 10px;
     border-radius: 8px;
     border: none;
@@ -248,8 +270,8 @@ h1 {
 #Cadastrar:hover {
     width: 176px;
     height: 36px;
-    background: #161d2a;
-    color: #e4e9f4;
+    background: var(--cor-fundo-secundario);
+    color: var(--cor-texto);
     padding: 10px;
     border-radius: 8px;
     border: none;
@@ -261,8 +283,8 @@ h1 {
 }
 
 .Cards {
-background: #111520;
-    border: 1px solid rgb(255 255 255 / 7%);
+background: var(--cor-fundo-secundario);
+    border: 1px solid var(--cor-borda);
     border-radius: 13px;
     padding: 17px;
     margin-bottom: 9px;
@@ -276,8 +298,8 @@ background: #111520;
 
 .Forum {
     padding: 13px;
-    background-color: #161d2a;
-    border: 1px solid rgb(255 255 255 / 7%);
+    background-color: var(--cor-fundo-secundario);
+    border: 1px solid var(--cor-borda);
     border-radius: 7px;
     display: flex;
     align-items: center;
@@ -286,8 +308,8 @@ background: #111520;
 #novo-aviso{
     width: 120px;
     height: 36px;
-    background: #0c1018;
-    color: #e4e9f4;
+    background: var(--cor-fundo-secundario);
+    color: var(--cor-texto);
     padding: 10px;
     border-radius: 8px;
     border: none;
@@ -297,8 +319,8 @@ background: #111520;
 #novo-aviso:hover {
     width: 120px;
     height: 36px;
-    background: #161d2a;
-    color: #e4e9f4;
+    background: var(--cor-fundo-secundario);
+    color: var(--cor-texto) ;
     padding: 10px;
     border-radius: 8px;
     border: none;
