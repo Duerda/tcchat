@@ -1,160 +1,101 @@
-function Voltar(){
-    window.location.href = "/Inicial-tela/Cadastro/Cad.html";
-}
-function VisaoGeral(){
-    window.location.href = "/Professor/Index.html";
-}
-function Avaliacoes(){  
-    window.location.href = "/Professor/Avaliacoes/ava.html";
-}
-function Grupos(){
-    window.location.href = "/Professor/Grupos/grp.html";
-}
-function Forum(){
-    window.location.href = "/Professor/Forum/Avisos.html";
-}
-document.addEventListener('DOMContentLoaded', function() {
-    const spanIniciais = document.getElementById("foto").querySelector("span"); // Seleciona o span dentro de #foto
-    const iniciaisSalvas = localStorage.getItem("iniciaisUsuario");
-    spanIniciais.textContent = iniciaisSalvas || ""; // Define o texto ou vazio
-});
-document.addEventListener('DOMContentLoaded', function() {
-    const spanIniciais = document.getElementById("NomeUC").querySelector("h4"); // Seleciona o span dentro de #foto
-    const nomeUsuario = localStorage.getItem("nomeUsuario");
-    spanIniciais.textContent = nomeUsuario || ""; // Define o texto ou vazio
+import { auth, db } from "../../firebaseConfig.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { collection, addDoc, query, where, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+// Funções de Navegação
+window.Voltar = () => auth.signOut().then(() => window.location.href = "/Inicial-tela/Login/Log-aluno.html");
+window.VisaoGeral = () => window.location.href = "/Professor/Index.html";
+window.Avaliacoes = () => window.location.href = "/Professor/Avaliacoes/ava.html";
+window.Grupos = () => window.location.href = "/Professor/Grupos/grp.html";
+window.Forum = () => window.location.href = "/Professor/Forum/Avisos.html";
+window.Biblioteca = () => window.location.href = "/Professor/Biblioteca/Bib.html";
+
+let usuarioAtual = null;
+
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        usuarioAtual = user;
+        carregarDadosPerfil(user.uid);
+        escutarBiblioteca();
+    } else {
+        window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+    }
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-    let nomeCurso = document.getElementById("NomeUC").querySelector("h5");
-
-    let codigoSalvo = localStorage.getItem("codigoCurso");
-
-    let cursos = {
-        "TMA": "Técnico em Meio Ambiente",
-        "DS": "Desenvolvimento de Sistemas",
-        "ADM": "Administração",
-        "SRC": "Secretariado",
-        "TDS": "Técnico de Design de Interiores"
-    };
-    nomeCurso.textContent = cursos[codigoSalvo] || "";
-});
-
-const botaoLink = document.getElementById("Link");
-const areaLinks = document.getElementById("links");
-
-botaoLink.addEventListener("click", criarNovoLink);
-
-function criarNovoLink(){
-
-    // Perguntas
-    let nome = prompt("Digite o nome do link:");
-
-    if(!nome || nome.trim() === ""){
-        alert("Nome inválido.");
-        return;
-    }
-
-    let imagem = prompt("Cole a URL da imagem do ícone:");
-
-    if(!imagem || imagem.trim() === ""){
-        alert("Imagem inválida.");
-        return;
-    }
-
-    let endereco = prompt("Digite o link do site:");
-
-    if(!endereco || endereco.trim() === ""){
-        alert("Link inválido.");
-        return;
-    }
-
-    // Cria a div principal do card
-    const novoLink = document.createElement("div");
-    novoLink.classList.add("card-link");
-
-    novoLink.innerHTML = `
-        <div class="icone-box">
-            <img src="${imagem}" width="24">
-        </div>
-
-        <a href="${endereco}" target="_blank" class="nome-link">
-            ${nome}
-        </a>
-
-        <p class="excluir">X</p>
-    `;
-
-    // Botão de excluir
-    const botaoExcluir = novoLink.querySelector(".excluir");
-
-    botaoExcluir.addEventListener("click", function(){
-
-        let confirmar = confirm(
-            "Tem certeza que deseja excluir esse link?"
-        );
-
-        if(confirmar){
-            novoLink.remove();
+function carregarDadosPerfil(uid) {
+    const q = query(collection(db, "usuarios"), where("uid", "==", uid));
+    onSnapshot(q, (snapshot) => {
+        if (!snapshot.empty) {
+            const data = snapshot.docs[0].data();
+            document.querySelector("#foto span").textContent = data.iniciais || "";
+            document.querySelector("#NomeUC h4").textContent = data.nome || "";
+            document.querySelector("#NomeUC h5").textContent = data.curso || "Coordenador/Professor";
         }
-
     });
-
-    // Adiciona embaixo dos outros
-    areaLinks.appendChild(novoLink);
 }
 
-
-
-
-const botaoArquivo = document.getElementById("ArquivoModelo");
+const areaLinks = document.getElementById("links");
 const areaArquivos = document.getElementById("arquivos");
 
-botaoArquivo.addEventListener("click", criarNovoArquivo);
+document.getElementById("Link").addEventListener("click", async () => {
+    let nome = prompt("Digite o nome do link:");
+    let imagem = prompt("Cole a URL da imagem do ícone:");
+    let endereco = prompt("Digite o link do site:");
 
-function criarNovoArquivo() {
-
-    let nome = prompt("Digite o nome do arquivo:");
-
-    if (!nome || nome.trim() === "") {
-        alert("Nome inválido.");
-        return;
+    if (nome && imagem && endereco) {
+        try {
+            await addDoc(collection(db, "biblioteca"), {
+                nome, url: endereco, icone: imagem, tipo: "link", enviadoPor: usuarioAtual.uid
+            });
+        } catch (error) { console.error(error); }
     }
+});
 
-    const input = document.createElement("input");
-    input.type = "file";
+document.getElementById("ArquivoModelo").addEventListener("click", async () => {
+    let nome = prompt("Digite o nome do arquivo:");
+    let url = prompt("Cole a URL do arquivo (Ex: Google Drive/OneDrive):");
 
-    input.onchange = function() {
+    if (nome && url) {
+        try {
+            await addDoc(collection(db, "biblioteca"), {
+                nome, url, tipo: "arquivo", enviadoPor: usuarioAtual.uid
+            });
+        } catch (error) { console.error(error); }
+    }
+});
 
-        const arquivo = input.files[0];
+function escutarBiblioteca() {
+    onSnapshot(collection(db, "biblioteca"), (snapshot) => {
+        areaLinks.innerHTML = "";
+        areaArquivos.innerHTML = "";
 
-        if (!arquivo) {
-            alert("Arquivo inválido.");
-            return;
-        }
-
-        const urlArquivo = URL.createObjectURL(arquivo);
-
-        const novoArquivo = document.createElement("div");
-        novoArquivo.classList.add("card-arquivo");
-
-        novoArquivo.innerHTML = `
-            <a href="${urlArquivo}" target="_blank" class="nome-arquivo">
-                ${nome}
-            </a>
-
-            <p class="excluir">X</p>
-        `;
-
-        const botaoExcluir = novoArquivo.querySelector(".excluir");
-
-        botaoExcluir.addEventListener("click", function() {
-            if (confirm("Tem certeza que deseja excluir esse arquivo?")) {
-                novoArquivo.remove();
+        snapshot.forEach((docSnap) => {
+            const item = docSnap.data();
+            const id = docSnap.id;
+            const card = document.createElement("div");
+            
+            if (item.tipo === "link") {
+                card.className = "card-link";
+                card.innerHTML = `
+                    <div class="icone-box"><img src="${item.icone}" width="24"></div>
+                    <a href="${item.url}" target="_blank" class="nome-link">${item.nome}</a>
+                    <p class="excluir" data-id="${id}">X</p>
+                `;
+                areaLinks.appendChild(card);
+            } else {
+                card.className = "card-arquivo";
+                card.innerHTML = `
+                    <a href="${item.url}" target="_blank" class="nome-arquivo">${item.nome}</a>
+                    <p class="excluir" data-id="${id}">X</p>
+                `;
+                areaArquivos.appendChild(card);
             }
+
+            card.querySelector(".excluir").onclick = async () => {
+                if (confirm("Excluir este item?")) {
+                    await deleteDoc(doc(db, "biblioteca", id));
+                }
+            };
         });
-
-        areaArquivos.appendChild(novoArquivo);
-    };
-
-    input.click();
+    });
 }
