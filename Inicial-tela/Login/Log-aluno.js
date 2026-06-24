@@ -1,65 +1,57 @@
+import { auth, db } from "../../firebaseConfig.js";
+import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
 window.Professor = function () {
     window.location.href = "/Inicial-tela/Login/Log-Prof.html";
 };
+
 window.Cadastrar = function () {
     window.location.href = "/Inicial-tela/Cadastro/Cad.html";
-}
+};
 
- function Formulario (event){
-    //Impede que seja enviado por padrão do formulario, ou seja, impede que a página seja recarregada
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', Formulario);
+    }
+});
+
+async function Formulario(event) {
     event.preventDefault();
 
-    //Obtém os valores do email e senha dos campos de entrada
-    const email = document.querySelector("#Email input").value;
-    const senha = document.querySelector("#Senha input").value;
+    const emailInput = document.querySelector("#Email input");
+    const senhaInput = document.querySelector("#Senha input");
+    const email = emailInput.value.trim();
+    const senha = senhaInput.value;
 
-    //Validação do email e senha, aqui é onde você pode adicionar a lógica para verificar as credenciais do usuário
     if (email === "" || senha === "") {
         alert("Por favor, preencha todos os campos.");
-        if (email === "") {
-            document.querySelector("#Email input").style.border = "1px solid red";
-        } else {
-            document.querySelector("#Email input").style.border = "none";
-        }
-        if (senha === "") {
-            document.querySelector("#Senha input").style.border = "1px solid red";
-        } else {
-            document.querySelector("#Senha input").style.border = "none";
-        }
         return;
     }
 
-    if (senha.length < 8) {
-        alert("A senha deve conter no mínimo 8 caracteres.");
-        document.querySelector("#Senha input").style.border = "1px solid red"; 
-        return;
-    } else {
-        document.querySelector("#Senha input").style.border = "none";
-    }
-
-    if (email.includes("@aluno.cps.sp.gov.br")) {
-        // Extrai o prefixo (antes do @)
-        const prefixo = email.split("@")[0];
-        const partes = prefixo.split(".");
-
-        // Verifica se tem exatamente duas partes (Nome.Sobrenome)
-        let iniciais = "";
-
-        if (partes.length === 2) {
-            iniciais = partes[0].charAt(0).toUpperCase() + partes[1].charAt(0).toUpperCase();
-        }
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, senha);
+        const user = userCredential.user;
+        const userDoc = await getDoc(doc(db, "usuarios", user.uid));
         
-        // Pega o nome do usuário (antes do primeiro ponto)
-        let nomeUsuario = "";
-        if (prefixo.includes(".")) {
-            nomeUsuario = prefixo.split(".")[0];
+        if (userDoc.exists()) {
+            const userData = userDoc.data();
+            localStorage.setItem("iniciaisUsuario", userData.iniciais);
+            localStorage.setItem("tipoUsuario", userData.tipo);
+            
+            alert("Login realizado com sucesso!");
+
+            if (userData.tipo === "professor") {
+                window.location.href = "/Professor/Index.html";
+            } else {
+                window.location.href = "/Aluno/Turma.html";
+            }
         } else {
-            nomeUsuario = prefixo;
+            alert("Dados do usuário não encontrados.");
         }
-        
-        // Salva no localStorage
-        localStorage.setItem("iniciaisUsuario", iniciais);
-        localStorage.setItem("nomeUsuario", nomeUsuario);
 
+    } catch (error) {
+        alert("Erro ao entrar: Verifique suas credenciais.");
     }
 }

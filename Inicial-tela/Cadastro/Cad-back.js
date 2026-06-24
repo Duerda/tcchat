@@ -1,3 +1,7 @@
+import { auth, db } from "../../firebaseConfig.js";
+import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { doc, setDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
 window.Entraralpr = function () {
     window.location.href = "/Professor/index.html";
 };
@@ -8,7 +12,7 @@ window.Logar = function () {
 
 document.getElementById("formCadastro").addEventListener("submit", Formulario);
 
-function Formulario(event) {
+async function Formulario(event) {
     event.preventDefault();
 
     const nome = document.getElementById("Nome-da-pessoa").value.trim();
@@ -17,40 +21,22 @@ function Formulario(event) {
     const repitaSenha = document.getElementById("RepitaSenha").value;
     const codigo = document.getElementById("Codigo-da-pessoa").value.trim();
 
-    // Remove bordas vermelhas anteriores
-    document.getElementById("Senha").style.border = "";
-    document.getElementById("RepitaSenha").style.border = "";
-    document.getElementById("Codigo-da-pessoa").style.border = "";
-
-    // VALIDAÇÃO DOS CAMPOS
     if (!nome || !email || !senha || !repitaSenha || !codigo) {
         alert("Preencha todos os campos!");
         return;
     }
 
-    // VALIDAÇÃO DE SENHA
     if (senha !== repitaSenha) {
         alert("As senhas não coincidem!");
-
-        document.getElementById("Senha").style.border = "1px solid red";
-        document.getElementById("RepitaSenha").style.border = "1px solid red";
-        document.getElementById("RepitaSenha").focus();
-
         return;
     }
 
     if (senha.length < 8) {
         alert("A senha deve ter no mínimo 8 caracteres!");
-
-        document.getElementById("Senha").style.border = "1px solid red";
-        document.getElementById("Senha").focus();
-
         return;
     }
 
-    // DEFINIR TIPO DE USUÁRIO
     let tipo = "";
-
     if (email.endsWith("@aluno.cps.sp.gov.br")) {
         tipo = "aluno";
     } else if (email.endsWith("@professor.cps.sp.gov.br")) {
@@ -60,30 +46,35 @@ function Formulario(event) {
         return;
     }
 
-    // GERAR INICIAIS
-    const prefixo = email.split("@")[0];
-    const partes = prefixo.split(".");
-    let iniciais = "";
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+        const user = userCredential.user;
 
-    if (partes.length >= 2) {
-        iniciais =
-            partes[0].charAt(0).toUpperCase() +
-            partes[1].charAt(0).toUpperCase();
-    } else {
-        iniciais = prefixo.substring(0, 2).toUpperCase();
-    }
+        const prefixo = email.split("@")[0];
+        const partes = prefixo.split(".");
+        let iniciais = partes.length >= 2 
+            ? partes[0].charAt(0).toUpperCase() + partes[1].charAt(0).toUpperCase()
+            : prefixo.substring(0, 2).toUpperCase();
 
-    // SALVAR NO LOCAL STORAGE
-    localStorage.setItem("iniciaisUsuario", iniciais);
-    localStorage.setItem("tipoUsuario", tipo);
-    localStorage.setItem("codigoCurso", codigo);
+        await setDoc(doc(db, "usuarios", user.uid), {
+            uid: user.uid,
+            nome: nome,
+            email: email,
+            tipo: tipo,
+            codigoCurso: codigo,
+            iniciais: iniciais,
+            dataCadastro: new Date().toISOString()
+        });
 
-    alert("Cadastro realizado com sucesso!");
+        alert("Cadastro realizado com sucesso!");
 
-    // REDIRECIONAMENTO
-    if (tipo === "professor") {
-        window.location.href = "/Professor/Index.html";
-    } else {
-        window.location.href = "/Aluno/Turma.html";
+        if (tipo === "professor") {
+            window.location.href = "/Professor/Index.html";
+        } else {
+            window.location.href = "/Aluno/Turma.html";
+        }
+
+    } catch (error) {
+        alert("Erro ao cadastrar: " + error.message);
     }
 }
