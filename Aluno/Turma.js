@@ -2,92 +2,110 @@ import { auth, db } from "../firebaseConfig.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, getDoc, onSnapshot, collection, query, where, limit } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-// Monitorar o estado de autenticação
+// 1. MONITORAMENTO DE SESSÃO E ACESSIBILIDADE
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        carregarDadosUsuario(user.uid);
+        console.log("Usuário autenticado:", user.uid);
+        carregarEstadoSistema(user.uid);
     } else {
         window.location.href = "/Inicial-tela/Login/Log-aluno.html";
     }
 });
 
-async function carregarDadosUsuario(uid) {
+async function carregarEstadoSistema(uid) {
     const userDocRef = doc(db, "usuarios", uid);
     
+    // Escutar mudanças no perfil (incluindo acessibilidade e cargo)
     onSnapshot(userDocRef, (docSnap) => {
         if (docSnap.exists()) {
             const userData = docSnap.data();
-            atualizarInterface(userData);
-            carregarGruposDaSala(userData.codigoSala, userData.uid);
+            aplicarAcessibilidade(userData);
+            atualizarInterfacePerfil(userData);
+            carregarGruposDinamicamente(userData.codigoSala, userData.uid);
         }
     });
 }
 
-function atualizarInterface(data) {
-    const nomeElement = document.querySelector(".Usuario h4");
-    const cursoElement = document.querySelector(".Usuario h5");
-    const fotoElement = document.querySelector("#foto span");
-    const tituloTurma = document.querySelector(".T1 h3 span");
-
-    if (nomeElement) nomeElement.textContent = data.nome || "Usuário";
-    if (cursoElement) cursoElement.textContent = data.curso || "Sem Curso";
-    if (fotoElement) fotoElement.textContent = data.iniciais || "??";
-    if (tituloTurma && data.codigoSala) tituloTurma.textContent = data.codigoSala;
+// 2. ACESSIBILIDADE (Conforme documento do TCC)
+function aplicarAcessibilidade(data) {
+    // Aplicar tema, fonte e tamanho de letra salvos no Firebase
+    if (data.configuracoes) {
+        const { tema, tamanhoFonte, tipoFonte } = data.configuracoes;
+        if (tema) document.body.className = tema; // 'dark-mode' ou 'light-mode'
+        if (tamanhoFonte) document.documentElement.style.fontSize = tamanhoFonte + 'px';
+        if (tipoFonte) document.body.style.fontFamily = tipoFonte;
+    }
 }
 
-async function carregarGruposDaSala(codigoSala, userUid) {
+// 3. INTERFACE DE PERFIL
+function atualizarInterfacePerfil(data) {
+    const nomeEl = document.querySelector(".Usuario h4");
+    const cursoEl = document.querySelector(".Usuario h5");
+    const iniciaisEl = document.querySelector("#foto span");
+    const tituloTurmaEl = document.querySelector(".T1 h3 span");
+
+    if (nomeEl) nomeEl.textContent = data.nome || "Usuário";
+    if (cursoEl) cursoEl.textContent = data.curso || "Sem Curso";
+    if (iniciaisEl) iniciaisEl.textContent = data.iniciais || "??";
+    if (tituloTurmaEl && data.codigoSala) tituloTurmaEl.textContent = data.codigoSala;
+}
+
+// 4. GESTÃO DE GRUPOS EM TEMPO REAL
+async function carregarGruposDinamicamente(codigoSala, userUid) {
     const gruposContainer = document.querySelector(".Grupos");
     if (!gruposContainer) return;
 
-    // Limpar grupos estáticos do HTML
-    gruposContainer.innerHTML = "";
-
-    // Buscar até 6 grupos que pertencem a esta sala
+    // Query otimizada: Busca grupos da sala específica
     const q = query(
         collection(db, "grupos"), 
         where("codigoSala", "==", codigoSala),
         limit(6)
     );
 
-    onSnapshot(q, (querySnapshot) => {
-        gruposContainer.innerHTML = ""; // Limpa para atualizar em tempo real
+    // OUVINTE EM TEMPO REAL: Se o líder mudar algo, todos veem na hora
+    onSnapshot(q, (snapshot) => {
+        gruposContainer.innerHTML = ""; 
 
-        if (querySnapshot.empty) {
-            gruposContainer.innerHTML = "<p style='color: white;'>Nenhum grupo cadastrado nesta sala ainda.</p>";
+        if (snapshot.empty) {
+            gruposContainer.innerHTML = "<p style='color: white; padding: 20px;'>Aguardando a criação dos grupos pelo coordenador...</p>";
             return;
         }
 
-        querySnapshot.forEach((doc) => {
+        snapshot.forEach((doc) => {
             const grupo = doc.data();
-            const eMeuGrupo = grupo.membros && grupo.membros.includes(userUid);
+            const eMembro = grupo.membros && grupo.membros.includes(userUid);
+            const eLider = grupo.liderUid === userUid;
             
-            const grupoHTML = `
-                <div class="GT">
+            const grupoCard = `
+                <div class="GT" style="border: ${eMembro ? '2px solid #34d399' : 'none'}">
                     <div class="sub-title-gp">
-                        <div style="display: flex; gap: 20px; align-items: center;">
-                            <h3>Grupo ${grupo.numero || ""}</h3> 
-                            ${eMeuGrupo ? '<h1 style="font-size: small; background: #34d399; padding: 2px 8px; border-radius: 4px; color: white;">Meu Grupo</h1>' : ''}
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h3>Grupo ${grupo.numero}</h3>
+                            ${eLider ? '<span style="background: #fbbf24; color: #000; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold;">LÍDER</span>' : ''}
                         </div>
-                        <h2>${grupo.nomeProjeto || "Sem Título"}</h2>
-                        <p>${grupo.descricao || "Sem descrição"}</p>
+                        <h2>${grupo.nomeProjeto || "Projeto em Definição"}</h2>
+                        <p>${grupo.descricao || "Sem descrição disponível."}</p>
                         
                         <div class="GT-int">
                             <hr class="linha-decorativa">
-                            ${(grupo.nomesMembros || []).map(membro => `
-                                <div style="display: flex; align-items: center; margin-bottom: 5px;">
-                                    <div class="BL" style="background-color: #3D4D61;"></div>
-                                    <p>${membro}</p>
-                                </div>
-                            `).join('')}
+                            <div class="lista-membros">
+                                ${(grupo.nomesMembros || []).map(nome => `
+                                    <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                                        <div class="BL" style="background-color: ${eMembro ? '#34d399' : '#3D4D61'};"></div>
+                                        <p style="font-size: 13px;">${nome}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
                         </div>
                     </div>
                 </div>
             `;
-            gruposContainer.innerHTML += grupoHTML;
+            gruposContainer.innerHTML += grupoCard;
         });
     });
 }
 
+// 5. NAVEGAÇÃO E LOGOUT
 window.Voltar = () => {
     auth.signOut().then(() => {
         window.location.href = "/Inicial-tela/Login/Log-aluno.html";
