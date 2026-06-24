@@ -55,8 +55,12 @@ async function Formulario(event) {
             alert("Login realizado com sucesso!");
 
             // Redirecionamento baseado no tipo
-            if (userData.tipo === "professor") {
+            if (userData.tipo === "coordenador") {
+                window.location.href = "/Professor/Index.html"; // Redireciona para Professor se Coordenador não existir
+            } else if (userData.tipo === "professor") {
                 window.location.href = "/Professor/Index.html";
+            } else if (userData.tipo === "aluno") {
+                window.location.href = "/Aluno/Turma.html";
             } else {
                 window.location.href = "/Aluno/Turma.html";
             }

@@ -69,8 +69,10 @@ async function Formulario(event) {
         tipo = "aluno";
     } else if (email.endsWith("@professor.cps.sp.gov.br")) {
         tipo = "professor";
+    } else if (email.endsWith("@cps.sp.gov.br")) {
+        tipo = "coordenador";
     } else {
-        alert("Use um e-mail institucional válido!");
+        alert("Use um e-mail institucional válido (@aluno.cps.sp.gov.br, @professor.cps.sp.gov.br ou @cps.sp.gov.br)");
         return;
     }
 
@@ -85,21 +87,29 @@ async function Formulario(event) {
             : prefixo.substring(0, 2).toUpperCase();
 
         // 5. Salvar no Firestore com os dados do curso validados
-        await setDoc(doc(db, "usuarios", user.uid), {
+        const userData = {
             uid: user.uid,
             nome: nome,
             email: email,
             tipo: tipo,
-            codigoSala: codigoDigitado, // Ex: DS-3
-            curso: nomeCursoCompleto,   // Ex: Desenvolvimento de Sistemas
-            ano: ano + "º Ano",         // Ex: 3º Ano
             iniciais: iniciais,
             dataCadastro: new Date().toISOString()
-        });
+        };
 
-        alert(`Bem-vindo ao ${nomeCursoCompleto} - ${ano}º Ano!`);
+        // Adicionar campos específicos para alunos
+        if (tipo === "aluno") {
+            userData.codigoSala = codigoDigitado;
+            userData.curso = nomeCursoCompleto;
+            userData.ano = ano + "º Ano";
+        }
 
-        if (tipo === "professor") {
+        await setDoc(doc(db, "usuarios", user.uid), userData);
+
+        alert(`Cadastro realizado com sucesso como ${tipo}!`);
+
+        if (tipo === "coordenador") {
+            window.location.href = "/Professor/Index.html"; // Redireciona para Professor se Coordenador não existir
+        } else if (tipo === "professor") {
             window.location.href = "/Professor/Index.html";
         } else {
             window.location.href = "/Aluno/Turma.html";

@@ -404,3 +404,27 @@ background: hsl(0deg 82% 58% / 16%);
     font-family: "Roboto", sans-serif;
     font-weight: 600;
 }
+
+/* Efeito Shimmer (Skeleton Loading) */
+.skeleton {
+    background: linear-gradient(90deg, #161d2a 25%, #1e2a3a 50%, #161d2a 75%) !important;
+    background-size: 200% 100% !important;
+    animation: shimmer 1.5s infinite linear !important;
+    border-radius: 4px !important;
+    display: inline-block !important;
+    min-height: 1em !important;
+    color: transparent !important;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+#foto.skeleton {
+    border-radius: 50% !important;
+}

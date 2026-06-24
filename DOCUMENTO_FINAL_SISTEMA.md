@@ -41,3 +41,35 @@ Para fins de documentação futura ou migração para servidores próprios, o ar
 
 ---
 **Desenvolvido por Manus AI para o Projeto TCChat.**
+
+## 5. Regras de Segurança Recomendadas (Firestore)
+
+Para garantir a integridade dos dados com a nova hierarquia de três níveis, as seguintes regras devem ser aplicadas no Console do Firebase:
+
+```javascript
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Regras para a coleção de usuários
+    match /usuarios/{userId} {
+      // Coordenador: Acesso total
+      allow read, write: if get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.tipo == 'coordenador';
+      
+      // Professor: Lê todos da sala, escreve apenas no próprio perfil
+      allow read: if get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.tipo == 'professor';
+      allow write: if request.auth.uid == userId;
+      
+      // Aluno: Lê e escreve apenas no próprio documento
+      allow read, write: if request.auth.uid == userId;
+    }
+    
+    // Regras para a coleção de grupos
+    match /grupos/{grupoId} {
+      allow read: if request.auth != null;
+      // Apenas Coordenadores e o Líder do Grupo podem editar o grupo
+      allow write: if get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.tipo == 'coordenador' ||
+                   resource.data.liderUid == request.auth.uid;
+    }
+  }
+}
+```
