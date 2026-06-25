@@ -51,10 +51,7 @@ function atualizarInterfacePerfil(data) {
     const fotoContainer = document.querySelector("#foto");
     const tituloTurmaEl = document.querySelector(".T1 h3 span");
 
-    // Remover skeleton ao receber dados
-    [nomeEl, cursoEl, iniciaisEl, fotoContainer].forEach(el => {
-        if (el) el.classList.remove("skeleton");
-    });
+
 
     if (nomeEl) nomeEl.textContent = data.nome || "Usuário";
     if (cursoEl) cursoEl.textContent = data.curso || "Sem Curso";
@@ -62,17 +59,7 @@ function atualizarInterfacePerfil(data) {
     if (tituloTurmaEl && data.codigoSala) tituloTurmaEl.textContent = data.codigoSala;
 }
 
-// Aplicar skeleton inicialmente
-document.addEventListener("DOMContentLoaded", () => {
-    const nomeEl = document.querySelector(".Usuario h4");
-    const cursoEl = document.querySelector(".Usuario h5");
-    const iniciaisEl = document.querySelector("#foto span");
-    const fotoContainer = document.querySelector("#foto");
 
-    [nomeEl, cursoEl, iniciaisEl, fotoContainer].forEach(el => {
-        if (el) el.classList.add("skeleton");
-    });
-});
 
 // 4. GESTÃO DE GRUPOS EM TEMPO REAL
 async function carregarGruposDinamicamente(codigoSala, userUid) {
