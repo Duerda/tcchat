@@ -1,6 +1,6 @@
 import { auth, db } from "../../firebaseConfig.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { collection, addDoc, query, where, onSnapshot, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { collection, addDoc, query, where, onSnapshot, orderBy, serverTimestamp, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 // Funções de Navegação
 window.Voltar = () => auth.signOut().then(() => window.location.href = "/Inicial-tela/Login/Log-aluno.html");
@@ -12,11 +12,18 @@ window.Forum = () => window.location.href = "/Professor/Forum/Avisos.html";
 
 let usuarioAtual = null;
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
     if (user) {
-        usuarioAtual = user;
-        carregarDadosPerfil(user.uid);
-        escutarAvisos();
+        const userDoc = await getDoc(doc(db, "usuarios", user.uid));
+        const tipo = userDoc.exists() ? userDoc.data().tipo : null;
+        if (tipo === "professor" || tipo === "coordenador") {
+            usuarioAtual = user;
+            carregarDadosPerfil(user.uid);
+            escutarAvisos();
+        } else {
+            alert("Acesso negado: Esta área é exclusiva para professores e coordenadores.");
+            window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+        }
     } else {
         window.location.href = "/Inicial-tela/Login/Log-aluno.html";
     }
@@ -63,8 +70,10 @@ btnNovoAviso.addEventListener("click", async () => {
 });
 
 function escutarAvisos() {
+    const codigoSala = localStorage.getItem("codigoSala") || "geral";
     const q = query(
         collection(db, "avisos"), 
+        where("codigoSala", "==", codigoSala),
         orderBy("data", "desc")
     );
 

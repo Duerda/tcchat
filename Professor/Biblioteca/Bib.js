@@ -1,6 +1,6 @@
 import { auth, db } from "../../firebaseConfig.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { collection, addDoc, query, where, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { collection, addDoc, query, where, onSnapshot, deleteDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 // Funções de Navegação
 window.Voltar = () => auth.signOut().then(() => window.location.href = "/Inicial-tela/Login/Log-aluno.html");
@@ -12,11 +12,18 @@ window.Biblioteca = () => window.location.href = "/Professor/Biblioteca/Bib.html
 
 let usuarioAtual = null;
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
     if (user) {
-        usuarioAtual = user;
-        carregarDadosPerfil(user.uid);
-        escutarBiblioteca();
+        const userDoc = await getDoc(doc(db, "usuarios", user.uid));
+        if (userDoc.exists()) {
+            usuarioAtual = user;
+            const data = userDoc.data();
+            localStorage.setItem("codigoSala", data.codigoSala || "geral");
+            carregarDadosPerfil(user.uid);
+            escutarBiblioteca();
+        } else {
+            window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+        }
     } else {
         window.location.href = "/Inicial-tela/Login/Log-aluno.html";
     }
@@ -45,7 +52,8 @@ document.getElementById("Link").addEventListener("click", async () => {
     if (nome && imagem && endereco) {
         try {
             await addDoc(collection(db, "biblioteca"), {
-                nome, url: endereco, icone: imagem, tipo: "link", enviadoPor: usuarioAtual.uid
+                nome, url: endereco, icone: imagem, tipo: "link", enviadoPor: usuarioAtual.uid,
+                codigoSala: localStorage.getItem("codigoSala") || "geral"
             });
         } catch (error) { console.error(error); }
     }
@@ -58,14 +66,18 @@ document.getElementById("ArquivoModelo").addEventListener("click", async () => {
     if (nome && url) {
         try {
             await addDoc(collection(db, "biblioteca"), {
-                nome, url, tipo: "arquivo", enviadoPor: usuarioAtual.uid
+                nome, url, tipo: "arquivo", enviadoPor: usuarioAtual.uid,
+                codigoSala: localStorage.getItem("codigoSala") || "geral"
             });
         } catch (error) { console.error(error); }
     }
 });
 
 function escutarBiblioteca() {
-    onSnapshot(collection(db, "biblioteca"), (snapshot) => {
+    const codigoSala = localStorage.getItem("codigoSala") || "geral";
+    const q = query(collection(db, "biblioteca"), where("codigoSala", "==", codigoSala));
+    
+    onSnapshot(q, (snapshot) => {
         areaLinks.innerHTML = "";
         areaArquivos.innerHTML = "";
 

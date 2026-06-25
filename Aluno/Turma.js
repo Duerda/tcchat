@@ -3,10 +3,16 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/f
 import { doc, getDoc, onSnapshot, collection, query, where, limit } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 // 1. MONITORAMENTO DE SESSÃO E ACESSIBILIDADE
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
     if (user) {
-        console.log("Usuário autenticado:", user.uid);
-        carregarEstadoSistema(user.uid);
+        const userDoc = await getDoc(doc(db, "usuarios", user.uid));
+        if (userDoc.exists() && userDoc.data().tipo === "aluno") {
+            console.log("Aluno autenticado:", user.uid);
+            carregarEstadoSistema(user.uid);
+        } else {
+            alert("Acesso negado: Esta área é exclusiva para alunos.");
+            window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+        }
     } else {
         window.location.href = "/Inicial-tela/Login/Log-aluno.html";
     }
