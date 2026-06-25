@@ -44,6 +44,15 @@ function carregarDadosPerfil(uid) {
 const areaLinks = document.getElementById("links");
 const areaArquivos = document.getElementById("arquivos");
 
+// Função para salvar log de acessos em Cookies (simulado via localStorage para persistência de arquivos)
+function salvarLogBiblioteca(acao, nomeItem) {
+    let historico = JSON.parse(localStorage.getItem("historico_biblioteca") || "[]");
+    historico.unshift({ acao, nomeItem, data: new Date().toLocaleString() });
+    if (historico.length > 5) historico.pop(); // Mantém apenas os 5 últimos
+    localStorage.setItem("historico_biblioteca", JSON.stringify(historico));
+    console.log("Cookie de histórico atualizado:", historico);
+}
+
 document.getElementById("Link").addEventListener("click", async () => {
     let nome = prompt("Digite o nome do link:");
     let imagem = prompt("Cole a URL da imagem do ícone:");
@@ -55,6 +64,7 @@ document.getElementById("Link").addEventListener("click", async () => {
                 nome, url: endereco, icone: imagem, tipo: "link", enviadoPor: usuarioAtual.uid,
                 codigoSala: localStorage.getItem("codigoSala") || "geral"
             });
+            salvarLogBiblioteca("Adicionou Link", nome);
         } catch (error) { console.error(error); }
     }
 });
@@ -69,6 +79,7 @@ document.getElementById("ArquivoModelo").addEventListener("click", async () => {
                 nome, url, tipo: "arquivo", enviadoPor: usuarioAtual.uid,
                 codigoSala: localStorage.getItem("codigoSala") || "geral"
             });
+            salvarLogBiblioteca("Adicionou Arquivo", nome);
         } catch (error) { console.error(error); }
     }
 });
