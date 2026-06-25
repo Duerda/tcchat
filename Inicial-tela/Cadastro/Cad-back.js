@@ -96,11 +96,15 @@ async function Formulario(event) {
             dataCadastro: new Date().toISOString()
         };
 
-        // Adicionar campos específicos para alunos
+        // O código da sala é importante para todos os usuários (vincula o professor/coordenador à sua turma)
+        userData.codigoSala = codigoDigitado;
+        
         if (tipo === "aluno") {
-            userData.codigoSala = codigoDigitado;
             userData.curso = nomeCursoCompleto;
             userData.ano = ano + "º Ano";
+        } else {
+            // Para professores e coordenadores, buscamos o curso pela sigla do código
+            userData.curso = nomeCursoCompleto;
         }
 
         await setDoc(doc(db, "usuarios", user.uid), userData);

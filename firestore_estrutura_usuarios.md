@@ -72,3 +72,19 @@ Links e arquivos de inspiração ou modelos de documentos.
 | `url` | string | Link para o arquivo/site |
 | `categoria` | string | Ex: "Modelo ABNT", "Exemplo TCC" |
 | `enviadoPor` | string | UID do autor |
+
+---
+
+## 6. Coleção: `duvidas`
+Perguntas enviadas por alunos para professores e coordenadores.
+
+| Campo | Tipo | Descrição |
+| :--- | :--- | :--- |
+| `pergunta` | string | Texto da dúvida |
+| `alunoUid` | string | UID do aluno que perguntou |
+| `alunoNome` | string | Nome do aluno |
+| `resposta` | string | Texto da resposta (se houver) |
+| `respondidoPor` | string | Nome do professor/coordenador |
+| `status` | string | `pendente` ou `respondido` |
+| `codigoSala` | string | Sala do aluno |
+| `data` | timestamp | Data da criação |

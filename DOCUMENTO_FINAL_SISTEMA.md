@@ -2,18 +2,20 @@
 
 Este documento resume todas as implementações realizadas para transformar o TCChat em um sistema de gestão de projetos profissional, acessível e sincronizado em tempo real.
 
-## 1. Arquitetura de Dados (Firebase)
+## 1. Arquitetura de Dados (NoSQL Firestore)
 
-O sistema utiliza o **Firebase** como motor principal, eliminando a necessidade de servidores caros e complexos.
+O sistema utiliza o **Firebase Firestore**, um banco de dados NoSQL de alto desempenho, garantindo que 100% das funcionalidades sejam dinâmicas e sincronizadas em tempo real.
 
-### Autenticação (Firebase Auth)
-- **Login/Cadastro**: Realizado via E-mail Institucional (@aluno.cps.sp.gov.br ou @professor.cps.sp.gov.br).
-- **UID Único**: Cada usuário possui um identificador único que vincula seus dados e arquivos.
+### Estrutura NoSQL (Coleções)
+- **`usuarios`**: Perfil completo, cargo (Aluno/Professor/Coordenador) e preferências.
+- **`grupos`**: Gestão de membros, líderes e progresso dos projetos de TCC.
+- **`avisos`**: Fórum de comunicados filtrado por sala.
+- **`biblioteca`**: Repositório de links e modelos de arquivos.
+- **`avaliacoes`**: Notas e feedbacks pedagógicos.
+- **`duvidas`**: Canal de comunicação direta entre alunos e professores.
 
-### Banco de Dados (Firestore)
-- **Coleção `usuarios`**: Armazena perfil, cargo (Aluno/Professor), código da sala e **preferências de acessibilidade**.
-- **Coleção `grupos`**: Armazena os dados dos 6 grupos de cada sala, incluindo líder, membros e progresso.
-- **Sincronização Real-time**: O sistema usa `onSnapshot`, o que significa que qualquer alteração no banco reflete no site instantaneamente sem recarregar a página.
+### Sincronização em Tempo Real
+Utilizamos o listener `onSnapshot`, permitindo que qualquer alteração feita por um professor ou aluno seja propagada para todos os outros membros da mesma sala instantaneamente, sem necessidade de atualizar a página.
 
 ## 2. Funcionalidades Implementadas
 
