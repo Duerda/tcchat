@@ -8,6 +8,7 @@ window.VisaoGeral = () => window.location.href = "/Professor/Index.html";
 window.Avaliacoes = () => window.location.href = "/Professor/Avaliacoes/ava.html";
 window.Grupos = () => window.location.href = "/Professor/Grupos/grp.html";
 window.Forum = () => window.location.href = "/Professor/Forum/Avisos.html";
+window.Configuracoes = () => alert("Configurações de acessibilidade em breve!");
 window.Biblioteca = () => window.location.href = "/Professor/Biblioteca/Bib.html";
 
 let usuarioAtual = null;

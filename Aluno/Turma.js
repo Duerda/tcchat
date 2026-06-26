@@ -120,5 +120,12 @@ async function carregarGruposDinamicamente(codigoSala, userUid) {
 window.Voltar = () => {
     auth.signOut().then(() => {
         window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+    }).catch(err => {
+        console.error("Erro ao sair:", err);
+        window.location.href = "/Inicial-tela/Login/Log-aluno.html";
     });
 };
+
+// Funções para os botões do menu (caso existam no HTML do aluno)
+window.VisaoGeral = () => window.location.href = "/Aluno/Turma.html";
+window.Configuracoes = () => alert("Configurações em breve!");
