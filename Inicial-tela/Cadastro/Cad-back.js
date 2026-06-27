@@ -1,3 +1,19 @@
+import { auth, db } from "../../backend/firebaseConfig.js";
+import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { doc, setDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+// Lista oficial de cursos e seus códigos
+const cursosValidos = {
+    "DS": "Desenvolvimento de Sistemas",
+    "DI": "Design de Interiores",
+    "HOSP": "Hospedagem",
+    "IPI": "Informática para Internet - MTEC",
+    "MA": "Meio Ambiente",
+    "SEC": "Secretariado",
+    "ADM": "Administração",
+    "INF": "Informática - MTEC"
+};
+
 window.Entraralpr = function () {
     window.location.href = "/Professor/index.html";
 };
@@ -8,82 +24,103 @@ window.Logar = function () {
 
 document.getElementById("formCadastro").addEventListener("submit", Formulario);
 
-function Formulario(event) {
+async function Formulario(event) {
     event.preventDefault();
 
     const nome = document.getElementById("Nome-da-pessoa").value.trim();
     const email = document.getElementById("Email").value.trim();
     const senha = document.getElementById("Senha").value;
     const repitaSenha = document.getElementById("RepitaSenha").value;
-    const codigo = document.getElementById("Codigo-da-pessoa").value.trim();
+    const codigoDigitado = document.getElementById("Codigo-da-pessoa").value.trim().toUpperCase();
 
-    // Remove bordas vermelhas anteriores
-    document.getElementById("Senha").style.border = "";
-    document.getElementById("RepitaSenha").style.border = "";
-    document.getElementById("Codigo-da-pessoa").style.border = "";
-
-    // VALIDAÇÃO DOS CAMPOS
-    if (!nome || !email || !senha || !repitaSenha || !codigo) {
+    // 1. Validação de campos vazios
+    if (!nome || !email || !senha || !repitaSenha || !codigoDigitado) {
         alert("Preencha todos os campos!");
         return;
     }
 
-    // VALIDAÇÃO DE SENHA
+    // 2. Validação do Código (Ex: DS-1, ADM-3)
+    const partesCodigo = codigoDigitado.split("-");
+    const sigla = partesCodigo[0];
+    const ano = partesCodigo[1];
+
+    if (!cursosValidos[sigla] || !["1", "2", "3"].includes(ano)) {
+        alert("Código de sala inválido! Use o formato SIGLA-ANO (Ex: DS-1, ADM-3).\n\nSiglas válidas: DS, DI, HOSP, IPI, MA, SEC, ADM, INF");
+        document.getElementById("Codigo-da-pessoa").style.border = "1px solid red";
+        return;
+    }
+
+    const nomeCursoCompleto = cursosValidos[sigla];
+
+    // 3. Validação de senha
     if (senha !== repitaSenha) {
         alert("As senhas não coincidem!");
-
-        document.getElementById("Senha").style.border = "1px solid red";
-        document.getElementById("RepitaSenha").style.border = "1px solid red";
-        document.getElementById("RepitaSenha").focus();
-
         return;
     }
 
     if (senha.length < 8) {
         alert("A senha deve ter no mínimo 8 caracteres!");
-
-        document.getElementById("Senha").style.border = "1px solid red";
-        document.getElementById("Senha").focus();
-
         return;
     }
 
-    // DEFINIR TIPO DE USUÁRIO
+    // 4. Definir tipo de usuário
     let tipo = "";
-
     if (email.endsWith("@aluno.cps.sp.gov.br")) {
         tipo = "aluno";
     } else if (email.endsWith("@professor.cps.sp.gov.br")) {
         tipo = "professor";
+    } else if (email.endsWith("@cps.sp.gov.br")) {
+        tipo = "coordenador";
     } else {
-        alert("Use um e-mail institucional válido!");
+        alert("Use um e-mail institucional válido (@aluno.cps.sp.gov.br, @professor.cps.sp.gov.br ou @cps.sp.gov.br)");
         return;
     }
 
-    // GERAR INICIAIS
-    const prefixo = email.split("@")[0];
-    const partes = prefixo.split(".");
-    let iniciais = "";
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+        const user = userCredential.user;
 
-    if (partes.length >= 2) {
-        iniciais =
-            partes[0].charAt(0).toUpperCase() +
-            partes[1].charAt(0).toUpperCase();
-    } else {
-        iniciais = prefixo.substring(0, 2).toUpperCase();
-    }
+        const prefixo = email.split("@")[0];
+        const partes = prefixo.split(".");
+        let iniciais = partes.length >= 2 
+            ? partes[0].charAt(0).toUpperCase() + partes[1].charAt(0).toUpperCase()
+            : prefixo.substring(0, 2).toUpperCase();
 
-    // SALVAR NO LOCAL STORAGE
-    localStorage.setItem("iniciaisUsuario", iniciais);
-    localStorage.setItem("tipoUsuario", tipo);
-    localStorage.setItem("codigoCurso", codigo);
+        // 5. Salvar no Firestore com os dados do curso validados
+        const userData = {
+            uid: user.uid,
+            nome: nome,
+            email: email,
+            tipo: tipo,
+            iniciais: iniciais,
+            dataCadastro: new Date().toISOString()
+        };
 
-    alert("Cadastro realizado com sucesso!");
+        // O código da sala é importante para todos os usuários (vincula o professor/coordenador à sua turma)
+        userData.codigoSala = codigoDigitado;
+        
+        if (tipo === "aluno") {
+            userData.curso = nomeCursoCompleto;
+            userData.ano = ano + "º Ano";
+        } else {
+            // Para professores e coordenadores, buscamos o curso pela sigla do código
+            userData.curso = nomeCursoCompleto;
+        }
 
-    // REDIRECIONAMENTO
-    if (tipo === "professor") {
-        window.location.href = "/Professor/Index.html";
-    } else {
-        window.location.href = "/Aluno/Turma.html";
+        await setDoc(doc(db, "usuarios", user.uid), userData);
+
+        alert(`Cadastro realizado com sucesso como ${tipo}!`);
+
+        if (tipo === "coordenador") {
+            window.location.href = "/Professor/Index.html"; // Redireciona para Professor se Coordenador não existir
+        } else if (tipo === "professor") {
+            window.location.href = "/Professor/Index.html";
+        } else {
+            window.location.href = "/Aluno/Turma.html";
+        }
+
+    } catch (error) {
+        console.error("Erro:", error);
+        alert("Erro ao cadastrar: " + error.message);
     }
 }

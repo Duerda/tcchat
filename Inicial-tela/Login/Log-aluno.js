@@ -1,65 +1,81 @@
+import { auth, db } from "../../backend/firebaseConfig.js";
+import { signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
 window.Professor = function () {
     window.location.href = "/Inicial-tela/Login/Log-Prof.html";
 };
+
 window.Cadastrar = function () {
     window.location.href = "/Inicial-tela/Cadastro/Cad.html";
-}
+};
 
- function Formulario (event){
-    //Impede que seja enviado por padrão do formulario, ou seja, impede que a página seja recarregada
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', Formulario);
+    }
+});
+
+async function Formulario(event) {
     event.preventDefault();
 
-    //Obtém os valores do email e senha dos campos de entrada
-    const email = document.querySelector("#Email input").value;
-    const senha = document.querySelector("#Senha input").value;
+    const emailInput = document.querySelector("#Email input");
+    const senhaInput = document.querySelector("#Senha input");
+    
+    if (!emailInput || !senhaInput) {
+        console.error("Campos de entrada não encontrados!");
+        return;
+    }
 
-    //Validação do email e senha, aqui é onde você pode adicionar a lógica para verificar as credenciais do usuário
+    const email = emailInput.value.trim();
+    const senha = senhaInput.value;
+
     if (email === "" || senha === "") {
         alert("Por favor, preencha todos os campos.");
-        if (email === "") {
-            document.querySelector("#Email input").style.border = "1px solid red";
-        } else {
-            document.querySelector("#Email input").style.border = "none";
-        }
-        if (senha === "") {
-            document.querySelector("#Senha input").style.border = "1px solid red";
-        } else {
-            document.querySelector("#Senha input").style.border = "none";
-        }
         return;
     }
 
-    if (senha.length < 8) {
-        alert("A senha deve conter no mínimo 8 caracteres.");
-        document.querySelector("#Senha input").style.border = "1px solid red"; 
-        return;
-    } else {
-        document.querySelector("#Senha input").style.border = "none";
-    }
+    try {
+        // 1. Tentar autenticar no Firebase Auth
+        const userCredential = await signInWithEmailAndPassword(auth, email, senha);
+        const user = userCredential.user;
 
-    if (email.includes("@aluno.cps.sp.gov.br")) {
-        // Extrai o prefixo (antes do @)
-        const prefixo = email.split("@")[0];
-        const partes = prefixo.split(".");
-
-        // Verifica se tem exatamente duas partes (Nome.Sobrenome)
-        let iniciais = "";
-
-        if (partes.length === 2) {
-            iniciais = partes[0].charAt(0).toUpperCase() + partes[1].charAt(0).toUpperCase();
-        }
+        // 2. VERIFICAÇÃO CRUCIAL: Checar se o usuário existe no Banco de Dados (Firestore)
+        const userDoc = await getDoc(doc(db, "usuarios", user.uid));
         
-        // Pega o nome do usuário (antes do primeiro ponto)
-        let nomeUsuario = "";
-        if (prefixo.includes(".")) {
-            nomeUsuario = prefixo.split(".")[0];
+        if (userDoc.exists()) {
+            const userData = userDoc.data();
+            
+            // Salvar dados básicos para uso rápido (opcional, já que usamos Firestore)
+            localStorage.setItem("iniciaisUsuario", userData.iniciais);
+            localStorage.setItem("tipoUsuario", userData.tipo);
+            localStorage.setItem("codigoSala", userData.codigoSala);
+            
+            alert("Login realizado com sucesso!");
+
+            // Redirecionamento baseado no tipo
+            if (userData.tipo === "coordenador") {
+                window.location.href = "/Professor/Index.html"; // Redireciona para Professor se Coordenador não existir
+            } else if (userData.tipo === "professor") {
+                window.location.href = "/Professor/Index.html";
+            } else if (userData.tipo === "aluno") {
+                window.location.href = "/Aluno/Turma.html";
+            } else {
+                window.location.href = "/Aluno/Turma.html";
+            }
         } else {
-            nomeUsuario = prefixo;
+            // SE NÃO EXISTE NO BANCO, DESLOGA E NEGA O ACESSO
+            await signOut(auth);
+            alert("ERRO: Esta conta não possui um perfil registrado no sistema. Entre em contato com o administrador.");
         }
-        
-        // Salva no localStorage
-        localStorage.setItem("iniciaisUsuario", iniciais);
-        localStorage.setItem("nomeUsuario", nomeUsuario);
 
+    } catch (error) {
+        console.error("Erro de login:", error.code);
+        if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password" || error.code === "auth/invalid-credential") {
+            alert("E-mail ou senha incorretos.");
+        } else {
+            alert("Erro ao entrar: " + error.message);
+        }
     }
 }

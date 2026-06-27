@@ -1,6 +1,16 @@
-function Voltar(){
-    window.location.href = "/Inicial-tela/Cadastro/Cad.html";
-}
+// Função de Logout Real
+window.Voltar = () => {
+    // Tenta usar o auth se estiver disponível, senão apenas redireciona
+    try {
+        localStorage.clear();
+        window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+    } catch (e) {
+        window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+    }
+};
+
+window.VisaoGeral = () => window.location.href = "/Professor/Index.html";
+window.Configuracoes = () => alert("Configurações de acessibilidade em breve!");
 function Avaliacoes(){
     window.location.href = "/Professor/Avaliacoes/ava.html";
 }

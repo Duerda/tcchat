@@ -1,113 +1,103 @@
-function Voltar(){
-    window.location.href = "/Inicial-tela/Cadastro/Cad.html";
-}
-function VisaoGeral(){
-    window.location.href = "/Professor/Index.html";
-}
-function Biblioteca(){
-    window.location.href = "/Professor/Biblioteca/Bib.html";
-}
-function Avaliacoes(){  
-    window.location.href = "/Professor/Avaliacoes/ava.html";
-}
-function Grupos(){
-    window.location.href = "/Professor/Grupos/grp.html";
-}
+import { auth, db } from "../../backend/firebaseConfig.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { collection, addDoc, query, where, onSnapshot, orderBy, serverTimestamp, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-document.addEventListener('DOMContentLoaded', function() {
-    let nomeCurso = document.getElementById("NomeUC").querySelector("h5");
+// Funções de Navegação
+window.Voltar = () => auth.signOut().then(() => window.location.href = "/Inicial-tela/Login/Log-aluno.html");
+window.VisaoGeral = () => window.location.href = "/Professor/Index.html";
+window.Biblioteca = () => window.location.href = "/Professor/Biblioteca/Bib.html";
+window.Avaliacoes = () => window.location.href = "/Professor/Avaliacoes/ava.html";
+window.Grupos = () => window.location.href = "/Professor/Grupos/grp.html";
+window.Forum = () => window.location.href = "/Professor/Forum/Avisos.html";
+window.Configuracoes = () => alert("Configurações de acessibilidade em breve!");
 
-    let codigoSalvo = localStorage.getItem("codigoCurso");
+let usuarioAtual = null;
 
-    let cursos = {
-        "TMA": "Técnico em Meio Ambiente",
-        "DS": "Desenvolvimento de Sistemas",
-        "ADM": "Administração",
-        "SRC": "Secretariado",
-        "TDS": "Técnico de Design de Interiores"
-    };
-    nomeCurso.textContent = cursos[codigoSalvo] || "";
-});
-document.addEventListener('DOMContentLoaded', function() {
-    const spanIniciais = document.getElementById("foto").querySelector("span"); // Seleciona o span dentro de #foto
-    const iniciaisSalvas = localStorage.getItem("iniciaisUsuario");
-    spanIniciais.textContent = iniciaisSalvas || ""; // Define o texto ou vazio
-});
-document.addEventListener('DOMContentLoaded', function() {
-    const spanIniciais = document.getElementById("NomeUC").querySelector("h4"); // Seleciona o span dentro de #foto
-    const nomeUsuario = localStorage.getItem("nomeUsuario");
-    spanIniciais.textContent = nomeUsuario || ""; // Define o texto ou vazio
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        const userDoc = await getDoc(doc(db, "usuarios", user.uid));
+        const tipo = userDoc.exists() ? userDoc.data().tipo : null;
+        if (tipo === "professor" || tipo === "coordenador") {
+            usuarioAtual = user;
+            carregarDadosPerfil(user.uid);
+            escutarAvisos();
+        } else {
+            alert("Acesso negado: Esta área é exclusiva para professores e coordenadores.");
+            window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+        }
+    } else {
+        window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+    }
 });
 
-const botaoSalvar = document.getElementById("salvar-avaliacao");
-const botaoVoltar = document.getElementById("voltar-avaliacao");
-
-const card = document.getElementById("card-avaliacao");
-const arquivo = document.getElementById("arquivo-avaliacao");
-
-const nota = document.getElementById("nota");
-const feedback = document.getElementById("feedback");
-
-botaoSalvar.addEventListener("click", salvarAvaliacao);
-
-function salvarAvaliacao() {
-
-    let confirmar = confirm("Deseja salvar a avaliação?");
-
-    if (!confirmar) {
-        return;
-    }
-
-    // Verifica se os campos foram preenchidos
-    if (nota.value === "" || feedback.value === "") {
-        alert("Preencha a nota e o feedback.");
-        return;
-    }
-
-    // Esconde o arquivo
-    arquivo.classList.add("oculto");
-
-    // Escurece o card
-    card.classList.add("card-enviado");
-
-    // Bloqueia edição
-    nota.disabled = true;
-    feedback.disabled = true;
-
-    // Esconde botão salvar
-    botaoSalvar.style.display = "none";
-
-    // Mostra botão voltar
-    botaoVoltar.style.display = "inline-block";
-
-    // Salva localmente
-    localStorage.setItem("notaSalva", nota.value);
-    localStorage.setItem("feedbackSalvo", feedback.value);
+function carregarDadosPerfil(uid) {
+    const userDocRef = collection(db, "usuarios");
+    const q = query(collection(db, "usuarios"), where("uid", "==", uid));
+    
+    onSnapshot(q, (snapshot) => {
+        if (!snapshot.empty) {
+            const data = snapshot.docs[0].data();
+            document.querySelector("#foto span").textContent = data.iniciais || "";
+            document.querySelector("#NomeUC h4").textContent = data.nome || "";
+            document.querySelector("#NomeUC h5").textContent = data.curso || "Coordenador/Professor";
+            localStorage.setItem("codigoSala", data.codigoSala || "geral");
+        }
+    });
 }
 
-botaoVoltar.addEventListener("click", voltarAvaliacao);
+// Lógica de Avisos
+const btnNovoAviso = document.getElementById("novo-aviso");
+const conteudoPrincipal = document.getElementById("conteudo");
 
-function voltarAvaliacao() {
+btnNovoAviso.addEventListener("click", async () => {
+    const titulo = prompt("Título do aviso:");
+    const texto = prompt("Conteúdo do aviso:");
 
-    let confirmar = confirm("Deseja voltar a avaliação?");
-
-    if (!confirmar) {
-        return;
+    if (titulo && texto) {
+        try {
+            await addDoc(collection(db, "avisos"), {
+                titulo: titulo,
+                conteudo: texto,
+                autor: document.querySelector("#NomeUC h4").textContent,
+                autorUid: usuarioAtual.uid,
+                data: serverTimestamp(),
+                codigoSala: localStorage.getItem("codigoSala") || "geral"
+            });
+            alert("Aviso publicado!");
+        } catch (error) {
+            console.error("Erro ao publicar:", error);
+        }
     }
+});
 
-    // Mostra arquivo novamente
-    arquivo.classList.remove("oculto");
+function escutarAvisos() {
+    const codigoSala = localStorage.getItem("codigoSala") || "geral";
+    const q = query(
+        collection(db, "avisos"), 
+        where("codigoSala", "==", codigoSala),
+        orderBy("data", "desc")
+    );
 
-    // Remove escurecimento
-    card.classList.remove("card-enviado");
+    onSnapshot(q, (snapshot) => {
+        // Remover avisos antigos (mantendo os botões superiores)
+        const avisosExistentes = document.querySelectorAll(".card-aviso");
+        avisosExistentes.forEach(a => a.remove());
 
-    // Libera edição
-    nota.disabled = false;
-    feedback.disabled = false;
-
-    // Mostra salvar
-    botaoSalvar.style.display = "inline-block";
-
-    // Esconde voltar
-    botaoVoltar.style.display = "none";
+        snapshot.forEach((doc) => {
+            const aviso = doc.data();
+            const card = document.createElement("div");
+            card.className = "card-aviso";
+            card.style.cssText = "background: #161d2a; padding: 20px; border-radius: 8px; margin-top: 20px; border: 1px solid #ffffff12;";
+            
+            card.innerHTML = `
+                <h3 style="color: #3c94ec; margin: 0;">${aviso.titulo}</h3>
+                <p style="color: #e4e9f4; margin: 10px 0;">${aviso.conteudo}</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                    <small style="color: #7a8699;">Postado por: ${aviso.autor}</small>
+                    <small style="color: #7a8699;">${aviso.data ? new Date(aviso.data.toDate()).toLocaleDateString() : 'Agora'}</small>
+                </div>
+            `;
+            conteudoPrincipal.appendChild(card);
+        });
+    });
 }
