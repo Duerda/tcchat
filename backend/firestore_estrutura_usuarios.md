@@ -1,90 +1,94 @@
 # Estrutura do Banco de Dados Firestore — TCChat
 
-Este documento descreve as coleções e a estrutura dos documentos esperados no Firebase Firestore para o funcionamento completo do sistema TCChat.
+Este documento descreve as coleções e a estrutura dos documentos no Firebase Firestore para o funcionamento completo do sistema TCChat.
+
+---
 
 ## 1. Coleção: `usuarios`
 Armazena as informações de perfil e permissões de todos os usuários.
 
 | Campo | Tipo | Descrição | Exemplo |
 | :--- | :--- | :--- | :--- |
-| `uid` | string | ID único gerado pelo Firebase Auth | `"u8X...1l2"` |
+| `uid` | string | ID único do Firebase Auth | `"u8X...1l2"` |
 | `nome` | string | Nome completo do usuário | `"Eduarda Silva"` |
-| `email` | string | E-mail institucional (@aluno.cps, @professor.cps, @cps) | `"eduarda@aluno.cps.sp.gov.br"` |
-| `tipo` | string | Nível de acesso: `aluno`, `professor` ou `coordenador` | `"aluno"` |
-| `iniciais` | string | Duas letras geradas a partir do e-mail | `"ES"` |
-| `dataCadastro` | string (ISO) | Data e hora do registro | `"2026-06-24T12:00:00Z"` |
-| `codigoSala` | string | (Apenas Alunos) Código da turma | `"DS-3"` |
-| `curso` | string | (Apenas Alunos) Nome do curso | `"Desenvolvimento de Sistemas"` |
-| `ano` | string | (Apenas Alunos) Ano letivo | `"3º Ano"` |
-| `configuracoes` | objeto | (Opcional) Preferências de acessibilidade | `{ tema: "dark-mode" }` |
+| `email` | string | E-mail institucional | `"eduarda@aluno.cps.sp.gov.br"` |
+| `tipo` | string | "aluno", "professor" ou "coordenador" | `"aluno"` |
+| `iniciais` | string | Duas letras geradas do e-mail | `"ES"` |
+| `codigoSala` | string | Código da turma vinculada | `"DS-3"` |
+| `curso` | string | Nome do curso | `"Desenvolvimento de Sistemas"` |
+| `ano` | string | Ano letivo (apenas alunos) | `"3º Ano"` |
+| `dataCadastro` | string ISO | Data e hora do cadastro | `"2026-06-24T12:00:00Z"` |
+| `configuracoes` | objeto | { tema, tamanhoFonte, tipoFonte } | `{ tema: "dark" }` |
 
 ---
 
 ## 2. Coleção: `grupos`
 Armazena os grupos de TCC criados em cada sala.
 
-| Campo | Tipo | Descrição |
-| :--- | :--- | :--- |
-| `id` | string | ID do documento |
-| `numero` | number | Número do grupo (Ex: 1, 2, 3) |
-| `nomeProjeto` | string | Título do TCC |
-| `descricao` | string | Breve resumo do projeto |
-| `codigoSala` | string | Vinculação com a turma (Ex: "DS-3") |
-| `liderUid` | string | UID do aluno líder do grupo |
-| `membros` | array (string) | Lista de UIDs dos alunos no grupo |
-| `nomesMembros` | array (string) | Lista de nomes dos alunos (para exibição rápida) |
+| Campo | Tipo | Descrição | Exemplo |
+| :--- | :--- | :--- | :--- |
+| `id` | string | ID do documento | `"grp_001"` |
+| `numero` | number | Número identificador do grupo | `1` |
+| `nomeProjeto` | string | Título do projeto de TCC | `"TCChat"` |
+| `descricao` | string | Resumo ou objetivo do projeto | `"Sistema de gestão..."` |
+| `codigoSala` | string | Código da turma vinculada | `"DS-3"` |
+| `liderUid` | string | UID do aluno líder do grupo | `"u8X...1l2"` |
+| `membros` | array (string) | Lista de UIDs dos alunos no grupo | `["uid1", "uid2"]` |
+| `nomesMembros` | array (string) | Lista de nomes dos alunos no grupo | `["Eduarda", "João"]` |
 
 ---
 
 ## 3. Coleção: `avisos`
-Mensagens e comunicados enviados por professores ou coordenadores.
+Comunicados postados por professores ou coordenadores.
 
-| Campo | Tipo | Descrição |
-| :--- | :--- | :--- |
-| `titulo` | string | Título do aviso |
-| `conteudo` | string | Texto da mensagem |
-| `autor` | string | Nome de quem postou |
-| `tipoAutor` | string | `professor` ou `coordenador` |
-| `data` | timestamp | Data da postagem |
-| `codigoSala` | string | Turma que receberá o aviso (ou "geral") |
-
----
-
-## 4. Coleção: `avaliacoes`
-Notas e feedbacks dos projetos.
-
-| Campo | Tipo | Descrição |
-| :--- | :--- | :--- |
-| `grupoId` | string | ID do grupo avaliado |
-| `professorUid` | string | UID do professor que avaliou |
-| `nota` | number | Valor da avaliação |
-| `feedback` | string | Comentários do professor |
-| `data` | timestamp | Data da avaliação |
+| Campo | Tipo | Descrição | Exemplo |
+| :--- | :--- | :--- | :--- |
+| `titulo` | string | Título da postagem | `"Entrega Fase 1"` |
+| `conteudo` | string | Texto completo da mensagem | `"Lembrem-se da data..."` |
+| `autor` | string | Nome de quem postou | `"Ricardo Santos"` |
+| `tipoAutor` | string | "professor" ou "coordenador" | `"professor"` |
+| `data` | timestamp | Data e hora da postagem | `June 26, 2026...` |
+| `codigoSala` | string | Turma destinatária do aviso | `"DS-3"` |
 
 ---
 
-## 5. Coleção: `biblioteca`
-Links e arquivos de inspiração ou modelos de documentos.
+## 4. Coleção: `biblioteca`
+Repositório de links e arquivos para consulta.
 
-| Campo | Tipo | Descrição |
-| :--- | :--- | :--- |
-| `nome` | string | Nome do recurso |
-| `url` | string | Link para o arquivo/site |
-| `categoria` | string | Ex: "Modelo ABNT", "Exemplo TCC" |
-| `enviadoPor` | string | UID do autor |
+| Campo | Tipo | Descrição | Exemplo |
+| :--- | :--- | :--- | :--- |
+| `nome` | string | Nome descritivo do recurso | `"Manual ABNT"` |
+| `url` | string | Link para o arquivo ou site | `"https://..."` |
+| `tipo` | string | "link" ou "arquivo" | `"arquivo"` |
+| `icone` | string | URL ou nome do ícone representativo | `"pdf-icon"` |
+| `codigoSala` | string | Turma vinculada ao recurso | `"DS-3"` |
+| `enviadoPor` | string | UID do autor da postagem | `"uid_coord_789"` |
+
+---
+
+## 5. Coleção: `avaliacoes`
+Registro de notas e feedbacks dados aos grupos.
+
+| Campo | Tipo | Descrição | Exemplo |
+| :--- | :--- | :--- | :--- |
+| `grupoId` | string | ID do grupo avaliado | `"grp_001"` |
+| `professorUid` | string | UID do professor que avaliou | `"uid_prof_456"` |
+| `nota` | number | Valor numérico da avaliação | `9.5` |
+| `feedback` | string | Comentários e observações | `"Ótimo trabalho!"` |
+| `data` | timestamp | Data da avaliação | `June 26, 2026...` |
 
 ---
 
 ## 6. Coleção: `duvidas`
-Perguntas enviadas por alunos para professores e coordenadores.
+Espaço para perguntas dos alunos e respostas dos docentes.
 
-| Campo | Tipo | Descrição |
-| :--- | :--- | :--- |
-| `pergunta` | string | Texto da dúvida |
-| `alunoUid` | string | UID do aluno que perguntou |
-| `alunoNome` | string | Nome do aluno |
-| `resposta` | string | Texto da resposta (se houver) |
-| `respondidoPor` | string | Nome do professor/coordenador |
-| `status` | string | `pendente` ou `respondido` |
-| `codigoSala` | string | Sala do aluno |
-| `data` | timestamp | Data da criação |
+| Campo | Tipo | Descrição | Exemplo |
+| :--- | :--- | :--- | :--- |
+| `pergunta` | string | Texto da dúvida do aluno | `"Como usar o Git?"` |
+| `alunoUid` | string | UID do aluno que perguntou | `"uid_aluno_123"` |
+| `alunoNome` | string | Nome do aluno que perguntou | `"Eduarda Silva"` |
+| `resposta` | string | Texto da resposta fornecida | `"Veja o tutorial..."` |
+| `respondidoPor` | string | Nome de quem respondeu | `"Ricardo Santos"` |
+| `status` | string | "pendente" ou "respondido" | `"respondido"` |
+| `codigoSala` | string | Sala do aluno | `"DS-3"` |
+| `data` | timestamp | Data de criação da dúvida | `June 26, 2026...` |
