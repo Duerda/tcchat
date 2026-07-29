@@ -1,9 +1,31 @@
+:root {
+    --cor-fundo-principal: #080b12;
+    --cor-fundo-secundario: #0c1018;
+    --cor-fundo-card: #111520;
+
+    --cor-branco: #fff;
+    --cor-texto: #e4e9f4;
+    --cor-texto-secundario: #7a8699;
+    --cor-texto-fraco: #3d4d61;
+
+    --cor-vermelho: rgb(236, 60, 60);
+    --cor-vermelho-transparente: hsl(0deg 82% 58% / 16%);
+
+    --cor-verde: #34d399;
+    --cor-verde-transparente: rgb(52 211 153 / 12%);
+
+    --cor-azul: #0062ff;
+
+    --cor-borda: rgb(255 255 255 / 7%);
+}
+
 #Geral {
     display: flex;
 }
+
 body {
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
 }
 
 #lateral {
@@ -11,53 +33,56 @@ body {
     padding-top: 18px;
     display: flex;
     flex-direction: column;
-    left: 0px;
-    top: 0px;
+    left: 0;
+    top: 0;
     width: 229px;
     height: 915px;
-    background-color: #0c1018;
+    background-color: var(--cor-fundo-secundario);
     position: sticky;
     top: 0;
 }
+
 #lateral-superior {
     width: 197px;
     height: 59px;
-    padding-top: 0px;
+    padding-top: 0;
     padding-bottom: 18px;
     padding-left: 16px;
-    padding-right:16px ;    
-    border-bottom: 1px solid rgb(255 255 255 / 7%);
+    padding-right: 16px;
+    border-bottom: 1px solid var(--cor-borda);
     margin-bottom: 8px;
 }
+
 #lateral-superior div {
     display: flex;
     align-items: center;
 }
+
 h2 {
     font-size: 32px;
-    color: #fff;
+    color: var(--cor-branco);
     margin-left: 8px;
 }
+
 #lateral-superior div h2 {
     font-size: 32px;
-    color: #fff;
-}
-#lateral-superior div span {
-    font-size: 32px;
-    color: rgb(236, 60, 60);
-}
-#lateral-superior div h2 {
+    color: var(--cor-branco);
     margin-bottom: 5px;
 }
+
+#lateral-superior div span {
+    font-size: 32px;
+    color: var(--cor-vermelho);
+}
+
 #Logo-de-professor {
     display: inline-flex;
     font-size: 12px;
-    color: #fff;
     margin-left: 8px;
     align-items: center;
     margin-top: 3px;
-    background-color: hsl(0deg 82% 58% / 16%);
-    color: rgb(236, 60, 60);
+    background-color: var(--cor-vermelho-transparente);
+    color: var(--cor-vermelho);
     letter-spacing: 0.7px;
     text-align: center;
     border-radius: 10px;
@@ -67,6 +92,7 @@ h2 {
     padding-left: 8px;
     width: 75px;
 }
+
 #VGABF {
     padding-top: 2px;
     padding-right: 8px;
@@ -74,81 +100,72 @@ h2 {
     padding-left: 8px;
     margin-bottom: 4px;
 }
+
 #painel {
     font-weight: 700;
     font-size: 14px;
-    color: #3d4d61;
+    color: var(--cor-texto-fraco);
     margin-bottom: 4px;
     letter-spacing: 0.5px;
     border-radius: 10px;
-
 }
+
 .VGABF {
-    padding-top: 0px;
+    padding-top: 0;
     padding-right: 8px;
-    padding-bottom: 0px;
+    padding-bottom: 0;
     padding-left: 16px;
 }
+
 .VGABF div {
     display: flex;
     align-items: center;
     margin-bottom: 4px;
 }
-.VGABF div button {
-    width: 220px;
-    height: 36px;
-    color: #7a8699;
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
-    background: linear-gradient(to right, hsl(0deg 82% 58% / 16%) 50%, #0c1018 50%);
-    background-size: 201% 100%;
-    background-position: right;
-    background-repeat: no-repeat;
-    transition: background-position 1s ease;
-}
-.VGABF div button:hover {
-    background-position: left;
-    border:1px solid rgb(236, 60, 60);
-    color: white;
-    cursor: pointer;
-    transform: scale(1.02);
-    transition: all 0.5s;
-}
-#sistema { 
-    margin: auto;
-    padding-top: 6px;
-}
+
+.VGABF div button,
 #configuracao {
     width: 220px;
     height: 36px;
-    color: #7a8699;
+    color: var(--cor-texto-secundario);
     padding: 10px;
     border-radius: 8px;
     border: none;
-    background: linear-gradient(to right, hsl(0deg 82% 58% / 16%) 50%, #0c1018 50%);
+    background: linear-gradient(
+        to right,
+        var(--cor-vermelho-transparente) 50%,
+        var(--cor-fundo-secundario) 50%
+    );
     background-size: 201% 100%;
     background-position: right;
     background-repeat: no-repeat;
     transition: background-position 1s ease;
 }
+
+.VGABF div button:hover,
 #configuracao:hover {
     background-position: left;
-    color: white;
-    border:1px solid rgb(236, 60, 60);
+    border: 1px solid var(--cor-vermelho);
+    color: var(--cor-branco);
     cursor: pointer;
     transform: scale(1.02);
     transition: all 0.5s;
 }
+
+#sistema {
+    margin: auto;
+    padding-top: 6px;
+}
+
 .lateral-inferior {
     padding: 7px;
-    border-top: 1px solid rgb(255 255 255 / 7%);
+    border-top: 1px solid var(--cor-borda);
 }
 
 .Usuario {
-    display: flex;      
-
+    display: flex;
 }
+
 #foto {
     display: flex;
     align-items: center;
@@ -158,57 +175,64 @@ h2 {
     width: 40px;
     height: 40px;
     border-radius: 100%;
-    background-color: #0062ff;
+    background-color: var(--cor-azul);
     margin-right: 8px;
 }
+
 #foto p {
-    color: white;
+    color: var(--cor-branco);
     font-size: 16px;
     font-weight: 700;
 }
-#bisao {
-background: hsl(0deg 82% 58% / 16%);
-    color: white;
-    border:1px solid rgb(236, 60, 60);
+
+#bisao,
+#turmas {
+    background: var(--cor-vermelho-transparente);
+    color: var(--cor-branco);
+    border: 1px solid var(--cor-vermelho);
     cursor: pointer;
     transform: scale(1.02);
     transition: all 0.5s;
 }
-#bisao:hover {
+
+#bisao:hover,
+#turmas:hover {
     cursor: unset;
 }
 
-/*Faz o conteudo ocupar o espaço restante da tela, e adiciona um fundo escuro*/
 #conteudo {
     flex: 1;
-    background-color: #080b12 ;
+    background-color: var(--cor-fundo-principal);
     padding: 20px;
     padding-top: 18px;
     padding-left: 40px;
 }
+
 #conteudo-superior p {
-    color: #7a8699;
+    color: var(--cor-texto-secundario);
     margin-top: 7px;
 }
+
 span {
-    color: white;
+    color: var(--cor-branco);
 }
+
 h1 {
-    color:rgb(236, 60, 60);
-        margin-top: 7px;
-        margin-bottom: 5px;
+    color: var(--cor-vermelho);
+    margin-top: 7px;
+    margin-bottom: 5px;
 }
+
 #Informacoes {
-    /*O grid seria uma forma de organizar os elementos em uma grade nesse caso tá para coluna, mas se eu coloca-se mais divs ele ficaria como uma especie de grade*/
     display: grid;
-    /*Isso aqui serve para deixar os grupos em uma linha reta e a cada 4 itens ele vai deixar a coluna naquele jeito o "0fr" aparentemente seria tipo o gap só que para o grid não entendi bem a função*/
     grid-template-columns: repeat(4, 0fr);
     gap: 10px;
     margin-bottom: 20px;
 }
+
 .Grupos {
-    background-color: #111520;
-    border: 1px solid #7a8699;
+    background-color: var(--cor-fundo-card);
+    border: 1px solid var(--cor-texto-secundario);
     border-radius: 7px;
     padding: 10px;
     margin-top: 3px;
@@ -216,80 +240,74 @@ h1 {
     min-height: 70px;
     width: 157px;
 }
-.Grupos h5 {
-    margin-top: 0px;
-    margin-right: 0px;
-    margin-left: 0px;
-    margin-bottom: 3px;
-    color: #3D4D61;
-    font-size: 13px;
 
+.Grupos h5 {
+    margin: 0 0 3px 0;
+    color: var(--cor-texto-fraco);
+    font-size: 13px;
 }
+
 .Grupos h3 {
-    margin: 0px;
-    color: #3D4D61;
+    margin: 0;
+    color: var(--cor-texto-fraco);
     font-size: 30px;
 }
-#turmas {
-background: hsl(0deg 82% 58% / 16%);
-    color: white;
-    border:1px solid rgb(236, 60, 60);
-    cursor: pointer;
-    transform: scale(1.02);
-    transition: all 0.5s;
-}
 
-#turmas:hover {
-    cursor: unset;
-}
 .Grupos div {
     display: flex;
     flex-direction: column;
     gap: 5px;
 }
+
 #voltar {
     margin-top: 31px;
-    margin-bottom: 0px; 
+    margin-bottom: 0;
     margin-left: 30px;
-    color: #e4e9f4;
+    color: var(--cor-texto);
 }
+
 #voltar:hover {
-    color: red;
+    color: var(--cor-vermelho);
     cursor: pointer;
-}   
+}
+
 .Cards {
-background: #111520;
-    border: 1px solid rgb(255 255 255 / 7%);
+    background: var(--cor-fundo-card);
+    border: 1px solid var(--cor-borda);
     border-radius: 13px;
     padding: 17px;
     margin-bottom: 9px;
     transform: scale(1);
-    transition: transform 1s ease; 
+    transition: transform 1s ease;
 }
-.Cards:hover{
+
+.Cards:hover {
     cursor: pointer;
-    transition: all 0.8s ;
+    transition: all 0.8s;
     transform: scale(1.02);
-    border-color: rgb(236, 60, 60);
+    border-color: var(--cor-vermelho);
 }
+
 #top-card {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 8px;
 }
+
 .Estado {
-    background: rgb(52 211 153 / 12%);
-    color: #34d399;
+    background: var(--cor-verde-transparente);
+    color: var(--cor-verde);
     padding: 8px;
     border-radius: 20px;
     text-align: center;
     text-transform: smaller;
 }
+
 .Duvidas {
-    background: #111520;
-    border: 1px solid rgb(255 255 255 / 7%);
-    border-left: 3px solid rgb(236, 60, 60);
+    background: var(--cor-fundo-card);
+    border: 1px solid var(--cor-borda);
+    border-left: 3px solid var(--cor-vermelho);
     padding: 11px;
     display: flex;
     align-items: flex-start;
@@ -297,21 +315,24 @@ background: #111520;
     margin-bottom: 8px;
     border-radius: 10px;
     transform: scale(1);
-    transition: transform 1s ease; 
+    transition: transform 1s ease;
 }
-.Duvidas:hover{
+
+.Duvidas:hover {
     cursor: pointer;
-    transition: all 0.8s ;
+    transition: all 0.8s;
     transform: scale(1.03);
-    border-color: rgb(236, 60, 60);
+    border-color: var(--cor-vermelho);
 }
+
 #Pontinho {
     width: 7px;
     height: 7px;
-    background-color: rgb(236, 60, 60);
+    background-color: var(--cor-vermelho);
     border-radius: 50%;
     margin-top: 8px;
 }
+
 #Top-duvidas {
     flex: 1;
 }
