@@ -1,3 +1,7 @@
+import { auth, db } from "../../backend/firebase/config.js";
+import { signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
 window.Aluno = function () {
     window.location.href = "/Inicial-tela/Login/Log-aluno.html";
 };
@@ -15,7 +19,71 @@ function toggleCoor() {
         ? "rotate(180deg)"
         : "rotate(0deg)";
 }
-function Formulario (event){
+
+async function Formulario(event) {
+
+    event.preventDefault();
+
+    const emailInput = document.getElementById("E-mail");
+    const senhaInput = document.getElementById("Senhas");
+
+    const email = emailInput.value.trim();
+    const senha = senhaInput.value;
+
+
+    try {
+
+        const userCredential = await signInWithEmailAndPassword(
+            auth,
+            email,
+            senha
+        );
+
+
+        const user = userCredential.user;
+
+        console.log("Usuário autenticado:");
+        console.log(user);
+
+
+        const usuarioRef = doc(db, "usuarios", user.uid);
+
+        const usuarioDoc = await getDoc(usuarioRef);
+
+
+        console.log("Documento existe?");
+        console.log(usuarioDoc.exists());
+
+
+        if(usuarioDoc.exists()){
+
+            console.log(usuarioDoc.data());
+
+            window.location.href="/Professor/Index.html";
+
+        }
+
+
+    } catch(error){
+
+        console.error(error);
+        alert(error.message);
+
+    }
+
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    const form = document.querySelector('form');
+
+    if(form){
+        form.addEventListener('submit', Formulario);
+    }
+
+});
+
+/*function Formulario (event){
     //Impede que seja enviado por padrão do formulario, ou seja, impede que a página seja recarregada
     event.preventDefault();
     //Obtém os valores do email e senha dos campos de entrada
@@ -78,4 +146,4 @@ function Formulario (event){
         alert("Email inválido. Use um email @professor.cps.sp.gov.br");
         return;
     }
-}
+} */

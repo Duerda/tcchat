@@ -1,3 +1,68 @@
+import { auth, db } from "../../backend/firebase/config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { collection, addDoc, query, where, onSnapshot, deleteDoc, doc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+
+let usuarioAtual = null
+
+onAuthStateChanged(auth, (user)=>{
+
+    if(user){
+        usuarioAtual = user
+    } else {
+        console.log("Nenhum usuário logado")
+    } 
+});
+
+async function criarGrupo(){
+    
+    const nome = document.getElementById("nomeGrupo").value.trim();
+    const descricao = document.getElementById("descricaoGrupo").value.trim();
+    
+    if (!nome || !descricao) {
+        alert("Preencha todos os campos");
+        return;
+    }
+    
+    try{
+        
+        await addDoc(collection(db, "grupos"),{
+            nome: nome,
+            descricao: descricao,
+            codigoSala: localStorage.getItem("codigoSala"),
+            criadorUid: usuarioAtual.uid,
+            criadoEm: serverTimestamp()
+        });
+    } catch (erro) {
+        console.error(erro);
+        alert("Erro ao criar grupo")
+    }
+}
+
+const btnCriarGrupo = document.getElementById("btnCriarGrupo");
+const btnSalvarGrupo = document.getElementById("salvarGrupo");
+const btnCancelarGrupo = document.getElementById("cancelarGrupo");
+
+const formularioGrupo = document.getElementById("formGrupo");
+
+btnCriarGrupo.addEventListener("click", () => {
+    formularioGrupo.style.display = "block"
+})
+
+btnCancelarGrupo.addEventListener("click", () => {
+
+    formularioGrupo.style.display = "none";
+
+});
+
+if (dados.tipo === "aluno" || "coordenador") {
+    btnCriarGrupo.style.display = "block"; 
+} else {
+    btnCriarGrupo.style.display = "none"
+}
+
+btnSalvarGrupo.addEventListener("click", criarGrupo);
+
 function Voltar(){
     window.location.href = "/Inicial-tela/Cadastro/Cad.html";
 }
