@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="Lp.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.0/css/all.min.css" rel="stylesheet">
     <title>TCCHAT</title>
 </head>
 
@@ -12,8 +13,8 @@
     <div id="geral">
         <nav>
             <div class="logo">
-                <img width="170" height="170" src="Landing Page/img-lp/imagem_2026-04-25_202712507-removebg-preview.png"
-                    alt="logo" style="background: none;">
+                <img width="170" height="170" src="/img/logo.png" alt="logo"
+                    style="background: none;">
             </div>
 
             <ul class="navb">
@@ -24,8 +25,8 @@
             </ul>
 
             <div class="nav-buttons">
-                <button class="btn-login" onclick = "Login ()">LOGIN</button>
-                <button class="btn-cadastrar" onclick = "Cadastrar ()">Cadastrar</button>
+                <button class="btn-login">LOGIN</button>
+                <button class="btn-cadastrar">Cadastrar</button>
             </div>
         </nav>
         <div class="degrade-border"></div>
@@ -50,7 +51,7 @@
         <div id="sobre">
             <!--CONTAINER2-->
             <div id="container-sobre2">
-                <img src="Landing Page/img-lp/image_holder_sobre.jpeg" alt="bloco" width="800" height="500"
+                <img src="./img/bloco.jpeg" alt="bloco" width="800" height="500"
                     style="margin-left: 120px; border-radius: 20px; margin-right: 100px;">
                 <div id="welcome">
                     <h1>Bem-vindo à nova era do seu</h1>
@@ -68,11 +69,9 @@
         <div id="sobreP">
             <!--CONTAINER1-->
             <p id="p-sobre">VISÃO GERAL</p>
-            <h1 id="title-sobre" style = "
-    width: 1300px;
-">Sobre Nós</h1>
+            <h1 id="title-sobre">Sobre Nós</h1>
             <div id="container-sobre">
-                <img src="Landing Page/img-lp/image_holder_sobre.jpeg" alt="bloco" width="1000" height="600"
+                <img src="./img/bloco.jpeg" alt="bloco" width="1000" height="600"
                     style="margin-right: 120px; border-radius: 20px;">
                 <div id="paragrafo">
                     <h1>
@@ -100,54 +99,131 @@
         </div>
         <div id="porcentagem">
             <!--PORCENTAGEM-->
-            <div id="p%">
-            <h1>Acompanhe seus progresso em tempo real.</h1>
-            <p>Redução de retrabalho em até 40%
-            A comunicação fica atrelada a cada tarefa. Toda decisão fica registrada, evitando mal-entendidos.</p>
-            <p>seu time já está usando sem treinamento caro.</p>
+            <div id="paragrafo-porcentagem">
+                <h1>Acompanhe seus <br>
+                    progresso em tempo <br>
+                    real.</h1>
+                <p><strong>Redução de retrabalho em até 40%</strong> <br>
+                    A comunicação fica atrelada a cada tarefa. <br>
+                    Toda decisão fica registrada, <br>
+                    evitando mal-entendidos.</p>
+                <p style="margin-top: 20px;">seu time já está usando sem treinamento caro.</p>
             </div>
-
-
-
             <div class="grafico-barras">
-                <!-- Barra 76% -->
                 <div class="barra-item">
                     <div class="barra-bg">
                         <div class="barra-fill" style="width: 76%;"></div>
+                        <span class="barra-valor" style="color: var(--red1);">76%</span>
                     </div>
-                    <span class="barra-valor">76%</span>
                 </div>
-                <!-- Barra 67% -->
                 <div class="barra-item">
                     <div class="barra-bg">
                         <div class="barra-fill" style="width: 67%;"></div>
+                        <span class="barra-valor">67%</span>
                     </div>
-                    <span class="barra-valor">67%</span>
                 </div>
-                <!-- Barra 48% -->
                 <div class="barra-item">
                     <div class="barra-bg">
                         <div class="barra-fill" style="width: 48%;"></div>
+                        <span class="barra-valor">48%</span>
                     </div>
-                    <span class="barra-valor">48%</span>
                 </div>
-                <!-- Barra 34% -->
                 <div class="barra-item">
                     <div class="barra-bg">
                         <div class="barra-fill" style="width: 34%;"></div>
+                        <span class="barra-valor">34%</span>
                     </div>
-                    <span class="barra-valor">34%</span>
                 </div>
-                <!-- Barra 17% -->
                 <div class="barra-item">
                     <div class="barra-bg">
                         <div class="barra-fill" style="width: 17%;"></div>
+                        <span class="barra-valor">17%</span>
                     </div>
-                    <span class="barra-valor">17%</span>
                 </div>
             </div>
         </div>
     </div>
+
+    <!--INTEGRANTES-->
+    <div id="integrantes">
+        <h2><span style="padding-right: 12%;">Conheça os Membros</span> <br>
+            <span style="padding-left: 12%;">da nossa equipe!</span>
+        </h2>
+
+        <div class="organizar-container">
+            <!--Linha1-->
+            <div id="integrantes-interior">
+                <img src="./img/bloco.jpeg" alt="pics" class="imagem-integrantes">
+                <img src="./img/bloco.jpeg" alt="pics" class="imagem-integrantes"
+                    style="border: 3px solid var(--texlight);">
+
+                <div class="comentarios">
+                    <div class="comentarios-interior">
+                        <h1>A comunicação fica atrelada a cada tarefa. Toda decisão fica registrada, evitando
+                            mal-entendidos.
+                            Acompanhe horas, custos e margem em tempo real. Saiba exatamente onde seu capital está sendo
+                            aplicado</h1>
+                        <p style="border-top: 2px solid var(--white); padding-top: 10px;">Tiago Rios </p>
+                        <p>Líder Corporativo</p>
+                    </div>
+                </div>
+            </div>
+
+            <!--linha2-->
+
+            <div id="integrantes-interior">
+                <img src="./img/bloco.jpeg" alt="pics" class="imagem-integrantes">
+                <img src="./img/bloco.jpeg" alt="pics" class="imagem-integrantes"
+                    style="border: 3px solid var(--texlight);">
+                <img src="./img/bloco.jpeg" alt="pics" class="imagem-integrantes">
+                <img src="./img/bloco.jpeg" alt="pics" class="imagem-integrantes">
+            </div>
+
+            <!--Linha3-->
+            <div id="integrantes-interior">
+                <div class="comentarios">
+                    <div class="comentarios-interior">
+                        <h1>A comunicação fica atrelada a cada tarefa. Toda decisão fica registrada, evitando
+                            mal-entendidos.
+                            Acompanhe horas, custos e margem em tempo real. Saiba exatamente onde seu capital está sendo
+                            aplicado</h1>
+                        <p style="border-top: 2px solid var(--white); padding-top: 10px;">Tiago Rios </p>
+                        <p>Líder Corporativo</p>
+                    </div>
+                </div>
+                <img src="./img/bloco.jpeg" alt="pics" class="imagem-integrantes">
+                <img src="./img/bloco.jpeg" alt="pics" class="imagem-integrantes"
+                    style="border: 3px solid var(--texlight);">
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!--Footer-->
+
+    <div class="footer-up">
+        
+        <div class="f1">
+            <img src="./img/logo.png" alt="logo">
+            <p>© 2026 TCCHAT – Gestão de Projetos com alma de chat. Todos os direitos reservados. <br> Este produto é desenvolvido para organizações que buscam eficiência real, <br>
+                 unindo comunicação, tarefas e indicadores em uma plataforma única.<br>
+                  Ao utilizar o TCCHAT, você concorda com nossa Política de Privacidade e Termos de Uso.</p>
+            <div class="input-wrapper">
+                <i class="fa-regular fa-house" style="color: #d9d9d9;"></i>
+                <button class="btnVoltar">VOLTAR    </button>
+            </div>
+        </div>
+    <div class="f2">
+        <h2>Site Map</h2>
+        <div class="container-btnf">
+        <button class="btn-footer">Inicio</button>
+        <button class="btn-footer">Sobre</button>
+        <button class="btn-footer">Integrantes</button>
+        <button class="btn-footer">Contato</button>
+
+        </div>
+    </div>
+
     </div>
 </body>
 <script src="index.js"></script>
