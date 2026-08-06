@@ -44,30 +44,50 @@
                 <h1>Grupos</h1><p>Todos os grupos dos cursos</p>
             </div>
             <h2 style="color: #7a8699;">Turmas</h2>
-             <div class="conteudo-inferior">
-            <div id="turmas">
-                <p style=" font-size: 13px; color: #3d4d61; margin-left: 10px; margin-bottom: 7px; margin-top: 15px;"> GRUPO (js) X/X </p>
-                <h3 style="color: #E4E9F4; margin-left: 10px; margin-bottom: 10px; margin-top: 0px;">Nome do TCC</h3 >
-                <ul style="margin-top: 0px;">
-                    <li class="aluno">Aluno 1</li> 
-                    <li class="aluno">Aluno 2</li>
-                    <li class="aluno">Aluno 3</li>
-                    <li class="aluno">Aluno 4</li>
-                    <li class="aluno">Aluno 5</li>
-                </ul>
-                <div id="Tcc-conteudo-inferior">
-                <div id="progresso">
-                   PRAZO
-                </div>
-                <div id="Orientador">
-                    Enrico Bonato
-                </div>
-            </div>  
+
+            <div style="margin-bottom:20px;">
+                <button id="btnCriarGrupo">
+                    Criar Grupo
+                </button>
+            </div>            
+
+            <div id="formGrupo" style="display:none; margin-bottom:25px">
+                <input
+                    id="nomeGrupo"
+                    type="text"
+                    placeholder="Nome do Grupo">
+
+                <br><br>
+
+                <input
+                    id="nomeProjeto"
+                    type="text"
+                    placeholder="Nome do TCC">
+
+                <br><br>    
+
+                <textarea 
+                id="descricaoGrupo"
+                placeholder="Descrição do Projeto"></textarea>
+
+                <br><br>
+
+                <button id="salvarGrupo">Salvar Grupo</button>
+                <button id="cancelarGrupo">Cancelar</button>
+            </div>
+
+
+            <div
+                class="conteudo-inferior"
+                id="listaGrupos">
+
+            </div>
+  
             <!-- Conteúdo inferior dos grupos -->
         </div>
         </div>
        
     </div>
 </body>
-<script src="grp.js"></script>
+<script type="module" src="grp.js"></script>
 </html>
