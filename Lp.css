@@ -11,7 +11,7 @@
   --white: #d9d9d9;
   
   /* Cores secundarias*/
-  --red-hover: #D32F2F;
+  --red-hover: #b92828;
   --red-light: #FFEBEE;
   --gold: #F59E0B;
   --success: #10B981;
@@ -32,9 +32,11 @@
     box-sizing: border-box;
 }
 
+
+
 body {
     font-family: "Poppins", sans-serif;
-    background-image: url("./Landing\ Page/img-lp/imagem\ fatec(4).jpg");
+    background-image: url("/img/imagem\ fatec\(4\).jpg");
     background-size: cover;
     background-position: center;
     height: 1061px;
@@ -314,7 +316,6 @@ header .left {
 
 #paragrafo {
     flex: 1;
-    padding-bottom: 100px;
     margin-top: 0;
 }
 
@@ -400,7 +401,7 @@ header .left {
     color: var(--white);
     font-weight: 500;
     font-size: 40px;
-    width: 100%;
+    width: 400px;
     align-items: left;
     display: flex;
     margin-left: 120px;
@@ -422,43 +423,46 @@ header .left {
 
 .grafico-barras {
     width: 100%;
-    max-width: 900px; 
-    margin-left: 120px;
+    max-width: 1000px;
+    margin-right: 120px;
+    margin-bottom: 75px;
+    padding-top: 140px;
 }
-
 .barra-item {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
 }
-
 .barra-bg {
     flex: 1;
-    height: 45px;        
-    background-color: var(--white);
-    border-radius: 18px;
+    height: 60px;
+    background-color: #f1f3f5;
+    border-radius: 6px;
+    position: relative;
     overflow: hidden;
+    width: 100%;
 }
-
 .barra-fill {
     height: 100%;
-    background-color: var(--red1);
-    border-radius: 4px;
+    background-color: #dc3545;
+    border-radius: 1px;
+    width: 0%;
     transition: width 0.5s;
 }
-
 .barra-valor {
-    width: 50px;
-    text-align: right;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
     font-weight: bold;
-    margin-left: 12px;
-    color: var(--red1);
+    color: #333;
+    font-size: 22px;
 }
 
 #porcentagem {
     background-color: var(--main-color);
     width: 100%;
-    height: 1403px;
+    height: 803px;
     display: flex;
     flex-direction: grid;
 }
@@ -470,7 +474,203 @@ header .left {
     width: 100%;
     align-items: left;
     display: flex;
-    margin-left: 120px;
     margin-top: 0px;
     letter-spacing: 1px;
 }
+
+#paragrafo-porcentagem {
+    color: var(--white);
+    font-weight: 400;
+    font-size: 18px;
+    flex: 1;
+    margin-left: 120px;
+    font-family: "arial";
+    letter-spacing: -1px;
+    width: 600px;
+    height: 600px;
+        padding-top: 140px;
+}
+
+#paragrafo-porcentagem p {
+    margin-top: 20px;
+    line-height: 27px;
+    font-family: "arial";
+    font-size: 24px;
+}
+
+#paragrafo-porcentagem h1 {
+    font-size: 40px;
+    font-weight: bold;
+    color: var(--white);
+    align-items: center;
+    letter-spacing: -1px;
+    text-align: left;
+    line-height: 50px;
+    text-transform: uppercase;
+}
+
+#integrantes {
+    background-color: var(--white);
+    width: 100%;
+    height: 1600px;
+    display: flex;
+    flex-direction: column;
+}
+
+#integrantes h2 {
+    text-align: center;   
+    font-size: 2.5rem;      
+    color: var(--main-color);             
+    line-height: 1.2;        
+    margin: 30px 0;
+    padding-top: 40px;
+    font-weight: bold;
+}
+
+#integrantes-interior {
+    display: flex;
+    justify-content: center;
+}
+
+.comentarios {
+    width: 710px;
+    background: var(--cinza-escuro);
+    border-radius: 15px;
+    margin: 5px
+}
+
+.comentarios-interior h1 {
+    color: var(--white);
+    font-size: 18px;
+    line-height: 25px;
+    text-align: left;
+    padding: 15px;
+    font-family: "arial";
+    font-weight: 500;
+    padding-top: 25px;
+    padding-bottom: 120px;
+}
+
+.comentarios-interior p {
+    color: var(--white);
+    font-size: 15px;
+    line-height: 19px;
+    text-align: left;
+    font-family: "arial";
+    font-weight: 500;
+    padding-left: 15px;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.imagem-integrantes {
+    width: 350px;
+    height: 350px;
+    border-radius: 15px;
+    margin: 5px;
+}
+
+.organizar-container {
+    max-width: 2100px;
+    align-items: center;
+    justify-content: center;
+    display: grid;
+}
+
+.footer-up {
+    background-color: var(--red-hover);
+    width: 100%;
+    height: 360px;
+    display: flex;
+}
+
+.f1 {
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    height: 100%;
+}
+
+.f1 img {
+    width: 270px;
+    height: 100px;
+    padding-top: 50px;
+    object-fit: cover;
+    padding-left: 100px;
+}
+
+.f1 p {
+    color: var(--white);
+    font-size: 14px;
+    line-height: 25px;
+    text-align: left;
+    padding-left: 100px;
+    font-family: "arial";
+    font-weight: 500;
+    padding-top: 20px;
+}
+
+.input-wrapper {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 20px;
+    background-color: transparent;
+    border: 1px solid #d9d9d9;
+    width: fit-content;
+    margin-left: 100px;
+    justify-content: center;
+    padding: 7px;
+}
+
+.input-wrapper i {
+    color: #d9d9d9;
+    width: 20px;
+    height: 20px;
+    margin: 3px;
+    margin-top: 5px;
+}
+
+.btnVoltar {
+    color: #d9d9d9;
+    background-color: transparent;
+    cursor: pointer;
+    margin: 3px;
+    padding-bottom: 1px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+}
+
+.container-btnf {
+    display: grid;
+    gap: 20px;
+    padding-top: 20px;
+}
+
+.f2 {
+    height: 100%;
+    width: 40%;
+}
+
+.f2 h2 {
+    color: var(--white-text);
+    font-size: 20px;
+    margin-bottom: 10px;
+    padding-top: 50px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.btn-footer {
+    background-color: transparent;
+    color: var(--white-text);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+    margin: 0px;
+    padding: 0px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+}
+
+
