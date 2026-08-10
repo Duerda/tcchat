@@ -1,6 +1,9 @@
-import { auth, db } from "../../backend/firebase/config";
-import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { doc, setDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { auth, db } 
+from "../../backend/firebase/config.js";
+import { createUserWithEmailAndPassword } 
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { doc, setDoc } 
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 // Lista oficial de cursos e seus códigos
 const cursosValidos = {
@@ -14,8 +17,9 @@ const cursosValidos = {
     "INF": "Informática - MTEC"
 };
 
+//Navegação
 window.Entraralpr = function () {
-    window.location.href = "/Professor/index.html";
+    window.location.href = "/Professor/Index.html";
 };
 
 window.Logar = function () {

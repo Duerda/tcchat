@@ -51,14 +51,8 @@
                 </button>
             </div>            
 
+            <!--Formulario de Criação de Grupo-->
             <div id="formGrupo" style="display:none; margin-bottom:25px">
-                <input
-                    id="nomeGrupo"
-                    type="text"
-                    placeholder="Nome do Grupo">
-
-                <br><br>
-
                 <input
                     id="nomeProjeto"
                     type="text"
@@ -69,6 +63,29 @@
                 <textarea 
                 id="descricaoGrupo"
                 placeholder="Descrição do Projeto"></textarea>
+
+                <br><br>
+
+                <select id="cursoGrupo">
+                    <option value="">Selecione o curso</option>
+                    <option value="DS">Desenvolvimento de Sistemas</option>
+                    <option value="DI">Design de Interiores</option>
+                    <option value="HOSP">Hospedagem</option>
+                    <option value="IPI">Informática para Internet - MTEC</option>
+                    <option value="MA">Meio Ambiente</option>
+                    <option value="SEC">Secretariado</option>
+                    <option value="ADM">Administração</option>
+                    <option value="INF">Informática - MTEC</option>
+                </select>
+
+                <br><br>
+
+                <input
+                    id="numeroTurma"
+                    type="number"
+                    min="1"
+                    max="3"
+                    placeholder="Número da turma">
 
                 <br><br>
 

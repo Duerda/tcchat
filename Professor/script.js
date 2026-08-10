@@ -23,6 +23,7 @@ function Grupos(){
 function Forum(){
     window.location.href = "/Professor/Forum/Avisos.html";
 }
+
 document.addEventListener('DOMContentLoaded', function() {
     const spanIniciais = document.getElementById("foto").querySelector("span"); // Seleciona o span dentro de #foto
     const iniciaisSalvas = localStorage.getItem("iniciaisUsuario");
@@ -33,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const nomeUsuario = localStorage.getItem("nomeUsuario");
     spanIniciais.textContent = nomeUsuario || ""; // Define o texto ou vazio
 });
+
 
 document.addEventListener('DOMCon tentLoaded', function() {
     let nomeCurso = document.getElementById("NomeUC").querySelector("h5");
@@ -48,3 +50,4 @@ document.addEventListener('DOMCon tentLoaded', function() {
     };
     nomeCurso.textContent = cursos[codigoSalvo] || "";
 });
+

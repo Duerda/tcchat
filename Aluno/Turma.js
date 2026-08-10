@@ -1,5 +1,5 @@
 import { auth, db } from "../backend/firebase/config.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, getDoc, onSnapshot, collection, query, where, limit } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 // 1. MONITORAMENTO DE SESSÃO E ACESSIBILIDADE
@@ -118,7 +118,7 @@ async function carregarGruposDinamicamente(codigoSala, userUid) {
 
 // 5. NAVEGAÇÃO E LOGOUT
 window.Voltar = () => {
-    auth.signOut().then(() => {
+    signOut(auth).then(() => {
         window.location.href = "/Inicial-tela/Login/Log-aluno.html";
     }).catch(err => {
         console.error("Erro ao sair:", err);

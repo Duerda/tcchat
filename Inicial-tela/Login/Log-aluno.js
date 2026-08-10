@@ -10,16 +10,11 @@ window.Cadastrar = function () {
     window.location.href = "/Inicial-tela/Cadastro/Cad.html";
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.querySelector('form');
-    if (form) {
-        form.addEventListener('submit', Formulario);
-    }
-});
 
 async function Formulario(event) {
+    
     event.preventDefault();
-
+    
     const emailInput = document.querySelector("#Email input");
     const senhaInput = document.querySelector("#Senha input");
     
@@ -27,20 +22,25 @@ async function Formulario(event) {
         console.error("Campos de entrada não encontrados!");
         return;
     }
-
+    
     const email = emailInput.value.trim();
     const senha = senhaInput.value;
-
+    
     if (email === "" || senha === "") {
         alert("Por favor, preencha todos os campos.");
         return;
     }
-
+    
     try {
         // 1. Tentar autenticar no Firebase Auth
-        const userCredential = await signInWithEmailAndPassword(auth, email, senha);
-        const user = userCredential.user;
+        const userCredential = await signInWithEmailAndPassword(
+            auth, 
+            email, 
+            senha
+        );
 
+        const user = userCredential.user;
+        
         // 2. VERIFICAÇÃO CRUCIAL: Checar se o usuário existe no Banco de Dados (Firestore)
         const userDoc = await getDoc(doc(db, "usuarios", user.uid));
         
@@ -53,7 +53,7 @@ async function Formulario(event) {
             localStorage.setItem("codigoSala", userData.codigoSala);
             
             alert("Login realizado com sucesso!");
-
+            
             // Redirecionamento baseado no tipo
             if (userData.tipo === "coordenador") {
                 window.location.href = "/Professor/Index.html"; // Redireciona para Professor se Coordenador não existir
@@ -69,13 +69,24 @@ async function Formulario(event) {
             await signOut(auth);
             alert("ERRO: Esta conta não possui um perfil registrado no sistema. Entre em contato com o administrador.");
         }
-
+        
     } catch (error) {
         console.error("Erro de login:", error.code);
-        if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password" || error.code === "auth/invalid-credential") {
+        if (
+            error.code === "auth/user-not-found" ||
+             error.code === "auth/wrong-password" ||
+              error.code === "auth/invalid-credential") 
+              {
             alert("E-mail ou senha incorretos.");
         } else {
             alert("Erro ao entrar: " + error.message);
         }
     }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', Formulario);
+    }
+});
