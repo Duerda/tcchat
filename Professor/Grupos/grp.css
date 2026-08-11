@@ -261,3 +261,14 @@ ul li{
     color: var(--texto-fraco);
     font-size: 11px
 }
+.btnGrupo{
+    width: 120px;
+    height: 36px;
+    background: var(--bg-secundario);
+    color: var(--texto-claro);
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    transition: all 0.8s ;
+    transform: scale(1.00);
+}
