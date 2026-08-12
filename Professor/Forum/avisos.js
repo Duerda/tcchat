@@ -70,7 +70,7 @@ btnNovoAviso.addEventListener("click", async () => {
     }
 });
 
-function escutarAvisos() {
+    export function escutarAvisos() {
     const codigoSala = localStorage.getItem("codigoSala") || "geral";
     const q = query(
         collection(db, "avisos"), 
