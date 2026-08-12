@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 function Voltar(){
     window.location.href = "/Inicial-tela/Cadastro/Cad.html";
 }
@@ -20,11 +19,6 @@ function Configuracoes(){
 
 document.addEventListener('DOMContentLoaded', function() {
     let nomeCurso = document.getElementById("NomeUC").querySelector("h5");
-=======
-import { auth, db } from "../../backend/firebase/config.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { collection, addDoc, query, where, onSnapshot, serverTimestamp, getDoc, doc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
->>>>>>> 53c1cc30d481d00e4c8562af0810f6de7883d1c6
 
 // Funções de Navegação
 window.Voltar = () => auth.signOut().then(() => window.location.href = "/Inicial-tela/Login/Log-aluno.html");
@@ -112,4 +106,5 @@ botaoVoltar.addEventListener("click", () => {
     feedback.disabled = false;
     botaoSalvar.style.display = "inline-block";
     botaoVoltar.style.display = "none";
+});
 });

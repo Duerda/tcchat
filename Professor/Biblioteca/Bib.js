@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 function Voltar(){
     window.location.href = "/Inicial-tela/Cadastro/Cad.html";
 }
@@ -28,12 +27,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const nomeUsuario = localStorage.getItem("nomeUsuario");
     spanIniciais.textContent = nomeUsuario || ""; // Define o texto ou vazio
 });
-=======
-import { auth, db } from "../../backend/firebase/config.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { collection, addDoc, query, where, onSnapshot, deleteDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-import { escutarAvisos } from "../Forum/avisos.js";
->>>>>>> 53c1cc30d481d00e4c8562af0810f6de7883d1c6
 
 // Funções de Navegação
 window.Voltar = () => auth.signOut().then(() => window.location.href = "/Inicial-tela/Login/Log-aluno.html");

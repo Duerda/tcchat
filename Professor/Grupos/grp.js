@@ -154,7 +154,6 @@ async function editarGrupo(id) {
     alert("Erro ao editar o grupo.");
   }
 }
-<<<<<<< HEAD
 function VisaoGeral(){
     window.location.href = "/Professor/Index.html";
 }
@@ -169,30 +168,4 @@ document.addEventListener('DOMContentLoaded', function() {
     const spanIniciais = document.getElementById("foto").querySelector("span"); // Seleciona o span dentro de #foto
     const iniciaisSalvas = localStorage.getItem("iniciaisUsuario");
     spanIniciais.textContent = iniciaisSalvas || ""; // Define o texto ou vazio
-=======
-
-document.addEventListener("click", (event) => {
-  if (event.target.classList.contains("btnExcluir")) {
-    const id = event.target.dataset.id;
-
-    excluirGrupo(id);
-  }
-
-  if (event.target.classList.contains("btnEditar")) {
-
-    const id = event.target.dataset.id;
-
-    editarGrupo(id);
-    }
-});
-document.addEventListener("DOMContentLoaded", function () {
-  const spanIniciais = document.getElementById("foto").querySelector("span"); // Seleciona o span dentro de #foto
-  const iniciaisSalvas = localStorage.getItem("iniciaisUsuario");
-  spanIniciais.textContent = iniciaisSalvas || ""; // Define o texto ou vazio
-});
-document.addEventListener("DOMContentLoaded", function () {
-  const spanIniciais = document.getElementById("NomeUC").querySelector("h4"); // Seleciona o span dentro de #foto
-  const nomeUsuario = localStorage.getItem("nomeUsuario");
-  spanIniciais.textContent = nomeUsuario || ""; // Define o texto ou vazio
->>>>>>> 53c1cc30d481d00e4c8562af0810f6de7883d1c6
 });
