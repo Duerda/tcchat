@@ -1,6 +1,6 @@
 import { auth, db } from "../../backend/firebase/config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { collection, addDoc, query, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { collection, addDoc, query, where, onSnapshot, serverTimestamp, getDoc, doc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 // Funções de Navegação
 window.Voltar = () => auth.signOut().then(() => window.location.href = "/Inicial-tela/Login/Log-aluno.html");
@@ -13,10 +13,18 @@ window.Configuracoes = () => alert("Configurações de acessibilidade em breve!"
 
 let usuarioAtual = null;
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
     if (user) {
-        usuarioAtual = user;
-        carregarDadosPerfil(user.uid);
+        const userDoc = await getDoc(doc(db, "usuarios", user.uid));
+        const tipo = userDoc.exists() ? userDoc.data().tipo : null;
+        if (tipo === "professor" || tipo === "coordenador") {
+            usuarioAtual = user;
+            carregarDadosPerfil(user.uid);
+            escutarAvisos();
+        } else {
+            alert("Acesso negado: Esta área é exclusiva para professores e coordenadores.");
+            window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+        }
     } else {
         window.location.href = "/Inicial-tela/Login/Log-aluno.html";
     }

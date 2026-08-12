@@ -16,13 +16,13 @@ let usuarioAtual = null;
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         const userDoc = await getDoc(doc(db, "usuarios", user.uid));
-        if (userDoc.exists()) {
+        const tipo = userDoc.exists() ? userDoc.data().tipo : null;
+        if (tipo === "professor" || tipo === "coordenador") {
             usuarioAtual = user;
-            const data = userDoc.data();
-            localStorage.setItem("codigoSala", data.codigoSala || "geral");
             carregarDadosPerfil(user.uid);
-            escutarBiblioteca();
+            escutarAvisos();
         } else {
+            alert("Acesso negado: Esta área é exclusiva para professores e coordenadores.");
             window.location.href = "/Inicial-tela/Login/Log-aluno.html";
         }
     } else {
