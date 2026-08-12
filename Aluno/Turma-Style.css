@@ -311,7 +311,7 @@ background: hsl(0deg 82% 58% / 16%);
     border-radius: 8px;
     border: none;
     margin-right: 10px;
-    margin-top: 50px
+    margin-bottom: 30px;
 }
 .btnGrupo:hover{
     background: var(--red2);
