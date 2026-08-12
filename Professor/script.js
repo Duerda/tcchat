@@ -1,19 +1,19 @@
-function Voltar(){
+window.Voltar = function(){
     window.location.href = "/Inicial-tela/Cadastro/Cad.html";
-}
-function Avaliacoes(){
+};
+window.Avaliacoes = function(){
     window.location.href = "/Professor/Avaliacoes/ava.html";
-}
-function Biblioteca(){
+};
+window.Biblioteca = function(){
     window.location.href = "/Professor/Biblioteca/Bib.html";
-}
-function Grupos(){
+};
+window.Grupos = function(){
     window.location.href = "/Professor/Grupos/grp.html";
-}
-function Forum(){
+};
+window.Forum = function(){
     window.location.href = "/Professor/Forum/Avisos.html";
-}
-function Configuracoes(){
+};
+window.Configuracoes = function(){
     window.location.href = "/Professor/Configuracoes/Config.html";
 }
 

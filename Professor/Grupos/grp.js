@@ -22,7 +22,9 @@ window.Avaliacoes = () =>
   (window.location.href = "/Professor/Avaliacoes/ava.html");
 window.Grupos = () => (window.location.href = "/Professor/Grupos/grp.html");
 window.Forum = () => (window.location.href = "/Professor/Forum/Avisos.html");
-window.Configuracoes = () => alert("Configurações de acessibilidade em breve!");
+window.Configuracoes = function(){
+    window.location.href = "/Professor/Configuracoes/Config.html";
+}
 
 let usuarioAtual = null;
 

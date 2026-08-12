@@ -1,33 +1,31 @@
-function Voltar(){
-    window.location.href = "/Inicial-tela/Cadastro/Cad.html";
-}
-function VisaoGeral(){
-    window.location.href = "/Professor/Index.html";
-}
-function Biblioteca(){
-    window.location.href = "/Professor/Biblioteca/Bib.html";
-}
-function Grupos(){
-    window.location.href = "/Professor/Grupos/grp.html";
-}
-function Forum(){
-    window.location.href = "/Professor/Forum/Avisos.html";
-}
-function Configuracoes(){
-    window.location.href = "/Professor/Configuracoes/Config.html";
-}
 
 document.addEventListener('DOMContentLoaded', function() {
     let nomeCurso = document.getElementById("NomeUC").querySelector("h5");
 
 // Funções de Navegação
 window.Voltar = () => auth.signOut().then(() => window.location.href = "/Inicial-tela/Login/Log-aluno.html");
-window.VisaoGeral = () => window.location.href = "/Professor/Index.html";
-window.Biblioteca = () => window.location.href = "/Professor/Biblioteca/Bib.html";
-window.Avaliacoes = () => window.location.href = "/Professor/Avaliacoes/ava.html";
-window.Grupos = () => window.location.href = "/Professor/Grupos/grp.html";
-window.Forum = () => window.location.href = "/Professor/Forum/Avisos.html";
-window.Configuracoes = () => alert("Configurações de acessibilidade em breve!");
+
+window.VisaoGeral = function (){ 
+    window.location.href = "/Professor/Index.html";
+};
+window.Voltar = function(){
+    window.location.href = "/Inicial-tela/Cadastro/Cad.html";
+};
+window.Avaliacoes = function(){
+    window.location.href = "/Professor/Avaliacoes/ava.html";
+};
+window.Biblioteca = function(){
+    window.location.href = "/Professor/Biblioteca/Bib.html";
+};
+window.Grupos = function(){
+    window.location.href = "/Professor/Grupos/grp.html";
+};
+window.Forum = function(){
+    window.location.href = "/Professor/Forum/Avisos.html";
+};
+window.Configuracoes = function(){
+    window.location.href = "/Professor/Configuracoes/Config.html";
+}
 
 let usuarioAtual = null;
 

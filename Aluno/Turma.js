@@ -1,9 +1,9 @@
-function Grupo(){
+window.Grupo = function(){
     window.location.href = "/Aluno/Grupos/Grupo.html";
 }
-function Forum(){
+window.Forum = function(){
     window.location.href = "/Aluno/Forum/Forum.html";
 }
-function Inspiracoes(){
+window.Inspiracoes = function(){
     window.location.href = "/Aluno/Inspiracoes/Inspiracoes.html";
 }

@@ -1,19 +1,19 @@
-function Voltar(){
+window.Voltar = function(){
     window.location.href = "/Inicial-tela/Cadastro/Cad.html";
-}
-function VisaoGeral(){
-    window.location.href = "/Professor/Index.html";
-}
-function Avaliacoes(){  
+};
+window.Avaliacoes = function(){
     window.location.href = "/Professor/Avaliacoes/ava.html";
-}
-function Grupos(){
+};
+window.VisaoGeral = function (){ 
+    window.location.href = "/Professor/Index.html";
+};
+window.Grupos = function(){
     window.location.href = "/Professor/Grupos/grp.html";
-}
-function Forum(){
+};
+window.Forum = function(){
     window.location.href = "/Professor/Forum/Avisos.html";
-}
-function Configuracoes(){
+};
+window.Configuracoes = function(){
     window.location.href = "/Professor/Configuracoes/Config.html";
 }
 
@@ -30,12 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Funções de Navegação
 window.Voltar = () => auth.signOut().then(() => window.location.href = "/Inicial-tela/Login/Log-aluno.html");
-window.VisaoGeral = () => window.location.href = "/Professor/Index.html";
-window.Avaliacoes = () => window.location.href = "/Professor/Avaliacoes/ava.html";
-window.Grupos = () => window.location.href = "/Professor/Grupos/grp.html";
-window.Forum = () => window.location.href = "/Professor/Forum/Avisos.html";
-window.Configuracoes = () => alert("Configurações de acessibilidade em breve!");
-window.Biblioteca = () => window.location.href = "/Professor/Biblioteca/Bib.html";
+
 
 let usuarioAtual = null;
 

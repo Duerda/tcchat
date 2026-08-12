@@ -16,6 +16,9 @@ function Forum(){
 function Grupos(){
     window.location.href = "/Professor/Grupos/grp.html";
 }
+window.VisaoGeral = function (){ 
+    window.location.href = "/Professor/Index.html";
+};
 
 
 function setFonte(nome, el) {
