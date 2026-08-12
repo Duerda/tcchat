@@ -27,11 +27,11 @@
                 <div class="Usuario">
                     <div id="foto"><span style="margin: 0px;"></span></div>
                     <div>
-                        <h4 style="margin: 0; color: #e4e9f4; width: 100px;">Eduarda</h4> 
-                        <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;">Desenvolvimento de Sistemas</h5> 
+                        <h4 style="margin: 0; color: #e4e9f4; width: 100px;">...</h4> 
+                        <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;">Carregando...</h5> 
                     </div>
-                    <p id="voltar" style="margin-top: 31px; margin-bottom: 0px; margin-left: 30px;" onclick="Voltar ()">X</p>
-                </div>
+                    <p id="voltar" style="margin-top: 31px; margin-bottom: 0px; margin-left: 30px;"onclick="Voltar()">X</p>
+                </div>"
 
             </div>
         </div>
@@ -45,63 +45,69 @@
                 <div class="bloco">
                     <div class="interior-bloco">
                         <h1>Grupos</h1>
-                        <p style="color: white;">8</p>
+                        <p id="totalGrupos" style="color: white;"></p>
                     </div>
                 
                 </div>
                 <div class="bloco">
                     <div class="interior-bloco">
                         <h1>No Prazo</h1>
-                        <p style="color: #34d399;">5</p>
+                        <p id="grupoNoPrazo" style="color: #34d399;">0</p>
                     </div>
                 </div>
 
                 <div class="bloco">
                 <div class="interior-bloco">
                     <h1>Atenção</h1>
-                    <p style="color: #fbbf24;">0</p>
+                    <p id="grupoAtenção" style="color: #fbbf24;">0</p>
                 </div>
             
             </div>
                 <div class="bloco">
                     <div class="interior-bloco">
                         <h1>Pendentes</h1>
-                        <p style="color: #EC3C3C;">1</p>
+                        <p id="grupoPendentes" style="color: #EC3C3C;">0</p>
                     </div>
                 </div>
             </div>
         
+                <div>
+                    <button class="btnGrupo" id="btnCriarGrupo">
+                        Criar Meu Grupo
+                    </button>
+                </div>            
+
+                <!--Formulario de Criação de Grupo-->
+                <div id="formGrupo" style="display:none; margin-bottom:25px">
+                    <input
+                        id="nomeProjeto"
+                        type="text"
+                        placeholder="Nome do TCC">
+
+                    <br><br>    
+
+                    <textarea 
+                    id="descricaoGrupo"
+                    placeholder="Descrição do Projeto"></textarea>
+
+                    <br><br>
+
+                    <button id="cancelarGrupo">Cancelar</button>
+                    <button id="salvarGrupo">Salvar Grupo</button>
+                </div>
+
     <!--GRUPOS DA TURMA-->
             <div class="title-gp">
                 <h3>Grupos da Turma</h3>
             </div>
-            
-            <div class="Grupos">
-                <div class="GT">
-                    <div class="sub-title-gp">
-                        <div style="display: flex; gap: 220px;" ><h3>Grupo 1</h3> <h1>Meu Grupo</h1></div>
-                        <h2>Exemplo 1</h2>
-                        <p>Plataforma onde coloca suas ideias</p>
-                        
-                        <!--Interior do bloco turma-->
-                        <div class="GT-int">
-                            <hr class="linha-decorativa">
-                            <div style="display: flex;"><div class="BL"></div><p>Kauã</p></div>
-                            <div style="display: flex;"><div class="BL" style="background-color: #3D4D61;"></div><p>Eduarda</p></div>
-                            <div style="display: flex;"><div class="BL" style="background-color: #3D4D61;"></div><p>João</p></div>
-                            <div style="display: flex;"><div class="BL" style="background-color: #3D4D61;"></div><p>Tiago</p></div>
-                            <div style="display: flex;"><div class="BL" style="background-color: #3D4D61;"></div><p>Enrico</p></div>
-                        </div>
-                    </div>
-                </div>
+                <div class="Grupos">
 
-                <div class="GT">dasd</div>
-                <div class="GT">dasd</div>
+                </div>
             </div>
         </section>
 
 </div>
     
 </body>
-<script src="Turma.js"></script>
+<script type="module" src="Turma.js"></script>
 </html>

@@ -18,15 +18,15 @@
             </div>
 
             <ul class="navb">
-                <li><button class="btn-nav">Inicio</button></li>
-                <li><button class="btn-nav">Sobre</button></li>
-                <li><button class="btn-nav">Integrantes</button></li>
-                <li><button class="btn-nav">Progresso</button></li>
+                <li><button id="btnInicio" class="btn-nav">Inicio</button></li>
+                <li><button id="btnSobre" class="btn-nav">Sobre</button></li>
+                <li><button id="btnIntegrantes" class="btn-nav">Integrantes</button></li>
+                <li><button id="btnProgresso" class="btn-nav">Progresso</button></li>
             </ul>
 
             <div class="nav-buttons">
-                <button class="btn-login" Onclick = "Login ()">LOGIN</button>
-                <button class="btn-cadastrar"Onclick = "Cadastrar()">Cadastrar</button>
+                <button class="btn-login" onclick="Login()">LOGIN</button>
+                <button class="btn-cadastrar" onclick="Cadastrar()">Cadastrar</button>
             </div>
         </nav>
         <div class="degrade-border"></div>
@@ -41,8 +41,8 @@
                     – sem planilhas confusas ou e-mails perdidos.
                 </p>
                 <div class="buttons">
-                    <button class="btn">LOGIN</button>
-                    <button class="btn-outline">Cadastrar</button>
+                    <button class="btn" onclick="Login()">LOGIN</button>
+                    <button class="btn-outline" onclick="Cadastrar()">Cadastrar</button>
                 </div>
             </div>
         </header>
@@ -66,6 +66,7 @@
                 </div>
             </div>
         </div>
+
         <div id="sobreP">
             <!--CONTAINER1-->
             <p id="p-sobre">VISÃO GERAL</p>
@@ -95,8 +96,8 @@
                     <button class="btn" style="margin-left: 120px; margin-top: 20px;">Saiba Mais</button>
                 </div>
             </div>
-
         </div>
+
         <div id="porcentagem">
             <!--PORCENTAGEM-->
             <div id="paragrafo-porcentagem">
