@@ -2,8 +2,9 @@
     display: flex;
 }
 :root {
+    --bg-principal: #080b12;
+    --bg-secundario: #0c1018;
     --cinza-escuro: #111520;
-    --main-color: #080B12;
     --red1: #EC3C3C;
     --red2: #ec3c3c34;
     --textcolor: #3D4D61;
@@ -21,6 +22,7 @@
 body {
     margin: 0px;
     padding: 0px;
+    background-color: var(--bg-principal);
 }
 .tudo{
     display: flex;
@@ -177,7 +179,7 @@ h2 {
 }
 .main {
     flex: 1;
-    background-color: var(--main-color); 
+    background-color: var(--bg-principal); 
     padding: 20px;
     overflow-y: auto;
     padding-top: 40px;
@@ -300,7 +302,37 @@ background: hsl(0deg 82% 58% / 16%);
     color: red;
     cursor: pointer;
 }   
-
+.btnGrupo{
+    width: 145px;
+    height: 36px;
+    background: var(--red1);
+    color: var(--white);
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    margin-right: 10px;
+    margin-bottom: 30px;
+}
+.btnGrupo:hover{
+    background: var(--red2);
+    color: white;
+    border:1px solid var(--red1);
+    cursor: pointer;
+}
+#formGrupo{
+    background-color: var(--bg-secundario);
+    border: 1px solid var(--bg-principal);
+    border-radius: 12px;
+    padding: 15px;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-sizing: border-box;
+}
+#numeroTurma {
+  width: 150px;
+}
 .title-gp h3 {
     color: var(--textcolor);
     font-weight: 500;
@@ -312,14 +344,12 @@ background: hsl(0deg 82% 58% / 16%);
     background-color: var(--cinza-claro);
     border-radius: 8px;
     flex: 1;
-
 }
 
 .Grupos {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
-    height: 350px;
-    width: 1300px;
 }
 
 .sub-title-gp h3 {
@@ -375,7 +405,6 @@ background: hsl(0deg 82% 58% / 16%);
     margin: 20px;
     border-radius: 8px;
     margin-top: 0px;
-    
 }
 
 .linha-decorativa {
@@ -404,3 +433,5 @@ background: hsl(0deg 82% 58% / 16%);
     font-family: "Roboto", sans-serif;
     font-weight: 600;
 }
+
+

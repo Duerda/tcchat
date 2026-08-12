@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 function Voltar(){
     window.location.href = "/Inicial-tela/Cadastro/Cad.html";
 }
@@ -19,98 +20,96 @@ function Configuracoes(){
 
 document.addEventListener('DOMContentLoaded', function() {
     let nomeCurso = document.getElementById("NomeUC").querySelector("h5");
+=======
+import { auth, db } from "../../backend/firebase/config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { collection, addDoc, query, where, onSnapshot, serverTimestamp, getDoc, doc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+>>>>>>> 53c1cc30d481d00e4c8562af0810f6de7883d1c6
 
-    let codigoSalvo = localStorage.getItem("codigoCurso");
+// Funções de Navegação
+window.Voltar = () => auth.signOut().then(() => window.location.href = "/Inicial-tela/Login/Log-aluno.html");
+window.VisaoGeral = () => window.location.href = "/Professor/Index.html";
+window.Biblioteca = () => window.location.href = "/Professor/Biblioteca/Bib.html";
+window.Avaliacoes = () => window.location.href = "/Professor/Avaliacoes/ava.html";
+window.Grupos = () => window.location.href = "/Professor/Grupos/grp.html";
+window.Forum = () => window.location.href = "/Professor/Forum/Avisos.html";
+window.Configuracoes = () => alert("Configurações de acessibilidade em breve!");
 
-    let cursos = {
-        "TMA": "Técnico em Meio Ambiente",
-        "DS": "Desenvolvimento de Sistemas",
-        "ADM": "Administração",
-        "SRC": "Secretariado",
-        "TDS": "Técnico de Design de Interiores"
-    };
-    nomeCurso.textContent = cursos[codigoSalvo] || "";
+let usuarioAtual = null;
+
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        const userDoc = await getDoc(doc(db, "usuarios", user.uid));
+        const tipo = userDoc.exists() ? userDoc.data().tipo : null;
+        if (tipo === "professor" || tipo === "coordenador") {
+            usuarioAtual = user;
+            carregarDadosPerfil(user.uid);
+            escutarAvisos();
+        } else {
+            alert("Acesso negado: Esta área é exclusiva para professores e coordenadores.");
+            window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+        }
+    } else {
+        window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+    }
 });
-document.addEventListener('DOMContentLoaded', function() {
-    const spanIniciais = document.getElementById("foto").querySelector("span"); // Seleciona o span dentro de #foto
-    const iniciaisSalvas = localStorage.getItem("iniciaisUsuario");
-    spanIniciais.textContent = iniciaisSalvas || ""; // Define o texto ou vazio
-});
-document.addEventListener('DOMContentLoaded', function() {
-    const spanIniciais = document.getElementById("NomeUC").querySelector("h4"); // Seleciona o span dentro de #foto
-    const nomeUsuario = localStorage.getItem("nomeUsuario");
-    spanIniciais.textContent = nomeUsuario || ""; // Define o texto ou vazio
-});
+
+function carregarDadosPerfil(uid) {
+    const q = query(collection(db, "usuarios"), where("uid", "==", uid));
+    onSnapshot(q, (snapshot) => {
+        if (!snapshot.empty) {
+            const data = snapshot.docs[0].data();
+            document.querySelector("#foto span").textContent = data.iniciais || "";
+            document.querySelector("#NomeUC h4").textContent = data.nome || "";
+            document.querySelector("#NomeUC h5").textContent = data.curso || "Coordenador/Professor";
+        }
+    });
+}
 
 const botaoSalvar = document.getElementById("salvar-avaliacao");
 const botaoVoltar = document.getElementById("voltar-avaliacao");
-
 const card = document.getElementById("card-avaliacao");
 const arquivo = document.getElementById("arquivo-avaliacao");
-
 const nota = document.getElementById("nota");
 const feedback = document.getElementById("feedback");
 
-botaoSalvar.addEventListener("click", salvarAvaliacao);
-
-function salvarAvaliacao() {
-
-    let confirmar = confirm("Deseja salvar a avaliação?");
-
-    if (!confirmar) {
-        return;
-    }
-
-    // Verifica se os campos foram preenchidos
+botaoSalvar.addEventListener("click", async () => {
     if (nota.value === "" || feedback.value === "") {
         alert("Preencha a nota e o feedback.");
         return;
     }
 
-    // Esconde o arquivo
-    arquivo.classList.add("oculto");
+    if (!confirm("Deseja salvar a avaliação?")) return;
 
-    // Escurece o card
-    card.classList.add("card-enviado");
+    try {
+        await addDoc(collection(db, "avaliacoes"), {
+            grupoId: "exemplo-grupo-1", // Em um cenário real, isso viria da seleção do grupo
+            professorUid: usuarioAtual.uid,
+            nota: parseFloat(nota.value),
+            feedback: feedback.value,
+            data: serverTimestamp()
+        });
 
-    // Bloqueia edição
-    nota.disabled = true;
-    feedback.disabled = true;
-
-    // Esconde botão salvar
-    botaoSalvar.style.display = "none";
-
-    // Mostra botão voltar
-    botaoVoltar.style.display = "inline-block";
-
-    // Salva localmente
-    localStorage.setItem("notaSalva", nota.value);
-    localStorage.setItem("feedbackSalvo", feedback.value);
-}
-
-botaoVoltar.addEventListener("click", voltarAvaliacao);
-
-function voltarAvaliacao() {
-
-    let confirmar = confirm("Deseja voltar a avaliação?");
-
-    if (!confirmar) {
-        return;
+        alert("Avaliação salva com sucesso!");
+        
+        // Efeito visual (mantendo comportamento original)
+        arquivo.style.display = "none";
+        card.style.opacity = "0.7";
+        nota.disabled = true;
+        feedback.disabled = true;
+        botaoSalvar.style.display = "none";
+        botaoVoltar.style.display = "inline-block";
+    } catch (error) {
+        console.error("Erro ao salvar:", error);
     }
+});
 
-    // Mostra arquivo novamente
-    arquivo.classList.remove("oculto");
-
-    // Remove escurecimento
-    card.classList.remove("card-enviado");
-
-    // Libera edição
+botaoVoltar.addEventListener("click", () => {
+    if (!confirm("Deseja voltar a avaliação?")) return;
+    arquivo.style.display = "flex";
+    card.style.opacity = "1";
     nota.disabled = false;
     feedback.disabled = false;
-
-    // Mostra salvar
     botaoSalvar.style.display = "inline-block";
-
-    // Esconde voltar
     botaoVoltar.style.display = "none";
-}
+});

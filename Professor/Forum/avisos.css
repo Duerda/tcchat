@@ -306,25 +306,18 @@ background: var(--cor-fundo-secundario);
     margin-bottom: 7px;
 }
 #novo-aviso{
-    width: 120px;
+    width: 145px;
     height: 36px;
-    background: var(--cor-fundo-secundario);
-    color: var(--cor-texto);
+    background: var(--cor-fundo-principal);
+    color: var(--cor-branco);
     padding: 10px;
     border-radius: 8px;
     border: none;
-    transition: all 0.8s ;
-    transform: scale(1.00);
+    margin-right: 10px;
 }
 #novo-aviso:hover {
-    width: 120px;
-    height: 36px;
-    background: var(--cor-fundo-secundario);
-    color: var(--cor-texto) ;
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
+    background: var(--cor-vermelho-transparente);
+    color: white;
+    border:1px solid var(--cor-vermelho);
     cursor: pointer;
-    transition: all 0.8s ;
-    transform: scale(1.05);
 }
