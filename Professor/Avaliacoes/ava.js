@@ -13,6 +13,10 @@ function Grupos(){
 function Forum(){
     window.location.href = "/Professor/Forum/Avisos.html";
 }
+function Configuracoes(){
+    window.location.href = "/Professor/Configuracoes/Config.html";
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     let nomeCurso = document.getElementById("NomeUC").querySelector("h5");
 

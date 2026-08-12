@@ -13,6 +13,10 @@ function VisaoGeral(){
 function Forum(){
     window.location.href = "/Professor/Forum/Avisos.html";
 }
+function Configuracoes(){
+    window.location.href = "/Professor/Configuracoes/Config.html";
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const spanIniciais = document.getElementById("foto").querySelector("span"); // Seleciona o span dentro de #foto
     const iniciaisSalvas = localStorage.getItem("iniciaisUsuario");
