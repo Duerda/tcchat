@@ -129,6 +129,16 @@ h2 {
     margin: auto;
     padding-top: 6px;
 }
+#Grupo-btn{   background: var(--cor-vermelho-transparente);
+    color: var(--cor-branco);
+    border: 1px solid var(--cor-vermelho);
+    cursor: pointer;
+    transform: scale(1.02);
+    transition: all 0.5s;
+}
+#Grupo-btn:hover{
+    cursor: unset;
+}
 .Usuario {
     display: flex;
 
@@ -201,14 +211,7 @@ h2 {
     color: red;
     cursor: pointer;
 }
-#Biblioteca {
-    background: var(--cor-vermelho-transparente);
-    color: white;
-    border:1px solid var(--cor-vermelho);
-    cursor: pointer;
-    transform: scale(1.02);
-    transition: all 0.5s;
-}
+
 #Biblioteca:hover {
     cursor: unset;
 }
@@ -287,7 +290,7 @@ h1 span {
 #Biblioteca:hover {
     cursor: pointer;
 }
-#Atividade:hover {
+#Atividades:hover {
     cursor: pointer;
 }
 #Orientador:hover {

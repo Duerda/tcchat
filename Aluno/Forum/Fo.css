@@ -37,6 +37,16 @@ body {
     position: sticky;
     top: 0;
 }
+#Forum-btn{   background: var(--cor-vermelho-transparente);
+    color: var(--cor-branco);
+    border: 1px solid var(--cor-vermelho);
+    cursor: pointer;
+    transform: scale(1.02);
+    transition: all 0.5s;
+}
+#Forum-btn:hover{
+    cursor: unset;
+}
 #lateral-superior {
     width: 197px;
     height: 59px;

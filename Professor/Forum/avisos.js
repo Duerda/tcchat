@@ -11,6 +11,9 @@ window.Forum = function(){
 window.Configuracoes = function(){
     window.location.href = "/Professor/Configuracoes/Config.html";
 }
+window.Biblioteca = function(){
+    window.location.href = "/Professor/Biblioteca/Bib.html";
+}
 window.VisaoGeral = function (){ 
     window.location.href = "/Professor/Index.html";
 };

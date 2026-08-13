@@ -1,113 +1,227 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <link rel="stylesheet" href="Turma-Style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Visão Geral</title>
 </head>
 <body>
-<div id="Geral">
-       <div id="lateral">
+    <div id="Geral">
+        <!--lateralAluno-->
+        <div id="lateral">
             <div id="lateral-superior">
                 <div><h2 style="margin-top: 2px;">T<span>CCHAT</span></h2></div>
-                <div id="Logo-de-professor">ALUNO</div>
+                <div id="Logo-de-aluno">ALUNO</div>
             </div>
             
-            <!-- VGABF = Visão Geral, Grupos, Avaliações, Biblioteca e Fórum -->
+            <!-- VGABF - ALUNO -->
             <div class="VGABF">
-                               <div id="painel">Painel</div>
-                <div><button onclick="Turmas ()" id="bisao">Turmas</button></div>
-                <div><button onclick="Grupo ()">Meu Grupo</button></div>
-                <div><button onclick="Forum ()">Forum</button></div>
-                <div><button onclick="Inspiracoes ()">inspirações </button></div>
+
+                <div id="painel">Navegação</div>
+                <div><button id="painel-btn" onclick="Painel ()" >Painel</button></div>
+                <div><button id="Grupo-btn"onclick="MeuGrupo ()">Meu Grupo</button></div>
+                <div><button id="Forum-btn"onclick="Forum ()" >Fórum</button></div>
+                <div><button id="Inspiracoes-btn" onclick="Inspiracoes ()">Inspirações</button></div>
+
             </div>
             <div id="sistema"><button onclick="Configuracoes ()" id="configuracao">Configurações</button></div>
             <div class="lateral-inferior">
                 <div class="Usuario">
-                    <div id="foto"><span style="margin: 0px;"></span></div>
-                    <div>
-                        <h4 style="margin: 0; color: #e4e9f4; width: 100px;">...</h4> 
-                        <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;">Carregando...</h5> 
+                    <div id="foto"><span style="margin: 0px;color: #e4e9f4; "></span></div>
+                    <div id="NomeUC">
+                        <h4 style="margin: 0; color: #e4e9f4; width: 100px;"></h4> 
+                        <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;"></h5> 
                     </div>
-                    <p id="voltar" style="margin-top: 31px; margin-bottom: 0px; margin-left: 30px;"onclick="Voltar()">X</p>
-                </div>"
+                    <p id="voltar"  onclick="Voltar ()">X</p>
+                </div>
 
             </div>
         </div>
-         <section class="main">
-            <div class="T1">
-                <h3 class="mago">Turma <span>2026.1</span></h3>
-                <p class="p">Acompanhe todos os grupos e o andamento dos TCCs</p>
+        <!--Fim da sessão lateral-->
+
+        <div id="conteudo">
+            <div id="conteudo-superior">
+                <h1>Turma <span>2026.1</span></h1><p>Acompanhe todos os grupos e o andamento dos TCCs</p>
             </div>
-
-            <div class="blocos-container">
-                <div class="bloco">
-                    <div class="interior-bloco">
-                        <h1>Grupos</h1>
-                        <p id="totalGrupos" style="color: white;"></p>
-                    </div>
-                
-                </div>
-                <div class="bloco">
-                    <div class="interior-bloco">
-                        <h1>No Prazo</h1>
-                        <p id="grupoNoPrazo" style="color: #34d399;">0</p>
-                    </div>
-                </div>
-
-                <div class="bloco">
-                <div class="interior-bloco">
-                    <h1>Atenção</h1>
-                    <p id="grupoAtenção" style="color: #fbbf24;">0</p>
-                </div>
+            <div id="linha"></div>
             
+            <div id="blocao">
+                <div id="Bloco-st">
+                <h1>Grupos</h1>
+                <p>8</p>
             </div>
-                <div class="bloco">
-                    <div class="interior-bloco">
-                        <h1>Pendentes</h1>
-                        <p id="grupoPendentes" style="color: #EC3C3C;">0</p>
-                    </div>
-                </div>
+            <div id="Bloco-st">
+                <h1>No Prazo</h1>
+                <p style="color: rgb(78, 228, 65);">5</p>
             </div>
-        
-            
-            <!--Formulario de Criação de Grupo-->
-            <div id="formGrupo" style="display:none; margin-bottom:25px">
-                <input
-                id="nomeProjeto"
-                        type="text"
-                        placeholder="Nome do TCC">
-                        
-                    <br><br>    
-                    
-                    <textarea 
-                    id="descricaoGrupo"
-                    placeholder="Descrição do Projeto"></textarea>
-
-                    <br><br>
-
-                    <button id="cancelarGrupo">Cancelar</button>
-                    <button id="salvarGrupo">Salvar Grupo</button>
-                </div>
-                
-                <!--GRUPOS DA TURMA-->
-            <div class="title-gp">
-                <h3>Grupos da Turma</h3>
+            <div id="Bloco-st">
+                <h1>Atenção</h1>
+                <p style="color: rgb(223, 150, 16);">0</p>
             </div>
-            <button class="btnGrupo" id="btnCriarGrupo">
-                Criar Meu Grupo
-            </button>
-            <div>
-            <div class="Grupos">
-                
+            <div id="Bloco-st">
+                <h1>Atrasados</h1>
+                <p style="color: rgb(223, 47, 16);">1</p>
             </div>
-            </div>            
         </div>
-    </section>
-    
-</div>
+        <!--Grupos da Turma-->
+        <h1 style="color: var(--cor-texto-secundario); margin-left: 8px; font-family: 'arial', sans-serif; font-weight: 200; letter-spacing: 1.2px; font-size: 32px; margin-bottom: 0px; font-weight: 100; margin-top: 35px;">Grupos da Turma</h1>
+        <div id="GT">
+            <div id="Grupos-Turma">
+                <div id="titulo">
+                    <h1>Grupo 1</h1>
+                    <h2>Meu Grupo</h2>
+                </div>
+                <h3>Agua e carbono</h3>
+                <p>Plataforma onde coloca suas ideias</p>
+                <div id="interior-gt">
+                    <div id="bloco-interior">
+                        <div id="bolinha" style="background-color:#ec3c3c;"></div>
+                        <h1>Kauã</h1>
+                    </div>
+                        <div id="bloco-interior">
+                        <div id="bolinha"></div>
+                        <h1>João Bonato</h1>
+                    </div>
+                        <div id="bloco-interior">
+                        <div id="bolinha"></div>
+                        <h1>Eduarda</h1>
+                    </div>
+                        <div id="bloco-interior">
+                        <div id="bolinha"></div>
+                        <h1>Tiago Rios</h1>
+                    </div>
+                        <div id="bloco-interior">
+                        <div id="bolinha"></div>
+                        <h1>Enrico</h1>
+                    </div>
+                    <div id="linhav"></div>
+                    <div id="bloco-inferior">
+                        <h1>No prazo</h1>
+                        <h2>Orientador</h2>
+                </div>
+                    </div>
+                </div>
+                <!--GP2-->
+                <div id="Grupos-Turma">
+                <div id="titulo">
+                    <h1>Grupo 2</h1>
+                    <h2></h2>
+                </div>
+                <h3>WebSite de Ideias</h3>
+                <p>Plataforma onde coloca suas ideias</p>
+                <div id="interior-gt">
+                    <div id="bloco-interior">
+                        <div id="bolinha" style="background-color:#ec3c3c;"></div>
+                        <h1>Marcos</h1>
+                    </div>
+                        <div id="bloco-interior">
+                        <div id="bolinha"></div>
+                        <h1>Sandra Costa</h1>
+                    </div>
+                        <div id="bloco-interior">
+                        <div id="bolinha"></div>
+                        <h1>Paulo Henrique</h1>
+                    </div>
+                        <div id="bloco-interior">
+                        <div id="bolinha"></div>
+                        <h1>Bruno Silva</h1>
+                    </div>
+                        <div id="bloco-interior">
+                        <div id="bolinha"></div>
+                        <h1>Rodrigo Neves</h1>
+                    </div>
+                    <div id="linhav"></div>
+                    <div id="bloco-inferior">
+                        <h1>No prazo</h1>
+                        <h2>Orientador</h2>
+                </div>
+                    </div>
+                </div>
+                <!--GP3-->
+                <div id="Grupos-Turma">
+                <div id="titulo">
+                    <h1>Grupo 3</h1>
+                    <h2></h2>
+                </div>
+                <h3>SecureBox</h3>
+                <p>Cofre digital de documentos pessoai</p>
+                <div id="interior-gt">
+                    <div id="bloco-interior">
+                        <div id="bolinha" style="background-color:#ec3c3c;"></div>
+                        <h1>Gabriel Mendes</h1>
+                    </div>
+                        <div id="bloco-interior">
+                        <div id="bolinha"></div>
+                        <h1>Isabela Ramos</h1>
+                    </div>
+                        <div id="bloco-interior">
+                        <div id="bolinha"></div>
+                        <h1>Mateus Cardoso</h1>
+                    </div>
+                        <div id="bloco-interior">
+                        <div id="bolinha"></div>
+                        <h1>Renato Guimarães</h1>
+                    </div>
+                        <div id="bloco-interior">
+                        <div id="bolinha"></div>
+                        <h1>Priscila Melo</h1>
+                    </div>
+                    <div id="linhav"></div>
+                    <div id="bloco-inferior">
+                        <h1>No prazo</h1>
+                        <h2>Orientador</h2>
+                </div>
+                    </div>
+                </div>
+            </div>
+    <!--Atividades e Entregas-->
+        <h1 style="color: var(--cor-texto-secundario); margin-left: 8px; font-family: 'arial', sans-serif; font-weight: 200; letter-spacing: 1.2px; font-size: 32px; margin-bottom: 0px; font-weight: 100; margin-top: 50px;">Atividades e Entregas</h1>
+            <div id="Progresso">
+                <div id="Prog-int">
+                    <h1>Progresso Semestre</h1>
+                    <h2>35%</h2>
+                </div>
+                <div id="barra-progresso1">
+                    <div id="barra-progresso2"></div>
+                </div>
+            </div>
+    <!--Entregas-->
+    <div id="Entregas" style="margin-top: 50px;">
+        <div id="Entregas-int" style="margin-top: 15px;">
+            <h1>Formação dos Grupos e Tema</h1>
+            <div id="bolinha"></div>
+            <p>Concluido</p>
+        </div>
+        <div id="Entregas-int" style="margin-top: 3px;">
+            <h2>Publicado por Coord. Ricardo Zanetti</h2>
+            <h3>10/02/2025 · Concluído · Ver detalhes ▾</h3>
+        </div>
+    </div>
 
+        <div id="Entregas" style="margin-top: 20px; border-left: 5px solid #f87171;">
+        <div id="Entregas-int" style="margin-top: 15px;">
+            <h1>Entrega do Pré-Projeto</h1>
+            <p></p>
+        </div>
+        <div id="Entregas-int" style="margin-top: 3px;">
+            <h2>Publicado por Prof. Carlos Mendes</h2>
+            <h3>20/02/2025 · 1 dia de atraso · ver detalhes ▾</h3>
+        </div>
+    </div>
+
+        <div id="Entregas" style="margin-top: 20px; border-left: 5px solid #fbbf24;">
+        <div id="Entregas-int" style="margin-top: 15px;">
+            <h1>Revisão do Pré-Projeto</h1>
+            <p></p>
+        </div>
+        <div id="Entregas-int" style="margin-top: 3px;">
+            <h2>Publicado por Prof. Carlos Mendes</h2>
+            <h3>05/03/2025 · em 12 dias · ver detalhes ▾</h3>
+        </div>
+    </div>
+    </div>
+    </div>
 </body>
-<script type="module" src="Turma.js"></script>
+<script src="Turma.js"></script>
 </html>

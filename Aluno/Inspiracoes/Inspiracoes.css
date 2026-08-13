@@ -31,13 +31,14 @@ body {
     display: flex;
     flex-direction: column;
     width: 229px;
-    height: 100vh;
+    height: 915px;
     background-color: var(--cor-fundo-secundario);
     position: sticky;
     top: 0;
 }
 
 #lateral-superior {
+        height: 59px;
     width: 197px;
     padding: 0 16px 18px;
     border-bottom: 1px solid var(--cor-borda);
@@ -67,6 +68,8 @@ h2 {
 }
 
 #Logo-de-professor {
+        font-family: "coolvetica", sans-serif;
+    font-weight: 200;
     display: inline-flex;
     font-size: 12px;
     margin-left: 8px;
@@ -86,6 +89,8 @@ h2 {
     color: var(--cor-texto-fraco);
     margin-bottom: 4px;
     letter-spacing: 0.5px;
+    font-family: "arial narrow", sans-serif;
+    font-weight: 700;
 }
 
 .VGABF {
@@ -116,7 +121,7 @@ h2 {
     background-repeat: no-repeat;
     transition: background-position 1s ease;
     cursor: pointer;
-    text-align: left;
+    text-align: center;
 }
 
 .VGABF div button:hover,
@@ -413,6 +418,29 @@ h1 {
     font-weight: 700;
     color: #fff;
     border: 2px solid var(--cor-fundo-card);
+}
+h2 {
+    font-size: 35px;
+    color: var(--cor-branco);
+    margin-left: 8px;
+    font-family: "coolvetica", sans-serif;
+    font-weight: 200;
+    letter-spacing: 3px;
+}
+#lateral-superior div h2 {
+    font-size: 32px;
+    color: var(--cor-branco);
+}
+
+#Inspiracoes-btn{   background: var(--cor-vermelho-transparente);
+    color: var(--cor-branco);
+    border: 1px solid var(--cor-vermelho);
+    cursor: pointer;
+    transform: scale(1.02);
+    transition: all 0.5s;
+}
+#Inspiracoes-btn:hover{
+    cursor: unset;
 }
 
 .inspi-nomes {

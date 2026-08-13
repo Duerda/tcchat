@@ -1,6 +1,7 @@
 window.Voltar = function(){
     window.location.href = "/Inicial-tela/Cadastro/Cad.html";
 };
+window.Voltar = () => auth.signOut().then(() => window.location.href = "/Inicial-tela/Login/Log-aluno.html");
 window.Avaliacoes = function(){
     window.location.href = "/Professor/Avaliacoes/ava.html";
 };

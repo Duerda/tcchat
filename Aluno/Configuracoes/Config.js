@@ -1,9 +1,19 @@
-function Voltar()       { window.location.href = "/Inicial-tela/Cadastro/Cad.html"; }
-function Turmas()       { window.location.href = "/Aluno/Turma.html"; }
-function Grupo()        { window.location.href = "/Aluno/Grupo.html"; }
-function Forum()        { window.location.href = "/Aluno/Forum.html"; }
-function Inspiracoes()  { window.location.href = "/Aluno/Inspi.html"; }
-function Configuracoes(){ window.location.href = "/Aluno/Config.html"; }
+window.Painel = function () {
+    window.location.href = "/Aluno/Turma.html";
+};
+window.MeuGrupo = function () {
+    window.location.href = "/Aluno/Grupos/gp.chat.html";
+};
+window.Forum = function () {
+    window.location.href = "/Aluno/Forum/Fo.html";
+};
+window.Inspiracoes = function () {
+    window.location.href = "/Aluno/Inspiracoes/Inspiracoes.html";
+};
+window.Voltar = function () {
+    window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+}
+
 
 function setFonte(nome, el) {
     document.body.style.fontFamily = "'" + nome + "'," + nome + ",sans-serif";
