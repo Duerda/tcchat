@@ -15,11 +15,11 @@ import {
   orderBy,
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-window.Grupo = function(){
-    window.location.href = "/Aluno/Grupos/Grupo.html";
+window.MeuGrupo = function(){
+    window.location.href = "/Aluno/Grupos/gp.chat.html";
 }
 window.Forum = function(){
-    window.location.href = "/Aluno/Forum/Forum.html";
+    window.location.href = "/Aluno/Forum/Fo.html";
 }
 window.Inspiracoes = function(){
     window.location.href = "/Aluno/Inspiracoes/Inspiracoes.html";
@@ -27,12 +27,6 @@ window.Inspiracoes = function(){
 window.Configuracoes = function () {
     window.location.href = "/Aluno/Configuracoes/Config.html";
 };
-window.Voltar = function () {
-    window.location.href = "/Inicial-tela/Login/Log-aluno.html";
-}
-window.Configuracoes = function(){
-    window.location.href = "/Aluno/Configuracoes/Config.html";
-}
 window.Voltar = () =>
   auth
     .signOut()
