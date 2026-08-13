@@ -2,8 +2,8 @@ function Voltar()       { window.location.href = "/Inicial-tela/Cadastro/Cad.htm
 function Turmas()       { window.location.href = "/Aluno/Turma.html"; }
 function Grupo()        { window.location.href = "/Aluno/Grupo.html"; }
 function Forum()        { window.location.href = "/Aluno/Forum.html"; }
-function Inspiracoes()  { window.location.href = "/Aluno/Inspi.html"; }
-function Configuracoes(){ window.location.href = "/Aluno/Config.html"; }
+function Inspiracoes()  { window.location.href = "/Aluno/Inspiracoes/Inspiracoes.html"; }
+function Configuracoes(){ window.location.href = "/Aluno/Configuracoes/Config.html"; }
 
 function setFonte(nome, el) {
     document.body.style.fontFamily = "'" + nome + "'," + nome + ",sans-serif";

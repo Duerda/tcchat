@@ -1,3 +1,21 @@
+import { auth, db } from "../../backend/firebase/config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import {
+  collection,
+  query,
+  onSnapshot,
+  doc,
+  getDoc,
+  updateDoc,
+  deleteDoc,
+  where,
+  addDoc,
+  serverTimestamp,
+  orderBy,
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+// Funções de Navegação
+window.Voltar = () => auth.signOut().then(() => window.location.href = "/Inicial-tela/Login/Log-aluno.html");
 
 window.Avaliacoes = function(){
     window.location.href = "/Professor/Avaliacoes/ava.html";
@@ -8,16 +26,15 @@ window.Grupos = function(){
 window.Forum = function(){
     window.location.href = "/Professor/Forum/Avisos.html";
 };
+window.Biblioteca = function(){
+    window.location.href = "/Professor/Biblioteca/Bib.html"
+}
 window.Configuracoes = function(){
     window.location.href = "/Professor/Configuracoes/Config.html";
 }
 window.VisaoGeral = function (){ 
     window.location.href = "/Professor/Index.html";
 };
-
-// Funções de Navegação
-window.Voltar = () => auth.signOut().then(() => window.location.href = "/Inicial-tela/Login/Log-aluno.html");
-
 
 let usuarioAtual = null;
 
@@ -28,7 +45,6 @@ onAuthStateChanged(auth, async (user) => {
         if (tipo === "professor" || tipo === "coordenador") {
             usuarioAtual = user;
             carregarDadosPerfil(user.uid);
-            escutarAvisos();
         } else {
             alert("Acesso negado: Esta área é exclusiva para professores e coordenadores.");
             window.location.href = "/Inicial-tela/Login/Log-aluno.html";
@@ -49,6 +65,8 @@ function carregarDadosPerfil(uid) {
             document.querySelector("#NomeUC h4").textContent = data.nome || "";
             document.querySelector("#NomeUC h5").textContent = data.curso || "Coordenador/Professor";
             localStorage.setItem("codigoSala", data.codigoSala || "geral");
+
+            escutarAvisos();
         }
     });
 }
@@ -57,28 +75,30 @@ function carregarDadosPerfil(uid) {
 const btnNovoAviso = document.getElementById("novo-aviso");
 const conteudoPrincipal = document.getElementById("conteudo");
 
-btnNovoAviso.addEventListener("click", async () => {
-    const titulo = prompt("Título do aviso:");
-    const texto = prompt("Conteúdo do aviso:");
+if (btnNovoAviso) {
+    btnNovoAviso.addEventListener("click", async () => {
+        const titulo = prompt("Título do aviso:");
+        const texto = prompt("Conteúdo do aviso:");
 
-    if (titulo && texto) {
-        try {
-            await addDoc(collection(db, "avisos"), {
-                titulo: titulo,
-                conteudo: texto,
-                autor: document.querySelector("#NomeUC h4").textContent,
-                autorUid: usuarioAtual.uid,
-                data: serverTimestamp(),
-                codigoSala: localStorage.getItem("codigoSala") || "geral"
-            });
-            alert("Aviso publicado!");
-        } catch (error) {
-            console.error("Erro ao publicar:", error);
+        if (titulo && texto) {
+            try {
+                await addDoc(collection(db, "avisos"), {
+                    titulo: titulo,
+                    conteudo: texto,
+                    autor: document.querySelector("#NomeUC h4").textContent,
+                    autorUid: usuarioAtual.uid,
+                    data: serverTimestamp(),
+                    codigoSala: localStorage.getItem("codigoSala") || "geral"
+                });
+                alert("Aviso publicado!");
+            } catch (error) {
+                console.error("Erro ao publicar:", error);
+            }
         }
-    }
-});
+    });
+}
 
-    export function escutarAvisos() {
+    function escutarAvisos() {
     const codigoSala = localStorage.getItem("codigoSala") || "geral";
     const q = query(
         collection(db, "avisos"), 
