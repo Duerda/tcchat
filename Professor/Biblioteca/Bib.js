@@ -1,3 +1,19 @@
+import { auth, db } from "../../backend/firebase/config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import {
+  collection,
+  query,
+  onSnapshot,
+  doc,
+  getDoc,
+  updateDoc,
+  deleteDoc,
+  where,
+  addDoc,
+  serverTimestamp,
+  orderBy,
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
 window.Voltar = function(){
     window.location.href = "/Inicial-tela/Cadastro/Cad.html";
 };
@@ -42,7 +58,7 @@ onAuthStateChanged(auth, async (user) => {
         if (tipo === "professor" || tipo === "coordenador") {
             usuarioAtual = user;
             carregarDadosPerfil(user.uid);
-            escutarAvisos();
+            escutarBiblioteca();
         } else {
             alert("Acesso negado: Esta área é exclusiva para professores e coordenadores.");
             window.location.href = "/Inicial-tela/Login/Log-aluno.html";

@@ -8,6 +8,10 @@ import {
   getDoc,
   updateDoc,
   deleteDoc,
+  where,
+  addDoc,
+  serverTimestamp,
+  orderBy,
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 // Funções de Navegação
@@ -42,6 +46,28 @@ onAuthStateChanged(auth, async (user) => {
     }
   } else {
     window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+  }
+});
+
+// Aguarda o DOM carregar para garantir que a div #listaGrupos já existe
+document.addEventListener("DOMContentLoaded", () => {
+  const listaGrupos = document.getElementById("listaGrupos");
+
+  if (listaGrupos) {
+    listaGrupos.addEventListener("click", (e) => {
+      const btnEditar = e.target.closest(".btnEditar");
+      const btnExcluir = e.target.closest(".btnExcluir");
+
+      if (btnEditar) {
+        const id = btnEditar.dataset.id;
+        editarGrupo(id);
+      }
+
+      if (btnExcluir) {
+        const id = btnExcluir.dataset.id;
+        excluirGrupo(id);
+      }
+    });
   }
 });
 
@@ -171,3 +197,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const iniciaisSalvas = localStorage.getItem("iniciaisUsuario");
     spanIniciais.textContent = iniciaisSalvas || ""; // Define o texto ou vazio
 });
+
+function carregarDadosPerfil(uid) {
+    const q = query(collection(db, "usuarios"), where("uid", "==", uid));
+    onSnapshot(q, (snapshot) => {
+        if (!snapshot.empty) {
+            const data = snapshot.docs[0].data();
+            document.querySelector("#foto span").textContent = data.iniciais || "";
+            document.querySelector("#NomeUC h4").textContent = data.nome || "";
+            document.querySelector("#NomeUC h5").textContent = data.curso || "Coordenador/Professor";
+        }
+    });
+}
