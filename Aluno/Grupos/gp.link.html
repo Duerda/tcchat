@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="stylesheet" href="gp.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grupos</title>
+</head>
+<body>
+    <div id="Geral">
+        <!--lateralAluno-->
+        <div id="lateral">
+            <div id="lateral-superior">
+                <div><h2 style="margin-top: 2px;">T<span>CCHAT</span></h2></div>
+                <div id="Logo-de-aluno">ALUNO</div>
+            </div>
+            
+            <!-- VGABF - ALUNO -->
+            <div class="VGABF">
+
+                <div id="painel">Navegação</div>
+                <div><button onclick="Painel ()" >Painel</button></div>
+                <div><button onclick="MeuGrupo ()" style="background-color:rgba(236, 60, 60, 0.16) ; color: rgb(236, 60, 60); background: none;">Meu Grupo</button></div>
+                <div><button onclick="Forum ()" >Fórum</button></div>
+                <div><button onclick="Inspiracoes ()">Inspirações</button></div>
+
+            </div>
+            <div id="sistema"><button onclick="Configuracoes ()" id="configuracao">Configurações</button></div>
+            <div class="lateral-inferior">
+                <div class="Usuario">
+                    <div id="foto"><span style="margin: 0px;color: #e4e9f4; "></span></div>
+                    <div id="NomeUC">
+                        <h4 style="margin: 0; color: #e4e9f4; width: 100px;"></h4> 
+                        <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;">Desenvolvimento de Sistemas</h5> 
+                    </div>
+                    <p id="voltar"  onclick="Voltar ()">X</p>
+                </div>
+
+            </div>
+        </div>
+        <!--Fim da sessão lateral-->
+
+        <div id="conteudo">
+            <div id="conteudo-superior">
+                <h1>Meu <span>Grupo</span></h1><p>WebSite - Grupo 1</p>
+            </div>
+            <div id="linha"></div>
+        <!--btns-->
+            <div id="navbar">
+                <button class="navbtn" id = "Chat" onclick=" chat ()" >Chat do Grupo</button>
+                <button class="navbtn" id = "Orientador" onclick=" orientador ()">Chat c/Orientador</button>
+                <button class="navbtn" id = "Atividades" onclick=" atividade ()">Atividades</button>
+                <button class="navbtn" style="background-color:rgba(236, 60, 60, 0.16) ; color: rgb(236, 60, 60);">Biblioteca</button>
+            </div>
+            <!--ATT-->
+            <h1 style="margin-top: 20px; margin-bottom: 25px; font-size: 35px;"><span>Links por </span>Curso</h1>
+            <div id="blocao">
+            <div id="bloco-l">
+                <h1>Figma</h1>
+                <p>DS - Programação</p>
+            </div>
+            <div id="bloco-l">
+                <h1>Draw.io</h1>
+                <p>DS - Diagramas</p>
+            </div>
+            <div id="bloco-l">
+                <h1>Canva</h1>
+                <p>Apresentações</p>
+            </div>
+            <div id="bloco-l">
+                <h1>Trello</h1>
+                <p>Gestão de Tarefa</p>
+            </div>
+            </div>
+
+            <div id="blocao" style="margin-top: 15px;">
+                <div id="bloco-l">
+                <h1>Github</h1>
+                <p>Repositório código</p>
+            </div>
+            <div id="bloco-l">
+                <h1>Notion</h1>
+                <p>Documentação</p>
+            </div>
+            <div id="bloco-l">
+                <h1>Forms</h1>
+                <p>Questionário</p>
+            </div>
+            </div>
+
+            <h1 style="margin-top: 20px; margin-bottom: 25px; font-size: 35px;"><span>Links por Etapa do </span>TCC</h1>
+            <div id="blocao">
+            <div id="bloco-l">
+                <h1>Template Pré-Projeto</h1>
+                <p>Etapa 1</p>
+            </div>
+            <div id="bloco-l">
+                <h1>Normas</h1>
+                <p>Do Projeto</p>
+            </div>
+            <div id="bloco-l">
+                <h1>Modelo de Apresentação</h1>
+                <p>Para os slides</p>
+            </div>
+            <div id="bloco-l">
+                <h1>Checklist de Entrega</h1>
+                <p>Todas as Etapas</p>
+            </div>
+            </div>
+
+            <h1 style="margin-top: 28px; margin-bottom: 25px; font-size: 37px;">Arquivos do Grupo</h1>
+            <div id="arquivos">
+                <h1>Arraste ou clique aqui.</h1>
+            </div>
+    </div>
+    </div>
+</body>
+<script src="gp.js"></script>
+</html>
