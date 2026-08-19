@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="stylesheet" href="grp.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="Geral">
+        <!--Incio da sessão lateral-->
+        <div id="lateral">
+            <div id="lateral-superior">
+                <div><h2 style="margin-top: 2px;">T<span>CCHAT</span></h2></div>
+                <div id="Logo-de-professor">PROFESSOR</div>
+            </div>
+            
+            <!-- VGABF = Visão Geral, Grupos, Avaliações, Biblioteca e Fórum -->
+            <div class="VGABF">
+
+                <div id="painel">Navegação</div>
+                <div><button onclick="VisaoGeral ()" id="bisao">Visão Geral</button></div>
+                <div><button onclick="Grupos ()" id = "Grupos">Grupos</button></div>
+                <div><button onclick="Avaliacoes ()">Avaliações</button></div>
+                <div><button onclick="Biblioteca ()">Biblioteca</button></div>
+                <div><button onclick="Forum ()">Fórum</button></div>
+            </div>
+            <div id="sistema"><button onclick="Configuracoes ()" id="configuracao">Configurações</button></div>
+            <div class="lateral-inferior">
+                <div class="Usuario">
+                    <div id="foto"><span style="margin: 0px;color: #e4e9f4; "></span></div>
+                    <div id="NomeUC">
+                        <h4 style="margin: 0; color: #e4e9f4; width: 100px;"></h4> 
+                        <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;"></h5> 
+                    </div>
+                    <p id="voltar" style="margin-top: 31px; margin-bottom: 0px; margin-left: 30px;" onclick="Voltar ()">X</p>
+                </div>
+
+            </div>
+        </div>
+        <!--Fim da sessão lateral-->
+         <div id="conteudo">
+            <div id="conteudo-superior">
+                <h1>Grupos</h1><p>Todos os grupos dos cursos</p>
+            </div>
+            <h2 style="color: #7a8699;">Turmas</h2>
+             <div class="conteudo-inferior">
+            <div id="turmas">
+                <p style=" font-size: 13px; color: #3d4d61; margin-left: 10px; margin-bottom: 7px; margin-top: 15px;"> GRUPO (js) X/X </p>
+                <h3 style="color: #E4E9F4; margin-left: 10px; margin-bottom: 10px; margin-top: 0px;">Nome do TCC</h3 >
+                <ul style="margin-top: 0px;">
+                    <li class="aluno">Aluno 1</li> 
+                    <li class="aluno">Aluno 2</li>
+                    <li class="aluno">Aluno 3</li>
+                    <li class="aluno">Aluno 4</li>
+                    <li class="aluno">Aluno 5</li>
+                </ul>
+                <div id="Tcc-conteudo-inferior">
+                <div id="progresso">
+                   PRAZO
+                </div>
+                <div id="Orientador">
+                    Enrico Bonato
+                </div>
+            </div>  
+            <!-- Conteúdo inferior dos grupos -->
+        </div>
+        </div>
+       
+    </div>
+</body>
+<script src="grp.js"></script>
+</html>

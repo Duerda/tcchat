@@ -7,6 +7,12 @@ function VisaoGeral(){
 function Avaliacoes(){  
     window.location.href = "/Professor/Avaliacoes/ava.html";
 }
+function Grupos(){
+    window.location.href = "/Professor/Grupos/grp.html";
+}
+function Forum(){
+    window.location.href = "/Professor/Forum/Avisos.html";
+}
 document.addEventListener('DOMContentLoaded', function() {
     const spanIniciais = document.getElementById("foto").querySelector("span"); // Seleciona o span dentro de #foto
     const iniciaisSalvas = localStorage.getItem("iniciaisUsuario");
@@ -95,5 +101,60 @@ function criarNovoLink(){
 
     // Adiciona embaixo dos outros
     areaLinks.appendChild(novoLink);
+}
 
+
+
+
+const botaoArquivo = document.getElementById("ArquivoModelo");
+const areaArquivos = document.getElementById("arquivos");
+
+botaoArquivo.addEventListener("click", criarNovoArquivo);
+
+function criarNovoArquivo() {
+
+    let nome = prompt("Digite o nome do arquivo:");
+
+    if (!nome || nome.trim() === "") {
+        alert("Nome inválido.");
+        return;
+    }
+
+    const input = document.createElement("input");
+    input.type = "file";
+
+    input.onchange = function() {
+
+        const arquivo = input.files[0];
+
+        if (!arquivo) {
+            alert("Arquivo inválido.");
+            return;
+        }
+
+        const urlArquivo = URL.createObjectURL(arquivo);
+
+        const novoArquivo = document.createElement("div");
+        novoArquivo.classList.add("card-arquivo");
+
+        novoArquivo.innerHTML = `
+            <a href="${urlArquivo}" target="_blank" class="nome-arquivo">
+                ${nome}
+            </a>
+
+            <p class="excluir">X</p>
+        `;
+
+        const botaoExcluir = novoArquivo.querySelector(".excluir");
+
+        botaoExcluir.addEventListener("click", function() {
+            if (confirm("Tem certeza que deseja excluir esse arquivo?")) {
+                novoArquivo.remove();
+            }
+        });
+
+        areaArquivos.appendChild(novoArquivo);
+    };
+
+    input.click();
 }

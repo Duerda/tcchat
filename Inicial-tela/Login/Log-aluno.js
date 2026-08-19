@@ -1,22 +1,11 @@
-
-
-const SUPABASE_URL = "https://ktnlazcmojcrzxspggyf.supabase.co"; 
-const SUPABASE_KEY = "sb_publishable_NT8jHzUdqXM8lgL2Pfn2UQ_1W0IzCWH"; 
-
-
-window.Entrar = function (){
-    window.location.href = "/Aluno/Turma.html";
-}
-
-window.Professor = function (){
-    window.location.href = "Log-Prof.html";
-}
-
-window.Cadastrar = function (){
+window.Professor = function () {
+    window.location.href = "/Inicial-tela/Login/Log-Prof.html";
+};
+window.Cadastrar = function () {
     window.location.href = "/Inicial-tela/Cadastro/Cad.html";
 }
 
-async function Formulario (event){
+ function Formulario (event){
     //Impede que seja enviado por padrão do formulario, ou seja, impede que a página seja recarregada
     event.preventDefault();
 
@@ -72,22 +61,5 @@ async function Formulario (event){
         localStorage.setItem("iniciaisUsuario", iniciais);
         localStorage.setItem("nomeUsuario", nomeUsuario);
 
-        //Login com Supabase
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: senha,
-        });
-
-        if (error) {
-            alert("Erro: " + error.message);
-            return;
-        }
-
-        alert("Bem-vindo!");
-        window.location.href = "/Aluno/Turma.html";
-
-    } else {
-        alert("Email inválido. Use um email @aluno.cps.sp.gov.br");
-        return;
     }
 }

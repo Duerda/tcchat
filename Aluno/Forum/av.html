@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="stylesheet" href="av.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avisos</title>
+</head>
+<body>
+    <div id="Geral">
+        <!--lateralAluno-->
+        <div id="lateral">
+            <div id="lateral-superior">
+                <div><h2 style="margin-top: 2px;">T<span>CCHAT</span></h2></div>
+                <div id="Logo-de-aluno">ALUNO</div>
+            </div>
+            
+            <!-- VGABF - ALUNO -->
+            <div class="VGABF">
+
+                <div id="painel">Navegação</div>
+                <div><button onclick="Painel ()" >Painel</button></div>
+                <div><button onclick="MeuGrupo ()">Meu Grupo</button></div>
+                <div><button onclick="Forum ()" >Fórum</button></div>
+                <div><button onclick="Inspiracoes ()">Inspirações</button></div>
+
+            </div>
+            <div id="sistema"><button onclick="Configuracoes ()" id="configuracao">Configurações</button></div>
+            <div class="lateral-inferior">
+                <div class="Usuario">
+                    <div id="foto"><span style="margin: 0px;color: #e4e9f4; "></span></div>
+                    <div id="NomeUC">
+                        <h4 style="margin: 0; color: #e4e9f4; width: 100px;"></h4> 
+                        <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;">Desenvolvimento de Sistemas</h5> 
+                    </div>
+                    <p id="voltar"  onclick="Voltar ()">X</p>
+                </div>
+
+            </div>
+        </div>
+        <!--Fim da sessão lateral-->
+
+        <div id="conteudo">
+            <div id="conteudo-superior">
+                <h1>Fórum e <span>Avisos</span></h1><p>Comunicação e espaços de dúvidas gerais</p>
+            </div>
+            <div id="linha"></div>
+        <!--BOTÕES Aviso e Forum -->
+            <div id="nav-AF">
+                <div class="btn-container" style="background-color: var(--cor-fundo-secundario); border: var(--cor-borda) 3px solid;"><a href="Fo.html" id="btn-inativo">Dúvidas</a></div>  
+                <div class="btn-container" ><a href="av.html" id="btn-ativo">Avisos</a></div>
+            </div>
+            <div id="quadro">
+                <div id="q1">
+                    <h1>Coord. Ricardo Guzzon</h1>
+                    <p>Fixado</p>
+                </div>
+                <h2>Coordenador</h2>
+                <h3>19/02/2025 às 14:30</h3>
+                <h4>⚠️ Prazo do Pré-Projeto — Atenção Grupos em Atraso</h4>
+                <h5>O prazo foi encerrado em 20/02. Os grupos 5 e 7 têm até 28/02 para regularizar, com a possível perda de 1 ponto/dia.</h5>
+                <div id="linhav"></div>
+                <h6>Urgente</h6>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+<script src="Bib.js"></script>
+</html>

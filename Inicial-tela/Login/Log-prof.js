@@ -1,20 +1,10 @@
-
-
-
-const SUPABASE_URL = "https://ktnlazcmojcrzxspggyf.supabase.co"; 
-const SUPABASE_KEY = "sb_publishable_NT8jHzUdqXM8lgL2Pfn2UQ_1W0IzCWH"; 
-
-
-
-window.Entrar = function(){
-    window.location.href = "/Professor/Index.html";
-}
-window.Aluno = function(){
-    window.location.href = "Log-aluno.html";
-}
-window.Cadastrar = function (){
+window.Aluno = function () {
+    window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+};
+window.Cadastrar = function () {
     window.location.href = "/Inicial-tela/Cadastro/Cad.html";
 }
+
 function toggleCoor() {
     const box = document.getElementById("Coor-box");
     const seta = document.getElementById("seta");
@@ -80,17 +70,7 @@ function Formulario (event){
         // Salva no localStorage
         localStorage.setItem("iniciaisUsuario", iniciais);
         localStorage.setItem("nomeUsuario", nomeUsuario);
-        //Login com Supabase
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: senha,
-        });
-
-        if (error) {
-            alert("Erro: " + error.message);
-            return;
-        }
-
+        
         alert("Bem-vindo!");
         window.location.href = "/Professor/Index.html";
 

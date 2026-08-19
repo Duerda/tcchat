@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="stylesheet" href="Fo.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fórum</title>
+</head>
+<body>
+    <div id="Geral">
+        <!--lateralAluno-->
+        <div id="lateral">
+            <div id="lateral-superior">
+                <div><h2 style="margin-top: 2px;">T<span>CCHAT</span></h2></div>
+                <div id="Logo-de-aluno">ALUNO</div>
+            </div>
+            
+            <!-- VGABF - ALUNO -->
+            <div class="VGABF">
+
+                <div id="painel">Navegação</div>
+                <div><button onclick="Painel ()" >Painel</button></div>
+                <div><button onclick="MeuGrupo ()">Meu Grupo</button></div>
+                <div><button onclick="Forum ()" >Fórum</button></div>
+                <div><button onclick="Inspiracoes ()">Inspirações</button></div>
+
+            </div>
+            <div id="sistema"><button onclick="Configuracoes ()" id="configuracao">Configurações</button></div>
+            <div class="lateral-inferior">
+                <div class="Usuario">
+                    <div id="foto"><span style="margin: 0px;color: #e4e9f4; "></span></div>
+                    <div id="NomeUC">
+                        <h4 style="margin: 0; color: #e4e9f4; width: 100px;"></h4> 
+                        <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;">Desenvolvimento de Sistemas</h5> 
+                    </div>
+                    <p id="voltar"  onclick="Voltar ()">X</p>
+                </div>
+
+            </div>
+        </div>
+        <!--Fim da sessão lateral-->
+
+        <div id="conteudo">
+            <div id="conteudo-superior">
+                <h1>Fórum e <span>Avisos</span></h1><p>Comunicação e espaços de dúvidas gerais</p>
+            </div>
+            <div id="linha"></div>
+        <!--BOTÕES Aviso e Forum -->
+            <div id="nav-AF">
+                <div class="btn-container"><a href="Fo.html" id="btn-ativo">Dúvidas</a></div>  
+                <div class="btn-container" style="background-color: var(--cor-fundo-secundario); border: var(--cor-borda) 3px solid;"><a href="av.html" id="btn-inativo">Avisos</a></div>
+            </div>
+            <button id="btn-duvida" onclick="abrirBloco('bloco-nova-duvida')">+ Nova Dúvida geral</button>
+            <div id="DV">
+                <h1><span>💡 Dúvidas gerais sobre TCC </span> — prazos, normas, como funciona a entrega, etc. Para dúvidas do seu projeto use o Chat com Orientador</h1>
+            </div>
+            <div id="quadro">
+                <h1>Tiago :</h1>
+                <p>- Como instalar Phyton?</p>
+                <div id="quadro-int">
+                    <h2>Coord. Ricardo Guzzon respondeu</h2>
+                    <p>Veja um tutorial no Youtube</p>
+                </div>
+            </div>
+            <!-- Bloco de nova dúvida -->
+            <div id="bloco-nova-duvida" style="display: none;" class="bloco-nv">
+                <h1>Nova Dúvida</h1>
+                <form id="form-entrega" onsubmit="enviarFormulario(event)">
+                    <label for="duvida">Sua dúvida:</label>
+                    <textarea id="duvida" name="duvida" rows="4" cols="50"></textarea>
+                    <button type="submit">Enviar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+<script src="Fo.js"></script>
+</html>
