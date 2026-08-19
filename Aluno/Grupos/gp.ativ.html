@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="stylesheet" href="gp.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grupos</title>
+</head>
+<body>
+    <div id="Geral">
+        <!--lateralAluno-->
+        <div id="lateral">
+            <div id="lateral-superior">
+                <div><h2 style="margin-top: 2px;">T<span>CCHAT</span></h2></div>
+                <div id="Logo-de-aluno">ALUNO</div>
+            </div>
+            
+            <!-- VGABF - ALUNO -->
+            <div class="VGABF">
+
+                <div id="painel">Navegação</div>
+                <div><button id="painel-btn" onclick="Painel ()" >Painel</button></div>
+                <div><button id="Grupo-btn"onclick="MeuGrupo ()">Meu Grupo</button></div>
+                <div><button id="Forum-btn"onclick="Forum ()" >Fórum</button></div>
+                <div><button id="Inspiracoes-btn" onclick="Inspiracoes ()">Inspirações</button></div>
+
+            </div>
+            <div id="sistema"><button onclick="Configuracoes ()" id="configuracao">Configurações</button></div>
+            <div class="lateral-inferior">
+                <div class="Usuario">
+                    <div id="foto"><span style="margin: 0px;color: #e4e9f4; "></span></div>
+                    <div id="NomeUC">
+                        <h4 style="margin: 0; color: #e4e9f4; width: 100px;"></h4> 
+                        <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;"></h5> 
+                    </div>
+                    <p id="voltar"  onclick="Voltar ()">X</p>
+                </div>
+
+            </div>
+        </div>
+        <!--Fim da sessão lateral-->
+
+        <div id="conteudo">
+            <div id="conteudo-superior">
+                <h1>Meu <span>Grupo</span></h1><p>WebSite - Grupo 1</p>
+            </div>
+            <div id="linha"></div>
+        <!--btns-->
+            <div id="navbar">
+                <button class="navbtn" id = "Chat" onclick=" chat ()" >Chat do Grupo</button>
+                <button class="navbtn" id = "Orientador" onclick=" orientador ()" >Chat c/Orientador</button>
+                <button class="navbtn" style="background-color:rgba(236, 60, 60, 0.16) ; color: rgb(236, 60, 60);">Atividades</button>
+                <button class="navbtn" id = "Biblioteca" onclick=" biblioteca ()">Biblioteca</button>
+            </div>
+            <!--ATT-->
+            <h6>Atividade do Grupo</h6>
+            <div id="att">
+                <div id="att-int">Concluído</div>
+                <h1>Formação dos grupos e tema</h1>
+                <p>Publicado por Coord. Ricardo Guzzon</p>
+                <p style="margin-top: 32px;">Prazo: 10/02/2025 - Concluído - ver detalhes ▾</p>
+            </div>
+
+            <div id="att2">
+                <div id="att-int2">Entregar agora</div>
+                <h1>Entrega do Pré-Projeto</h1>
+                <p style="margin-top: 0px; margin-bottom: 10px">Publicado por Prof. Legal</p>
+                <div id="att2" style="height: 55px; padding-top: 10px; width: 95; margin-righ: 36px; margin-top: 0px; margin-left: 36px;">
+                    <h1 style="margin-top: 2px; font-size: 15px;">O que deve ser entregue:</h1>
+                    <p style="margin-top: 5px;">Documento com justificativa, objetivos e metodologia (mín. 5 páginas). PDF ou DOCX, Times 12, espaço 1.5.</p>
+                </div>
+                <p style="margin-top: 20px; padding-bottom: 10px;">Prazo: 10/02/2025 - Concluído - ver detalhes ▾</p>
+            </div>
+
+            <div id="att">
+                <div id="att-int" style="background-color:rgb(22, 29, 42) ; color:rgb(122, 134, 153) ;">Concluído</div>
+                <h1>Revisão do Pré-Projeto</h1>
+                <p>Publicado por Prof. ainda mais legal</p>
+                <p style="margin-top: 32px;">Prazo: 05/03/2025 · em 12 dias · ver detalhes ▾</p>
+            </div>
+
+        </div>
+    </div>
+    </div>
+</body>
+<script src="gp.js"></script>
+</html>

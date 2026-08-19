@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="stylesheet" href="gp.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grupos</title>
+</head>
+<body>
+    <div id="Geral">
+        <!--lateralAluno-->
+        <div id="lateral">
+            <div id="lateral-superior">
+                <div><h2 style="margin-top: 2px;">T<span>CCHAT</span></h2></div>
+                <div id="Logo-de-aluno">ALUNO</div>
+            </div>
+            
+            <!-- VGABF - ALUNO -->
+            <div class="VGABF">
+
+                <div id="painel">Navegação</div>
+                <div><button id="painel-btn" onclick="Painel ()" >Painel</button></div>
+                <div><button id="Grupo-btn"onclick="MeuGrupo ()">Meu Grupo</button></div>
+                <div><button id="Forum-btn"onclick="Forum ()" >Fórum</button></div>
+                <div><button id="Inspiracoes-btn" onclick="Inspiracoes ()">Inspirações</button></div>
+
+            </div>
+            <div id="sistema"><button onclick="Configuracoes ()" id="configuracao">Configurações</button></div>
+            <div class="lateral-inferior">
+                <div class="Usuario">
+                    <div id="foto"><span style="margin: 0px;color: #e4e9f4; "></span></div>
+                    <div id="NomeUC">
+                        <h4 style="margin: 0; color: #e4e9f4; width: 100px;"></h4> 
+                        <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;"></h5> 
+                    </div>
+                    <p id="voltar"  onclick="Voltar ()">X</p>
+                </div>
+
+            </div>
+        </div>
+        <!--Fim da sessão lateral-->
+
+        <div id="conteudo">
+            <div id="conteudo-superior">
+                <h1>Meu <span>Grupo</span></h1><p>WebSite - Grupo 1</p>
+            </div>
+            <div id="linha"></div>
+        <!--btns-->
+            <div id="navbar">
+                <button class="navbtn" id = "Chat" onclick=" chat ()" >Chat do Grupo</button>
+                <button class="navbtn" style="background-color:rgba(236, 60, 60, 0.16) ; color: rgb(236, 60, 60);">Chat c/Orientador</button>
+                <button class="navbtn" id = "Atividades" onclick=" atividade ()">Atividades</button>
+                <button class="navbtn" id = "Biblioteca" onclick=" biblioteca ()">Biblioteca</button>
+            </div>
+            <!--chat-->
+            <div id="chat">
+                    <h1>Chat com Orientador</h1>
+                    <p>Prof. alguma coisa - só professor e coordenador respondem</p>
+                    <div id="linhav" style="margin-bottom: 55px; margin-top: 20px;" ></div>
+                    <div id="c1">Professor, podemos usar java adaptado como um tipo de metodologia?</div>
+                    <div id="c1" style="margin-top: 35px; width: 800px;">Sim! o java adaptado é ótimo para TCCs de desenvolvimento. Documentem as sprints no relatório técnico.</div>
+                    <div id="c1" style="margin-top: 25px; margin-left: 1000px; width: 500px;">Obrigado, Professor</div>
+                    <input type="text" placeholder="Digite sua Mensagem..." id="chat-text">
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+<script src="gp.js"></script>
+</html>

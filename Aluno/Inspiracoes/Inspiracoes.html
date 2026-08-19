@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="stylesheet" href="Inspiracoes.css">
+    <meta charset="UTF-8">
+
+    <title>Inspirações</title>
+</head>
+<body>
+<div id="Geral">
+
+    <!-- LATERAL -->
+    <div id="lateral">
+        <div id="lateral-superior">
+            <div><h2 style="margin-top: 2px;">T<span>CCHAT</span></h2></div>
+            <div id="Logo-de-professor">ALUNO</div>
+        </div>
+
+        <div class="VGABF">
+            <div id="painel">Navegação</div>
+            <div><button id="painel-btn" onclick="Painel ()" >Painel</button></div>
+                <div><button id="Grupo-btn"onclick="MeuGrupo ()">Meu Grupo</button></div>
+                <div><button id="Forum-btn"onclick="Forum ()" >Fórum</button></div>
+                <div><button id="Inspiracoes-btn" onclick="Inspiracoes ()">Inspirações</button></div>
+        </div>
+
+        <div id="sistema"><button onclick="Configuracoes()" id="configuracao">Configurações</button></div>
+
+        <div class="lateral-inferior">
+            <div class="Usuario">
+                <div id="foto"><span style="margin: 0px;"></span></div>
+                <div id="NomeUC">
+                    <h4 style="margin: 0; color: #e4e9f4; width: 100px;"></h4>
+                    <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;"></h5>
+                </div>
+                <p id="voltar" onclick="Voltar()">X</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTEÚDO -->
+    <div id="conteudo">
+        <div id="conteudo-superior">
+            <h1> <span style="color:#e4e9f4;">Inspirações</span></h1>
+            <p>TCCs de turmas anteriores</p>
+        </div>
+
+        <!-- STATS -->
+        <div id="stats-inspi">
+            <div class="stat-bloco"><div class="stat-val">3</div><div class="stat-lbl">TCCs </div></div>
+            <div class="stat-bloco"><div class="stat-val">2</div><div class="stat-lbl">Turmas anteriores</div></div>
+        </div>
+
+        <!-- BUSCA -->
+        <div id="busca-wrap">
+            <input type="text" id="busca-inp" placeholder="Buscar tema, tecnologia..." oninput="filtrarInspi()">
+        </div>
+
+        <!-- FILTROS -->
+        <div id="filtros">
+            <button class="filtro ativo" onclick="setFiltro('todos',this)">Todos</button>
+            <button class="filtro" onclick="setFiltro('web',this)"> Web</button>
+            <button class="filtro" onclick="setFiltro('embarcados',this)"> Embarcados</button>
+            <button class="filtro" onclick="setFiltro('software',this)"> Software</button>
+        </div>
+
+        <!-- GRID -->
+        <div id="inspi-grid"></div>
+
+    </div><!-- /conteudo -->
+</div>
+
+<script src="Inspiracoes.js"></script>
+</body>
+</html>

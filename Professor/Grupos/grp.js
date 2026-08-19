@@ -1,11 +1,186 @@
-function Voltar(){
-    window.location.href = "/Inicial-tela/Cadastro/Cad.html";
+import { auth, db } from "../../backend/firebase/config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import {
+  collection,
+  query,
+  onSnapshot,
+  doc,
+  getDoc,
+  updateDoc,
+  deleteDoc,
+  where,
+  addDoc,
+  serverTimestamp,
+  orderBy,
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+// Funções de Navegação
+window.Voltar = () =>
+  auth
+    .signOut()
+    .then(() => (window.location.href = "/Inicial-tela/Login/Log-aluno.html"));
+window.VisaoGeral = () => (window.location.href = "/Professor/Index.html");
+window.Biblioteca = () =>
+  (window.location.href = "/Professor/Biblioteca/Bib.html");
+window.Avaliacoes = () =>
+  (window.location.href = "/Professor/Avaliacoes/ava.html");
+window.Grupos = () => (window.location.href = "/Professor/Grupos/grp.html");
+window.Forum = () => (window.location.href = "/Professor/Forum/Avisos.html");
+window.Configuracoes = function(){
+    window.location.href = "/Professor/Configuracoes/Config.html";
 }
-function Avaliacoes(){
-    window.location.href = "/Professor/Avaliacoes/ava.html";
+
+let usuarioAtual = null;
+
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    const userDoc = await getDoc(doc(db, "usuarios", user.uid));
+    const tipo = userDoc.exists() ? userDoc.data().tipo : null;
+    if (tipo === "professor" || tipo === "coordenador") {
+      usuarioAtual = user;
+    } else {
+      alert(
+        "Acesso negado: Esta área é exclusiva para professores e coordenadores.",
+      );
+      window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+    }
+  } else {
+    window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+  }
+});
+
+// Aguarda o DOM carregar para garantir que a div #listaGrupos já existe
+document.addEventListener("DOMContentLoaded", () => {
+  const listaGrupos = document.getElementById("listaGrupos");
+
+  if (listaGrupos) {
+    listaGrupos.addEventListener("click", (e) => {
+      const btnEditar = e.target.closest(".btnEditar");
+      const btnExcluir = e.target.closest(".btnExcluir");
+
+      if (btnEditar) {
+        const id = btnEditar.dataset.id;
+        editarGrupo(id);
+      }
+
+      if (btnExcluir) {
+        const id = btnExcluir.dataset.id;
+        excluirGrupo(id);
+      }
+    });
+  }
+});
+
+function carregarGrupos() {
+  const listaGrupos = document.getElementById("listaGrupos");
+
+  const q = query(collection(db, "grupos"));
+
+  onSnapshot(q, (snapshot) => {
+    listaGrupos.innerHTML = "";
+    snapshot.forEach((doc) => {
+      const grupo = doc.data();
+      const div = document.createElement("div");
+
+      div.innerHTML = `
+            <div class="GT">
+
+                <div class="sub-title-gp">
+
+                    <div style="display: flex; gap: 220px;">
+                        <h3>${grupo.codigoSala}</h3>
+                        <h1>Grupo</h1>
+                    </div>
+
+                    <h2>${grupo.nome}</h2>
+
+                    <p>${grupo.descricao}</p>
+
+                    <div class="GT-int">
+
+                        <hr class="linha-decorativa">
+
+                        <div style="display: flex;">
+                            <div class="BL"></div>
+                            <p>Grupo ainda sem membros</p>
+                        </div>
+
+                    </div>
+
+                    <button class="btnEditar" data-id="${doc.id}">
+                        Editar
+                    </button>
+
+                    <button class="btnExcluir" data-id="${doc.id}">
+                        Excluir
+                    </button>
+
+                </div>
+
+            </div>
+      `;
+
+      listaGrupos.appendChild(div);
+    });
+  });
 }
-function Biblioteca(){
-    window.location.href = "/Professor/Biblioteca/Bib.html";
+
+carregarGrupos();
+
+async function excluirGrupo(id) {
+  const confirmar = confirm("Tem certeza que deseja excluir este grupo?");
+
+  if (!confirmar) {
+    return;
+  }
+
+  try {
+    await deleteDoc(doc(db, "grupos", id));
+
+    alert("Grupo excluído com sucesso!");
+  } catch (erro) {
+    console.error("Erro ao excluir:", erro);
+    alert("Erro ao excluir o grupo.");
+  }
+}
+
+
+async function editarGrupo(id) {
+  const grupoRef = doc(db, "grupos", id);
+  
+  try {
+    const grupoDoc = await getDoc(grupoRef);
+    
+    if (!grupoDoc.exists()) {
+      alert("Grupo não encontrado.");
+      return;
+    }
+    
+    const grupo = grupoDoc.data();
+    
+    const novoNome = prompt("Nome do grupo:", grupo.nome);
+    
+    if (novoNome === null) {
+      return;
+    }
+    
+    const novaDescricao = prompt("Descrição do grupo:", grupo.descricao);
+    
+    if (novaDescricao === null) {
+      return;
+    }
+    
+    await updateDoc(grupoRef, {
+      nome: novoNome,
+      descricao: novaDescricao,
+    });
+    
+    alert("Grupo atualizado com sucesso!");
+  } catch (erro) {
+    console.error("Erro ao editar grupo:", erro);
+    
+    alert("Erro ao editar o grupo.");
+  }
 }
 function VisaoGeral(){
     window.location.href = "/Professor/Index.html";
@@ -13,13 +188,24 @@ function VisaoGeral(){
 function Forum(){
     window.location.href = "/Professor/Forum/Avisos.html";
 }
+function Configuracoes(){
+    window.location.href = "/Professor/Configuracoes/Config.html";
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const spanIniciais = document.getElementById("foto").querySelector("span"); // Seleciona o span dentro de #foto
     const iniciaisSalvas = localStorage.getItem("iniciaisUsuario");
     spanIniciais.textContent = iniciaisSalvas || ""; // Define o texto ou vazio
 });
-document.addEventListener('DOMContentLoaded', function() {
-    const spanIniciais = document.getElementById("NomeUC").querySelector("h4"); // Seleciona o span dentro de #foto
-    const nomeUsuario = localStorage.getItem("nomeUsuario");
-    spanIniciais.textContent = nomeUsuario || ""; // Define o texto ou vazio
-});
+
+function carregarDadosPerfil(uid) {
+    const q = query(collection(db, "usuarios"), where("uid", "==", uid));
+    onSnapshot(q, (snapshot) => {
+        if (!snapshot.empty) {
+            const data = snapshot.docs[0].data();
+            document.querySelector("#foto span").textContent = data.iniciais || "";
+            document.querySelector("#NomeUC h4").textContent = data.nome || "";
+            document.querySelector("#NomeUC h5").textContent = data.curso || "Coordenador/Professor";
+        }
+    });
+}
