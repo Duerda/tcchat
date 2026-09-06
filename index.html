@@ -13,107 +13,263 @@
     <div id="geral">
         <nav>
             <div class="logo">
-                <img width="170" height="170" src="/img/logo.png" alt="logo"
-                    style="background: none;">
+                <img width="150" height="150" src="/img/logo.png" alt="logo" style="background: none;">
             </div>
 
             <ul class="navb">
-                <li><button id="btnInicio" class="btn-nav">Inicio</button></li>
-                <li><button id="btnSobre" class="btn-nav">Sobre</button></li>
-                <li><button id="btnIntegrantes" class="btn-nav">Integrantes</button></li>
-                <li><button id="btnProgresso" class="btn-nav">Progresso</button></li>
+                <li><button id="btnInicio" class="btn-nav" onclick="scrollParaInicio()">Inicio</button></li>
+                <li><button id="btnSobre" class="btn-nav" onclick="scrollParaSobre()">Sobre</button></li>
+                <li><button id="btnIntegrantes" class="btn-nav" onclick="scrollParaIntegrantes()">Integrantes</button>
+                </li>
+                <li><button id="btnProgresso" class="btn-nav" onclick="scrollParaProgresso()">Progresso</button></li>
             </ul>
 
             <div class="nav-buttons">
-                <button class="btn-login" onclick="Login ()">LOGIN</button>
+                <button class="btn-login" onclick="Login ()">Login</button>
                 <button class="btn-cadastrar" onclick="Cadastrar ()">Cadastrar</button>
             </div>
         </nav>
-        <div class="degrade-border"></div>
-
+        <!--header-->
         <header class="header">
-            <div class="hero">
-                <h1>GERENCIE SEUS PROJETOS <br>COM EFICIÊNCIA</h1>
-                <p class="subh">
-                    Centralize tarefas, prazos, arquivos e conversas da equipe em um único painel. <br>
-                    Com o TCCHAT, você reduz o retrabalho, acompanha o progresso em tempo real e entrega projetos no
-                    prazo <br>
-                    – sem planilhas confusas ou e-mails perdidos.
-                </p>
-                <div class="buttons">
-                    <button class="btn" onclick="Login ()">LOGIN</button>
-                    <button class="btn-outline" onclick="Cadastrar ()">Cadastrar</button>
-                </div>
+            <div id="header-int">
+                <h1>TCCHAT</h1>
+                <p>Bem-vindo a nova era do seu TCC com o TCCHAT!</p>
             </div>
         </header>
 
-        <!--SOBRE B-->
+        <!--Estruturas do TCCs = ET-->
         <div id="sobre">
-            <!--CONTAINER2-->
-            <div id="container-sobre2">
-                <img src="./img/bloco.jpeg" alt="bloco" width="800" height="500"
-                <img src="./img/print-figma1.png" alt="bloco" width="800" height="500"
-                    style="margin-left: 120px; border-radius: 20px; margin-right: 100px;">
-                <div id="welcome">
-                    <h1>Bem-vindo à nova era do seu</h1>
-                    <h2>TCCHAT!</h2>
-                    <p style="margin-top: 20px; font-size: 19px; font-weight: bold;">Projetos atrasados, e-mails
-                        perdidos, mensagens em 3 apps diferentes e relatórios que nunca ficam prontos. Essa é a
-                        realidade de times que usam ferramentas isoladas.</p>
-
-                    <p style="margin-top: 20px;">O TCCHAT nasceu para resolver isso: unimos chat, gestão de tarefas,
-                        arquivos e indicadores em uma única plataforma.Seu time para de apagar incêndios e começa a
-                        entregar resultados previsíveis.</p>
-                </div>
-            </div>
-        </div>
-
-        <div id="sobreP">
-            <!--CONTAINER1-->
-            <p id="p-sobre">VISÃO GERAL</p>
-            <h1 id="title-sobre">Sobre Nós</h1>
-            <div id="container-sobre">
-                <img src="./img/bloco.jpeg" alt="bloco" width="1000" height="600"
-                    style="margin-right: 120px; border-radius: 20px;">
-                <img src="./img/print-figma2.png" alt="bloco" width="1000" height="600"
-                    style="margin-right: 120px; border-radius: 20px; border: 5px solid rgb(255 255 255 / 7%);">
-                <div id="paragrafo">
-                    <h1>
-                        <div id="bolinha"></div> Para Estudantes
-                    </h1>
-                    <h2>Organização instantâneo, <br>
-                        experiências excepcionais</h2>
-                    <p style="font-weight: bold; color: var(--red1); margin-top: 15px;">Redução de retrabalho em até 40%
+            <div id="ET">
+                <div id="ET-int" class="reveal">
+                    <h1 style="margin-bottom: 20px;">Estruturas</h1>
+                    <h1><span style="color: #3D4D61; margin-bottom: 30px;">Dos Projetos</span>&nbsp;</h1>
+                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vero ad ipsum amet sequi assumenda sit
+                        officia totam repudiandae adipisci dolorem!
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae velit qui illo recusandae autem
+                        voluptate quisquam amet dignissimos ipsa! Est.
                     </p>
-                    <p>A comunicação fica atrelada a cada tarefa. Toda <br>
-                        decisão fica registrada, evitando mal-entendidos.</p>
-                    <p style="font-weight: bold; color: var(--red1); margin-top: 15px;">Visibilidade financeira dos
-                        projetos </p>
-                    <p>Acompanhe horas, custos e margem em tempo <br>
-                        real. Saiba exatamente onde seu capital está sendo aplicado.</p>
-                    <p style="font-weight: bold; color: var(--red1); margin-top: 15px;">Onboarding rápido e adoção
-                        orgânica </p>
-                    <p>Interface leve e intuitiva, parecida com apps de <br>
-                        mensagem. Em uma semana seu time já está usando
-                        sem treinamento caro.</p>
-                    <button class="btn" style="margin-left: 120px; margin-top: 20px;">Saiba Mais</button>
+                </div>
+            </div>
+            <!--TCC - TC-->
+            <div id="TC">
+                <!--barra de scroll-->
+                <div id="scroll" style="margin-right: 80px;">
+                    <!--bloco tcc-->
+
+                    <div id="TC-int" class="reveal delay-1">
+                        <div style="display: flex; height: fit-content;">
+                            <div id="pao"
+                                style="float: right; margin-right: auto; text-align: center; margin-right: 0; margin-left: 17px; text-shadow: none; color: #0077ff; background-color: #124f9681;">
+                                Grupo 1</div>
+                            <div id="pao" style="float: right; margin-left: auto; text-align: center; ">No Prazo</div>
+                        </div>
+                        <h6>Agro Connect</h6>
+                        <p>Sistema web/mobile para gestão de estoque e monitoramento de grãos via IoT, prevenindo perdas
+                            pós-colheita.</p>
+                    </div>
+
+                    <div id="TC-int" class="reveal delay-2">
+                        <div style="display: flex; height: fit-content;">
+                            <div id="pao"
+                                style="float: right; margin-right: auto; text-align: center; margin-right: 0; margin-left: 17px; text-shadow: none; color: #0077ff; background-color: #124f9681;">
+                                Grupo 2</div>
+                            <div id="pao" style="float: right; margin-left: auto; text-align: center; ">No Prazo</div>
+                        </div>
+                        <h6>SkillForge</h6>
+                        <p>Plataforma gamificada com desafios diários para ensinar lógica de programação a estudantes do
+                            ensino médio.</p>
+                    </div>
+
+                    <div id="TC-int" class="reveal delay-3">
+                        <div style="display: flex; height: fit-content;">
+                            <div id="pao"
+                                style="float: right; margin-right: auto; text-align: center; margin-right: 0; margin-left: 17px; text-shadow: none; color: #0077ff; background-color: #124f9681;">
+                                Grupo 3</div>
+                            <div id="pao" style="float: right; margin-left: auto; text-align: center; ">No Prazo</div>
+                        </div>
+                        <h6>VitaSync</h6>
+                        <p>App mobile para agendamento entre psicólogos e pacientes, com diário emocional e análise de
+                            sentimentos.</p>
+                    </div>
+
+                    <div id="TC-int" class="reveal delay-4">
+                        <div style="display: flex; height: fit-content;">
+                            <div id="pao"
+                                style="float: right; margin-right: auto; text-align: center; margin-right: 0; margin-left: 17px; text-shadow: none; color: #0077ff; background-color: #124f9681;">
+                                Grupo 4</div>
+                            <div id="pao" style="float: right; margin-left: auto; text-align: center; ">No Prazo</div>
+                        </div>
+                        <h6>MoveMais</h6>
+                        <p>Sistema de otimização de rotas de transporte público usando dados de GPS para reduzir o tempo
+                            de espera dos passageiros.</p>
+                    </div>
+
+                    <div id="TC-int" class="reveal delay-1">
+                        <div style="display: flex; height: fit-content;">
+                            <div id="pao"
+                                style="float: right; margin-right: auto; text-align: center; margin-right: 0; margin-left: 17px; text-shadow: none; color: #0077ff; background-color: #124f9681;">
+                                Grupo 5</div>
+                            <div id="pao" style="float: right; margin-left: auto; text-align: center; ">No Prazo</div>
+                        </div>
+                        <h6>EcoMart</h6>
+                        <p>Marketplace sustentável para artesãos locais, com cálculo de pegada de carbono e logística
+                            reversa.</p>
+                    </div>
+
+                    <div id="TC-int" class="reveal delay-2">
+                        <div style="display: flex; height: fit-content;">
+                            <div id="pao"
+                                style="float: right; margin-right: auto; text-align: center; margin-right: 0; margin-left: 17px; text-shadow: none; color: #0077ff; background-color: #124f9681;">
+                                Grupo 6</div>
+                            <div id="pao" style="float: right; margin-left: auto; text-align: center; ">No Prazo</div>
+                        </div>
+                        <h6>InsightFlow</h6>
+                        <p>Dashboard interativo para pequenas empresas, com previsões de vendas baseadas em análise
+                            histórica de dados.</p>
+                    </div>
+
+                    <div id="TC-int" class="reveal delay-3">
+                        <div style="display: flex; height: fit-content;">
+                            <div id="pao"
+                                style="float: right; margin-right: auto; text-align: center; margin-right: 0; margin-left: 17px; text-shadow: none; color: #0077ff; background-color: #124f9681;">
+                                Grupo 7</div>
+                            <div id="pao" style="float: right; margin-left: auto; text-align: center; ">No Prazo</div>
+                        </div>
+                        <h6>PassGuard</h6>
+                        <p>Gerenciador de senhas com autenticação multifator e armazenamento criptografado para uso
+                            corporativo.</p>
+                    </div>
+
+                    <div id="TC-int" class="reveal delay-4">
+                        <div style="display: flex; height: fit-content;">
+                            <div id="pao"
+                                style="float: right; margin-right: auto; text-align: center; margin-right: 0; margin-left: 17px; text-shadow: none; color: #0077ff; background-color: #124f9681;">
+                                Grupo 8</div>
+                            <div id="pao" style="float: right; margin-left: auto; text-align: center; ">No Prazo</div>
+                        </div>
+                        <h6>EscolaOnline</h6>
+                        <p>Sistema de presença e boletim escolar com notificações automáticas enviadas aos pais pelo
+                            app.</p>
+                    </div>
+
                 </div>
             </div>
         </div>
+
+        <!--Parte de sobre-->
+        <div id="sobreP">
+            <section class="conceito">
+                <div class="container-s">
+                    <!-- Imagem na esquerda -->
+                    <div class="img-s reveal">
+                        <img src="./img/sobre-n.png" alt="Lighting Collection" />
+                    </div>
+                    <!-- Texto p lado direito -->
+                    <div class="bloco-texto reveal delay-2">
+                        <span class="titulo-s">SOBRE</span>
+                        <h2 class="sub-t">Conceito</h2>
+                        <p class="paragrafo-s">
+                            O TCCHat é uma plataforma de gestão de TCC que une alunos, orientadores e coordenadores em
+                            um só lugar. Intuitiva e colaborativa,
+                            ela simplifica cada etapa do projeto, transformando a burocracia
+                            acadêmica em um processo fluido e amigável.
+                        </p>
+                        <div style="display: flex; gap: 17px; margin-top: 20px;">
+                            <button style="padding: 10px 48px; font-size: 18px;" class="btn-login"
+                                onclick="Login ()">Login</button>
+                            <button style="padding: 10px 39px; font-size: 18px;" class="btn-cadastrar"
+                                onclick="Cadastrar ()">Cadastrar</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </div>
+
+    <div id="carrossel-wrapper">
+        <h2 class="carrossel-titulo">Nossa Equipe</h2>
+        <div id="carrossel-continuo">
+            <div class="faixa">
+                <!-- Integrante 1 -->
+                <div class="item-integrante">
+                    <img src="./img/dft.jfif" alt="Integrante 1" class="foto-integrante">
+                    <h3>Eduarda</h3>
+                    <p>Diretor Backend</p>
+                </div>
+                <!-- Integrante 2 -->
+                <div class="item-integrante">
+                    <img src="./img/dft.jfif" alt="Integrante 2" class="foto-integrante">
+                    <h3>Enrico</h3>
+                    <p>Backend</p>
+                </div>
+                <!-- Integrante 3 -->
+                <div class="item-integrante">
+                    <img src="./img/dft.jfif" alt="Integrante 3" class="foto-integrante">
+                    <h3>João Bonato</h3>
+                    <p>Frontend e Design</p>
+                </div>
+                <!-- Integrante 4 -->
+                <div class="item-integrante">
+                    <img src="./img/dft.jfif" alt="Integrante 4" class="foto-integrante">
+                    <h3>Tiago</h3>
+                    <p>DIretor Líder, Backend, Relatório</p>
+                </div>
+                <!-- Integrante 5 -->
+                <div class="item-integrante">
+                    <img src="./img/dft.jfif" alt="Integrante 5" class="foto-integrante">
+                    <h3>Kauã Silva</h3>
+                    <p>Diretor Frontend e Backend</p>
+                </div>
+
+                <div class="item-integrante">
+                    <img src="./img/dft.jfif" alt="Integrante 1" class="foto-integrante">
+                    <h3>Eduarda</h3>
+                    <p>Diretor Backend</p>
+                </div>
+                <!-- Integrante 2 -->
+                <div class="item-integrante">
+                    <img src="./img/dft.jfif" alt="Integrante 2" class="foto-integrante">
+                    <h3>Enrico</h3>
+                    <p>Backend</p>
+                </div>
+                <!-- Integrante 3 -->
+                <div class="item-integrante">
+                    <img src="./img/dft.jfif" alt="Integrante 3" class="foto-integrante">
+                    <h3>João Bonato</h3>
+                    <p>Frontend e Design</p>
+                </div>
+                <!-- Integrante 4 -->
+                <div class="item-integrante">
+                    <img src="./img/dft.jfif" alt="Integrante 4" class="foto-integrante">
+                    <h3>Tiago</h3>
+                    <p>DIretor Líder, Backend, Relatório</p>
+                </div>
+                <!-- Integrante 5 -->
+                <div class="item-integrante">
+                    <img src="./img/dft.jfif" alt="Integrante 5" class="foto-integrante">
+                    <h3>Kauã Silva</h3>
+                    <p>Diretor Frontend e Backend</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="porcentagem">
 
         <div id="porcentagem">
             <!--PORCENTAGEM-->
-            <div id="paragrafo-porcentagem">
-                <h1>Acompanhe seus <br>
+            <div id="paragrafo-porcentagem" class="reveal">
+                <h1>Acompanhe seu <br>
                     progresso em tempo <br>
                     real.</h1>
-                <p><strong>Redução de retrabalho em até 40%</strong> <br>
-                    A comunicação fica atrelada a cada tarefa. <br>
-                    Toda decisão fica registrada, <br>
-                    evitando mal-entendidos.</p>
-                <p style="margin-top: 20px;">seu time já está usando sem treinamento caro.</p>
+                <p><strong>Acompanhamento simples e transparente para todos.</strong> <br>
+                    Alunos atualizam o andamento, orientadores validam cada etapa e coordenadores enxergam o panorama
+                    completo da turma — tudo sincronizado automaticamente em um só <br> painel, eliminando reuniões
+                    improdutivas e trocas de e-mail desnecessárias.</p>
+                <p style="margin-top: 20px;">Sem Grande enrolação. Interface intuitiva, direta e pronta para usar.</p>
             </div>
-            <div class="grafico-barras">
+            <div class="grafico-barras reveal delay-2">
                 <div class="barra-item">
                     <div class="barra-bg">
                         <div class="barra-fill" style="width: 76%;"></div>
@@ -147,101 +303,34 @@
             </div>
         </div>
     </div>
-
-    <!--INTEGRANTES-->
-    <div id="integrantes">
-        <h2><span style="padding-right: 12%;">Conheça os Membros</span> <br>
-            <span style="padding-left: 12%;">da nossa equipe!</span>
-        </h2>
-
-        <div class="organizar-container">
-            <!--Linha1-->
-            <div id="integrantes-interior">
-                <img src="./img/bloco.jpeg" alt="pics" class="imagem-integrantes">
-                <img src="./img/bloco.jpeg" alt="pics" class="imagem-integrantes"
-                    style="border: 3px solid var(--texlight);">
-                <img src="./img/pfp.jpg" alt="pics" class="imagem-integrantes">
-                <img src="./img/logo.png" alt="pics" class="imagem-integrantes"
-                    style="border: 3px solid var(--texlight); background-color: #111520;">
-
-                <div class="comentarios">
-                    <div class="comentarios-interior">
-                        <h1>A comunicação fica atrelada a cada tarefa. Toda decisão fica registrada, evitando
-                            mal-entendidos.
-                            Acompanhe horas, custos e margem em tempo real. Saiba exatamente onde seu capital está sendo
-                            aplicado</h1>
-                        <p style="border-top: 2px solid var(--white); padding-top: 10px;">Tiago Rios </p>
-                        <p>Líder Corporativo</p>
-                    </div>
-                </div>
-            </div>
-
-            <!--linha2-->
-
-            <div id="integrantes-interior">
-                <img src="./img/bloco.jpeg" alt="pics" class="imagem-integrantes">
-                <img src="./img/bloco.jpeg" alt="pics" class="imagem-integrantes"
-                    style="border: 3px solid var(--texlight);">
-                <img src="./img/bloco.jpeg" alt="pics" class="imagem-integrantes">
-                <img src="./img/bloco.jpeg" alt="pics" class="imagem-integrantes">
-
-                <img src="./img/pfp.jpg" alt="pics" class="imagem-integrantes">
-                <img src="./img/logo.png" alt="pics" class="imagem-integrantes"
-                    style="border: 3px solid var(--texlight); background-color: #111520;">
-                <img src="./img/pfp.jpg" alt="pics" class="imagem-integrantes">
-                <img src="./img/pfp.jpg" alt="pics" class="imagem-integrantes">
-            </div>
-
-            <!--Linha3-->
-            <div id="integrantes-interior">
-                <div class="comentarios">
-                    <div class="comentarios-interior">
-                        <h1>A comunicação fica atrelada a cada tarefa. Toda decisão fica registrada, evitando
-                            mal-entendidos.
-                            Acompanhe horas, custos e margem em tempo real. Saiba exatamente onde seu capital está sendo
-                            aplicado</h1>
-                        <p style="border-top: 2px solid var(--white); padding-top: 10px;">Tiago Rios </p>
-                        <p>Líder Corporativo</p>
-                    </div>
-                </div>
-                <img src="./img/bloco.jpeg" alt="pics" class="imagem-integrantes">
-                <img src="./img/bloco.jpeg" alt="pics" class="imagem-integrantes"
-                    style="border: 3px solid var(--texlight);">
-                <img src="./img/pfp.jpg" alt="pics" class="imagem-integrantes">
-                <img src="./img/logo.png" alt="pics" class="imagem-integrantes"
-                    style="border: 3px solid var(--texlight); background-color: #111520;">
-            </div>
-        </div>
-    </div>
-    </div>
-
     <!--Footer-->
 
     <div class="footer-up">
-        
+
         <div class="f1">
             <img src="./img/logo.png" alt="logo">
-            <p>© 2026 TCCHAT – Gestão de Projetos com alma de chat. Todos os direitos reservados. <br> Este produto é desenvolvido para organizações que buscam eficiência real, <br>
-                 unindo comunicação, tarefas e indicadores em uma plataforma única.<br>
-                  Ao utilizar o TCCHAT, você concorda com nossa Política de Privacidade e Termos de Uso.</p>
+            <p>© 2026 TCCHAT – Gestão de Projetos com alma de chat. Todos os direitos reservados. <br> Este produto é
+                desenvolvido para organizações que buscam eficiência real, <br>
+                unindo comunicação, tarefas e indicadores em uma plataforma única.<br>
+                Ao utilizar o TCCHAT, você concorda com nossa Política de Privacidade e Termos de Uso.</p>
             <div class="input-wrapper">
                 <i class="fa-regular fa-house" style="color: #d9d9d9;"></i>
-                <button class="btnVoltar">VOLTAR    </button>
+                <button class="btnVoltar" onclick="scrollParaInicio()">VOLTAR</button>
             </div>
         </div>
-    <div class="f2">
-        <h2>Site Map</h2>
-        <div class="container-btnf">
-        <button class="btn-footer">Inicio</button>
-        <button class="btn-footer">Sobre</button>
-        <button class="btn-footer">Integrantes</button>
-        <button class="btn-footer">Contato</button>
-
+        <div class="f2">
+            <h2>Site Map</h2>
+            <div class="container-btnf">
+                <button class="btn-footer" onclick="scrollParaInicio()">Inicio</button>
+                <button class="btn-footer" onclick="scrollParaSobre()">Sobre</button>
+                <button class="btn-footer" onclick="scrollParaIntegrantes()">Integrantes</button>
+                <button class="btn-footer" onclick="scrollParaProgresso()">Progresso</button>
+            </div>
         </div>
-    </div>
 
     </div>
 </body>
 <script src="index.js"></script>
+<script src="lp.js"></script>
 
 </html>
