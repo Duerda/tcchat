@@ -163,7 +163,7 @@ h2 {
     text-align: center;
     border-radius: 10px;
     padding-top: 3px;
-    padding-right: 12px;
+    padding-right: 7px;
     padding-bottom: 3px;
     padding-left: 8px;
     width: 40px;
@@ -437,7 +437,6 @@ h1 span {
 
 #Prog-int {
     display: flex;
-    gap: 1200px;
     margin-top: 5px;
     padding-top: 10px;
     padding-left: 10px;
@@ -451,7 +450,7 @@ h1 span {
     margin-top: 0px;
     margin-bottom: 0px;
     font-weight: 100;
-    font-size: 18px;
+    font-size: 19px;
     margin-left: 8px;
 }
 
@@ -544,4 +543,13 @@ h1 span {
     color: var(--cor-texto-fraco);
     margin-top: 0px;
     margin-left: 14px;
+}
+
+#painel-btn {
+      background: var(--cor-vermelho-transparente);
+    color: var(--cor-branco);
+    border: 1px solid var(--cor-vermelho);
+    cursor: pointer;
+    transform: scale(1.02);
+    transition: all 0.5s;
 }

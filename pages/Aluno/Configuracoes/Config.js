@@ -1,5 +1,5 @@
 window.Painel = function () {
-    window.location.href = "/Aluno/Turma.html";
+    window.location.href = "/Aluno/Turma/index.html";
 };
 window.MeuGrupo = function () {
     window.location.href = "/Aluno/Grupos/gp.chat.html";

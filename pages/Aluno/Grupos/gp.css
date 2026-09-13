@@ -203,13 +203,16 @@ h2 {
     cursor: pointer;
 }
 #Biblioteca {
-    background: var(--cor-vermelho-transparente);
-    color: white;
-    border:1px solid var(--cor-vermelho);
-    cursor: pointer;
-    transform: scale(1.02);
-    transition: all 0.5s;
+    width: 255px;
+    border-radius: 12px;
+    color: var(--cor-texto-secundario);
+    background-color: rgb(22, 29, 42);
+    outline: none;
+    font-family: "arial narrow", sans-serif;
+    font-size: 15px;
+    border: none;
 }
+
 #Biblioteca:hover {
     cursor: unset;
 }
@@ -427,6 +430,7 @@ h1 span {
     0 0 10px rgba(54, 145, 42, 0.12),
     0 0 20px rgba(54, 145, 42, 0.05);
     transition: text-shadow 0.3s ease;
+}
 
 :root {
     --cor-fundo-principal: #080b12;
@@ -719,6 +723,7 @@ h1 span {
 }
 #Biblioteca:hover {
     cursor: pointer;
+    
 }
 #Atividades:hover {
     cursor: pointer;
@@ -752,7 +757,7 @@ h1 span {
 }
 
 #c1 {
-    width: 700px;
+    width: fit-content;
     height: 40px;
     background-color: rgb(22, 29, 42);
     border: var(--cor-borda) 3px solid;
@@ -763,6 +768,8 @@ h1 span {
     color: var(--cor-texto);
     font-family: arial;
     margin-left: 45px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 #chat-text {
@@ -923,5 +930,4 @@ h6 {
 
 #arquivos :hover {
     cursor: pointer;
->>>>>>> 2334538c8ada311ff657a53e3d5d02297be9785d
 }

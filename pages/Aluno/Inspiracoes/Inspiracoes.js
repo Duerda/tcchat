@@ -1,132 +1,53 @@
-window.Painel = function () {
-    window.location.href = "/Aluno/Turma.html";
-};
-window.MeuGrupo = function () {
-    window.location.href = "/Aluno/Grupos/gp.chat.html";
-};
-window.Forum = function () {
-    window.location.href = "/Aluno/Forum/Fo.html";
-};
+// Inspiracoes.js
 
-window.Configuracoes = function () {
-    window.location.href = "/Aluno/Configuracoes/Config.html";
-};
-window.Voltar = function () {
-    window.location.href = "/Inicial-tela/Login/Log-aluno.html";
-}
-
-
-const INSPI = [
-    { id:1, titulo:'SmartCampus', sub:'Reserva de salas acadêmicas', ano:'2024.2', tipo:'web', label:' Web', cor:'#3b82f6', ideia:'Sem sala para reunião toda semana. Em 2h tinham o MVP desenhado.', detalhes:'React + Node.js + PostgreSQL. QR Code para check-in. Adotado pelo campus.', team:['Felipe Cruz','Mariana Lopes'], curso:'DS · 2024.2', mark:true, markText:'Adotado pelo campus ' },
-    { id:2, titulo:'AgroSense', sub:'Monitoramento de umidade para estufas', ano:'2024.1', tipo:'embarcados', label:' Embarcados', cor:'#34d399', ideia:'O pai de um integrante perdia plantações inteiras. A dor real da família virou o TCC.', detalhes:'Arduino + DHT22. Dashboard Python. Alertas WhatsApp. Custo: R$187.', team:['Bruno Carvalho','Letícia Maia'], curso:'ES · 2024.1', mark:true, markText:'Menção honrosa ' },
-    { id:6, titulo:'NeuroAcessível', sub:'Interface adaptativa para TEA', ano:'2023.1', tipo:'software', label:' Software', cor:'#ec4899', ideia:'Integrante tem irmão com TEA. Dois meses em escola especial antes de escrever código.', detalhes:'Electron + eye-tracking via webcam. Prêmio regional de acessibilidade.', team:['Renata Oliveira','Marcos Paulo'], curso:'DS · 2023.1', mark:true, markText:'Prêmio acessibilidade ' },
-];
-
-const avColors = ['#3b82f6','#34d399','#f87171','#a78bfa','#fbbf24','#06b6d4'];
-let filtroAtivo = 'todos';
-let buscaAtiva  = '';
-
-function renderInspi() {
-    const grid = document.getElementById('inspi-grid');
-    let data = INSPI;
-    if (filtroAtivo !== 'todos') data = data.filter(d => d.tipo === filtroAtivo);
-    if (buscaAtiva.trim()) {
-        const q = buscaAtiva.toLowerCase();
-        data = data.filter(d =>
-            d.titulo.toLowerCase().includes(q) ||
-            d.sub.toLowerCase().includes(q) ||
-            d.ideia.toLowerCase().includes(q)
-        );
+// Função de navegação para as páginas específicas
+function irPara(tipo) {
+    if (tipo === 'todos') {
+        window.location.href = "Inspiracoes.html";
+    } else {
+        // Converte a primeira letra para maiúscula para combinar com os nomes dos arquivos
+        const nomeArquivo = tipo.charAt(0).toUpperCase() + tipo.slice(1);
+        window.location.href = "Inspiracoes-" + nomeArquivo + ".html";
     }
-    if (!data.length) {
-        grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:32px; color:#3d4d61; font-size:13px;">Nenhum TCC encontrado.</div>';
-        return;
-    }
-    grid.innerHTML = data.map(d => `
-        <div class="inspi-card" id="ins-${d.id}" onclick="toggleInspi(${d.id})">
-            <div class="inspi-banner" style="background:linear-gradient(90deg,${d.cor},${d.cor}88);"></div>
-            <div class="inspi-body">
-                <div class="inspi-topo">
-                    <span class="inspi-ano" style="background:${d.cor}22; color:${d.cor}; border:1px solid ${d.cor}44;">${d.ano}</span>
-                    <span class="inspi-tipo">${d.label}</span>
-                </div>
-                <div class="inspi-titulo">${d.titulo}</div>
-                <div class="inspi-sub">${d.sub}</div>
-                <div class="inspi-ideia">
-                    <div class="inspi-ideia-lbl" style="color:${d.cor};"> Como surgiu a ideia</div>
-                    <div class="inspi-ideia-txt">${d.ideia}</div>
-                </div>
-                <div class="inspi-team">
-                    
-                    <div style="margin-left:8px; flex:1;">
-                        <div class="inspi-nomes">${d.team.join(' · ')}</div>
-                        <div class="inspi-curso">${d.curso}</div>
-                    </div>
-                    ${d.mark ? `<div class="inspi-mark">${d.markText}</div>` : ''}
-                </div>
-            </div>
-            <div class="inspi-expand">
-                <div class="inspi-expand-box">
-                    <div class="inspi-expand-lbl"> Detalhes técnicos</div>
-                    ${d.detalhes}
-                </div>
-            </div>
-        </div>`).join('');
 }
 
-function toggleInspi(id) {
-    document.getElementById('ins-' + id).classList.toggle('expandido');
-}
+// ------------------------------------------------------------
+// As funções abaixo são para a página principal (Inspiracoes.html)
+// que ainda usa filtros via JavaScript. Se você não for mais usar
+// filtros na página principal, pode removê-las ou mantê-las comentadas.
 
-function setFiltro(tipo, el) {
-    filtroAtivo = tipo;
-    document.querySelectorAll('.filtro').forEach(f => f.classList.remove('ativo'));
-    el.classList.add('ativo');
-    renderInspi();
+let filtroAtual = 'todos';
+
+function setFiltro(tipo, btn) {
+    filtroAtual = tipo;
+    document.querySelectorAll('.filtro').forEach(b => b.classList.remove('ativo'));
+    btn.classList.add('ativo');
+    aplicarFiltros();
 }
 
 function filtrarInspi() {
-    buscaAtiva = document.getElementById('busca-inp').value;
-    renderInspi();
+    aplicarFiltros();
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    renderInspi();
-    document.getElementById("foto").querySelector("span").textContent =
-        localStorage.getItem("iniciaisUsuario") || "";
-    document.getElementById("NomeUC").querySelector("h4").textContent =
-        localStorage.getItem("nomeUsuario") || "";
-    const cursos = {
-        "TMA": "Técnico em Meio Ambiente", "DS": "Desenvolvimento de Sistemas",
-        "ADM": "Administração", "SRC": "Secretariado", "TDS": "Técnico de Design de Interiores"
-    };
-    document.getElementById("NomeUC").querySelector("h5").textContent =
-        cursos[localStorage.getItem("codigoCurso")] || "";
-});
-document.addEventListener('DOMContentLoaded', function () {
-    // Foto / iniciais
-    document.getElementById('foto').querySelector('span').textContent =
-        localStorage.getItem('iniciaisUsuario') || '';
+function aplicarFiltros() {
+    const busca = document.getElementById('busca-inp').value.toLowerCase().trim();
+    const containers = document.querySelectorAll('#TCCs');
+    containers.forEach(container => {
+        const cards = container.children;
+        for (let card of cards) {
+            const temaEl = card.querySelector('#tema');
+            const tema = temaEl ? temaEl.textContent.trim().toLowerCase() : '';
+            const textoCard = card.textContent.toLowerCase();
+            let temaOK = (filtroAtual === 'todos' || tema === filtroAtual);
+            let buscaOK = (busca === '' || textoCard.includes(busca));
+            card.style.display = (temaOK && buscaOK) ? '' : 'none';
+        }
+    });
+}
 
-    // Nome
-    const nomeEl = document.getElementById('NomeUC').querySelector('h4');
-    nomeEl.textContent = localStorage.getItem('nomeUsuario') || '';
-
-    // Preenche campo de nome no perfil
-    const nomeGuardado = localStorage.getItem('nomeUsuario') || '';
-    document.getElementById('inp-nome').value = nomeGuardado;
-
-    // Curso
-    const cursos = {
-        'TMA': 'Tecnico em Meio Ambiente',
-        'DS':  'Desenvolvimento de Sistemas',
-        'ADM': 'Administracao',
-        'SRC': 'Secretariado',
-        'TDS': 'Tecnico de Design de Interiores'
-    };
-    const codigoCurso = localStorage.getItem('codigoCurso') || '';
-    document.getElementById('NomeUC').querySelector('h5').textContent =
-        cursos[codigoCurso] || '';
-    document.getElementById('inp-curso').value =
-        cursos[codigoCurso] || codigoCurso;
+// Inicializa a página com todos os cards visíveis
+document.addEventListener('DOMContentLoaded', function() {
+    // Se houver um botão 'Todos' ativo, use-o; senão, usa o primeiro
+    const btnTodos = document.querySelector('.filtro.ativo') || document.querySelector('.filtro');
+    if (btnTodos) setFiltro('todos', btnTodos);
 });
