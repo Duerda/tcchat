@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="stylesheet" href="Coord-style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coordenador - Fórum</title>
+</head>
+<body>
+<div id="Geral">
+    <div id="lateral">
+        <div id="lateral-superior">
+            <div><h2 style="margin-top: 2px;">T<span>CCHAT</span></h2></div>
+            <div id="Logo-de-professor">COORD</div>
+        </div>
+        <div class="VGABF">
+            <div id="painel">Navegação</div>
+            <div><button onclick="Painel()">Painel</button></div>
+            <div><button onclick="Usuarios()">Usuários</button></div>
+             
+            <div><button onclick="GruposCoord()">Grupos</button></div>
+            <div><button onclick="Avaliacoes()">Avaliações</button></div>
+            <div><button onclick="Cronograma()">Cronograma</button></div>
+            <div><button onclick="Biblioteca()">Biblioteca</button></div>
+            <div><button onclick="Forum()" id="ativo">Fórum</button></div>
+            <div><button onclick="Relatorios()">Relatórios</button></div>
+        </div>
+        <div id="sistema"><button onclick="Configuracoes()" id="configuracao">Configurações</button></div>
+        <div class="lateral-inferior">
+            <div class="Usuario">
+                <div id="foto"><span></span></div>
+                <div id="NomeUC">
+                    <h4 style="margin: 0; color: #e4e9f4; width: 100px;"></h4>
+                    <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;"></h5>
+                </div>
+                <p id="voltar" style="margin-top: 31px; margin-bottom: 0px; margin-left: 30px;" onclick="Voltar()">X</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="conteudo">
+        <div id="conteudo-superior">
+            <h1>Fórum <span style="color:#e4e9f4;">Global</span></h1>
+            <p>Publique avisos para todos os cursos e responda dúvidas</p>
+        </div>
+
+        <div id="EnCad">
+            <button class="aba ativa" id="aba-avisos"  onclick="mudarAba('avisos')">📣 Avisos</button>
+            <button class="aba"       id="aba-duvidas" onclick="mudarAba('duvidas')">💬 Dúvidas</button>
+        </div>
+
+        <!-- AVISOS -->
+        <div class="conteudo-aba" id="tab-avisos">
+            <button id="novo-aviso" onclick="novoAviso()">+ Novo aviso</button>
+
+            <div id="lista-avisos">
+                <div class="Cards">
+                    <div id="top-card">
+                        <div>
+                            <h3 style="margin: 0 0 5px; color:#e4e9f4;">⚠️ Prazo do Pré-Projeto — Grupos em Atraso</h3>
+                            <span style="color:#3d4d61; font-size:12px;">Coord. Ricardo Zanetti · 19/02/2025 · 📌 Fixado</span>
+                        </div>
+                        <button class="btn-tabela vermelho" onclick="this.closest('.Cards').remove()">Remover</button>
+                    </div>
+                    <p style="color:#7a8699; margin:8px 0 0;">Os grupos EcoTrack e HealthApp têm até 28/02 para regularizar, com penalização de 1 ponto/dia.</p>
+                </div>
+                <div class="Cards">
+                    <div id="top-card">
+                        <div>
+                            <h3 style="margin: 0 0 5px; color:#e4e9f4;">🎓 Boas-vindas ao TCC Portal 2025.1!</h3>
+                            <span style="color:#3d4d61; font-size:12px;">Coord. Ricardo Zanetti · 10/02/2025</span>
+                        </div>
+                        <button class="btn-tabela vermelho" onclick="this.closest('.Cards').remove()">Remover</button>
+                    </div>
+                    <p style="color:#7a8699; margin:8px 0 0;">Bem-vindos! Grupos criados e orientadores atribuídos. Acessem seus grupos e comecem a planejar.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- DÚVIDAS -->
+        <div class="conteudo-aba" id="tab-duvidas" style="display:none;">
+            <div class="Aviso" style="margin-bottom:16px;">
+                Responda dúvidas gerais dos alunos — visible para todos após sua resposta
+            </div>
+            <div class="Duvidas" style="flex-direction:column; gap:8px;">
+                <div style="display:flex; align-items:center; gap:9px;">
+                    <div id="Pontinho"></div>
+                    <div style="flex:1;">
+                        <h3 style="margin:0; font-size:14px; color:#e4e9f4;">Mariana Costa — Quantas referências são exigidas?</h3>
+                        <p style="color:#7a8699; margin:4px 0 0; font-size:12px;">ontem</p>
+                    </div>
+                </div>
+                <textarea class="chat-inp" placeholder="Sua resposta..." rows="2" id="resp-1"></textarea>
+                <button class="btn-acao" style="width:fit-content; padding:7px 16px; font-size:12px;" onclick="responderDuvida('resp-1', this)">Responder</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script type="module" src="Coord-script.js"></script>
+<script src="Coord-interno.js"></script>
+</body>
+</html>
