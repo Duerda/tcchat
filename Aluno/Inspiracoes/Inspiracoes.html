@@ -41,13 +41,15 @@
     <!-- CONTEÚDO -->
     <div id="conteudo">
         <div id="conteudo-superior">
-            <h1> <span style="color:#e4e9f4;">Inspirações</span></h1>
+            <h1>Inspirações</h1>
             <p>TCCs de turmas anteriores</p>
+        <div id="linha"></div>
         </div>
+        
 
         <!-- STATS -->
         <div id="stats-inspi">
-            <div class="stat-bloco"><div class="stat-val">3</div><div class="stat-lbl">TCCs </div></div>
+            <div class="stat-bloco"><div class="stat-val">3</div><div class="stat-lbl">TCCs catalogados </div></div>
             <div class="stat-bloco"><div class="stat-val">2</div><div class="stat-lbl">Turmas anteriores</div></div>
         </div>
 
@@ -57,19 +59,174 @@
         </div>
 
         <!-- FILTROS -->
+    <!-- FILTROS -->
         <div id="filtros">
-            <button class="filtro ativo" onclick="setFiltro('todos',this)">Todos</button>
-            <button class="filtro" onclick="setFiltro('web',this)"> Web</button>
-            <button class="filtro" onclick="setFiltro('embarcados',this)"> Embarcados</button>
-            <button class="filtro" onclick="setFiltro('software',this)"> Software</button>
+            <button class="filtro ativo" onclick="irPara('todos')">Todos</button>
+            <button class="filtro" onclick="irPara('web')">Web</button>
+            <button class="filtro" onclick="irPara('embarcados')">Embarcados</button>
+            <button class="filtro" onclick="irPara('software')">Software</button>
+            <button class="filtro" onclick="irPara('mobile')">Mobile</button>
         </div>
 
         <!-- GRID -->
         <div id="inspi-grid"></div>
+        <!--bloco de tcc-->
+        <div id="TCCs" style="display: flex; gap: 20px; margin-top: 20px;">
+            <div id="TCCs-superior" style="border-top: 3px solid #34d399;">
+                <div style="display: flex;" id="data-tema">
+                    <div id="data" style="color: #34d399; background-color: #34d39914;">2024</div><div id="tema">Embarcados</div>
+                </div>
+                <h1>Nome Exemplo</h1>
+                <p>exemplode descição</p>
+                <div id="TCCs-int">
+                    <h2 style="color:#34d399;">Como surgiu a ideia</h2>
+                    <p>Pequeno paragrafo que explica a origem do projeto</p>
+                </div>
+                <div id="linha" style="background-color: #fff; width: 464px; margin-left: 18px;"></div>
+                <div style="display: flex;">
+                <div id="integrantes"> <div id="bolinha"></div>Aluno 1 - Aluno 2 - Aluno 3</div>
+                <div id="TCCs-inferior" style="margin-left: auto;">⭐ Aceito pelo Centro Paula Souza</div>
+                </div>
+            </div>
+                        <div id="TCCs-superior" style="border-top: 3px solid #f87171;">
+                <div style="display: flex;" id="data-tema">
+                    <div id="data2" style="color: #f87171; background-color: #f8717114;">2024</div><div id="tema">Software</div>
+                </div>
+                <h1>Nome Exemplo</h1>
+                <p>exemplode descição</p>
+                <div id="TCCs-int">
+                    <h2 style="color:#f87171;">Como surgiu a ideia</h2>
+                    <p>Pequeno paragrafo que explica a origem do projeto</p>
+                </div>
+                <div id="linha" style="background-color: #fff; width: 464px; margin-left: 18px;"></div>
+                <div style="display: flex;">
+                <div id="integrantes"> <div id="bolinha"></div>Aluno 1 - Aluno 2 - Aluno 3</div>
+                <div id="TCCs-inferior" style="margin-left: auto;">⭐ Aceito pelo Centro Paula Souza</div>
+                </div>
+            </div>
+                        <div id="TCCs-superior">
+                <div style="display: flex;" id="data-tema">
+                    <div id="data3">2024</div><div id="tema">Mobile</div>
+                </div>
+                <h1>Nome Exemplo</h1>
+                <p>exemplode descição</p>
+                <div id="TCCs-int">
+                    <h2>Como surgiu a ideia</h2>
+                    <p>Pequeno paragrafo que explica a origem do projeto</p>
+                </div>
+                <div id="linha" style="background-color: #fff; width: 464px; margin-left: 18px;"></div>
+                <div style="display: flex;">
+                <div id="integrantes"> <div id="bolinha"></div>Aluno 1 - Aluno 2 - Aluno 3</div>
+                <div id="TCCs-inferior" style="margin-left: auto;">⭐ Aceito pelo Centro Paula Souza</div>
+                </div>
+            </div> 
+    </div><!-- /conteudo -->
 
+            <!--bloco de tcc-->
+        <div id="TCCs" style="display: flex; gap: 20px; margin-top: 20px;">
+            <div id="TCCs-superior" style="border-top: 3px solid #fbbf24;">
+                <div style="display: flex;" id="data-tema">
+                    <div id="data" style="color: #fbbf24; background-color: #fbbf2414;">2024</div><div id="tema">Web</div>
+                </div>
+                <h1>Nome Exemplo</h1>
+                <p>exemplode descição</p>
+                <div id="TCCs-int">
+                    <h2 style="color: #fbbf24;">Como surgiu a ideia</h2>
+                    <p>Pequeno paragrafo que explica a origem do projeto</p>
+                </div>
+                <div id="linha" style="background-color: #fff; width: 464px; margin-left: 18px;"></div>
+                <div style="display: flex;">
+                <div id="integrantes"> <div id="bolinha"></div>Aluno 1 - Aluno 2 - Aluno 3</div>
+                <div id="TCCs-inferior" style="margin-left: auto;">⭐ Aceito pelo Centro Paula Souza</div>
+                </div>
+            </div>
+                        <div id="TCCs-superior" style="border-top: 3px solid #f87171;">
+                <div style="display: flex;" id="data-tema">
+                    <div id="data2" style="color: #f87171; background-color: #f8717114;">2024</div><div id="tema">Software</div>
+                </div>
+                <h1>Nome Exemplo</h1>
+                <p>exemplode descição</p>
+                <div id="TCCs-int">
+                    <h2 style="color:#f87171;">Como surgiu a ideia</h2>
+                    <p>Pequeno paragrafo que explica a origem do projeto</p>
+                </div>
+                <div id="linha" style="background-color: #fff; width: 464px; margin-left: 18px;"></div>
+                <div style="display: flex;">
+                <div id="integrantes"> <div id="bolinha"></div>Aluno 1 - Aluno 2 - Aluno 3</div>
+                <div id="TCCs-inferior" style="margin-left: auto;">⭐ Aceito pelo Centro Paula Souza</div>
+                </div>
+            </div>
+                        <div id="TCCs-superior" style="border-top: 3px solid #fbbf24;">
+                <div style="display: flex;" id="data-tema">
+                    <div id="data2" style="color: #fbbf24; background-color: #fbbf2414;">2024</div><div id="tema">Web</div>
+                </div>
+                <h1>Nome Exemplo</h1>
+                <p>exemplode descição</p>
+                <div id="TCCs-int">
+                    <h2 style="color: #fbbf24;">Como surgiu a ideia</h2>
+                    <p>Pequeno paragrafo que explica a origem do projeto</p>
+                </div>
+                <div id="linha" style="background-color: #fff; width: 464px; margin-left: 18px;"></div>
+                <div style="display: flex;">
+                <div id="integrantes"> <div id="bolinha"></div>Aluno 1 - Aluno 2 - Aluno 3</div>
+                <div id="TCCs-inferior" style="margin-left: auto;">⭐ Aceito pelo Centro Paula Souza</div>
+                </div>
+            </div> 
+    </div><!-- /conteudo -->
+
+            <!--bloco de tcc-->
+        <div id="TCCs" style="display: flex; gap: 20px; margin-top: 20px;">
+            <div id="TCCs-superior">
+                <div style="display: flex;" id="data-tema">
+                    <div id="data">2024</div><div id="tema">Mobile</div>
+                </div>
+                <h1>Nome Exemplo</h1>
+                <p>exemplode descição</p>
+                <div id="TCCs-int">
+                    <h2>Como surgiu a ideia</h2>
+                    <p>Pequeno paragrafo que explica a origem do projeto</p>
+                </div>
+                <div id="linha" style="background-color: #fff; width: 464px; margin-left: 18px;"></div>
+                <div style="display: flex;">
+                <div id="integrantes"> <div id="bolinha"></div>Aluno 1 - Aluno 2 - Aluno 3</div>
+                <div id="TCCs-inferior" style="margin-left: auto;">⭐ Aceito pelo Centro Paula Souza</div>
+                </div>
+            </div>
+            <div id="TCCs-superior" style="border-top: 3px solid #34d399;">
+                <div style="display: flex;" id="data-tema">
+                    <div id="data" style="color: #34d399; background-color: #34d39914;">2024</div><div id="tema">Embarcados</div>
+                </div>
+                <h1>Nome Exemplo</h1>
+                <p>exemplode descição</p>
+                <div id="TCCs-int">
+                    <h2 style="color:#34d399;">Como surgiu a ideia</h2>
+                    <p>Pequeno paragrafo que explica a origem do projeto</p>
+                </div>
+                <div id="linha" style="background-color: #fff; width: 464px; margin-left: 18px;"></div>
+                <div style="display: flex;">
+                <div id="integrantes"> <div id="bolinha"></div>Aluno 1 - Aluno 2 - Aluno 3</div>
+                <div id="TCCs-inferior" style="margin-left: auto;">⭐ Aceito pelo Centro Paula Souza</div>
+                </div>
+            </div>
+                        <div id="TCCs-superior">
+                <div style="display: flex;" id="data-tema">
+                    <div id="data">2024</div><div id="tema">Mobile</div>
+                </div>
+                <h1>Nome Exemplo</h1>
+                <p>exemplode descição</p>
+                <div id="TCCs-int">
+                    <h2>Como surgiu a ideia</h2>
+                    <p>Pequeno paragrafo que explica a origem do projeto</p>
+                </div>
+                <div id="linha" style="background-color: #fff; width: 464px; margin-left: 18px;"></div>
+                <div style="display: flex;">
+                <div id="integrantes"> <div id="bolinha"></div>Aluno 1 - Aluno 2 - Aluno 3</div>
+                <div id="TCCs-inferior" style="margin-left: auto;">⭐ Aceito pelo Centro Paula Souza</div>
+                </div>
+            </div> 
     </div><!-- /conteudo -->
 </div>
-
+<script src="../navegacao.js"></script>
 <script src="Inspiracoes.js"></script>
 </body>
 </html>

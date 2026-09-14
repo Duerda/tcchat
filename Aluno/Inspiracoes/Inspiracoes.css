@@ -122,6 +122,8 @@ h2 {
     transition: background-position 1s ease;
     cursor: pointer;
     text-align: center;
+    font-family: arial narrow;
+    font-size: 14px;
 }
 
 .VGABF div button:hover,
@@ -201,14 +203,17 @@ h2 {
 #conteudo-superior p {
     color: var(--cor-texto-secundario);
     margin-top: 7px;
+    font-family: arial narrow;
 }
 
 h1 {
-    color: var(--cor-vermelho);
     margin-top: 7px;
+    color: var(--cor-vermelho);
     margin-bottom: 5px;
+    font-family: coolvetica;
+    letter-spacing: 1.2px;
+    font-weight: 200;
 }
-
 
 /* STATS */
 
@@ -217,6 +222,7 @@ h1 {
     gap: 10px;
     margin-bottom: 20px;
     flex-wrap: wrap;
+    margin-top: 15px;
 }
 
 .stat-bloco {
@@ -228,15 +234,18 @@ h1 {
 }
 
 .stat-val {
-    font-size: 22px;
+    font-size: 27px;
     font-weight: 800;
     color: var(--cor-texto);
+    font-family: coolvetica, sans-serif;
+    font-weight: 200;
 }
 
 .stat-lbl {
     font-size: 11px;
     color: var(--cor-texto-fraco);
     margin-top: 3px;
+    font-family: arial, sans-serif;
 }
 
 
@@ -491,4 +500,167 @@ h2 {
     text-transform: uppercase;
     letter-spacing: .08em;
     margin-bottom: 6px;
+}
+
+#linha {
+    width: 100%;
+    height: 1px;
+    background-color: var(--cor-borda);
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#TCCs {
+    width: 100vh;
+    height: 300px;
+}
+
+#TCCs-superior {
+    background-color: var(--cor-fundo-secundario);
+    border-radius: 18px;
+    width: 500px;
+    border-top: 3px solid rgb(60, 148, 236);
+    height: 290px;
+}
+
+#data-tema {
+    margin-left: 18px;
+    margin-top: 15px;
+    margin-right: 18px;
+}
+
+#data {
+    font-size: 16px;
+    color: rgb(60, 148, 236);
+    font-family: "coolvetica", sans-serif;
+    font-weight: 200;
+    background-color: #3c94ec29;
+    padding: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 18px;
+}
+
+#tema {
+    font-size: 16px;
+    color: var(--cor-texto-secundario);
+    font-family: "arial", sans-serif;
+    font-weight: 200;
+    background-color: var(--cor-fundo-hover);
+    padding: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 18px;
+    margin-left: auto;
+}
+
+#data2 {
+    font-size: 16px;
+    color: rgb(60, 148, 236);
+    font-family: "coolvetica", sans-serif;
+    font-weight: 200;
+    background-color: #3c94ec29;
+    padding: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 18px;
+}
+
+#data3 {
+    font-size: 16px;
+    color: rgb(60, 148, 236);
+    font-family: "coolvetica", sans-serif;
+    font-weight: 200;
+    background-color: #3c94ec29;
+    padding: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 18px;
+}
+
+#TCCs-superior h1 {
+    font-size: 25px;
+    color: var(--cor-branco);
+    margin-left: 8px;
+    font-family: "coolvetica", sans-serif;
+    font-weight: 200;
+    letter-spacing: 1.5px;
+    margin-left: 18px;
+    margin-bottom: 0px;
+}
+
+#TCCs-superior p {
+    font-size: 13px;
+    color: var(--cor-texto-fraco);
+    margin-left: 8px;
+    font-family: "arial", sans-serif;
+    font-weight: 200;
+    margin-bottom: 15px;
+    margin-left: 18px;
+    margin-top: 0px;
+}
+
+#TCCs-int {
+    background-color: var(--cor-fundo-card);
+    margin-left: 18px;
+    margin-right: 18px;
+    height: 100px;
+    margin-bottom: 18px;
+}
+
+#TCCs-int p {
+    font-size: 13px;
+    color: var(--cor-texto-fraco);
+    margin-left: 8px;
+    font-family: "arial", sans-serif;
+    font-weight: 200;
+    margin-bottom: 15px;
+    margin-left: 18px;
+    margin-top: 0px;
+    margin-right: 18px;
+}
+
+#TCCs-int h2 {
+    font-size: 16px;
+    color: rgb(59, 130, 246);
+    margin-left: 8px;
+    font-family: "coolvetica", sans-serif;
+    font-weight: 200;
+    letter-spacing: 1.5px;
+    margin-left: 18px;
+    margin-bottom: 3.5px;
+    padding-top: 12px;
+}
+
+#integrantes {
+    display: flex;
+    gap: 10px;
+    margin-left: 18px;
+    margin-top: 10px;
+    color: var(--cor-texto-fraco);
+    font-family: "arial", sans-serif;
+}
+
+#bolinha {
+    width: 6px;
+    height: 6px;
+    border-radius: 100%;
+    background-color: var(--cor-texto-fraco);
+    margin-left: 10px;
+    margin-top: 6px;
+}
+
+#TCCs-inferior {
+    background-color: #fbbf2414;
+    margin-right: 18px;
+    color: rgb(251, 191, 36);
+    font-family: "arial", sans-serif;
+    padding: 3px;
+    border-radius: 18px;
+    font-size: 12px;
+    padding-left: 15px;
+    padding-right: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
