@@ -120,7 +120,7 @@ async function Formulario(event) {
         } else if (tipo === "professor") {
             window.location.href = "/Professor/Index.html";
         } else {
-            window.location.href = "/Aluno/Turma.html";
+            window.location.href = "/Aluno/Turma/index.html";
         }
 
     } catch (error) {
