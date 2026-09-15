@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="stylesheet" href="Coord-style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coordenador - Painel</title>
+</head>
+<body>
+<div id="Geral">
+
+    <!-- LATERAL -->
+    <div id="lateral">
+        <div id="lateral-superior">
+            <div><h2 style="margin-top: 2px;">T<span>CCHAT</span></h2></div>
+            <div id="Logo-de-professor">COORD</div>
+        </div>
+
+        <div class="VGABF">
+            <div id="painel">Navegação</div>
+            <div><button onclick="Painel()" id="bisao">Painel</button></div>
+            <div><button onclick="Usuarios()">Usuários</button></div>
+             
+            <div><button onclick="GruposCoord()">Grupos</button></div>
+            <div><button onclick="Avaliacoes()">Avaliações</button></div>
+            <div><button onclick="Cronograma()">Cronograma</button></div>
+            <div><button onclick="Biblioteca()">Biblioteca</button></div>
+            <div><button onclick="Forum()">Fórum</button></div>
+            <div><button onclick="Relatorios()">Relatórios</button></div>
+        </div>
+
+        <div id="sistema">
+            <button onclick="Configuracoes()" id="configuracao">Configurações</button>
+        </div>
+
+        <div class="lateral-inferior">
+            <div class="Usuario">
+                <div id="foto"><span style="margin: 0px;"></span></div>
+                <div id="NomeUC">
+                    <h4 style="margin: 0; color: #e4e9f4; width: 100px;"></h4>
+                    <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;"></h5>
+                </div>
+                <p id="voltar" style="margin-top: 31px; margin-bottom: 0px; margin-left: 30px;" onclick="Voltar()">X</p>
+            </div>
+        </div>
+    </div>
+    <!-- Fim lateral -->
+
+    <!-- CONTEÚDO -->
+    <div id="conteudo">
+        <div id="conteudo-superior">
+            <h1><span>Painel</span> do Coordenador</h1>
+            <p>Visão geral de todos os cursos e grupos</p>
+        </div>
+
+        <!-- STATS -->
+        <div id="Informacoes">
+            <div class="Stat">
+                <div><h5>CURSOS ATIVOS</h5><h3 style="color:#e4e9f4;">2</h3></div>
+            </div>
+            <div class="Stat">
+                <div><h5>TOTAL DE GRUPOS</h5><h3 style="color:#e4e9f4;">8</h3></div>
+            </div>
+            <div class="Stat">
+                <div><h5>TOTAL DE ALUNOS</h5><h3 style="color:#e4e9f4;">32</h3></div>
+            </div>
+            <div class="Stat">
+                <div><h5>PROFESSORES</h5><h3 style="color:#e4e9f4;">3</h3></div>
+            </div>
+            <div class="Stat">
+                <div><h5>GRUPOS ATRASADOS</h5><h3 style="color:#f87171;">2</h3></div>
+            </div>
+            <div class="Stat">
+                <div><h5>ENTREGAS PENDENTES</h5><h3 style="color:#fbbf24;">5</h3></div>
+            </div>
+        </div>
+
+        <!-- ALERTAS -->
+        <h1>Alertas do Sistema</h1>
+        <div class="Alerta vermelho">
+            <div id="Pontinho"></div>
+            <div id="Top-duvidas">
+                <h3 style="margin: 0; font-size: 15px; color: #e4e9f4;">Grupos EcoTrack e HealthApp em atraso</h3>
+                <p style="color: #7a8699; margin-top: 5px; margin-bottom: 0; font-size: 12px;">Pré-projeto não entregue — 1 dia de atraso</p>
+            </div>
+            <div style="color: #3d4d61; font-size: 12px;">Hoje</div>
+        </div>
+        <div class="Alerta amarelo">
+            <div id="Pontinho" style="background:#fbbf24;"></div>
+            <div id="Top-duvidas">
+                <h3 style="margin: 0; font-size: 15px; color: #e4e9f4;">5 entregas aguardam avaliação há mais de 48h</h3>
+                <p style="color: #7a8699; margin-top: 5px; margin-bottom: 0; font-size: 12px;">Professores com avaliações pendentes</p>
+            </div>
+            <div style="color: #3d4d61; font-size: 12px;">2 dias</div>
+        </div>
+
+        <!-- CURSOS -->
+        <h1 style="margin-top: 22px;">Cursos Ativos</h1>
+        <div id="ListaCursos">
+            <div class="Cards">
+                <div id="top-card">
+                    <div>
+                        <h3 style="margin: 0 0 5px; color: #e4e9f4;">💻 Desenvolvimento de Sistemas</h3>
+                        <span style="color: #3d4d61;">Código: DS-2025-A · 8 grupos · 32 alunos</span>
+                    </div>
+                    <span class="Estado">Ativo</span>
+                </div>
+                <div style="color: #7a8699; font-size: 13px;">Semestre 2025.1 · 3 professores orientadores</div>
+            </div>
+            <div class="Cards">
+                <div id="top-card">
+                    <div>
+                        <h3 style="margin: 0 0 5px; color: #e4e9f4;">🌿 Técnico de Meio Ambiente</h3>
+                        <span style="color: #3d4d61;">Código: TMA-2025-A · 0 grupos · 0 alunos</span>
+                    </div>
+                    <span class="Estado amarelo-badge">Configurando</span>
+                </div>
+                <div style="color: #7a8699; font-size: 13px;">Semestre 2025.2 · Sem grupos formados ainda</div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script type="module" src="Coord-script.js"></script>
+</body>
+</html>

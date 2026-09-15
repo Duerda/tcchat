@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="stylesheet" href="Coord-style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coordenador - Usuários</title>
+</head>
+<body>
+<div id="Geral">
+    <div id="lateral">
+        <div id="lateral-superior">
+            <div><h2 style="margin-top: 2px;">T<span>CCHAT</span></h2></div>
+            <div id="Logo-de-professor">COORD</div>
+        </div>
+        <div class="VGABF">
+            <div id="painel">Navegação</div>
+            <div><button onclick="Painel()">Painel</button></div>
+            <div><button onclick="Usuarios()" id="ativo">Usuários</button></div>
+             
+            <div><button onclick="GruposCoord()">Grupos</button></div>
+            <div><button onclick="Avaliacoes()">Avaliações</button></div>
+            <div><button onclick="Cronograma()">Cronograma</button></div>
+            <div><button onclick="Biblioteca()">Biblioteca</button></div>
+            <div><button onclick="Forum()">Fórum</button></div>
+            <div><button onclick="Relatorios()">Relatórios</button></div>
+        </div>
+        <div id="sistema"><button onclick="Configuracoes()" id="configuracao">Configurações</button></div>
+        <div class="lateral-inferior">
+            <div class="Usuario">
+                <div id="foto"><span></span></div>
+                <div id="NomeUC">
+                    <h4 style="margin: 0; color: #e4e9f4; width: 100px;"></h4>
+                    <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;"></h5>
+                </div>
+                <p id="voltar" style="margin-top: 31px; margin-bottom: 0px; margin-left: 30px;" onclick="Voltar()">X</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="conteudo">
+        <div id="conteudo-superior">
+            <h1>Usuários</h1>
+            <p>Gerenciar alunos, professores e códigos de acesso</p>
+        </div>
+
+        <!-- ABAS -->
+        <div id="EnCad">
+            <button class="aba ativa" id="aba-codigos"   onclick="mudarAba('codigos')">🔑 Códigos</button>
+            <button class="aba"       id="aba-alunos"    onclick="mudarAba('alunos')">👤 Alunos</button>
+            <button class="aba"       id="aba-professores" onclick="mudarAba('professores')">👨‍🏫 Professores</button>
+            <button class="aba"       id="aba-pendentes" onclick="mudarAba('pendentes')">⏳ Pendentes</button>
+        </div>
+
+        <!-- CÓDIGOS DE ACESSO -->
+        <div class="conteudo-aba" id="tab-codigos">
+            <div style="display:flex; gap:10px; margin-bottom:16px;">
+                <button class="btn-acao" onclick="gerarCodigo('aluno')">+ Código Aluno</button>
+                <button class="btn-acao secundario" onclick="gerarCodigo('professor')">+ Código Professor</button>
+            </div>
+            <table class="Tabela">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Tipo</th>
+                        <th>Curso</th>
+                        <th>Usos</th>
+                        <th>Validade</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="lista-codigos">
+                    <tr>
+                        <td><span class="Chip">DS-2025-A</span></td>
+                        <td>Aluno</td>
+                        <td><span class="Badge ds">DS</span></td>
+                        <td>28</td>
+                        <td>Permanente</td>
+                        <td><button class="btn-tabela vermelho" onclick="revogarCodigo(this)">Revogar</button></td>
+                    </tr>
+                    <tr>
+                        <td><span class="Chip">TMA-2025-A</span></td>
+                        <td>Aluno</td>
+                        <td><span class="Badge tma">TMA</span></td>
+                        <td>0</td>
+                        <td>Permanente</td>
+                        <td><button class="btn-tabela vermelho" onclick="revogarCodigo(this)">Revogar</button></td>
+                    </tr>
+                    <tr>
+                        <td><span class="Chip">PROF-DS-2025</span></td>
+                        <td>Professor</td>
+                        <td><span class="Badge ds">DS</span></td>
+                        <td>3</td>
+                        <td>31/12/2025</td>
+                        <td><button class="btn-tabela vermelho" onclick="revogarCodigo(this)">Revogar</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ALUNOS -->
+        <div class="conteudo-aba" id="tab-alunos" style="display:none;">
+            <table class="Tabela">
+                <thead>
+                    <tr><th>Nome</th><th>Curso</th><th>Grupo</th><th>Status</th><th>Ações</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Ana Lima</td>
+                        <td><span class="Badge ds">DS</span></td>
+                        <td>AppGenius</td>
+                        <td><span class="Estado">Ativo</span></td>
+                        <td>
+                            <button class="btn-tabela" onclick="resetarSenha('Ana Lima')">Resetar Senha</button>
+                            <button class="btn-tabela vermelho" onclick="desativarUsuario(this)">Desativar</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Rafael Moura</td>
+                        <td><span class="Badge ds">DS</span></td>
+                        <td>AppGenius</td>
+                        <td><span class="Estado">Ativo</span></td>
+                        <td>
+                            <button class="btn-tabela" onclick="resetarSenha('Rafael Moura')">Resetar Senha</button>
+                            <button class="btn-tabela vermelho" onclick="desativarUsuario(this)">Desativar</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Marcos Lima</td>
+                        <td><span class="Badge ds">DS</span></td>
+                        <td>HealthApp</td>
+                        <td><span class="Estado amarelo-badge">Atenção</span></td>
+                        <td>
+                            <button class="btn-tabela" onclick="resetarSenha('Marcos Lima')">Resetar Senha</button>
+                            <button class="btn-tabela vermelho" onclick="desativarUsuario(this)">Desativar</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PROFESSORES -->
+        <div class="conteudo-aba" id="tab-professores" style="display:none;">
+            <table class="Tabela">
+                <thead>
+                    <tr><th>Nome</th><th>Curso</th><th>Grupos orientados</th><th>Ações</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Carlos Mendes</td>
+                        <td><span class="Badge ds">DS</span></td>
+                        <td>3 grupos</td>
+                        <td>
+                            <button class="btn-tabela vermelho" onclick="desativarUsuario(this)">Remover</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Ana Rodrigues</td>
+                        <td><span class="Badge ds">DS</span></td>
+                        <td>3 grupos</td>
+                        <td>
+                            <button class="btn-tabela vermelho" onclick="desativarUsuario(this)">Remover</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Juliana Pires</td>
+                        <td><span class="Badge ds">DS</span></td>
+                        <td>2 grupos</td>
+                        <td>
+                            <button class="btn-tabela vermelho" onclick="desativarUsuario(this)">Remover</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PENDENTES -->
+        <div class="conteudo-aba" id="tab-pendentes" style="display:none;">
+            <p style="color:#7a8699; font-size:13px; padding: 20px 0;">Nenhum cadastro pendente de aprovação.</p>
+        </div>
+
+    </div>
+</div>
+<script type="module" src="Coord-script.js"></script>
+<script src="Coord-interno.js"></script>
+</body>
+</html>
