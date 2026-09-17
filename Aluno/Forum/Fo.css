@@ -55,9 +55,8 @@ h2 {
     font-size: 35px;
     color: var(--cor-branco);
     margin-left: 8px;
-    font-family: "coolvetica", sans-serif;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-weight: 200;
-    letter-spacing: 3px;
 }
 #lateral-superior div h2 {
     font-size: 32px;
@@ -85,7 +84,6 @@ h2 {
     font-size: 14px;
     color: var(--cor-texto-fraco);
     margin-bottom: 4px;
-    letter-spacing: 0.5px;
     border-radius: 10px;
     font-family: "arial narrow", sans-serif;
     font-weight: 700;
@@ -159,7 +157,6 @@ h2 {
     margin-top: 3px;
     background-color: var(--cor-vermelho-transparente);
     color: var(--cor-vermelho);
-    letter-spacing: 0.7px;
     text-align: center;
     border-radius: 10px;
     padding-top: 3px;
@@ -167,7 +164,7 @@ h2 {
     padding-bottom: 3px;
     padding-left: 8px;
     width: 40px;
-    font-family: "coolvetica", sans-serif;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-weight: 200;
 }
 #configuracao {
@@ -225,22 +222,19 @@ h2 {
     color: var(--cor-texto-secundario);
     margin-top: 7px;
     font-family: "arial narrow", sans-serif;
-    letter-spacing: 0.5px;
 }
 h1 {
     color:var(--cor-vermelho);
     margin-top: 7px;
     margin-bottom: 5px;
-    font-family: "coolvetica", sans-serif;
-    letter-spacing: 1.2px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-weight: 100;
 }
 
 h1 span {
     color: var(--cor-texto-secundario);
     margin-left: 8px;
-    font-family: "coolvetica", sans-serif;
-    letter-spacing: 1.2px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     margin-left: 0px;
 }
 
@@ -286,7 +280,7 @@ h1 span {
     padding: 10px;
     border-radius: 8px;
     font-size: 16px;
-    font-family: "coolvetica", sans-serif;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     text-decoration: none;
     align-items: center;
 }
@@ -298,7 +292,7 @@ h1 span {
     padding: 10px;
     border-radius: 8px;
     font-size: 16px;
-    font-family: "coolvetica", sans-serif;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     text-decoration: none;
     align-items: center;
 }
@@ -313,7 +307,7 @@ h1 span {
     padding: 10px;
     border-radius: 8px;
     font-size: 16px;
-    font-family: "coolvetica", sans-serif;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     text-decoration: none;
     align-items: center;
 }
@@ -324,7 +318,7 @@ h1 span {
     transition: all 0.5s;
     background-color: var(--cor-fundo-principal);
     color: var(--cor-texto-fraco);
-    font-family: "coolvetica", sans-serif;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     border: none;
 }
 
@@ -341,7 +335,7 @@ h1 span {
 }
 
 #DV h1 {
-    font-family: "coolvetica", sans-serif;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     color: var(--cor-branco);
     font-size: 13px;
     margin: 0px;
@@ -364,7 +358,7 @@ h1 span {
 
 #quadro h1 {
     color: var(--cor-branco);
-    font-family: "coolvetica", sans-serif;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-size: 18px;
     margin-left: 20px;
     margin-top: 15px;
@@ -394,8 +388,7 @@ h1 span {
 #quadro-int h2 {
     font-size: 15px;
     margin-left: 14px;
-    font-family: "coolvetica", sans-serif;
-    letter-spacing: 1.2px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     margin-bottom: 0px;
 }
 
@@ -420,7 +413,6 @@ h1 span {
     font-size: 24px;
     margin-left: 0px;
     margin-top: 0px;
-    letter-spacing: 1.2px;
 }
 
 #bloco-nova-duvida form {
