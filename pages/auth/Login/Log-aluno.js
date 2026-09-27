@@ -1,13 +1,13 @@
-import { auth, db } from "../../backend/firebase/config.js";
+import { auth, db } from "../../../backend/firebase/config.js";
 import { signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 window.Professor = function () {
-    window.location.href = "/Inicial-tela/Login/Log-Prof.html";
+    window.location.href = "Log-Prof.html";
 };
 
 window.Cadastrar = function () {
-    window.location.href = "/Inicial-tela/Cadastro/Cad.html";
+    window.location.href = "../Cadastro/Cad.html";
 };
 
 
@@ -56,13 +56,13 @@ async function Formulario(event) {
             
             // Redirecionamento baseado no tipo
             if (userData.tipo === "coordenador") {
-                window.location.href = "/Professor/Index.html"; // Redireciona para Professor se Coordenador não existir
+                window.location.href = "../Professor/Index.html"; // Redireciona para Professor se Coordenador não existir
             } else if (userData.tipo === "professor") {
-                window.location.href = "/Professor/Index.html";
+                window.location.href = "../Professor/Index.html";
             } else if (userData.tipo === "aluno") {
-                window.location.href = "/Aluno/Turma/index.html";
+                window.location.href = "../Aluno/Turma/index.html";
             } else {
-                window.location.href = "/Aluno/Turma/index.html";
+                window.location.href = "../Aluno/Turma/index.html";
             }
         } else {
             // SE NÃO EXISTE NO BANCO, DESLOGA E NEGA O ACESSO

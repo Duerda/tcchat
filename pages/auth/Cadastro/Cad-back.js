@@ -1,5 +1,5 @@
 import { auth, db } 
-from "../../backend/firebase/config.js";
+from "../../../backend/firebase/config.js";
 import { createUserWithEmailAndPassword } 
 from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, setDoc } 
@@ -19,11 +19,11 @@ const cursosValidos = {
 
 //Navegação
 window.Entraralpr = function () {
-    window.location.href = "../Professor/Index.html";
+    window.location.href = "Professor/Index.html";
 };
 
 window.Logar = function () {
-    window.location.href = "/auth/Login/Log-aluno.html";
+    window.location.href = "../Login/Log-aluno.html";
 };
 
 document.getElementById("formCadastro").addEventListener("submit", Formulario);

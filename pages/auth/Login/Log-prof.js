@@ -1,12 +1,12 @@
-import { auth, db } from "../../backend/firebase/config.js";
+import { auth, db } from "../../../backend/firebase/config.js";
 import { signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 window.Aluno = function () {
-    window.location.href = "/pages/auth/Login/Log-aluno.html";
+    window.location.href = "Log-aluno.html";
 };
 window.Cadastrar = function () {
-    window.location.href = "/pages/auth/Cadastro/Cad.html";
+    window.location.href = "../Cadastro/Cad.html";
 }
 
 function toggleCoor() {

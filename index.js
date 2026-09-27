@@ -1,8 +1,8 @@
 function Login() {
-  window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+  window.location.href = "pages/auth/Login/Log-aluno.html";
 }
 function Cadastrar() {
-  window.location.href = "/Inicial-tela/Cadastro/Cad.html";
+  window.location.href = "pages/auth/Cadastro/Cad.html";
 }
 
 /* Teste de navegação da pagina
