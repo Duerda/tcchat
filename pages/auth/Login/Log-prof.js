@@ -3,10 +3,10 @@ import { signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/fir
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 window.Aluno = function () {
-    window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+    window.location.href = "/pages/auth/Login/Log-aluno.html";
 };
 window.Cadastrar = function () {
-    window.location.href = "/Inicial-tela/Cadastro/Cad.html";
+    window.location.href = "/pages/auth/Cadastro/Cad.html";
 }
 
 function toggleCoor() {
@@ -58,7 +58,7 @@ async function Formulario(event) {
 
             console.log(usuarioDoc.data());
 
-            window.location.href="/Professor/Index.html";
+            window.location.href="../Professor/Index.html";
 
         }
 

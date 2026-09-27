@@ -61,7 +61,6 @@ h2 { font-size: 32px; color: var(--cor-branco); margin-left: 8px; }
     margin-top: 3px;
     background-color: var(--cor-vermelho-transparente);
     color: var(--cor-vermelho);
-    letter-spacing: 0.7px;
     text-align: center;
     border-radius: 10px;
     padding-top: 3px;
@@ -69,7 +68,7 @@ h2 { font-size: 32px; color: var(--cor-branco); margin-left: 8px; }
     padding-bottom: 3px;
     padding-left: 8px;
     width: 40px;
-        font-family: "coolvetica", sans-serif;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-weight: 200;
 }
 
@@ -79,7 +78,6 @@ h2 { font-size: 32px; color: var(--cor-branco); margin-left: 8px; }
     font-size: 14px;
     color: var(--cor-texto-fraco);
     margin-bottom: 4px;
-    letter-spacing: 0.5px;
     font-family: "arial narrow", sans-serif;
     font-weight: 700;
 }
@@ -128,9 +126,8 @@ h2 {
     font-size: 35px;
     color: var(--cor-branco);
     margin-left: 8px;
-    font-family: "coolvetica", sans-serif;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-weight: 200;
-    letter-spacing: 3px;
 }
 #lateral-superior div h2 {
     font-size: 32px;

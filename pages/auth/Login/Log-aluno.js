@@ -60,9 +60,9 @@ async function Formulario(event) {
             } else if (userData.tipo === "professor") {
                 window.location.href = "/Professor/Index.html";
             } else if (userData.tipo === "aluno") {
-                window.location.href = "/Aluno/Turma.html";
+                window.location.href = "/Aluno/Turma/index.html";
             } else {
-                window.location.href = "/Aluno/Turma.html";
+                window.location.href = "/Aluno/Turma/index.html";
             }
         } else {
             // SE NÃO EXISTE NO BANCO, DESLOGA E NEGA O ACESSO

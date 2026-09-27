@@ -68,7 +68,7 @@ h2 {
 }
 
 #Logo-de-professor {
-        font-family: "coolvetica", sans-serif;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-weight: 200;
     display: inline-flex;
     font-size: 12px;
@@ -210,7 +210,7 @@ h1 {
     margin-top: 7px;
     color: var(--cor-vermelho);
     margin-bottom: 5px;
-    font-family: coolvetica;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     letter-spacing: 1.2px;
     font-weight: 200;
 }
@@ -237,7 +237,7 @@ h1 {
     font-size: 27px;
     font-weight: 800;
     color: var(--cor-texto);
-    font-family: coolvetica, sans-serif;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-weight: 200;
 }
 
@@ -432,7 +432,7 @@ h2 {
     font-size: 35px;
     color: var(--cor-branco);
     margin-left: 8px;
-    font-family: "coolvetica", sans-serif;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-weight: 200;
     letter-spacing: 3px;
 }
@@ -532,7 +532,7 @@ h2 {
 #data {
     font-size: 16px;
     color: rgb(60, 148, 236);
-    font-family: "coolvetica", sans-serif;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-weight: 200;
     background-color: #3c94ec29;
     padding: 5px;
@@ -557,7 +557,7 @@ h2 {
 #data2 {
     font-size: 16px;
     color: rgb(60, 148, 236);
-    font-family: "coolvetica", sans-serif;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-weight: 200;
     background-color: #3c94ec29;
     padding: 5px;
@@ -569,7 +569,7 @@ h2 {
 #data3 {
     font-size: 16px;
     color: rgb(60, 148, 236);
-    font-family: "coolvetica", sans-serif;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-weight: 200;
     background-color: #3c94ec29;
     padding: 5px;
@@ -582,7 +582,7 @@ h2 {
     font-size: 25px;
     color: var(--cor-branco);
     margin-left: 8px;
-    font-family: "coolvetica", sans-serif;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-weight: 200;
     letter-spacing: 1.5px;
     margin-left: 18px;
@@ -624,7 +624,7 @@ h2 {
     font-size: 16px;
     color: rgb(59, 130, 246);
     margin-left: 8px;
-    font-family: "coolvetica", sans-serif;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-weight: 200;
     letter-spacing: 1.5px;
     margin-left: 18px;
