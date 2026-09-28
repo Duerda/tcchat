@@ -116,7 +116,7 @@ async function Formulario(event) {
         alert(`Cadastro realizado com sucesso como ${tipo}!`);
 
         if (tipo === "coordenador") {
-            window.location.href = "../../Professor/Index.html"; // Redireciona para Professor se Coordenador não existir
+            window.location.href = "../../Coordenador/Coord-Index.html"; // Redireciona para Professor se Coordenador não existir
         } else if (tipo === "professor") {
             window.location.href = "../../Professor/Index.html";
         } else {

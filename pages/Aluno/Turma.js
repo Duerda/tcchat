@@ -16,21 +16,21 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 window.MeuGrupo = function(){
-    window.location.href = "/Aluno/Grupos/gp.chat.html";
+    window.location.href = "Grupos/gp.chat.html";
 }
 window.Forum = function(){
-    window.location.href = "/Aluno/Forum/Fo.html";
+    window.location.href = "Forum/Fo.html";
 }
 window.Inspiracoes = function(){
-    window.location.href = "/Aluno/Inspiracoes/Inspiracoes.html";
+    window.location.href = "Inspiracoes/Inspiracoes.html";
 };
 window.Configuracoes = function () {
-    window.location.href = "/Aluno/Configuracoes/Config.html";
+    window.location.href = "Configuracoes/Config.html";
 };
 window.Voltar = () =>
   auth
     .signOut()
-    .then(() => (window.location.href = "/Inicial-tela/Login/Log-aluno.html"));
+    .then(() => (window.location.href = "../auth/Login/Log-aluno.html"));
 
 let dadosAluno = null
 
