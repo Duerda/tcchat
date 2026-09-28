@@ -10,6 +10,9 @@ import {
     where
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { auth, db } from "../../../backend/firebase/config.js";
+import {supabase} from "../../../backend/supabase/supabase.js"
+
+console.log(`Supabase: ${supabase}`) //teste
 
 window.Voltar = function(){
     window.location.href = "../../auth/Cadastro/Cad.html";
@@ -120,6 +123,21 @@ document.getElementById("ArquivoModelo").addEventListener("click", async () => {
     }
 });
 
+async function enviarArquivo(arquivo){ //função para armazenar arquivos dentro do storage do supabase
+    const caminho = `biblioteca/DS-3/${arquivo.name}`
+
+    const {data, error} = await supabase.storage
+        .from("tcchat-arquivos")
+        .upload(caminho, arquivo)
+        
+        if (error) {
+        console.error("Erro ao enviar arquivo:", error);
+        return;
+    }
+
+    console.log("Arquivo enviado:", data);
+}
+
 function escutarBiblioteca() {
     const codigoSala = localStorage.getItem("codigoSala") || "geral";
     const q = query(collection(db, "biblioteca"), where("codigoSala", "==", codigoSala));
@@ -158,3 +176,5 @@ function escutarBiblioteca() {
         });
     });
 }
+
+

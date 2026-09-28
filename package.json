@@ -19,6 +19,8 @@
   },
   "homepage": "https://github.com/Duerda/tcchat#readme",
   "dependencies": {
+    "@supabase/server": "^1.8.0",
+    "@supabase/supabase-js": "^2.117.2",
     "firebase": "^12.14.0"
   }
 }
