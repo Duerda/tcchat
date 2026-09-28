@@ -10,7 +10,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 // ===== NAVEGAÇÃO =====
-window.Voltar       = () => auth.signOut().then(() => window.location.href = "/Inicial-tela/Login/Log-aluno.html");
+window.Voltar       = () => auth.signOut().then(() => window.location.href = "../../auth/Login/Log-aluno.html");
 window.Painel       = () => window.location.href = "/Coordenador/Coord-Index.html";
 window.Usuarios     = () => window.location.href = "/Coordenador/Coord-Usuarios.html";
 window.Cursos       = () => window.location.href = "/Coordenador/Coord-Cursos.html";
