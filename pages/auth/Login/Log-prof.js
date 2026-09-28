@@ -58,7 +58,7 @@ async function Formulario(event) {
 
             console.log(usuarioDoc.data());
 
-            window.location.href="../Professor/Index.html";
+            window.location.href="../../Professor/Index.html";
 
         }
 

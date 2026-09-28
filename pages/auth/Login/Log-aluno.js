@@ -56,13 +56,13 @@ async function Formulario(event) {
             
             // Redirecionamento baseado no tipo
             if (userData.tipo === "coordenador") {
-                window.location.href = "../Professor/Index.html"; // Redireciona para Professor se Coordenador não existir
+                window.location.href = "../../Professor/Index.html"; // Redireciona para Professor se Coordenador não existir
             } else if (userData.tipo === "professor") {
-                window.location.href = "../Professor/Index.html";
+                window.location.href = "../../Professor/Index.html";
             } else if (userData.tipo === "aluno") {
-                window.location.href = "../Aluno/Turma/index.html";
+                window.location.href = "../../Aluno/Turma/index.html";
             } else {
-                window.location.href = "../Aluno/Turma/index.html";
+                window.location.href = "../../Aluno/Turma/index.html";
             }
         } else {
             // SE NÃO EXISTE NO BANCO, DESLOGA E NEGA O ACESSO
