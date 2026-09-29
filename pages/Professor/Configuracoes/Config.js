@@ -1,21 +1,21 @@
 window.Voltar = () =>
   auth
     .signOut()
-    .then(() => (window.location.href = "/Inicial-tela/Login/Log-Professor.html"));
+    .then(() => (window.location.href = "../../auth/Login/Log-Professor.html"));
 window.Avaliacoes = function (){ 
-    window.location.href = "/Professor/Avaliacoes/ava.html";
+    window.location.href = "../Avaliacoes/ava.html";
 };
 window.Biblioteca = function (){ 
-    window.location.href = "/Professor/Biblioteca/Bib.html";
+    window.location.href = "../Biblioteca/Bib.html";
 };
 window.VisaoGeral = function (){ 
-    window.location.href = "/Professor/Index.html";
+    window.location.href = "../Index.html";
 };
 window.Forum = function (){ 
-    window.location.href = "/Professor/Forum/Avisos.html";
+    window.location.href = "../Forum/Avisos.html";
 };
 window.Grupos = function (){ 
-    window.location.href = "/Inicial-tela/Cadastro/Cad.html";
+    window.location.href = "../Grupos/grp.html";
 };
 
 function setFonte(nome, el) {

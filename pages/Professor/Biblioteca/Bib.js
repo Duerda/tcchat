@@ -1,37 +1,34 @@
-import { auth, db } from "../../backend/firebase/config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import {
-  collection,
-  query,
-  onSnapshot,
-  doc,
-  getDoc,
-  updateDoc,
-  deleteDoc,
-  where,
-  addDoc,
-  serverTimestamp,
-  orderBy,
+    addDoc,
+    collection,
+    deleteDoc,
+    doc,
+    getDoc,
+    onSnapshot,
+    query,
+    where
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { auth, db } from "../../../backend/firebase/config.js";
 
 window.Voltar = function(){
-    window.location.href = "/Inicial-tela/Cadastro/Cad.html";
+    window.location.href = "../../auth/Cadastro/Cad.html";
 };
-window.Voltar = () => auth.signOut().then(() => window.location.href = "/Inicial-tela/Login/Log-aluno.html");
+window.Voltar = () => auth.signOut().then(() => window.location.href = "../auth/Login/Log-aluno.html");
 window.Avaliacoes = function(){
-    window.location.href = "/Professor/Avaliacoes/ava.html";
+    window.location.href = "../Avaliacoes/ava.html";
 };
 window.VisaoGeral = function (){ 
-    window.location.href = "/Professor/Index.html";
+    window.location.href = "../Index.html";
 };
 window.Grupos = function(){
-    window.location.href = "/Professor/Grupos/grp.html";
+    window.location.href = "../Grupos/grp.html";
 };
 window.Forum = function(){
-    window.location.href = "/Professor/Forum/Avisos.html";
+    window.location.href = "../Forum/Avisos.html";
 };
 window.Configuracoes = function(){
-    window.location.href = "/Professor/Configuracoes/Config.html";
+    window.location.href = "../Configuracoes/Config.html";
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -46,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Funções de Navegação
-window.Voltar = () => auth.signOut().then(() => window.location.href = "/Inicial-tela/Login/Log-aluno.html");
+window.Voltar = () => auth.signOut().then(() => window.location.href = "../../auth/Login/Log-aluno.html");
 
 
 let usuarioAtual = null;
@@ -61,10 +58,10 @@ onAuthStateChanged(auth, async (user) => {
             escutarBiblioteca();
         } else {
             alert("Acesso negado: Esta área é exclusiva para professores e coordenadores.");
-            window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+            window.location.href = "../../auth/Login/Log-aluno.html";
         }
     } else {
-        window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+        window.location.href = "../../auth/Login/Log-aluno.html";
     }
 });
 

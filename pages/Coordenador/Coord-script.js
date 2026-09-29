@@ -10,15 +10,15 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 // ===== NAVEGAÇÃO =====
-window.Voltar       = () => auth.signOut().then(() => window.location.href = "/Inicial-tela/Login/Log-aluno.html");
-window.Painel       = () => window.location.href = "/Coordenador/Coord-Index.html";
-window.Usuarios     = () => window.location.href = "/Coordenador/Coord-Usuarios.html";
+window.Voltar       = () => auth.signOut().then(() => window.location.href = "../../auth/Login/Log-aluno.html");
+window.Painel       = () => window.location.href = "./Coord-Index.html";
+window.Usuarios     = () => window.location.href = "./Coord-Usuarios.html";
 window.Cursos       = () => window.location.href = "/Coordenador/Coord-Cursos.html";
-window.GruposCoord  = () => window.location.href = "/Coordenador/Coord-Grupos.html";
+window.GruposCoord  = () => window.location.href = "Coord-Grupos.html";
 window.Avaliacoes   = () => window.location.href = "/Coordenador/Coord-Avaliacoes.html";
 window.Cronograma   = () => window.location.href = "/Coordenador/Coord-Cronograma.html";
 window.Biblioteca   = () => window.location.href = "/Coordenador/Coord-Biblioteca.html";
-window.Forum        = () => window.location.href = "/Coordenador/Coord-Forum.html";
+window.Forum        = () => window.location.href = "Coord-Forum.html";
 window.Relatorios   = () => window.location.href = "/Coordenador/Coord-Relatorios.html";
 window.Configuracoes= () => window.location.href = "/Coordenador/Coord-Config.html";
 
@@ -28,7 +28,7 @@ onAuthStateChanged(auth, async (user) => {
         // Verificação de tipo temporariamente desabilitada
         carregarPerfil(user.uid);
     } else {
-        window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+        window.location.href = "../auth/Login/Log-aluno.html";
     }
 });
 

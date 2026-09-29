@@ -1,17 +1,17 @@
 window.Painel = function () {
-    window.location.href = "/Aluno/Turma/index.html";
+    window.location.href = "../Turma/index.html";
 };
 window.MeuGrupo = function () {
-    window.location.href = "/Aluno/Grupos/gp.chat.html";
+    window.location.href = "../Grupos/gp.chat.html";
 };
 window.Forum = function () {
-    window.location.href = "/Aluno/Forum/Fo.html";
+    window.location.href = "../Forum/Fo.html";
 };
 window.Inspiracoes = function () {
-    window.location.href = "/Aluno/Inspiracoes/Inspiracoes.html";
+    window.location.href = "../Inspiracoes/Inspiracoes.html";
 };
 window.Voltar = function () {
-    window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+    window.location.href = "../../auth/Login/Log-aluno.html";
 }
 
 
