@@ -1,182 +1,134 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <link rel="stylesheet" href="turma.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visão Geral</title>
 </head>
+
 <body>
     <div id="Geral">
         <!--lateralAluno-->
         <div id="lateral">
             <div id="lateral-superior">
-                <div><h2 style="margin-top: 2px;">T<span>CCHAT</span></h2></div>
+                <div>
+                    <h2 style="margin-top: 2px;">T<span>CCHAT</span></h2>
+                </div>
                 <div id="Logo-de-aluno">ALUNO</div>
             </div>
-            
+
             <!-- VGABF - ALUNO -->
             <div class="VGABF">
-
                 <div id="painel">Navegação</div>
-                <div><button id="painel-btn" onclick="Painel ()" >Painel</button></div>
-                <div><button onclick="MeuGrupo ()">Meu Grupo</button></div>
-                <div><button onclick="Forum ()" >Fórum</button></div>
-                <div><button onclick="Inspiracoes ()">Inspirações</button></div>
-
+                <div><button id="painel-btn" onclick="Painel()">Painel</button></div>
+                <div><button onclick="MeuGrupo()">Meu Grupo</button></div>
+                <div><button onclick="Forum()">Fórum</button></div>
+                <div><button onclick="Inspiracoes()">Inspirações</button></div>
             </div>
-            <div id="sistema"><button onclick="Configuracoes ()" id="configuracao">Configurações</button></div>
+            <div id="sistema"><button onclick="Configuracoes()" id="configuracao">Configurações</button></div>
             <div class="lateral-inferior">
                 <div class="Usuario">
-                    <div id="foto"><span style="margin: 0px;color: #e4e9f4; "></span></div>
+                    <div id="foto"><span style="margin: 0px;color: #e4e9f4;"></span></div>
                     <div id="NomeUC">
-                        <h4 style="margin: 0; color: #e4e9f4; width: 100px;"></h4> 
-                        <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;">Desenvolvimento de Sistemas</h5> 
+                        <h4 style="margin: 0; color: #e4e9f4; width: 100px;"></h4>
+                        <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;">
+                            Desenvolvimento de Sistemas</h5>
                     </div>
-                    <p id="voltar"  onclick="Voltar ()">X</p>
+                    <p id="voltar" onclick="Voltar()">X</p>
                 </div>
-
             </div>
         </div>
         <!--Fim da sessão lateral-->
 
         <div id="conteudo">
             <div id="conteudo-superior">
-                <h1>Turma <span>2026.1</span></h1><p>Acompanhe todos os grupos e o andamento dos TCCs</p>
+                <h1>Turma <span>2026.1</span></h1>
+                <p>Acompanhe todos os grupos e o andamento dos TCCs</p>
             </div>
             <div id="linha"></div>
-            
+
             <div id="blocao">
                 <div id="Bloco-st">
-                <h1>Grupos</h1>
-                <p style="color: #fff;">8</p>
+                    <h1>Grupos</h1>
+                    <p id="stat-total" style="color: #fff;">0</p>
+                </div>
+                <div id="Bloco-st">
+                    <h1>No Prazo</h1>
+                    <p id="stat-prazo" style="color: rgb(78, 228, 65);">0</p>
+                </div>
+                <div id="Bloco-st">
+                    <h1>Atenção</h1>
+                    <p id="stat-atencao" style="color: rgb(223, 150, 16);">0</p>
+                </div>
+                <div id="Bloco-st">
+                    <h1>Atrasados</h1>
+                    <p id="stat-atraso" style="color: rgb(223, 47, 16);">0</p>
+                </div>
             </div>
-            <div id="Bloco-st">
-                <h1>No Prazo</h1>
-                <p style="color: rgb(78, 228, 65);">5</p>
+
+            <!--Grupos da Turma-->
+            <h1
+                style="color: var(--cor-texto-secundario); margin-left: 8px; font-family: 'arial', sans-serif; font-weight: 200; letter-spacing: 1.2px; font-size: 32px; margin-bottom: 10px; margin-top: 17px;">
+                Grupos da Turma</h1>
+            <div id="EnCad">
+                <button class="aba ativa" id="btn-criar-grupo"  onclick="abrirModalCriarGrupo()">Criar Grupo</button>
             </div>
-            <div id="Bloco-st">
-                <h1>Atenção</h1>
-                <p style="color: rgb(223, 150, 16);">0</p>
+
+            <!--parte de setas-->
+            <div class="grupos-wrapper">
+                <button class="seta-grupos" id="seta-esq" onclick="scrollGrupos(-1)">&#10094;</button>
+                <div id="GT"></div>
+                <button class="seta-grupos" id="seta-dir" onclick="scrollGrupos(1)">&#10095;</button>
             </div>
-            <div id="Bloco-st">
-                <h1>Atrasados</h1>
-                <p style="color: rgb(223, 47, 16);">1</p>
+
+            <!--criacao dos grupos-->
+            <div id="modal-criar-grupo" class="modal-overlay">
+                <div class="modal-box">
+                    <h2>Criar Novo Grupo</h2>
+                    <form id="form-criar-grupo" onsubmit="criarGrupo(event)">
+                        <label>Nome do grupo *</label>
+                        <input type="text" id="inp-nome-grupo" placeholder="Ex: Agro Connect" required>
+
+                        <label>Tema *</label>
+                        <input type="text" id="inp-tema" placeholder="Ex: Web, Mobile, Embarcados..." required>
+
+                        <label>Descrição *</label>
+                        <textarea id="inp-descricao" rows="3" placeholder="Breve descrição do projeto"
+                            required style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;"></textarea>
+
+                        <label>Integrantes (separe por vírgula) *</label>
+                        <input type="text" id="inp-integrantes" placeholder="Ana, Carlos, Mariana" required>
+
+                        <label>Orientador</label>
+                        <input type="text" id="inp-orientador" placeholder="Prof. Carlos Mendes">
+
+                        <div class="modal-botoes">
+                            <button type="button" onclick="fecharModalCriarGrupo()">Cancelar</button>
+                            <button type="submit">Criar</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
-        <!--Grupos da Turma-->
-        <h1 style="color: var(--cor-texto-secundario); margin-left: 8px; font-family: 'arial', sans-serif; font-weight: 200; letter-spacing: 1.2px; font-size: 32px; margin-bottom: 0px; font-weight: 100; margin-top: 35px;">Grupos da Turma</h1>
-        <div id="GT">
-            <div id="Grupos-Turma">
-                <div id="titulo">
-                    <h1>Grupo 1</h1>
-                    <h2>Meu Grupo</h2>
-                </div>
-                <h3>Exemplo de nome</h3>
-                <p>Descrição do grupo e Projeto</p>
-                <div id="interior-gt">
-                    <div id="bloco-interior">
-                        <div id="bolinha" style="background-color:#ec3c3c;"></div>
-                        <h1>Integrante 1</h1>
-                    </div>
-                        <div id="bloco-interior">
-                        <div id="bolinha"></div>
-                        <h1>Integrante 2</h1>
-                    </div>
-                        <div id="bloco-interior">
-                        <div id="bolinha"></div>
-                        <h1>Integrante 3</h1>
-                    </div>
-                        <div id="bloco-interior">
-                        <div id="bolinha"></div>
-                        <h1>Integrante 4</h1>
-                    </div>
-                        <div id="bloco-interior">
-                        <div id="bolinha"></div>
-                        <h1>Integrante 5</h1>
-                    </div>
-                    <div id="linhav"></div>
-                    <div id="bloco-inferior">
-                        <h1>No prazo</h1>
-                        <h2>Orientador</h2>
-                </div>
-                    </div>
-                </div>
-                <!--GP2-->
-                <div id="Grupos-Turma">
-                <div id="titulo">
-                    <h1>Grupo 2</h1>
-                    <h2></h2>
-                </div>
-                <h3>Exemplo de nome</h3>
-                <p>Descrição do grupo e Projeto</p>
-                <div id="interior-gt">
-                    <div id="bloco-interior">
-                        <div id="bolinha" style="background-color:#ec3c3c;"></div>
-                        <h1>Integrante 1</h1>
-                    </div>
-                        <div id="bloco-interior">
-                        <div id="bolinha"></div>
-                        <h1>Integrante 2</h1>
-                    </div>
-                        <div id="bloco-interior">
-                        <div id="bolinha"></div>
-                        <h1>Integrante 3</h1>
-                    </div>
-                        <div id="bloco-interior">
-                        <div id="bolinha"></div>
-                        <h1>Integrante 4</h1>
-                    </div>
-                        <div id="bloco-interior">
-                        <div id="bolinha"></div>
-                        <h1>Integrante 5</h1>
-                    </div>
-                    <div id="linhav"></div>
-                    <div id="bloco-inferior">
-                        <h1>No prazo</h1>
-                        <h2>Orientador</h2>
-                </div>
-                    </div>
-                </div>
-                <!--GP3-->
-                <div id="Grupos-Turma">
-                <div id="titulo">
-                    <h1>Grupo 3</h1>
-                    <h2></h2>
-                </div>
-                <h3>Exemplo de nome</h3>
-                <p>Descrição do grupo e Projeto</p>
-                <div id="interior-gt">
-                    <div id="bloco-interior">
-                        <div id="bolinha" style="background-color:#ec3c3c;"></div>
-                        <h1>Integrante 1</h1>
-                    </div>
-                        <div id="bloco-interior">
-                        <div id="bolinha"></div>
-                        <h1>Integrante 2</h1>
-                    </div>
-                        <div id="bloco-interior">
-                        <div id="bolinha"></div>
-                        <h1>Integrante 3</h1>
-                    </div>
-                        <div id="bloco-interior">
-                        <div id="bolinha"></div>
-                        <h1>Integrante 4</h1>
-                    </div>
-                        <div id="bloco-interior">
-                        <div id="bolinha"></div>
-                        <h1>Integrante 5</h1>
-                    </div>
-                    <div id="linhav"></div>
-                    <div id="bloco-inferior">
-                        <h1>No prazo</h1>
-                        <h2>Orientador</h2>
-                </div>
+
+            <!--exclusao dos grupos-->
+            <div id="modal-confirmar-exclusao" class="modal-overlay">
+                <div class="modal-box modal-confirmacao">
+                    <h2>Excluir Grupo?</h2>
+                    <p>Tem certeza que deseja excluir <strong id="nome-grupo-excluir"></strong>?</p>
+                    <p class="aviso-exclusao">Esta ação não pode ser desfeita.</p>
+                    <div class="modal-botoes">
+                        <button type="button" onclick="fecharModalExclusao()">Cancelar</button>
+                        <button type="button" class="btn-confirmar-excluir"
+                            onclick="confirmarExclusao()">Excluir</button>
                     </div>
                 </div>
             </div>
-    <!--Atividades e Entregas-->
-        <h1 style="color: var(--cor-texto-secundario); margin-left: 8px; font-family: 'arial', sans-serif; font-weight: 200; letter-spacing: 1.2px; font-size: 32px; margin-bottom: 0px; font-weight: 100; margin-top: 50px;">Atividades e Entregas</h1>
+
+            <!--Atividades e Entregas-->
+            <h1 style="color: var(--cor-texto-secundario); margin-left: 8px; font-family: 'arial', sans-serif; font-weight: 200; letter-spacing: 1.2px; font-size: 32px; margin-bottom: 0px; font-weight: 100; margin-top: 30px;">
+                Atividades e Entregas</h1>
             <div id="Progresso">
                 <div id="Prog-int" style="padding-right: 20px;">
                     <h1>Progresso Semestre</h1>
@@ -186,42 +138,45 @@
                     <div id="barra-progresso2"></div>
                 </div>
             </div>
-    <!--Entregas-->
-    <div id="Entregas" style="margin-top: 50px;">
-        <div id="Entregas-int" style="margin-top: 15px;">
-            <h1>Atividade do Grupo Finalizada</h1>
-            <div id="bolinha"></div>
-            <p>Concluido</p>
-        </div>
-        <div id="Entregas-int" style="margin-top: 3px;">
-            <h2>Publicado por Coord. Ricardo Zanetti</h2>
-            <h3>10/02/2025 · Concluído · Ver detalhes ▾</h3>
-        </div>
-    </div>
 
-        <div id="Entregas" style="margin-top: 20px; border-left: 5px solid #f87171;">
-        <div id="Entregas-int" style="margin-top: 15px;">
-            <h1>Entrega do Pré-Projeto</h1>
-            <p></p>
-        </div>
-        <div id="Entregas-int" style="margin-top: 3px;">
-            <h2>Publicado por Prof. Carlos Mendes</h2>
-            <h3>20/02/2025 · 1 dia de atraso · ver detalhes ▾</h3>
-        </div>
-    </div>
+            <!--Entregas-->
+            <div id="Entregas" style="margin-top: 50px;">
+                <div id="Entregas-int" style="margin-top: 15px;">
+                    <h1>Atividade do Grupo Finalizada</h1>
+                    <div id="bolinha"></div>
+                    <p>Concluido</p>
+                </div>
+                <div id="Entregas-int" style="margin-top: 3px;">
+                    <h2>Publicado por Coord. Ricardo Zanetti</h2>
+                    <h3>10/02/2025 · Concluído · Ver detalhes ▾</h3>
+                </div>
+            </div>
 
-        <div id="Entregas" style="margin-top: 20px; border-left: 5px solid #fbbf24;">
-        <div id="Entregas-int" style="margin-top: 15px;">
-            <h1>Revisão do Pré-Projeto</h1>
-            <p></p>
+            <div id="Entregas" style="margin-top: 20px; border-left: 5px solid #f87171;">
+                <div id="Entregas-int" style="margin-top: 15px;">
+                    <h1>Entrega do Pré-Projeto</h1>
+                    <p></p>
+                </div>
+                <div id="Entregas-int" style="margin-top: 3px;">
+                    <h2>Publicado por Prof. Carlos Mendes</h2>
+                    <h3>20/02/2025 · 1 dia de atraso · ver detalhes ▾</h3>
+                </div>
+            </div>
+
+            <div id="Entregas" style="margin-top: 20px; border-left: 5px solid #fbbf24;">
+                <div id="Entregas-int" style="margin-top: 15px;">
+                    <h1>Revisão do Pré-Projeto</h1>
+                    <p></p>
+                </div>
+                <div id="Entregas-int" style="margin-top: 3px;">
+                    <h2>Publicado por Prof. Carlos Mendes</h2>
+                    <h3>05/03/2025 · em 12 dias · ver detalhes ▾</h3>
+                </div>
+            </div>
         </div>
-        <div id="Entregas-int" style="margin-top: 3px;">
-            <h2>Publicado por Prof. Carlos Mendes</h2>
-            <h3>05/03/2025 · em 12 dias · ver detalhes ▾</h3>
-        </div>
-    </div>
-    </div>
     </div>
 </body>
 <script src="../navegacao.js"></script>
+<script src="../Turma.js"></script>
+
 </html>

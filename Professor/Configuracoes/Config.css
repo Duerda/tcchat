@@ -28,7 +28,7 @@ body   { margin: 0; padding: 0; }
     left: 0px;
     top: 0px;
     width: 229px;
-    height: 915px;
+    height: 100vh;
     background-color: var(--cor-fundo-secundario);
     position: sticky;
     top: 0;
@@ -48,7 +48,15 @@ body   { margin: 0; padding: 0; }
 
 #lateral-superior div { display: flex; align-items: center; }
 
-h2 { font-size: 32px; color: var(--cor-branco); margin-left: 8px; }
+h1 { color: var(--cor-vermelho); margin-top: 7px; margin-bottom: 5px; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-weight: 200;}
+p {font-family: Arial, Helvetica, sans-serif;}
+h5 {font-family: Arial, Helvetica, sans-serif;}
+h3 {font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-weight: 100;}
+h2 {font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; letter-spacing: 1px; font-weight: 250;}
+
+div {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-weight: 200;
+}
 #lateral-superior div h2 { font-size: 32px; color: var(--cor-branco); margin-bottom: 5px; }
 #lateral-superior div span { font-size: 32px; color: var(--cor-vermelho); }
 
@@ -183,7 +191,6 @@ h1 { color: var(--cor-vermelho); margin-top: 7px; margin-bottom: 5px; }
 .set-titulo {
     color: var(--cor-texto);
     font-size: 15px;
-    font-weight: 700;
     margin: 0 0 4px;
 }
 

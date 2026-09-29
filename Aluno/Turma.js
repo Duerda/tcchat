@@ -1,228 +1,216 @@
-import { auth, db } from "../../backend/firebase/config.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import {
-  collection,
-  query,
-  onSnapshot,
-  doc,
-  getDoc,
-  getDocs,
-  updateDoc,
-  deleteDoc,
-  where,
-  addDoc,
-  serverTimestamp,
-  orderBy,
-} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-
-window.MeuGrupo = function(){
-    window.location.href = "/Aluno/Grupos/gp.chat.html";
-}
-window.Forum = function(){
-    window.location.href = "/Aluno/Forum/Fo.html";
-}
-window.Inspiracoes = function(){
-    window.location.href = "/Aluno/Inspiracoes/Inspiracoes.html";
+window.Painel = function () {
+  window.location.href = "/Aluno/Turma/index.html";
+};
+window.MeuGrupo = function () {
+  window.location.href = "/Aluno/Grupos/gp.chat.html";
+};
+window.Forum = function () {
+  window.location.href = "/Aluno/Forum/Fo.html";
+};
+window.Inspiracoes = function () {
+  window.location.href = "/Aluno/Inspiracoes/Inspiracoes.html";
 };
 window.Configuracoes = function () {
-    window.location.href = "/Aluno/Configuracoes/Config.html";
+  window.location.href = "/Aluno/Configuracoes/Config.html";
 };
-window.Voltar = () =>
-  auth
-    .signOut()
-    .then(() => (window.location.href = "/Inicial-tela/Login/Log-aluno.html"));
-
-let dadosAluno = null
-
-// 1. MONITORAMENTO DE SESSÃO E ACESSIBILIDADE
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    const userDoc = await getDoc(doc(db, "usuarios", user.uid));
-    if (userDoc.exists() && userDoc.data().tipo === "aluno") {
-      dadosAluno = userDoc.data(); // Guarda os dados do aluno
-      console.log("Aluno autenticado:", user.uid);
-      carregarEstadoSistema(user.uid);
-    } else {
-      alert("Acesso negado: Esta área é exclusiva para alunos.");
-      window.location.href = "/Inicial-tela/Login/Log-aluno.html";
-    }
-  } else {
-    window.location.href = "/Inicial-tela/Login/Log-aluno.html";
-  }
-});
-
-async function carregarEstadoSistema(uid) {
-  const userDocRef = doc(db, "usuarios", uid);
-
-  // Escutar mudanças no perfil (incluindo acessibilidade e cargo)
-  onSnapshot(userDocRef, (docSnap) => {
-    if (docSnap.exists()) {
-      const userData = docSnap.data();
-      aplicarAcessibilidade(userData);
-      atualizarInterfacePerfil(userData);
-      carregarGruposDinamicamente(userData.codigoSala, userData.uid);
-    }
-  });
-}
-
-// 2. ACESSIBILIDADE (Conforme documento do TCC)
-function aplicarAcessibilidade(data) {
-  // Aplicar tema, fonte e tamanho de letra salvos no Firebase
-  if (data.configuracoes) {
-    const { tema, tamanhoFonte, tipoFonte } = data.configuracoes;
-    if (tema) document.body.className = tema; // 'dark-mode' ou 'light-mode'
-    if (tamanhoFonte)
-      document.documentElement.style.fontSize = tamanhoFonte + "px";
-    if (tipoFonte) document.body.style.fontFamily = tipoFonte;
-  }
-}
-
-// 3. INTERFACE DE PERFIL
-function atualizarInterfacePerfil(data) {
-  const nomeEl = document.querySelector(".Usuario h4");
-  const cursoEl = document.querySelector(".Usuario h5");
-  const iniciaisEl = document.querySelector("#foto span");
-  const fotoContainer = document.querySelector("#foto");
-  const tituloTurmaEl = document.querySelector(".T1 h3 span");
-
-  if (nomeEl) nomeEl.textContent = data.nome || "Usuário";
-  if (cursoEl) cursoEl.textContent = data.curso || "Sem Curso";
-  if (iniciaisEl) iniciaisEl.textContent = data.iniciais || "??";
-  if (tituloTurmaEl && data.codigoSala)
-    tituloTurmaEl.textContent = data.codigoSala;
-}
-
-async function criarGrupo() {
-  const nome = document.getElementById("nomeProjeto").value.trim();
-  const descricao = document.getElementById("descricaoGrupo").value.trim();
-
-  const user = auth.currentUser;
-  
-  if (!user || !dadosAluno) {
-    alert("Usuário não autenticado. Faça login novamente.");
-    return;
-  }
-
-  if (!nome || !descricao) {
-    alert("Preencha todos os campos");
-    return;
-  }
-
-  const membro = query(
-    collection(db, "grupos"),
-    where("membros", "array-contains", user.uid)
-  );
-  
-  const snapshotMembro = await getDocs(membro);
-
-  if (!snapshotMembro.empty) {
-    alert("Você já pertence a um grupo! Não é possível criar outro.");
-    return;
-  }
-
-  const codigoSalaAluno = dadosAluno.codigoSala;
-
- if (!codigoSalaAluno) {
-  alert("Sem código de sala vinculado ao perfil!");
-  console.error("Perfil do aluno sem codigoSala vinculado.");
-  await signOut(auth);
+window.Voltar = function () {
   window.location.href = "/Inicial-tela/Login/Log-aluno.html";
-  return;
+};
+
+const CHAVE_STORAGE = "grupos_turma_2026.1";
+
+window.abrirModalCriarGrupo = function () {
+  document.getElementById("modal-criar-grupo").style.display = "flex";
+};
+
+window.fecharModalCriarGrupo = function () {
+  document.getElementById("modal-criar-grupo").style.display = "none";
+};
+
+function obterGrupos() {
+  const dados = localStorage.getItem(CHAVE_STORAGE);
+  return dados ? JSON.parse(dados) : [];
 }
 
-  try {
-    await addDoc(collection(db, "grupos"), {
-      nome: nome,
-      descricao: descricao,
-      codigoSala: codigoSalaAluno,
-      criadorUid: user.uid,
-      membros: [user.uid],
-      criadoEm: serverTimestamp(),
-    });
+function salvarGrupos(grupos) {
+  localStorage.setItem(CHAVE_STORAGE, JSON.stringify(grupos));
+}
 
-    document.getElementById("formGrupo").style.display = "none";
+window.criarGrupo = function (event) {
+  event.preventDefault();
 
-    document.getElementById("nomeProjeto").value = "";
-    document.getElementById("descricaoGrupo").value = "";
-    document.getElementById("cursoGrupo").value = "";
-    document.getElementById("numeroTurma").value = "";
+  const nome = document.getElementById("inp-nome-grupo").value.trim();
+  const descricao = document.getElementById("inp-descricao").value.trim();
+  const tema = document.getElementById("inp-tema").value.trim();
+  const integrantesTexto = document
+    .getElementById("inp-integrantes")
+    .value.trim();
+  const orientador = document.getElementById("inp-orientador").value.trim();
 
-    alert("Grupo criado com sucesso!");
-  } catch (erro) {
-    console.error(erro);
-    alert("Erro ao criar grupo");
+  if (!nome || !descricao || !tema || !integrantesTexto) {
+    alert("Preencha todos os campos obrigatórios.");
+    return;
   }
-}
 
-const btnCriarGrupo = document.getElementById("btnCriarGrupo");
-const btnSalvarGrupo = document.getElementById("salvarGrupo");
-const btnCancelarGrupo = document.getElementById("cancelarGrupo");
+  const integrantes = integrantesTexto
+    .split(",")
+    .map((i) => i.trim())
+    .filter((i) => i !== "");
 
-const formularioGrupo = document.getElementById("formGrupo");
+  const novoGrupo = {
+    id: Date.now(),
+    nome,
+    descricao,
+    tema,
+    integrantes,
+    orientador: orientador || "A definir",
+    status: "no-prazo",
+    criadoEm: new Date().toISOString(),
+  };
 
-btnCriarGrupo.addEventListener("click", () => {
-  formularioGrupo.style.display = "block";
-});
+  const grupos = obterGrupos();
+  grupos.push(novoGrupo);
+  salvarGrupos(grupos);
 
-btnCancelarGrupo.addEventListener("click", () => {
-  formularioGrupo.style.display = "none";
-});
+  alert("Grupo criado com sucesso!");
+  fecharModalCriarGrupo();
+  document.getElementById("form-criar-grupo").reset();
+  carregarGrupos();
+};
 
-btnSalvarGrupo.addEventListener("click", criarGrupo);
+let grupoParaExcluir = null;
 
-// 4. GESTÃO DE GRUPOS EM TEMPO REAL
-async function carregarGruposDinamicamente(codigoSala, userUid) {
-  const gruposContainer = document.querySelector(".Grupos");
-  const contadorGruposEl = document.getElementById("totalGrupos");
-  if (!gruposContainer) return;
+window.excluirGrupo = function (id) {
+  const grupos = obterGrupos();
+  const grupo = grupos.find((g) => g.id === id);
+  if (!grupo) return;
 
-  // Query otimizada: Busca grupos da sala específica
-  const q = query(
-    collection(db, "grupos"),
-    where("codigoSala", "==", codigoSala),
-  );
+  grupoParaExcluir = id;
 
-  // OUVINTE EM TEMPO REAL: Se o líder mudar algo, todos veem na hora
-  onSnapshot(q, (snapshot) => {
-    gruposContainer.innerHTML = "";
+  const nomeEl = document.getElementById("nome-grupo-excluir");
+  if (nomeEl) nomeEl.textContent = `"${grupo.nome}"`;
 
-    if (contadorGruposEl) {
-      contadorGruposEl.textContent = snapshot.size; // Mostra a contagem total
-    }
+  document.getElementById("modal-confirmar-exclusao").style.display = "flex";
+};
 
-    if (snapshot.empty) {
-      gruposContainer.innerHTML =
-        "<p style='color: white; padding: 20px;'>Nenhum grupo criado</p>";
-      return;
-    }
+window.fecharModalExclusao = function () {
+  document.getElementById("modal-confirmar-exclusao").style.display = "none";
+  grupoParaExcluir = null;
+};
 
-    snapshot.forEach((doc) => {
-      const grupo = doc.data();
-      const eMembro = grupo.membros && grupo.membros.includes(userUid);
-      const eLider = grupo.liderUid === userUid;
+window.confirmarExclusao = function () {
+  if (grupoParaExcluir === null) return;
 
-      const grupoCard = `
-        <div class="GT">
-            <div class="sub-title-gp">
-                <div style="display: flex; gap: 220px;">
-                    <h3>${grupo.codigoSala}</h3>
-                    <h1>Grupo</h1>
-                </div>
+  const grupos = obterGrupos().filter((g) => g.id !== grupoParaExcluir);
+  salvarGrupos(grupos);
+  fecharModalExclusao();
+  carregarGrupos();
+};
 
-                <h2>${grupo.nome}</h2>
-                <p>${grupo.descricao}</p>
+function carregarGrupos() {
+  const container = document.getElementById("GT");
+  if (!container) return;
 
-                <div class="GT-int">
-                    <hr class="linha-decorativa">
-                    <div style="display: flex;">
-                        <div class="BL"></div>
-                        <p>${grupo.membros ? grupo.membros.length : 0} membro(s)</p>
-                    </div>
-                </div>
+  const grupos = obterGrupos();
+
+  atualizarEstatisticas(grupos);
+
+  if (grupos.length === 0) {
+    container.innerHTML =
+      '<p style="color:#7a8699; margin-left:8px;">Nenhum grupo cadastrado ainda.</p>';
+    atualizarSetas();
+    return;
+  }
+
+  container.innerHTML = "";
+  let index = 1;
+
+  grupos.forEach((g) => {
+    const card = document.createElement("div");
+    card.id = "Grupos-Turma";
+    card.innerHTML = `
+            <div id="titulo">
+                <h1>Grupo ${index}</h1>
+                <h2>${g.tema}</h2>
             </div>
-        </div>
+            <h3>${g.nome}</h3>
+            <p>${g.descricao}</p>
+            <div id="interior-gt">
+                ${g.integrantes
+                  .map(
+                    (nome, i) => `
+                    <div id="bloco-interior">
+                        <div id="bolinha" ${i === 0 ? 'style="background-color:#ec3c3c;"' : ""}></div>
+                        <h1>${nome}</h1>
+                    </div>
+                `,
+                  )
+                  .join("")}
+                <div id="linha"></div>
+                <div id="bloco-inferior">
+                    <h1>No prazo</h1>
+                    <h2>${g.orientador}</h2>
+                </div>
+                <button class="btn-excluir" onclick="excluirGrupo(${g.id})">Excluir</button>
+            </div>
         `;
-      gruposContainer.innerHTML += grupoCard;
-    });
+    container.appendChild(card);
+    index++;
   });
+
+  setTimeout(atualizarSetas, 50);
 }
+
+function atualizarEstatisticas(grupos) {
+  const total = grupos.length;
+  const noPrazo = grupos.filter((g) => g.status === "no-prazo").length;
+  const atencao = grupos.filter((g) => g.status === "atencao").length;
+  const atraso = grupos.filter((g) => g.status === "atraso").length;
+
+  const elTotal = document.getElementById("stat-total");
+  const elPrazo = document.getElementById("stat-prazo");
+  const elAtencao = document.getElementById("stat-atencao");
+  const elAtraso = document.getElementById("stat-atraso");
+
+  if (elTotal) elTotal.textContent = total;
+  if (elPrazo) elPrazo.textContent = noPrazo;
+  if (elAtencao) elAtencao.textContent = atencao;
+  if (elAtraso) elAtraso.textContent = atraso;
+}
+
+window.scrollGrupos = function (direcao) {
+  const gt = document.getElementById("GT");
+  if (!gt) return;
+
+  const card = gt.querySelector("#Grupos-Turma");
+  if (!card) return;
+
+  const gap = 20;
+  const passo = card.offsetWidth + gap;
+
+  gt.scrollBy({
+    left: passo * direcao,
+    behavior: "smooth",
+  });
+};
+
+function atualizarSetas() {
+  const gt = document.getElementById("GT");
+  const setaEsq = document.getElementById("seta-esq");
+  const setaDir = document.getElementById("seta-dir");
+  if (!gt || !setaEsq || !setaDir) return;
+
+  const maxScroll = gt.scrollWidth - gt.clientWidth;
+  setaEsq.disabled = gt.scrollLeft <= 2;
+  setaDir.disabled = gt.scrollLeft >= maxScroll - 2;
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  carregarGrupos();
+
+  const gt = document.getElementById("GT");
+  if (gt) {
+    gt.addEventListener("scroll", atualizarSetas);
+    window.addEventListener("resize", atualizarSetas);
+  }
+});
