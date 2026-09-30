@@ -152,7 +152,15 @@ h2 { font-size: 32px; color: var(--cor-branco); margin-left: 8px; }
 
 #conteudo-superior p { color: var(--cor-texto-secundario); margin-top: 7px; }
 
-h1 { color: var(--cor-vermelho); margin-top: 7px; margin-bottom: 5px; }
+h1 { color: var(--cor-vermelho); margin-top: 7px; margin-bottom: 5px; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-weight: 200;}
+p {font-family: Arial, Helvetica, sans-serif;}
+h5 {font-family: Arial, Helvetica, sans-serif;}
+h3 {font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-weight: 200;}
+h2 {font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; letter-spacing: 1px; font-weight: 250;}
+
+div {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
 
 /* ===== STATS ===== */
 #Informacoes {
@@ -439,6 +447,9 @@ h1 { color: var(--cor-vermelho); margin-top: 7px; margin-bottom: 5px; }
     width: 100%;
     margin: 0;
 }
+
+
+
 .BL {
     background-color: var(--cor-vermelho);
     height: 10px;
