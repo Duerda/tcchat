@@ -5,128 +5,191 @@ import {
     doc,
     getDoc,
     onSnapshot,
-    orderBy,
     query,
     serverTimestamp,
     where
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { auth, db } from "../../../backend/firebase/config.js";
 
-// Funções de Navegação
-window.Voltar = () => auth.signOut().then(() => window.location.href = "../../auth/Login/Log-aluno.html");
-
-window.Avaliacoes = function(){
+window.Voltar = () =>
+    auth.signOut().then(() => {
+        window.location.href = "../../auth/Login/Log-aluno.html";
+    });
+window.Avaliacoes = () => {
     window.location.href = "../Avaliacoes/ava.html";
 };
-window.Grupos = function(){
+window.Grupos = () => {
     window.location.href = "../Grupos/grp.html";
 };
-window.Forum = function(){
+window.Forum = () => {
     window.location.href = "Avisos.html";
 };
-window.Biblioteca = function(){
-    window.location.href = "../Biblioteca/Bib.html"
-}
-window.Configuracoes = function(){
-    window.location.href = "../Configuracoes/Config.html";
-}
-window.Biblioteca = function(){
+window.Biblioteca = () => {
     window.location.href = "../Biblioteca/Bib.html";
-}
-window.VisaoGeral = function (){ 
+};
+window.Configuracoes = () => {
+    window.location.href = "../Configuracoes/Config.html";
+};
+window.VisaoGeral = () => {
     window.location.href = "../Index.html";
+};
+window.Cadastrar = () => {
+    alert("A aba de dúvidas dos alunos ainda não está ligada ao banco. Os avisos desta sala já funcionam abaixo.");
 };
 
 let usuarioAtual = null;
+let codigoSalaAtual = null;
+let pararEscutaAvisos = null;
+
+function textoSeguro(valor) {
+    const el = document.createElement("span");
+    el.textContent = valor == null ? "" : String(valor);
+    return el.innerHTML;
+}
+
+function dataDoAviso(aviso) {
+    if (aviso.data && typeof aviso.data.toDate === "function") {
+        return aviso.data.toDate();
+    }
+    return null;
+}
 
 onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        const userDoc = await getDoc(doc(db, "usuarios", user.uid));
-        const tipo = userDoc.exists() ? userDoc.data().tipo : null;
-        if (tipo === "professor" || tipo === "coordenador") {
-            usuarioAtual = user;
-            carregarDadosPerfil(user.uid);
-        } else {
-            alert("Acesso negado: Esta área é exclusiva para professores e coordenadores.");
-            window.location.href = "../../auth/Login/Log-aluno.html";
-        }
-    } else {
+    if (!user) {
         window.location.href = "../../auth/Login/Log-aluno.html";
+        return;
     }
+
+    const userDoc = await getDoc(doc(db, "usuarios", user.uid));
+    const dados = userDoc.exists() ? userDoc.data() : null;
+    const tipo = dados ? dados.tipo : null;
+
+    if (tipo !== "professor" && tipo !== "coordenador") {
+        alert("Acesso negado: esta área é exclusiva para professores e coordenadores.");
+        window.location.href = "../../auth/Login/Log-aluno.html";
+        return;
+    }
+
+    usuarioAtual = user;
+    codigoSalaAtual = dados.codigoSala || "geral";
+    localStorage.setItem("codigoSala", codigoSalaAtual);
+
+    const foto = document.querySelector("#foto span");
+    const nome = document.querySelector("#NomeUC h4");
+    const curso = document.querySelector("#NomeUC h5");
+    if (foto) foto.textContent = dados.iniciais || "";
+    if (nome) nome.textContent = dados.nome || "";
+    if (curso) curso.textContent = dados.curso || "Professor";
+
+    escutarAvisos(codigoSalaAtual);
 });
 
-function carregarDadosPerfil(uid) {
-    const userDocRef = collection(db, "usuarios");
-    const q = query(collection(db, "usuarios"), where("uid", "==", uid));
-    
-    onSnapshot(q, (snapshot) => {
-        if (!snapshot.empty) {
-            const data = snapshot.docs[0].data();
-            document.querySelector("#foto span").textContent = data.iniciais || "";
-            document.querySelector("#NomeUC h4").textContent = data.nome || "";
-            document.querySelector("#NomeUC h5").textContent = data.curso || "Coordenador/Professor";
-            localStorage.setItem("codigoSala", data.codigoSala || "geral");
-
-            escutarAvisos();
-        }
-    });
-}
-
-// Lógica de Avisos
 const btnNovoAviso = document.getElementById("novo-aviso");
-const conteudoPrincipal = document.getElementById("conteudo");
-
 if (btnNovoAviso) {
-    btnNovoAviso.addEventListener("click", async () => {
-        const titulo = prompt("Título do aviso:");
-        const texto = prompt("Conteúdo do aviso:");
-
-        if (titulo && texto) {
-            try {
-                await addDoc(collection(db, "avisos"), {
-                    titulo: titulo,
-                    conteudo: texto,
-                    autor: document.querySelector("#NomeUC h4").textContent,
-                    autorUid: usuarioAtual.uid,
-                    data: serverTimestamp(),
-                    codigoSala: localStorage.getItem("codigoSala") || "geral"
-                });
-                alert("Aviso publicado!");
-            } catch (error) {
-                console.error("Erro ao publicar:", error);
-            }
-        }
-    });
+    btnNovoAviso.addEventListener("click", publicarAviso);
 }
 
-    function escutarAvisos() {
-    const codigoSala = localStorage.getItem("codigoSala") || "geral";
+async function publicarAviso() {
+    if (!usuarioAtual) {
+        alert("Aguarde o login terminar e tente de novo.");
+        return;
+    }
+
+    const titulo = prompt("Título do aviso:");
+    if (titulo == null) return;
+    const texto = prompt("Conteúdo do aviso:");
+    if (texto == null) return;
+
+    const tituloLimpo = titulo.trim();
+    const textoLimpo = texto.trim();
+    if (!tituloLimpo || !textoLimpo) {
+        alert("Preencha título e conteúdo.");
+        return;
+    }
+
+    const nomeAutor =
+        document.querySelector("#NomeUC h4")?.textContent?.trim() || "Professor";
+    const sala = codigoSalaAtual || localStorage.getItem("codigoSala") || "geral";
+
+    try {
+        await addDoc(collection(db, "avisos"), {
+            titulo: tituloLimpo,
+            conteudo: textoLimpo,
+            autor: nomeAutor,
+            autorUid: usuarioAtual.uid,
+            tipoAutor: "professor",
+            data: serverTimestamp(),
+            codigoSala: sala
+        });
+        alert("Aviso publicado para a sala " + sala + ".");
+    } catch (error) {
+        console.error("Erro ao publicar:", error);
+        alert("Não foi possível publicar o aviso. Confira as regras do Firestore no console do Firebase.");
+    }
+}
+
+function escutarAvisos(codigoSala) {
+    const lista = document.getElementById("lista-avisos");
+    const vazio = document.getElementById("avisos-vazio");
+    if (!lista) return;
+
+    if (pararEscutaAvisos) {
+        pararEscutaAvisos();
+        pararEscutaAvisos = null;
+    }
+
     const q = query(
-        collection(db, "avisos"), 
-        where("codigoSala", "==", codigoSala),
-        orderBy("data", "desc")
+        collection(db, "avisos"),
+        where("codigoSala", "==", codigoSala)
     );
 
-    onSnapshot(q, (snapshot) => {
-        // Remover avisos antigos (mantendo os botões superiores)
-        const avisosExistentes = document.querySelectorAll(".card-aviso");
-        avisosExistentes.forEach(a => a.remove());
+    pararEscutaAvisos = onSnapshot(
+        q,
+        (snapshot) => {
+            const avisos = snapshot.docs.map((docSnap) => ({
+                id: docSnap.id,
+                ...docSnap.data()
+            }));
 
-        snapshot.forEach((doc) => {
-            const aviso = doc.data();
-            const card = document.createElement("div");
-            card.className = "card-aviso";
-            card.style.cssText = "background: #161d2a; padding: 20px; border-radius: 8px; margin-top: 20px; border: 1px solid #ffffff12;";
-            
-            card.innerHTML = `
-                <h3 style="color: #3c94ec; margin: 0;">${aviso.titulo}</h3>
-                <p style="color: #e4e9f4; margin: 10px 0;">${aviso.conteudo}</p>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
-                    <small style="color: #7a8699;">Postado por: ${aviso.autor}</small>
-                    <small style="color: #7a8699;">${aviso.data ? new Date(aviso.data.toDate()).toLocaleDateString() : 'Agora'}</small>
-                </div>
-            `;
-            conteudoPrincipal.appendChild(card);
-        });
-    });
+            avisos.sort((a, b) => {
+                const da = dataDoAviso(a);
+                const dbData = dataDoAviso(b);
+                if (!da && !dbData) return 0;
+                if (!da) return 1;
+                if (!dbData) return -1;
+                return dbData - da;
+            });
+
+            lista.innerHTML = "";
+            if (vazio) {
+                vazio.style.display = avisos.length ? "none" : "block";
+            }
+
+            avisos.forEach((aviso) => {
+                const data = dataDoAviso(aviso);
+                const dataTexto = data
+                    ? data.toLocaleString("pt-BR")
+                    : "Agora";
+                const card = document.createElement("div");
+                card.className = "card-aviso";
+                card.innerHTML = `
+                    <h3>${textoSeguro(aviso.titulo)}</h3>
+                    <p>${textoSeguro(aviso.conteudo)}</p>
+                    <div class="card-aviso-meta">
+                        <small>Postado por: ${textoSeguro(aviso.autor)}</small>
+                        <small>${textoSeguro(dataTexto)}</small>
+                    </div>
+                `;
+                lista.appendChild(card);
+            });
+        },
+        (error) => {
+            console.error("Erro ao escutar avisos:", error);
+            if (vazio) {
+                vazio.style.display = "block";
+                vazio.textContent =
+                    "Não foi possível carregar os avisos. Verifique as regras do Firestore.";
+            }
+        }
+    );
 }

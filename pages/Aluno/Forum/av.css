@@ -427,6 +427,24 @@ h1 span {
     transition: text-shadow 0.3s ease;
 }
 
+#avisos-vazio {
+    color: var(--cor-texto-secundario);
+    margin-left: 8px;
+}
+
+#lista-avisos {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.quadro-aviso {
+    background-color: var(--cor-fundo-secundario);
+    border: var(--cor-borda) 3px solid;
+    border-radius: 8px;
+    padding-bottom: 8px;
+}
+
 #Forum-btn {
       background: var(--cor-vermelho-transparente);
     color: var(--cor-branco);

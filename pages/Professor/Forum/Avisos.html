@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="avisos.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Fórum — Professor</title>
 </head>
 <body>
     <div id="Geral">
@@ -47,9 +47,11 @@
         
             <div id="EnCad"> <button id="Entrar">Avisos</button> <button id="Cadastrar" onclick="Cadastrar ()">Dúvida dos alunos</button></div>
 
-            <button id="novo-aviso">+ Novo aviso
-            </button>
-</div>
+            <button id="novo-aviso" type="button">+ Novo aviso</button>
+            <p id="avisos-vazio">Nenhum aviso nesta sala ainda. Clique em + Novo aviso para publicar.</p>
+            <div id="lista-avisos"></div>
+        </div>
+    </div>
 </body>
 <script type="module" src="avisos.js"></script>
 </html>
