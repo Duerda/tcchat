@@ -259,3 +259,4 @@ O usuário, após isso irá na sessão avisos e visualizará se algum professor 
 O usuario acessa a sessão configurações deixa personalizado de acordo com seus gostos para deixar isso de forma mais confortável para ele.
 
 O usuário finaliza a sessão clicando no "X" no canto inferior esquerdo.
+
