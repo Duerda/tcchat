@@ -32,7 +32,7 @@ async function Formulario(event) {
     event.preventDefault();
 
     const nome = document.getElementById("Nome-da-pessoa").value.trim();
-    const email = document.getElementById("Email").value.trim();
+    const email = document.getElementById("Email").value.trim().toLowerCase();
     const senha = document.getElementById("Senha").value;
     const repitaSenha = document.getElementById("RepitaSenha").value;
     const codigoDigitado = document.getElementById("Codigo-da-pessoa").value.trim().toUpperCase();
@@ -68,15 +68,24 @@ async function Formulario(event) {
     }
 
     // 4. Definir tipo de usuário
+    const partesEmail = email.split("@");
+    if (partesEmail.length !== 2 || !partesEmail[0] || !partesEmail[1]) {
+        alert("Digite um e-mail válido no formato nome@dominio.");
+        document.getElementById("Email").focus();
+        return;
+    }
+
+    const dominio = partesEmail[1];
     let tipo = "";
-    if (email.endsWith("@aluno.cps.sp.gov.br")) {
+    if (dominio === "aluno.cps.sp.gov.br") {
         tipo = "aluno";
-    } else if (email.endsWith("@professor.cps.sp.gov.br")) {
+    } else if (dominio === "professor.cps.sp.gov.br") {
         tipo = "professor";
-    } else if (email.endsWith("@cps.sp.gov.br")) {
+    } else if (dominio === "cps.sp.gov.br") {
         tipo = "coordenador";
     } else {
-        alert("Use um e-mail institucional válido (@aluno.cps.sp.gov.br, @professor.cps.sp.gov.br ou @cps.sp.gov.br)");
+        alert(`O domínio "@${dominio}" não é aceito. Use exatamente @aluno.cps.sp.gov.br, @professor.cps.sp.gov.br ou @cps.sp.gov.br.`);
+        document.getElementById("Email").focus();
         return;
     }
 
@@ -125,6 +134,16 @@ async function Formulario(event) {
 
     } catch (error) {
         console.error("Erro:", error);
-        alert("Erro ao cadastrar: " + error.message);
+        if (error.code === "auth/email-already-in-use") {
+            alert("Este e-mail já possui uma conta. Entre pela tela de login ou use a recuperação de senha.");
+            window.location.href = tipo === "aluno" ? "../Login/Log-aluno.html" : "../Login/Log-Prof.html";
+            return;
+        }
+        if (error.code === "auth/invalid-email") {
+            alert("O formato do e-mail é inválido. Confira o endereço e a parte após o @.");
+            document.getElementById("Email").focus();
+            return;
+        }
+        alert("Não foi possível cadastrar: " + (error.message || "erro inesperado."));
     }
 }
