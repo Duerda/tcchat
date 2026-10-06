@@ -7,17 +7,12 @@ import {
   doc,
   getDoc,
   getDocs,
-  updateDoc,
-  deleteDoc,
   where,
   addDoc,
   serverTimestamp,
   orderBy,
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-window.MeuGrupo = function(){
-    window.location.href = "Grupos/gp.chat.html";
-}
 window.Forum = function(){
     window.location.href = "Forum/Fo.html";
 }
@@ -27,10 +22,10 @@ window.Inspiracoes = function(){
 window.Configuracoes = function () {
     window.location.href = "Configuracoes/Config.html";
 };
-window.Voltar = () =>
-  auth
-    .signOut()
-    .then(() => (window.location.href = "../auth/Login/Log-aluno.html"));
+window.Voltar = async () => {
+  await auth.signOut();
+  window.location.href = "../../auth/Login/Log-aluno.html";
+};
 
 let dadosAluno = null
 
@@ -44,10 +39,10 @@ onAuthStateChanged(auth, async (user) => {
       carregarEstadoSistema(user.uid);
     } else {
       alert("Acesso negado: Esta área é exclusiva para alunos.");
-      window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+      window.location.href = "../auth/Login/Log-aluno.html";
     }
   } else {
-    window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+    window.location.href = "../auth/Login/Log-aluno.html";
   }
 });
 
@@ -92,9 +87,14 @@ function atualizarInterfacePerfil(data) {
     tituloTurmaEl.textContent = data.codigoSala;
 }
 
-async function criarGrupo() {
-  const nome = document.getElementById("nomeProjeto").value.trim();
-  const descricao = document.getElementById("descricaoGrupo").value.trim();
+window.criarGrupo = async function (event) {
+  event?.preventDefault();
+  const nome = document.getElementById("inp-nome-grupo").value.trim();
+  const tema = document.getElementById("inp-tema").value.trim();
+  const descricao = document.getElementById("inp-descricao").value.trim();
+  const integrantes = document.getElementById("inp-integrantes").value
+    .split(",").map((item) => item.trim()).filter(Boolean);
+  const orientador = document.getElementById("inp-orientador").value.trim();
 
   const user = auth.currentUser;
   
@@ -103,7 +103,7 @@ async function criarGrupo() {
     return;
   }
 
-  if (!nome || !descricao) {
+  if (!nome || !tema || !descricao || !integrantes.length) {
     alert("Preencha todos os campos");
     return;
   }
@@ -122,53 +122,39 @@ async function criarGrupo() {
 
   const codigoSalaAluno = dadosAluno.codigoSala;
 
- if (!codigoSalaAluno) {
+  if (!codigoSalaAluno) {
   alert("Sem código de sala vinculado ao perfil!");
   console.error("Perfil do aluno sem codigoSala vinculado.");
-  await signOut(auth);
-  window.location.href = "/Inicial-tela/Login/Log-aluno.html";
+  await auth.signOut();
+  window.location.href = "../../auth/Login/Log-aluno.html";
   return;
 }
 
   try {
     await addDoc(collection(db, "grupos"), {
-      nome: nome,
+      nome,
+      tema,
       descricao: descricao,
+      integrantesInformados: integrantes,
+      orientador,
       codigoSala: codigoSalaAluno,
       criadorUid: user.uid,
       membros: [user.uid],
       criadoEm: serverTimestamp(),
     });
 
-    document.getElementById("formGrupo").style.display = "none";
-
-    document.getElementById("nomeProjeto").value = "";
-    document.getElementById("descricaoGrupo").value = "";
-    document.getElementById("cursoGrupo").value = "";
-    document.getElementById("numeroTurma").value = "";
+    document.getElementById("form-criar-grupo").reset();
+    fecharModalCriarGrupo();
 
     alert("Grupo criado com sucesso!");
   } catch (erro) {
     console.error(erro);
     alert("Erro ao criar grupo");
   }
-}
+};
 
-const btnCriarGrupo = document.getElementById("btnCriarGrupo");
-const btnSalvarGrupo = document.getElementById("salvarGrupo");
-const btnCancelarGrupo = document.getElementById("cancelarGrupo");
-
-const formularioGrupo = document.getElementById("formGrupo");
-
-btnCriarGrupo.addEventListener("click", () => {
-  formularioGrupo.style.display = "block";
-});
-
-btnCancelarGrupo.addEventListener("click", () => {
-  formularioGrupo.style.display = "none";
-});
-
-btnSalvarGrupo.addEventListener("click", criarGrupo);
+window.abrirModalCriarGrupo = () => document.getElementById("modal-criar-grupo").style.display = "flex";
+window.fecharModalCriarGrupo = () => document.getElementById("modal-criar-grupo").style.display = "none";
 
 // 4. GESTÃO DE GRUPOS EM TEMPO REAL
 async function carregarGruposDinamicamente(codigoSala, userUid) {

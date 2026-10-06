@@ -70,7 +70,7 @@ async function Formulario(event) {
     // 4. Definir tipo de usuário
     const partesEmail = email.split("@");
     if (partesEmail.length !== 2 || !partesEmail[0] || !partesEmail[1]) {
-        alert("Digite um e-mail válido no formato nome@dominio.");
+        alert("Digite um e-mail válido");
         document.getElementById("Email").focus();
         return;
     }
@@ -135,12 +135,12 @@ async function Formulario(event) {
     } catch (error) {
         console.error("Erro:", error);
         if (error.code === "auth/email-already-in-use") {
-            alert("Este e-mail já possui uma conta. Entre pela tela de login ou use a recuperação de senha.");
+            alert("Este e-mail já possui uma conta. Entre pela tela de login");
             window.location.href = tipo === "aluno" ? "../Login/Log-aluno.html" : "../Login/Log-Prof.html";
             return;
         }
         if (error.code === "auth/invalid-email") {
-            alert("O formato do e-mail é inválido. Confira o endereço e a parte após o @.");
+            alert("O formato do e-mail é inválido.");
             document.getElementById("Email").focus();
             return;
         }

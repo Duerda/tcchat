@@ -17,6 +17,41 @@
     --cor-borda: rgb(255 255 255 / 7%);
 }
 
+.chat-form, .entrega-form, .link-form {
+    display: grid;
+    gap: 12px;
+    max-width: 760px;
+    margin: 18px 0;
+    padding: 16px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 12px;
+    color: var(--cor-texto);
+    background: var(--cor-fundo-secundario);
+}
+.chat-form { grid-template-columns: 1fr auto; }
+.chat-form input, .entrega-form input, .entrega-form textarea,
+.link-form input, .link-form textarea {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 7px;
+    color: var(--cor-texto);
+    background: var(--cor-fundo-principal);
+}
+.chat-form button, .entrega-form button, .link-form button {
+    padding: 10px 16px;
+    border: 0;
+    border-radius: 7px;
+    color: white;
+    background: var(--cor-azul);
+    cursor: pointer;
+}
+#lista-mensagens, #lista-links { max-width: 760px; max-height: 360px; overflow: auto; }
+.mensagem-chat, #lista-links article { padding: 12px; border-bottom: 1px solid var(--cor-borda); color: var(--cor-texto); }
+#lista-links a { color: #78aaff; }
+.entrega-form label, .link-form label { display: grid; gap: 7px; }
+
 #Geral {
     display: flex;
 }

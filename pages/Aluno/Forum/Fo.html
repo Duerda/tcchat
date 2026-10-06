@@ -66,8 +66,10 @@
             <div id="bloco-nova-duvida" style="display: none;" class="bloco-nv">
                 <h1>Nova Dúvida</h1>
                 <form id="form-entrega" onsubmit="enviarFormulario(event)">
+                    <label for="titulo-duvida">Tema:</label>
+                    <input id="titulo-duvida" name="titulo" required maxlength="100">
                     <label for="duvida">Sua dúvida:</label>
-                    <textarea id="duvida" name="duvida" rows="4" cols="50"></textarea>
+                    <textarea id="duvida" name="duvida" rows="4" cols="50" required maxlength="2000"></textarea>
                     <button type="submit">Enviar</button>
                 </form>
             </div>
@@ -75,6 +77,6 @@
     </div>
     </div>
 </body>
-<script src="../navegacao.js"></script>
-<script src="Fo.js"></script>
+<script type="module" src="../navegacao.js"></script>
+<script type="module" src="Fo.js"></script>
 </html>
