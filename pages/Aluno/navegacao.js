@@ -36,7 +36,8 @@ auth.onAuthStateChanged(async (user) => {
     console.error("Não foi possível verificar se o aluno já tem grupo:", error);
   }
 });
-window.Forum = () => location.href = "../Forum/Fo.html";
+
+window.Forum = () => location.href = "../Forum/av.html";
 window.Inspiracoes = () => location.href = "../Inspiracoes/Inspiracoes.html";
 window.Configuracoes = () => location.href = "../Configuracoes/Config.html";
 window.Voltar = async () => {

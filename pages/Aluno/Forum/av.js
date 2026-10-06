@@ -9,28 +9,28 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { auth, db } from "../../../backend/firebase/config.js";
 
+let perfilRef = null;
+
 onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-        window.location.href = "../../auth/Login/Log-aluno.html";
-        return;
-    }
+  if (!user) {
+    location.href = "../../auth/Login/Log-aluno.html";
+    return;
+  }
+  perfilRef = doc(db, "usuarios", user.uid);
+  const snap = await getDoc(perfilRef);
+  if (!snap.exists() || snap.data().tipo !== "aluno") {
+    location.href = "../../auth/Login/Log-aluno.html";
+    return;
+  }
+  const dados = snap.data();
+  const foto = document.querySelector("#foto span");
+  const nome = document.querySelector("#NomeUC h4");
+  const curso = document.querySelector("#NomeUC h5");
+  if (foto) foto.textContent = dados.iniciais || "";
+  if (nome) nome.textContent = dados.nome || "";
+  if (curso) curso.textContent = dados.curso || "";
 
-    const userDoc = await getDoc(doc(db, "usuarios", user.uid));
-    if (!userDoc.exists() || userDoc.data().tipo !== "aluno") {
-        alert("Acesso negado: esta área é exclusiva para alunos.");
-        window.location.href = "../../auth/Login/Log-aluno.html";
-        return;
-    }
-
-    const dados = userDoc.data();
-    const foto = document.querySelector("#foto span");
-    const nome = document.querySelector("#NomeUC h4");
-    const curso = document.querySelector("#NomeUC h5");
-    if (foto) foto.textContent = dados.iniciais || "";
-    if (nome) nome.textContent = dados.nome || "";
-    if (curso) curso.textContent = dados.curso || "";
-
-    escutarAvisos(dados.codigoSala || "geral");
+  escutarAvisos(dados.codigoSala || "geral");
 });
 
 function textoSeguro(valor) {

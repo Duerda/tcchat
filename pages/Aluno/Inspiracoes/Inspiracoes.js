@@ -1,4 +1,35 @@
+import { auth, db } from "../../../backend/firebase/config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import {
+  doc,
+  getDoc,
+  updateDoc,
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 // Inspiracoes.js
+
+let perfilRef = null;
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    location.href = "../../auth/Login/Log-aluno.html";
+    return;
+  }
+  perfilRef = doc(db, "usuarios", user.uid);
+  const snap = await getDoc(perfilRef);
+  if (!snap.exists() || snap.data().tipo !== "aluno") {
+    location.href = "../../auth/Login/Log-aluno.html";
+    return;
+  }
+  const dados = snap.data();
+  const foto = document.querySelector("#foto span");
+  const nome = document.querySelector("#NomeUC h4");
+  const curso = document.querySelector("#NomeUC h5");
+  if (foto) foto.textContent = dados.iniciais || "";
+  if (nome) nome.textContent = dados.nome || "";
+  if (curso) curso.textContent = dados.curso || "";
+
+  escutarAvisos(dados.codigoSala || "geral");
+});
 
 // Função de navegação para as páginas específicas
 function irPara(tipo) {
