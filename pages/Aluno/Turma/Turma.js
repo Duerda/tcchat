@@ -93,7 +93,7 @@ window.criarGrupo = async function (event) {
 
   const user = auth.currentUser;
   
-  if (!user || !dadosAluno) {
+  if (!user || !dadosAluno) { //problema 
     alert("Usuário não autenticado. Faça login novamente.");
     return;
   }

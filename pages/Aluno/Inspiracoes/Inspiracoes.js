@@ -27,8 +27,6 @@ onAuthStateChanged(auth, async (user) => {
   if (foto) foto.textContent = dados.iniciais || "";
   if (nome) nome.textContent = dados.nome || "";
   if (curso) curso.textContent = dados.curso || "";
-
-  escutarAvisos(dados.codigoSala || "geral");
 });
 
 // Função de navegação para as páginas específicas

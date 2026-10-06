@@ -135,8 +135,7 @@ async function Formulario(event) {
     } catch (error) {
         console.error("Erro:", error);
         if (error.code === "auth/email-already-in-use") {
-            alert("Este e-mail já possui uma conta. Entre pela tela de login");
-            window.location.href = tipo === "aluno" ? "../Login/Log-aluno.html" : "../Login/Log-Prof.html";
+            alert("Este e-mail já possui uma conta.");
             return;
         }
         if (error.code === "auth/invalid-email") {
