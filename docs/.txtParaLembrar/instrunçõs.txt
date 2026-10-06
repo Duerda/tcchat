@@ -1,0 +1,262 @@
+Manual do Usuário
+1. Acessar a plataforma e realizar o cadastro como aluno
+1.1 Conhecendo a página inicial
+
+Abra o sistema e aguarde o carregamento da Landing Page.
+
+Na página inicial, role a tela para baixo e observe as informações apresentadas sobre o projeto.
+
+Localize a seção TCCs.
+
+Clique ou selecione um dos TCCs apresentados.
+
+Leia a proposta e o objetivo do TCC selecionado.
+
+Volte para a página inicial.
+
+Localize a seção Sobre.
+
+Leia as informações sobre o projeto e suas funcionalidades.
+
+Localize a seção Integrantes.
+
+Verifique os integrantes da equipe e a função de cada um.
+
+Localize a área que apresenta o acompanhamento do progresso dos projetos.
+
+Observe como o progresso dos projetos é apresentado.
+
+Depois de visualizar todas essas informações, localize o botão Cadastrar.
+
+Clique em Cadastrar.
+
+1.2 Criando a conta de aluno
+
+Preencha todos os campos solicitados no cadastro.
+
+Utilize um e-mail de aluno válido.
+
+Confira se todas as informações preenchidas estão corretas.
+
+Clique no botão para finalizar o cadastro.
+
+Aguarde o sistema concluir o cadastro.
+
+Após entrar na plataforma, confirme que você está acessando a conta como aluno.
+
+2. Realizar as tarefas como aluno
+2.1 Criar um grupo de TCC
+
+Após entrar na conta, localize o Painel.
+
+Clique em Painel.
+
+Procure a opção para criar um grupo de TCC.
+
+Clique nessa opção.
+
+Preencha cada informação solicitada pelo sistema.
+
+Confira se as informações estão corretas.
+
+Clique em Criar Grupo ou no botão equivalente.
+
+Confirme que o grupo foi criado.
+
+2.2 Enviar mensagem no Chat do Grupo
+
+No menu da plataforma, localize Meu Grupo.
+
+Clique em Meu Grupo.
+
+Localize a área chamada Chat do Grupo.
+
+Clique no campo onde é possível escrever uma mensagem.
+
+Digite exatamente:
+
+Olá, eu sou {usuário}.
+
+Clique no botão Enviar.
+
+Confira se a mensagem apareceu no histórico do chat.
+
+2.3 Enviar mensagem para o orientador
+
+Ainda dentro de Meu Grupo, localize a área Chat c/Orientador.
+
+Clique no campo de mensagem.
+
+Digite exatamente:
+
+Olá, {professor}, você pode me tirar uma dúvida?
+
+Clique em Enviar.
+
+Confira se a mensagem apareceu no chat.
+
+2.4 Enviar uma atividade em atraso
+
+No menu principal, clique em Atividades.
+
+Localize uma atividade que esteja marcada como atrasada.
+
+Clique na atividade.
+
+Procure a opção para enviar a atividade.
+
+Se o sistema solicitar um arquivo, selecione um arquivo para envio.
+
+Se houver um campo de texto, preencha-o conforme solicitado.
+
+Clique em Enviar.
+
+Confirme que a atividade foi enviada.
+
+2.5 Adicionar um link na Biblioteca
+
+No menu principal, clique em Biblioteca.
+
+Procure a opção para adicionar/criar um link.
+
+Clique nessa opção.
+
+No campo solicitado, informe um título relacionado ao projeto do TCC.
+
+No campo de URL/link, coloque o endereço de uma página relacionada ao projeto.
+
+Confira as informações preenchidas.
+
+Clique em Salvar ou no botão equivalente.
+
+Verifique se o link aparece na Biblioteca.
+
+2.6 Criar uma dúvida no Fórum
+
+No menu principal, clique em Fórum.
+
+Localize o botão + Nova Dúvida.
+
+Clique nesse botão.
+
+No campo de título/tema, coloque o tema da dúvida.
+
+No campo de mensagem, digite:
+
+Olá, será que algum professor poderia me ajudar? Meu grupo está tentando fazer um protótipo do site da atividade, mas por algum motivo aparece uma mensagem de erro. Mais alguém teve esse problema?
+
+Confira se o título e a mensagem estão preenchidos.
+
+Clique em Publicar, Enviar ou no botão equivalente.
+
+Verifique se sua dúvida aparece no Fórum.
+
+2.7 Visualizar os avisos
+
+No menu principal, clique em Avisos.
+
+Aguarde o carregamento da página.
+
+Verifique se existem avisos enviados por professores ou coordenadores.
+
+Clique em um aviso, caso exista.
+
+Leia o conteúdo do aviso.
+
+Retorne para a lista de avisos.
+
+2.8 Personalizar as configurações
+
+No menu principal, clique em Configurações.
+
+Observe todas as opções disponíveis.
+
+Altere as configurações de acordo com suas preferências.
+
+Caso exista uma opção de tema, escolha o tema desejado.
+
+Caso existam opções de aparência ou outras preferências, ajuste-as.
+
+Salve as alterações, caso exista um botão Salvar.
+
+Confira se as alterações foram aplicadas.
+
+2.9 Sair da conta
+
+Localize o X no canto inferior esquerdo da tela.
+
+Clique no X.
+
+Aguarde o sistema encerrar a sessão.
+
+Confira se você retornou para a tela inicial ou de login.
+
+3. Realizar o cadastro como professor
+
+Após sair da conta de aluno, volte para a tela de cadastro.
+
+Clique em Cadastrar.
+
+Preencha novamente os dados solicitados.
+
+Mantenha as informações necessárias para o cadastro.
+
+No campo de e-mail, utilize o seguinte formato:
+
+{usuario.sobrenome}@professor.cps.sp.gov.br
+
+Substitua {usuario.sobrenome} pelo nome e sobrenome correspondentes.
+
+Confira se o e-mail está escrito corretamente.
+
+Preencha os demais campos solicitados.
+
+Confira todas as informações antes de continuar.
+
+Clique em Cadastrar.
+
+Aguarde a conclusão do cadastro.
+
+Confirme que o acesso foi realizado como professor.
+
+Na sessão do painel usuário irá criar um grupo do seu TCC colocando as informações que for pedido
+
+Na sessão meu-grupo na parte do Chat do Grupo o usuário irá mandar um "Olá, eu sou {usuário}."
+
+Na mesma sessão usuário irá na parte do Chat c/Orientador e irá mandar a mensagem "Olá, {professor}, você pode me tirar uma dúvida?"
+
+Clicando em Atividades o usuário irá fazer o envio de uma Atividade em atraso
+
+Clicando em Biblioteca o usuário irá criar um link para uma página relacionado ao projeto de TCC
+
+Acessa a sessão Fórum e clica em + Nova Dúvida  e digita a seguinte mensagem "{Tema da dúvida} Olá, será que algum professor poderia me ajudar? Meu grupo está tentando fazer um protótipo do site da atividade, mas por algum motivo aparece uma mensagem de erro mais alguém apareceu?"
+
+O usuário, após isso irá na sessão avisos e visualizará se algum professor ou coordenador enviou um aviso para sua turma.
+
+O usuario acessa a sessão configurações deixa personalizado de acordo com seus gostos para deixar isso de forma mais confortável para ele.
+
+O usuário finaliza a sessão clicando no "X" no canto inferior esquerdo.
+
+
+
+
+
+
+Na sessão do painel usuário irá criar um grupo do seu TCC colocando as informações que for pedido
+
+Na sessão meu-grupo na parte do Chat do Grupo o usuário irá mandar um "Olá, eu sou {usuário}."
+
+Na mesma sessão usuário irá na parte do Chat c/Orientador e irá mandar a mensagem "Olá, {professor}, você pode me tirar uma dúvida?"
+
+Clicando em Atividades o usuário irá fazer o envio de uma Atividade em atraso
+
+Clicando em Biblioteca o usuário irá criar um link para uma página relacionado ao projeto de TCC
+
+Acessa a sessão Fórum e clica em + Nova Dúvida  e digita a seguinte mensagem "{Tema da dúvida} Olá, será que algum professor poderia me ajudar? Meu grupo está tentando fazer um protótipo do site da atividade, mas por algum motivo aparece uma mensagem de erro mais alguém apareceu?"
+
+O usuário, após isso irá na sessão avisos e visualizará se algum professor ou coordenador enviou um aviso para sua turma.
+
+O usuario acessa a sessão configurações deixa personalizado de acordo com seus gostos para deixar isso de forma mais confortável para ele.
+
+O usuário finaliza a sessão clicando no "X" no canto inferior esquerdo.
+
