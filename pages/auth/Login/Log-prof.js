@@ -41,25 +41,22 @@ async function Formulario(event) {
 
         const user = userCredential.user;
 
-        console.log("Usuário autenticado:");
-        console.log(user);
-
-
         const usuarioRef = doc(db, "usuarios", user.uid);
 
         const usuarioDoc = await getDoc(usuarioRef);
 
 
-        console.log("Documento existe?");
-        console.log(usuarioDoc.exists());
-
-
-        if(usuarioDoc.exists()){
-
-            console.log(usuarioDoc.data());
-
-            window.location.href="../../Professor/Index.html";
-
+        if (usuarioDoc.exists()) {
+            const perfil = usuarioDoc.data();
+            if (perfil.tipo && perfil.tipo !== "professor" && perfil.tipo !== "coordenador") {
+                await signOut(auth);
+                alert("Esta conta não possui perfil de professor.");
+                return;
+            }
+            window.location.href = "../../Professor/Index.html";
+        } else {
+            await signOut(auth);
+            alert("Esta conta não possui um perfil cadastrado.");
         }
 
 
@@ -84,5 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(form){
         form.addEventListener('submit', Formulario);
     }
+
+    document.getElementById("Coor-head")?.addEventListener("click", toggleCoor);
 
 });
