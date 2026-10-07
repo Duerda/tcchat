@@ -33,7 +33,7 @@
                     <div id="foto"><span style="margin: 0px;color: #e4e9f4;"></span></div>
                     <div id="NomeUC">
                         <h4 style="margin: 0; color: #e4e9f4; width: 100px;"></h4>
-                        <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;">
+                        <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: 12px; width: 80px;">
                             Desenvolvimento de Sistemas</h5>
                     </div>
                     <p id="voltar" onclick="Voltar()">X</p>
@@ -69,61 +69,12 @@
             </div>
 
             <!--Grupos da Turma-->
-            <h1
-                style="color: var(--cor-texto-secundario); margin-left: 8px; font-family: 'arial', sans-serif; font-weight: 200; letter-spacing: 1.2px; font-size: 32px; margin-bottom: 10px; margin-top: 17px;">
-                Grupos da Turma</h1>
-            <div id="EnCad">
-                <button class="aba ativa" id="btn-criar-grupo"  onclick="abrirModalCriarGrupo()">Criar Grupo</button>
-            </div>
 
             <!--parte de setas-->
             <div class="grupos-wrapper">
                 <button class="seta-grupos" id="seta-esq" onclick="scrollGrupos(-1)">&#10094;</button>
                 <div id="GT"></div>
                 <button class="seta-grupos" id="seta-dir" onclick="scrollGrupos(1)">&#10095;</button>
-            </div>
-
-            <!--criacao dos grupos-->
-            <div id="modal-criar-grupo" class="modal-overlay">
-                <div class="modal-box">
-                    <h2>Criar Novo Grupo</h2>
-                    <form id="form-criar-grupo" onsubmit="criarGrupo(event)">
-                        <label>Nome do grupo *</label>
-                        <input type="text" id="inp-nome-grupo" placeholder="Ex: Agro Connect" required>
-
-                        <label>Tema *</label>
-                        <input type="text" id="inp-tema" placeholder="Ex: Web, Mobile, Embarcados..." required>
-
-                        <label>Descrição *</label>
-                        <textarea id="inp-descricao" rows="3" placeholder="Breve descrição do projeto"
-                            required style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;"></textarea>
-
-                        <label>Integrantes (separe por vírgula) *</label>
-                        <input type="text" id="inp-integrantes" placeholder="Ana, Carlos, Mariana" required>
-
-                        <label>Orientador</label>
-                        <input type="text" id="inp-orientador" placeholder="Prof. Carlos Mendes">
-
-                        <div class="modal-botoes">
-                            <button type="button" onclick="fecharModalCriarGrupo()">Cancelar</button>
-                            <button type="submit">Criar</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!--exclusao dos grupos-->
-            <div id="modal-confirmar-exclusao" class="modal-overlay">
-                <div class="modal-box modal-confirmacao">
-                    <h2>Excluir Grupo?</h2>
-                    <p>Tem certeza que deseja excluir <strong id="nome-grupo-excluir"></strong>?</p>
-                    <p class="aviso-exclusao">Esta ação não pode ser desfeita.</p>
-                    <div class="modal-botoes">
-                        <button type="button" onclick="fecharModalExclusao()">Cancelar</button>
-                        <button type="button" class="btn-confirmar-excluir"
-                            onclick="confirmarExclusao()">Excluir</button>
-                    </div>
-                </div>
             </div>
 
             <!--Atividades e Entregas-->
@@ -177,6 +128,6 @@
     </div>
 </body>
 <script src="/pages/Aluno/navegacao.js"></script>
-<script src="/pages/Aluno/Turma.js"></script>
-
+<script type="module" src="/pages/Aluno/Turma.js"></script>
+<script type="module" src="/pages/Aluno/user-info.js"></script>
 </html>

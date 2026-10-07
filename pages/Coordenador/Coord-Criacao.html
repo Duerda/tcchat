@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <link rel="stylesheet" href="Coord-style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coordenador - Grupos</title>
+</head>
+
+<body>
+    <div id="Geral">
+        <div id="lateral">
+            <div id="lateral-superior">
+                <div style="letter-spacing: 1px;">
+                    <h2 style="margin-top: 2px;">T<span>CCHAT</span></h2>
+                </div>
+                <div id="Logo-de-professor">COORD</div>
+            </div>
+            <div class="VGABF">
+                <div id="painel">Navegação</div>
+                <div><button onclick="Painel()">Painel</button></div>
+                <div><button onclick="Usuarios()">Usuários</button></div>
+
+                <div><button onclick="GruposCoord()" id="ativo">Grupos</button></div>
+                <div><button onclick="Avaliacoes()">Avaliações</button></div>
+                <div><button onclick="Cronograma()">Cronograma</button></div>
+                <div><button onclick="Biblioteca()">Biblioteca</button></div>
+                <div><button onclick="Forum()">Fórum</button></div>
+                <div><button onclick="Relatorios()">Relatórios</button></div>
+            </div>
+            <div id="sistema"><button onclick="Configuracoes()" id="configuracao">Configurações</button></div>
+            <div class="lateral-inferior">
+                <div class="Usuario">
+                    <div id="foto"><span></span></div>
+                    <div id="NomeUC">
+                        <h4 style="margin: 0; color: #e4e9f4; width: 100px;"></h4>
+                        <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;">
+                        </h5>
+                    </div>
+                    <p id="voltar" style="margin-top: 31px; margin-bottom: 0px; margin-left: 30px;" onclick="Voltar()">X
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="conteudo">
+            <div id="conteudo-superior">
+                <h1>Criação de <span style="color:#e4e9f4;">Grupos</span></h1>
+                <p>Criar grupos, mover alunos e definir orientadores</p>
+            </div>
+
+            <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
+                <button class="btn-acao secundario" onclick="window.location.href='Coord-Grupos.html'"> Sortear grupos automaticamente</button>
+                <button class="btn-acao" onclick="window.location.href='Coord-Criacao.html'">+ Criar grupo manual</button>
+            </div>
+
+            <div class="Aviso">
+                Configuração: <strong>mín. 3 · máx. 5 alunos</strong> por grupo · máx. <strong>8 grupos</strong> por
+                turma
+                <button class="btn-tabela" style="margin-left:12px;" onclick="configurarLimites()">Alterar
+                    limites</button>
+            </div>
+
+            <!--Grupos da Turma-->
+            <h1
+                style="color: var(--cor-texto-secundario); margin-left: 8px; font-family: 'arial', sans-serif; font-weight: 200; letter-spacing: 1.2px; font-size: 32px; margin-bottom: 10px; margin-top: 17px;">
+                Grupos da Turma</h1>
+            <div id="EnCad">
+                <button class="aba ativa" id="btn-criar-grupo" onclick="abrirModalCriarGrupo()">Criar Grupo</button>
+            </div>
+
+            <!--parte de setas-->
+            <div class="grupos-wrapper">
+                <button class="seta-grupos" id="seta-esq" onclick="scrollGrupos(-1)">&#10094;</button>
+                <div id="GT"></div>
+                <button class="seta-grupos" id="seta-dir" onclick="scrollGrupos(1)">&#10095;</button>
+            </div>
+
+            <!--criacao dos grupos-->
+            <div id="modal-criar-grupo" class="modal-overlay">
+                <div class="modal-box">
+                    <h2>Criar Novo Grupo</h2>
+                    <form id="form-criar-grupo" onsubmit="criarGrupo(event)">
+                        <label>Nome do grupo *</label>
+                        <input type="text" id="inp-nome-grupo" placeholder="Ex: Agro Connect" required>
+
+                        <label>Tema *</label>
+                        <input type="text" id="inp-tema" placeholder="Ex: Web, Mobile, Embarcados..." required>
+
+                        <label>Descrição *</label>
+                        <textarea id="inp-descricao" rows="3" placeholder="Breve descrição do projeto" required
+                            style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;"></textarea>
+
+                        <label>Integrantes (separe por vírgula) *</label>
+                        <input type="text" id="inp-integrantes" placeholder="Ana, Carlos, Mariana" required>
+
+                        <label>Orientador</label>
+                        <input type="text" id="inp-orientador" placeholder="Prof. Carlos Mendes">
+
+                        <div class="modal-botoes">
+                            <button type="button" onclick="fecharModalCriarGrupo()">Cancelar</button>
+                            <button type="submit">Criar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!--exclusao dos grupos-->
+            <div id="modal-confirmar-exclusao" class="modal-overlay">
+                <div class="modal-box modal-confirmacao">
+                    <h2>Excluir Grupo?</h2>
+                    <p>Tem certeza que deseja excluir <strong id="nome-grupo-excluir"></strong>?</p>
+                    <p class="aviso-exclusao">Esta ação não pode ser desfeita.</p>
+                    <div class="modal-botoes">
+                        <button type="button" onclick="fecharModalExclusao()">Cancelar</button>
+                        <button type="button" class="btn-confirmar-excluir"
+                            onclick="confirmarExclusao()">Excluir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+<script src="/pages/Aluno/navegacao.js"></script>
+<script type="module" src="/pages/Aluno/user-info.js"></script>
+<script type="module" src="Coord-script.js"></script>
+<script src="Coord-interno.js"></script>
+</html>

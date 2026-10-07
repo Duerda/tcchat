@@ -28,7 +28,7 @@ body   { margin: 0; padding: 0; }
     left: 0px;
     top: 0px;
     width: 229px;
-    height: 915px;
+    height: 100vh;
     background-color: var(--cor-fundo-secundario);
     position: sticky;
     top: 0;
@@ -162,7 +162,7 @@ h2 {
     width: 40px;
     height: 40px;
     border-radius: 100%;
-    background-color: var(--cor-azul);
+    background-color: var(--cor-vermelho);
     margin-right: 8px;
     flex-shrink: 0;
 }

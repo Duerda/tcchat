@@ -37,6 +37,11 @@ body {
     margin: 0px;
     padding: 0px;
     overflow-x: hidden;
+    visibility: hidden;
+}
+
+body.pronto {
+    visibility: visible;
 }
 
 #lateral {
@@ -73,6 +78,25 @@ h2 {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-weight: 200;
     letter-spacing: 1px;
+}
+
+h3 {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-weight: 200;
+    letter-spacing: 1px;
+}
+
+h4 {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-weight: 200;
+    letter-spacing: 1px;
+}
+
+h5 {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-weight: 200;
+    letter-spacing: 1px;
+    font-size: 11px;
 }
 #lateral-superior div h2 {
     font-size: 32px;
@@ -157,7 +181,7 @@ h2 {
     width: 40px;
     height: 40px;
     border-radius: 100%;
-    background-color: var(--cor-azul);
+    background-color: var(--cor-vermelho);
     margin-right: 8px;
 }
 #foto p {
@@ -506,22 +530,37 @@ h1 span {
 }
 
 #bloco-inferior h1 {
-    font-family: "arial", sans-serif;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 18px;
+    padding: 5px 12px;
+    border: none;
+    font-family: "arial narrow", sans-serif;
     letter-spacing: 1.2px;
     font-weight: bold;
-    font-size: 17px;
-    text-shadow:
-    0 0 5px rgba(54, 145, 42, 0.25),
-    0 0 10px rgba(54, 145, 42, 0.12),
-    0 0 20px rgba(54, 145, 42, 0.05);
-    transition: text-shadow 0.3s ease;
+    font-size: 15px;
     margin-top: 5px;
     margin-left: 10px;
-    border-radius: 18px;
-    padding: 5px 10px;
-    background-color: var(--cor-verde-transparente);
-    align-items: center;
+    min-width: 90px;
     text-align: center;
+    text-shadow: none;
+    transition: text-shadow 0.3s ease;
+}
+
+#bloco-inferior h1.status-prazo {
+    color: #36912a;
+    background-color: var(--cor-verde-transparente);
+}
+
+#bloco-inferior h1.status-atencao {
+    color: #fbbf24;
+    background-color: var(--cor-amarelo-transparente);
+}
+
+#bloco-inferior h1.status-atraso {
+    color: #ec3c3c;
+    background-color: var(--cor-vermelho-transparente);
 }
 
 #btn-criar-grupo {

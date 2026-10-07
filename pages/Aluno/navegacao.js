@@ -1,34 +1,23 @@
-
-
-const Navegacao = {
-    Painel: function() {
-        window.location.href = "../Turma/index.html";
-    },
-    MeuGrupo: function() {
-        window.location.href = "../Grupos/gp.html";
-    },
-    Forum: function() {
-        window.location.href = "../Forum/av.html";
-    },
-    Inspiracoes: function() {
-        window.location.href = "../Inspiracoes/Inspiracoes.html";
-    },
-    Configuracoes: function() {
-        window.location.href = "../Configuracoes/Config.html";
-    },
-    Voltar: function() {
-        window.history.back();
-    }
+window.Painel = function () {
+    window.location.href = "/pages/Aluno/Turma/index.html";
 };
 
-// Aluno/navegacao.js
 window.MeuGrupo = function () {
-    window.location.href = "../Grupos/gp.html";   // relativo à pasta Aluno
+    window.location.href = "/pages/Aluno/Grupos/gp.chat.html";
 };
 
-function Painel() { Navegacao.Painel(); }
-function MeuGrupo() { Navegacao.MeuGrupo(); }
-function Forum() { Navegacao.Forum(); }
-function Inspiracoes() { Navegacao.Inspiracoes(); }
-function Configuracoes() { Navegacao.Configuracoes(); }
-function Voltar() { Navegacao.Voltar(); }
+window.Forum = function () {
+    window.location.href = "/pages/Aluno/Forum/Fo.html";
+};
+
+window.Inspiracoes = function () {
+    window.location.href = "/pages/Aluno/Inspiracoes/Inspiracoes.html";
+};
+
+window.Configuracoes = function () {
+    window.location.href = "/pages/Aluno/Configuracoes/Config.html";
+};
+
+window.Voltar = function () {
+    window.location.href = "/pages/Auth/Login/Log-aluno.html";
+};
