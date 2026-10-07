@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grupo</title>
+  <link rel="stylesheet" href="grupo-detalhes.css">
+</head>
+<body>
+  <div id="Geral">
+    <aside id="lateral">
+      <div id="lateral-superior">
+        <div><h2>TC<span>CHAT</span></h2></div>
+        <div id="Logo-de-professor">PROFESSOR</div>
+      </div>
+
+      <div class="VGABF">
+        <div id="painel">Navegação</div>
+        <div><button onclick="VisaoGeral()">Visão Geral</button></div>
+        <div><button onclick="Grupos()" id="Grupos">Grupos</button></div>
+        <div><button onclick="Avaliacoes()">Avaliações</button></div>
+        <div><button onclick="Biblioteca()">Biblioteca</button></div>
+        <div><button onclick="Forum()">Fórum</button></div>
+      </div>
+
+      <div id="sistema">
+        <button onclick="Configuracoes()" id="configuracao">Configurações</button>
+      </div>
+
+      <div class="lateral-inferior">
+        <div class="Usuario">
+          <div id="foto"><span></span></div>
+          <div id="NomeUC">
+            <h4></h4>
+            <h5></h5>
+          </div>
+          <p id="voltar" onclick="Voltar()">X</p>
+        </div>
+      </div>
+    </aside>
+
+    <main id="conteudo">
+      <div class="cabecalho-grupo">
+        <button class="btn-voltar" onclick="Grupos()">← Voltar</button>
+        <div>
+          <h1 id="nomeGrupo">Carregando...</h1>
+          <p id="infoGrupo">Grupo</p>
+        </div>
+        <span class="prazo">No prazo</span>
+      </div>
+
+      <div class="abas">
+        <button class="aba ativa" data-aba="chat">Chat do Grupo</button>
+        <button class="aba" data-aba="arquivo">Arquivo</button>
+        <button class="aba" data-aba="historico">Histórico de entregas</button>
+        <button class="aba" data-aba="anotacoes">Anotações</button>
+      </div>
+
+      <section id="painelGrupo"></section>
+    </main>
+  </div>
+
+  <script type="module" src="grupo-detalhes.js"></script>
+</body>
+</html>

@@ -9,24 +9,17 @@ import {
   where,
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-/* =========================================================
-   NAVEGAÇÃO
-   ========================================================= */
+
 window.Voltar        = () => auth.signOut().then(() => window.location.href = "../../auth/Login/Log-aluno.html");
 window.Painel        = () => window.location.href = "./Coord-Index.html";
 window.Usuarios      = () => window.location.href = "./Coord-Usuarios.html";
 window.Cursos        = () => window.location.href = "/Coordenador/Coord-Cursos.html";
 window.GruposCoord   = () => window.location.href = "Coord-Grupos.html";
-window.Avaliacoes    = () => window.location.href = "/Coordenador/Coord-Avaliacoes.html";
-window.Cronograma    = () => window.location.href = "/Coordenador/Coord-Cronograma.html";
 window.Biblioteca    = () => window.location.href = "/Coordenador/Coord-Biblioteca.html";
 window.Forum         = () => window.location.href = "Coord-Forum.html";
-window.Relatorios    = () => window.location.href = "/Coordenador/Coord-Relatorios.html";
 window.Configuracoes = () => window.location.href = "/Coordenador/Coord-Config.html";
 
-/* =========================================================
-   AUTH
-   ========================================================= */
+
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     carregarPerfil(user.uid);
@@ -35,9 +28,7 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-/* =========================================================
-   PERFIL
-   ========================================================= */
+
 function carregarPerfil(uid) {
   const q = query(collection(db, "usuarios"), where("uid", "==", uid));
   onSnapshot(q, (snapshot) => {
@@ -50,9 +41,7 @@ function carregarPerfil(uid) {
   });
 }
 
-/* =========================================================
-   ABAS
-   ========================================================= */
+
 function mudarAba(id) {
   document.querySelectorAll('.conteudo-aba').forEach(a => a.style.display = 'none');
   document.querySelectorAll('.aba').forEach(b => b.classList.remove('ativa'));
@@ -60,9 +49,6 @@ function mudarAba(id) {
   document.getElementById('aba-' + id).classList.add('ativa');
 }
 
-/* =========================================================
-   USUÁRIOS
-   ========================================================= */
 function gerarCodigo(tipo) {
   const curso = prompt('Curso (DS ou TMA):');
   if (!curso) return;
@@ -101,9 +87,7 @@ function desativarUsuario(btn) {
   }
 }
 
-/* =========================================================
-   FÓRUM
-   ========================================================= */
+
 function novoAviso() {
   const titulo = prompt('Título do aviso:');
   if (!titulo) return;
@@ -136,9 +120,6 @@ function responderDuvida(inputId, btn) {
   btn.parentElement.remove();
 }
 
-/* =========================================================
-   GRUPOS - LOCALSTORAGE
-   ========================================================= */
 const CHAVE_STORAGE = "grupos_turma_2026.1";
 
 function obterGrupos() {
@@ -162,7 +143,7 @@ function infoStatus(status) {
   }
 }
 
-/* ---------- MODAL CRIAR ---------- */
+
 window.abrirModalCriarGrupo = function () {
   document.getElementById("modal-criar-grupo").style.display = "flex";
 };
@@ -171,7 +152,7 @@ window.fecharModalCriarGrupo = function () {
   document.getElementById("modal-criar-grupo").style.display = "none";
 };
 
-/* ---------- CRIAR GRUPO ---------- */
+
 window.criarGrupo = function (event) {
   event.preventDefault();
 
@@ -217,7 +198,7 @@ window.criarGrupo = function (event) {
   carregarGrupos();
 };
 
-/* ---------- EXCLUIR GRUPO ---------- */
+
 let grupoParaExcluir = null;
 
 window.excluirGrupo = function (id) {
@@ -247,7 +228,7 @@ window.confirmarExclusao = function () {
   carregarGrupos();
 };
 
-/* ---------- MUDAR STATUS ---------- */
+
 window.mudarStatus = function (id, novoStatus) {
   const grupos = obterGrupos();
   const grupo = grupos.find((g) => g.id === id);
@@ -259,7 +240,6 @@ window.mudarStatus = function (id, novoStatus) {
   carregarGrupos();
 };
 
-/* ---------- CARREGAR/RENDERIZAR GRUPOS ---------- */
 function carregarGrupos() {
   const container = document.getElementById("GT");
   if (!container) return;
@@ -362,9 +342,6 @@ function atualizarSetas() {
   setaDir.disabled = gt.scrollLeft >= maxScroll - 2;
 }
 
-/* =========================================================
-   INICIALIZAÇÃO
-   ========================================================= */
 document.addEventListener("DOMContentLoaded", function () {
   carregarGrupos();
 
