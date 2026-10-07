@@ -44,3 +44,7 @@ window.Voltar = async () => {
   try { await auth.signOut(); }
   finally { location.href = "../../auth/Login/Log-aluno.html"; }
 };
+window.Painel = function () {
+    window.location.href = "/pages/Aluno/Turma/index.html";
+};
+
