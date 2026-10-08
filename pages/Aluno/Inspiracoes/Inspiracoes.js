@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { auth, db } from "../../../backend/firebase/config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import {
@@ -31,8 +30,6 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 // Função de navegação para as páginas específicas
-=======
->>>>>>> main
 function irPara(tipo) {
     if (tipo === 'todos') {
         window.location.href = "/pages/Aluno/Inspiracoes/Inspiracoes.html";
