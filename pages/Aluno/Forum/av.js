@@ -1,86 +1,44 @@
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import {
-    collection,
-    doc,
-    getDoc,
-    onSnapshot,
-    query,
-    where
-} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-import { auth, db } from "../../../backend/firebase/config.js";
+import { db } from "../../../backend/firebase/config.js";
+import { collection, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-let perfilRef = null;
-
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    location.href = "../../auth/Login/Log-aluno.html";
-    return;
-  }
-  perfilRef = doc(db, "usuarios", user.uid);
-  const snap = await getDoc(perfilRef);
-  if (!snap.exists() || snap.data().tipo !== "aluno") {
-    location.href = "../../auth/Login/Log-aluno.html";
-    return;
-  }
-  const dados = snap.data();
-  const foto = document.querySelector("#foto span");
-  const nome = document.querySelector("#NomeUC h4");
-  const curso = document.querySelector("#NomeUC h5");
-  if (foto) foto.textContent = dados.iniciais || "";
-  if (nome) nome.textContent = dados.nome || "";
-  if (curso) curso.textContent = dados.curso || "";
-
-  escutarAvisos(dados.codigoSala || "geral");
-});
-
-function textoSeguro(valor) {
-    const el = document.createElement("span");
-    el.textContent = valor == null ? "" : String(valor);
-    return el.innerHTML;
+function formatarData(valor) {
+  const date = valor?.toDate?.() || (valor instanceof Date ? valor : valor ? new Date(valor) : null);
+  return date && !Number.isNaN(date.getTime()) ? date.toLocaleString("pt-BR") : "Agora";
 }
-
 function escutarAvisos(codigoSala) {
-    const lista = document.getElementById("lista-avisos");
-    const vazio = document.getElementById("avisos-vazio");
-    if (!lista) return;
-
-    const q = query(
-        collection(db, "avisos"),
-        where("codigoSala", "==", codigoSala)
-    );
-
-    onSnapshot(q, (snapshot) => {
-        const avisos = snapshot.docs.map((docSnap) => ({
-            id: docSnap.id,
-            ...docSnap.data()
-        }));
-
-        avisos.sort((a, b) => {
-            const da = a.data && a.data.toDate ? a.data.toDate() : null;
-            const dbData = b.data && b.data.toDate ? b.data.toDate() : null;
-            if (!da && !dbData) return 0;
-            if (!da) return 1;
-            if (!dbData) return -1;
-            return dbData - da;
-        });
-
-        lista.innerHTML = "";
-        if (vazio) vazio.style.display = avisos.length ? "none" : "block";
-
-        avisos.forEach((aviso) => {
-            const data = aviso.data && aviso.data.toDate ? aviso.data.toDate() : null;
-            const quadro = document.createElement("div");
-            quadro.className = "quadro-aviso";
-            quadro.innerHTML = `
-                <div id="q1">
-                    <h1>${textoSeguro(aviso.autor || "Professor")}</h1>
-                </div>
-                <h2>${textoSeguro(aviso.tipoAutor || "Aviso")}</h2>
-                <h3>${textoSeguro(data ? data.toLocaleString("pt-BR") : "Agora")}</h3>
-                <h4>${textoSeguro(aviso.titulo)}</h4>
-                <h5>${textoSeguro(aviso.conteudo)}</h5>
-            `;
-            lista.appendChild(quadro);
-        });
+  const lista = document.getElementById("lista-avisos") || document.getElementById("quadro");
+  const vazio = document.getElementById("avisos-vazio");
+  if (!lista) return;
+  onSnapshot(query(collection(db, "avisos"), where("codigoSala", "==", codigoSala)), (snapshot) => {
+    lista.replaceChildren();
+    if (vazio) vazio.hidden = !snapshot.empty;
+    if (snapshot.empty) {
+      const mensagem = document.createElement("p");
+      mensagem.textContent = "Não há avisos para sua turma no momento.";
+      lista.appendChild(mensagem);
+      return;
+    }
+    const avisos = snapshot.docs.map((item) => item.data()).sort((a, b) => (b.data?.toMillis?.() || 0) - (a.data?.toMillis?.() || 0));
+    avisos.forEach((aviso) => {
+      const card = document.createElement("article");
+      card.className = "quadro-aviso";
+      const autor = document.createElement("h2");
+      autor.textContent = `${aviso.tipoAutor || "Aviso"} · ${aviso.autor || "Professor"}`;
+      const data = document.createElement("p");
+      data.textContent = formatarData(aviso.data);
+      const titulo = document.createElement("h3");
+      titulo.textContent = aviso.titulo || "Aviso";
+      const conteudo = document.createElement("p");
+      conteudo.textContent = aviso.conteudo || "";
+      card.append(autor, data, titulo, conteudo);
+      lista.appendChild(card);
     });
+  }, (error) => {
+    console.error("Erro ao carregar avisos:", error);
+    lista.textContent = "Não foi possível carregar os avisos.";
+  });
 }
+
+window.alunoReady?.then((session) => {
+  if (session) escutarAvisos(session.profile.codigoSala || "geral");
+});

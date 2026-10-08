@@ -25,6 +25,9 @@
                 <div><button id="painel-btn" onclick="Painel()">Painel</button></div>
                 <div><button onclick="MeuGrupo()">Meu Grupo</button></div>
                 <div><button onclick="Forum()">Fórum</button></div>
+                <div><button onclick="Avisos()">Avisos</button></div>
+                <div><button onclick="Atividades()">Atividades</button></div>
+                <div><button onclick="Biblioteca()">Biblioteca</button></div>
                 <div><button onclick="Inspiracoes()">Inspirações</button></div>
             </div>
             <div id="sistema"><button onclick="Configuracoes()" id="configuracao">Configurações</button></div>
@@ -76,49 +79,6 @@
                 <button class="seta-grupos" id="seta-dir" onclick="scrollGrupos(1)">&#10095;</button>
             </div>
 
-            <!--criacao dos grupos-->
-            <div id="modal-criar-grupo" class="modal-overlay">
-                <div class="modal-box">
-                    <h2>Criar Novo Grupo</h2>
-                    <form id="form-criar-grupo" onsubmit="criarGrupo(event)">
-                        <label>Nome do grupo *</label>
-                        <input type="text" id="inp-nome-grupo" placeholder="Ex: Agro Connect" required>
-
-                        <label>Tema *</label>
-                        <input type="text" id="inp-tema" placeholder="Ex: Web, Mobile, Embarcados..." required>
-
-                        <label>Descrição *</label>
-                        <textarea id="inp-descricao" rows="3" placeholder="Breve descrição do projeto"
-                            required style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;"></textarea>
-
-                        <label>Integrantes (separe por vírgula) *</label>
-                        <input type="text" id="inp-integrantes" placeholder="Ana, Carlos, Mariana" required>
-
-                        <label>Orientador</label>
-                        <input type="text" id="inp-orientador" placeholder="Prof. Carlos Mendes">
-
-                        <div class="modal-botoes">
-                            <button type="button" onclick="fecharModalCriarGrupo()">Cancelar</button>
-                            <button type="submit">Criar</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!--exclusao dos grupos-->
-            <div id="modal-confirmar-exclusao" class="modal-overlay">
-                <div class="modal-box modal-confirmacao">
-                    <h2>Excluir Grupo?</h2>
-                    <p>Tem certeza que deseja excluir <strong id="nome-grupo-excluir"></strong>?</p>
-                    <p class="aviso-exclusao">Esta ação não pode ser desfeita.</p>
-                    <div class="modal-botoes">
-                        <button type="button" onclick="fecharModalExclusao()">Cancelar</button>
-                        <button type="button" class="btn-confirmar-excluir"
-                            onclick="confirmarExclusao()">Excluir</button>
-                    </div>
-                </div>
-            </div>
-
             <!--Atividades e Entregas--> //Porcentagem de acordo com as atividades enviadas
             
             <h1 style="color: var(--cor-texto-secundario); margin-left: 8px; font-family: 'arial', sans-serif; font-weight: 200; letter-spacing: 1.2px; font-size: 32px; margin-bottom: 0px; font-weight: 100; margin-top: 30px;">
@@ -133,44 +93,10 @@
                 </div>
             </div>
 
-            <!--Entregas--> //Exemplos
-            <div id="Entregas" style="margin-top: 50px;">
-                <div id="Entregas-int" style="margin-top: 15px;">
-                    <h1>Atividade do Grupo Finalizada</h1>
-                    <div id="bolinha"></div>
-                    <p>Concluido</p>
-                </div>
-                <div id="Entregas-int" style="margin-top: 3px;">
-                    <h2>Publicado por Coord. Ricardo Zanetti</h2>
-                    <h3>10/02/2025 · Concluído · Ver detalhes ▾</h3>
-                </div>
-            </div>
-
-            <div id="Entregas" style="margin-top: 20px; border-left: 5px solid #f87171;">
-                <div id="Entregas-int" style="margin-top: 15px;">
-                    <h1>Entrega do Pré-Projeto</h1>
-                    <p></p>
-                </div>
-                <div id="Entregas-int" style="margin-top: 3px;">
-                    <h2>Publicado por Prof. Carlos Mendes</h2>
-                    <h3>20/02/2025 · 1 dia de atraso · ver detalhes ▾</h3>
-                </div>
-            </div>
-
-            <div id="Entregas" style="margin-top: 20px; border-left: 5px solid #fbbf24;">
-                <div id="Entregas-int" style="margin-top: 15px;">
-                    <h1>Revisão do Pré-Projeto</h1>
-                    <p></p>
-                </div>
-                <div id="Entregas-int" style="margin-top: 3px;">
-                    <h2>Publicado por Prof. Carlos Mendes</h2>
-                    <h3>05/03/2025 · em 12 dias · ver detalhes ▾</h3>
-                </div>
-            </div>
+            <div id="lista-atividades" aria-live="polite"></div>
         </div>
     </div>
 </body>
 <script type="module" src="../navegacao.js"></script>
 <script type="module" src="Turma.js"></script>
-<script type="module" src="../user.info.js"></script>
 </html>

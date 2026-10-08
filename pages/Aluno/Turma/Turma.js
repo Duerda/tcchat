@@ -1,296 +1,153 @@
 import { auth, db } from "../../../backend/firebase/config.js";
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { collection, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-/* =========================================================
-   NAVEGAÇÃO
-   ========================================================= */
-window.Painel = function () {
-  window.location.href = "/pages/Aluno/Turma/index.html";
-};
-window.MeuGrupo = function () {
-  window.location.href = "/pages/Aluno/Grupos/gp.chat.html";
-};
-window.Forum = function () {
-  window.location.href = "/pages/Aluno/Forum/Fo.html";
-};
-window.Inspiracoes = function () {
-  window.location.href = "/pages/Aluno/Inspiracoes/Inspiracoes.html";
-};
-window.Configuracoes = function () {
-  window.location.href = "/pages/Aluno/Configuracoes/Config.html";
-};
-window.Voltar = function () {
-  signOut(auth)
-    .then(() => {
-      window.location.href = "/pages/Auth/Login/Log-aluno.html";
-    })
-    .catch((err) => {
-      console.error("Erro ao sair:", err);
-      window.location.href = "/pages/Auth/Login/Log-aluno.html";
-    });
-};
+let stopGroups = null;
+let stopAssignments = [];
+let groups = [];
+let studentUid = null;
+const statusInfo = (status = "no-prazo") => ({
+  atraso: ["Atrasado", "status-atraso"],
+  atencao: ["Atenção", "status-atencao"],
+  "no-prazo": ["No prazo", "status-prazo"],
+}[status] || [status, "status-prazo"]);
 
-/* =========================================================
-   ESTADO DO ALUNO
-   ========================================================= */
-let dadosAluno = null;
-
-/* =========================================================
-   AUTENTICAÇÃO E SESSÃO (Firebase)
-   ========================================================= */
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    try {
-      const userDoc = await getDoc(doc(db, "usuarios", user.uid));
-      if (userDoc.exists() && userDoc.data().tipo === "aluno") {
-        dadosAluno = userDoc.data();
-        document.body.classList.add("pronto");   // <-- libera a página
-        console.log("Aluno autenticado:", user.uid);
-        carregarEstadoSistema(user.uid);
-      } else {
-        alert("Acesso negado: Esta área é exclusiva para alunos.");
-        window.location.href = "/pages/Auth/Login/Log-aluno.html";
-      }
-    } catch (err) {
-      console.error("Erro ao carregar dados do aluno:", err);
-      document.body.classList.add("pronto");   // libera mesmo em erro
-    }
-  } else {
-    window.location.href = "/pages/Auth/Login/Log-aluno.html";
-  }
-});
-
-async function carregarEstadoSistema(uid) {
-  const userDocRef = doc(db, "usuarios", uid);
-
-  onSnapshot(userDocRef, (docSnap) => {
-    if (docSnap.exists()) {
-      const userData = docSnap.data();
-      aplicarAcessibilidade(userData);
-      atualizarInterfacePerfil(userData);
-    }
-  });
+function appendText(parent, tag, value, className = "") {
+  const element = document.createElement(tag);
+  element.textContent = value || "";
+  if (className) element.className = className;
+  parent.appendChild(element);
+  return element;
 }
 
-/* =========================================================
-   ACESSIBILIDADE
-   ========================================================= */
-function aplicarAcessibilidade(data) {
-  if (data.configuracoes) {
-    const { tema, tamanhoFonte, tipoFonte } = data.configuracoes;
-    if (tema) document.body.className = tema;
-    if (tamanhoFonte) document.documentElement.style.fontSize = tamanhoFonte + "px";
-    if (tipoFonte) document.body.style.fontFamily = tipoFonte;
-  }
-}
-
-/* =========================================================
-   INTERFACE DE PERFIL
-   ========================================================= */
-function atualizarInterfacePerfil(data) {
-  const nomeEl = document.querySelector(".Usuario h4");
-  const cursoEl = document.querySelector(".Usuario h5");
-  const iniciaisEl = document.querySelector("#foto span");
-  const tituloTurmaEl = document.querySelector(".T1 h3 span");
-
-  if (nomeEl) nomeEl.textContent = data.nome || "Usuário";
-  if (cursoEl) cursoEl.textContent = data.curso || "Sem Curso";
-  if (iniciaisEl) iniciaisEl.textContent = data.iniciais || "??";
-  if (tituloTurmaEl && data.codigoSala) tituloTurmaEl.textContent = data.codigoSala;
-}
-
-/* =========================================================
-   GRUPOS - FUNCAO DE STATUS
-   ========================================================= */
-
-function infoStatus(status) {
-    switch (status) {
-        case "atencao":
-            return { label: "Atenção", classe: "status-atencao" };
-        case "atraso":
-            return { label: "Atrasado", classe: "status-atraso" };
-        default:
-            return { label: "No prazo", classe: "status-prazo" };
-    }
-}
-
-/* =========================================================
-   GRUPOS - LOCALSTORAGE
-   ========================================================= */
-const CHAVE_STORAGE = "grupos_turma_2026.1";
-
-window.abrirModalCriarGrupo = function () {
-  document.getElementById("modal-criar-grupo").style.display = "flex";
-};
-
-window.fecharModalCriarGrupo = function () {
-  document.getElementById("modal-criar-grupo").style.display = "none";
-};
-
-function obterGrupos() {
-  const dados = localStorage.getItem(CHAVE_STORAGE);
-  return dados ? JSON.parse(dados) : [];
-}
-
-function salvarGrupos(grupos) {
-  localStorage.setItem(CHAVE_STORAGE, JSON.stringify(grupos));
-}
-
-/* ---------- CRIAR GRUPO ---------- */
-window.criarGrupo = function (event) {
-  event.preventDefault();
-
-  const nome = document.getElementById("inp-nome-grupo").value.trim();
-  const descricao = document.getElementById("inp-descricao").value.trim();
-  const tema = document.getElementById("inp-tema").value.trim();
-  const integrantesTexto = document.getElementById("inp-integrantes").value.trim();
-  const orientador = document.getElementById("inp-orientador").value.trim();
-
-  if (!nome || !descricao || !tema || !integrantesTexto) {
-    alert("Preencha todos os campos obrigatórios.");
-    return;
-  }
-
-  const integrantes = integrantesTexto
-    .split(",")
-    .map((i) => i.trim())
-    .filter((i) => i !== "");
-
-  if (integrantes.length < 5) {
-    alert("O grupo precisa ter no mínimo 5 integrantes.");
-    return;
-  }
-
-  const novoGrupo = {
-    id: Date.now(),
-    nome,
-    descricao,
-    tema,
-    integrantes,
-    orientador: orientador || "A definir",
-    status: "no-prazo",
-    criadoEm: new Date().toISOString(),
-  };
-
-  const grupos = obterGrupos();
-  grupos.push(novoGrupo);
-  salvarGrupos(grupos);
-
-  alert("Grupo criado com sucesso!");
-  fecharModalCriarGrupo();
-  document.getElementById("form-criar-grupo").reset();
-  carregarGrupos();
-};
-
-/* ---------- CARREGAR/RENDERIZAR GRUPOS ---------- */
-function carregarGrupos() {
+function renderGroups() {
   const container = document.getElementById("GT");
   if (!container) return;
+  container.replaceChildren();
+  const counts = { total: groups.length, prazo: 0, atencao: 0, atraso: 0 };
+  groups.forEach((group, index) => {
+    const [label, className] = statusInfo(group.status);
+    if (group.status === "atraso") counts.atraso++;
+    else if (group.status === "atencao") counts.atencao++;
+    else counts.prazo++;
+    const card = document.createElement("article");
+    card.className = "grupo-card-aluno";
+    card.id = "Grupos-Turma";
+    appendText(card, "h2", `Grupo ${index + 1} · ${group.nome || group.nomeProjeto || "Sem nome"}`);
+    appendText(card, "h3", group.tema || group.proposta || "Tema não informado");
+    appendText(card, "p", group.descricao || "Proposta não informada.");
+    appendText(card, "p", `Integrantes: ${(group.integrantes || group.nomesMembros || []).join(", ") || "Não informados"}`);
+    appendText(card, "p", `Orientador: ${group.orientador || "A definir"}`);
+    appendText(card, "strong", label, className);
+    container.appendChild(card);
+  });
+  if (!groups.length) appendText(container, "p", "Nenhum grupo foi associado à sua turma ainda.");
+  document.getElementById("stat-total").textContent = counts.total;
+  document.getElementById("stat-prazo").textContent = counts.prazo;
+  document.getElementById("stat-atencao").textContent = counts.atencao;
+  document.getElementById("stat-atraso").textContent = counts.atraso;
+  renderAssignments();
+  updateArrows();
+}
 
-  const grupos = obterGrupos();
-
-  atualizarEstatisticas(grupos);
-
-  if (grupos.length === 0) {
-    container.innerHTML =
-      '<p style="color:#7a8699; margin-left:8px;">Nenhum grupo cadastrado ainda.</p>';
-    atualizarSetas();
+function renderAssignments() {
+  stopAssignments.forEach((stop) => stop());
+  stopAssignments = [];
+  const list = document.getElementById("lista-atividades");
+  if (!list) return;
+  list.replaceChildren();
+  let assignmentsByGroup = new Map();
+  let completedByGroup = new Map();
+  const renderList = () => {
+    list.replaceChildren();
+    const assignments = [...assignmentsByGroup.values()].flat();
+    if (!assignments.length) {
+      appendText(list, "p", "Nenhuma atividade foi publicada para seus grupos ainda.");
+      return;
+    }
+    assignments.forEach(({ task, taskId, group }) => {
+      const card = document.createElement("article");
+      card.className = "atividade-painel";
+      appendText(card, "h3", task.titulo || "Atividade do grupo");
+      appendText(card, "p", `${group.nome || "Grupo"} · ${task.descricao || "Sem descrição"}`);
+      const due = task.dataLimite?.toDate?.() || (task.dataLimite ? new Date(task.dataLimite) : null);
+      const isOverdue = due ? due.getTime() < Date.now() : task.status === "atraso";
+      const submitted = completedByGroup.get(group.id)?.has(taskId);
+      const deadline = due ? `Prazo: ${due.toLocaleDateString("pt-BR")}` : "Prazo não informado";
+      appendText(card, "p", `${deadline}${submitted ? " · Entregue" : isOverdue ? " · Atrasada" : " · Pendente"}`);
+      list.appendChild(card);
+    });
+  };
+  const assignmentGroups = groups.filter((group) => (group.membros || []).includes(studentUid));
+  if (!assignmentGroups.length) {
+    appendText(list, "p", "As atividades aparecerão aqui quando seus grupos forem associados.");
+    updateProgress();
     return;
   }
-
-  container.innerHTML = "";
-  let index = 1;
-
-  grupos.forEach((g) => {
-    const info = infoStatus(g.status);
-    const card = document.createElement("div");
-    card.id = "Grupos-Turma";
-    card.innerHTML = `
-      <div id="titulo">
-        <h1>Grupo ${index}</h1>
-        <h2>${g.tema}</h2>
-      </div>
-      <h3>${g.nome}</h3>
-      <p>${g.descricao}</p>
-      <div id="interior-gt">
-        ${g.integrantes
-          .map(
-            (nome, i) => `
-            <div id="bloco-interior">
-              <div id="bolinha" ${i === 0 ? 'style="background-color:#ec3c3c;"' : ""}></div>
-              <h1>${nome}</h1>
-            </div>
-          `
-          )
-          .join("")}
-        <div id="linhav"></div>
-        <div id="bloco-inferior">
-          <h1 class="${info.classe}">${info.label}</h1>
-          <h2>${g.orientador}</h2>
-    `;
-    container.appendChild(card);
-    index++;
+  assignmentGroups.forEach((group) => {
+    const stop = onSnapshot(collection(db, "grupos", group.id, "entregas"), (snapshot) => {
+      assignmentsByGroup.set(group.id, snapshot.docs.map((taskDoc) => ({ taskId: taskDoc.id, task: taskDoc.data(), group })).filter(({ task }) => task.tipo !== "envio"));
+      renderList();
+      updateProgress();
+    }, (error) => {
+      console.error("Não foi possível carregar atividades:", error);
+    });
+    stopAssignments.push(stop);
+    const stopSubmissions = onSnapshot(collection(db, "grupos", group.id, "submissoes"), (snapshot) => {
+      completedByGroup.set(group.id, new Set(snapshot.docs.map((item) => item.data()).filter((item) => item.alunoUid === studentUid).map((item) => item.atividadeId).filter(Boolean)));
+      renderList();
+      updateProgress();
+    }, (error) => console.error("Não foi possível carregar o progresso das entregas:", error));
+    stopAssignments.push(stopSubmissions);
   });
 
-  setTimeout(atualizarSetas, 50);
+  function updateProgress() {
+    const all = [...assignmentsByGroup.values()].flat();
+    const completed = all.filter(({ taskId, group }) => completedByGroup.get(group.id)?.has(taskId)).length;
+    const percent = all.length ? Math.round(completed / all.length * 100) : 0;
+    const progressLabel = document.querySelector("#Prog-int h2");
+    const progressBar = document.getElementById("barra-progresso2");
+    if (progressLabel) progressLabel.textContent = `${percent}%`;
+    if (progressBar) progressBar.style.width = `${percent}%`;
+  }
 }
 
-/* ---------- ESTATÍSTICAS ---------- */
-function atualizarEstatisticas(grupos) {
-  const total = grupos.length;
-  const noPrazo = grupos.filter((g) => g.status === "no-prazo").length;
-  const atencao = grupos.filter((g) => g.status === "atencao").length;
-  const atraso = grupos.filter((g) => g.status === "atraso").length;
-
-  const elTotal = document.getElementById("stat-total");
-  const elPrazo = document.getElementById("stat-prazo");
-  const elAtencao = document.getElementById("stat-atencao");
-  const elAtraso = document.getElementById("stat-atraso");
-
-  if (elTotal) elTotal.textContent = total;
-  if (elPrazo) elPrazo.textContent = noPrazo;
-  if (elAtencao) elAtencao.textContent = atencao;
-  if (elAtraso) elAtraso.textContent = atraso;
+function updateArrows() {
+  const container = document.getElementById("GT");
+  const left = document.getElementById("seta-esq");
+  const right = document.getElementById("seta-dir");
+  if (!container || !left || !right) return;
+  const max = container.scrollWidth - container.clientWidth;
+  left.disabled = container.scrollLeft <= 2;
+  right.disabled = container.scrollLeft >= max - 2;
 }
 
-/* ---------- SETAS ---------- */
-window.scrollGrupos = function (direcao) {
-  const gt = document.getElementById("GT");
-  if (!gt) return;
-
-  const card = gt.querySelector("#Grupos-Turma");
-  if (!card) return;
-
-  const gap = 20;
-  const passo = card.offsetWidth + gap;
-
-  gt.scrollBy({
-    left: passo * direcao,
-    behavior: "smooth",
-  });
+window.scrollGrupos = (direction) => {
+  const container = document.getElementById("GT");
+  const card = container?.querySelector(".grupo-card-aluno");
+  if (container && card) container.scrollBy({ left: (card.offsetWidth + 20) * direction, behavior: "smooth" });
 };
 
-function atualizarSetas() {
-  const gt = document.getElementById("GT");
-  const setaEsq = document.getElementById("seta-esq");
-  const setaDir = document.getElementById("seta-dir");
-  if (!gt || !setaEsq || !setaDir) return;
-
-  const maxScroll = gt.scrollWidth - gt.clientWidth;
-  setaEsq.disabled = gt.scrollLeft <= 2;
-  setaDir.disabled = gt.scrollLeft >= maxScroll - 2;
-}
-
-/* =========================================================
-   INICIALIZAÇÃO
-   ========================================================= */
-document.addEventListener("DOMContentLoaded", function () {
-  carregarGrupos();
-
-  const gt = document.getElementById("GT");
-  if (gt) {
-    gt.addEventListener("scroll", atualizarSetas);
-    window.addEventListener("resize", atualizarSetas);
+window.alunoReady?.then((session) => {
+  if (!session) return;
+  studentUid = session.user.uid;
+  const room = session.profile.codigoSala;
+  if (!room) {
+    document.getElementById("GT").textContent = "Seu perfil ainda não está associado a uma turma.";
+    return;
   }
+  stopGroups?.();
+  stopGroups = onSnapshot(
+    query(collection(db, "grupos"), where("codigoSala", "==", room)),
+    (snapshot) => {
+      groups = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
+      renderGroups();
+    },
+    (error) => {
+      console.error("Não foi possível carregar os grupos:", error);
+      document.getElementById("GT").textContent = "Não foi possível carregar os grupos.";
+    },
+  );
 });
+
+document.getElementById("GT")?.addEventListener("scroll", updateArrows);
+window.addEventListener("resize", updateArrows);

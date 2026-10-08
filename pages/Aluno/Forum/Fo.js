@@ -1,96 +1,68 @@
 import { auth, db } from "../../../backend/firebase/config.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import {
-  addDoc,
-  collection,
-  doc,
-  getDoc,
-  onSnapshot,
-  orderBy,
-  query,
-  serverTimestamp,
-  where,
-} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { addDoc, collection, onSnapshot, query, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-let perfilRef = null;
-
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    location.href = "../../auth/Login/Log-aluno.html";
-    return;
-  }
-  perfilRef = doc(db, "usuarios", user.uid);
-  const snap = await getDoc(perfilRef);
-  if (!snap.exists() || snap.data().tipo !== "aluno") {
-    location.href = "../../auth/Login/Log-aluno.html";
-    return;
-  }
-  const dados = snap.data();
-  const foto = document.querySelector("#foto span");
-  const nome = document.querySelector("#NomeUC h4");
-  const curso = document.querySelector("#NomeUC h5");
-  if (foto) foto.textContent = dados.iniciais || "";
-  if (nome) nome.textContent = dados.nome || "";
-  if (curso) curso.textContent = dados.curso || "";
-
-  escutarAvisos(dados.codigoSala || "geral");
-  });
-
+let aluno;
+let pararDeOuvir;
 window.abrirBloco = (id) => {
   const bloco = document.getElementById(id);
-  bloco.style.display = bloco.style.display === "block" ? "none" : "block";
+  if (bloco) bloco.style.display = bloco.style.display === "block" ? "none" : "block";
 };
 window.enviarFormulario = async (event) => {
   event.preventDefault();
-  if (!perfilRef) return;
+  if (!aluno || !auth.currentUser) return alert("Sua sessão não está pronta. Atualize a página.");
   const titulo = document.getElementById("titulo-duvida").value.trim();
   const conteudo = document.getElementById("duvida").value.trim();
-  if (!titulo || !conteudo) {
-    alert("Preencha o tema e a dúvida.");
-    return;
-  }
+  if (!titulo || !conteudo) return alert("Preencha o tema e a dúvida.");
+  const botao = event.submitter;
+  if (botao) botao.disabled = true;
   try {
     await addDoc(collection(db, "duvidas"), {
-      titulo,
-      conteudo,
-      autor: perfilRef.nome,
-      autorUid: perfilRef.uid,
-      codigoSala: perfilRef.codigoSala || "geral",
+      titulo, conteudo, autor: aluno.nome || auth.currentUser.email,
+      autorUid: auth.currentUser.uid, codigoSala: aluno.codigoSala || "geral",
       data: serverTimestamp(),
     });
     event.target.reset();
     document.getElementById("bloco-nova-duvida").style.display = "none";
   } catch (error) {
-    console.error(error);
+    console.error("Erro ao publicar dúvida:", error);
     alert("Não foi possível publicar a dúvida. Tente novamente.");
+  } finally {
+    if (botao) botao.disabled = false;
   }
 };
 
-function carregarDuvidas(codigoSala) {
+function escutarDuvidas(codigoSala) {
   const quadro = document.getElementById("quadro");
-  onSnapshot(
-    query(collection(db, "duvidas"), where("codigoSala", "==", codigoSala)),
-    (snap) => {
-      quadro.replaceChildren();
-      const itens = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-      itens.sort(
-        (a, b) => (b.data?.toMillis?.() || 0) - (a.data?.toMillis?.() || 0),
-      );
-      for (const item of itens) {
-        const card = document.createElement("article");
-        const titulo = document.createElement("h2");
-        titulo.textContent = item.titulo || "Dúvida";
-        const autor = document.createElement("h3");
-        autor.textContent = `${item.autor || "Aluno"}:`;
-        const texto = document.createElement("p");
-        texto.textContent = item.conteudo || "";
-        card.append(titulo, autor, texto);
-        quadro.append(card);
-      }
-    },
-    (error) => {
-      console.error(error);
-      quadro.textContent = "Não foi possível carregar as dúvidas.";
-    },
-  );
+  if (!quadro) return;
+  pararDeOuvir?.();
+  pararDeOuvir = onSnapshot(query(collection(db, "duvidas"), where("codigoSala", "==", codigoSala)), (snapshot) => {
+    quadro.replaceChildren();
+    if (snapshot.empty) {
+      const vazio = document.createElement("p");
+      vazio.textContent = "Ainda não há dúvidas publicadas nesta turma.";
+      quadro.append(vazio);
+      return;
+    }
+    const duvidas = snapshot.docs.map((item) => item.data()).sort((a, b) => (b.data?.toMillis?.() || 0) - (a.data?.toMillis?.() || 0));
+    duvidas.forEach((item) => {
+      const card = document.createElement("article");
+      const titulo = document.createElement("h2");
+      titulo.textContent = item.titulo || "Dúvida";
+      const autor = document.createElement("h3");
+      autor.textContent = `${item.autor || "Aluno"}:`;
+      const conteudo = document.createElement("p");
+      conteudo.textContent = item.conteudo || "";
+      card.append(titulo, autor, conteudo);
+      quadro.append(card);
+    });
+  }, (error) => {
+    console.error("Erro ao carregar dúvidas:", error);
+    quadro.textContent = "Não foi possível carregar as dúvidas.";
+  });
 }
+
+window.alunoReady?.then((session) => {
+  if (!session) return;
+  aluno = session.profile;
+  escutarDuvidas(aluno.codigoSala || "geral");
+});

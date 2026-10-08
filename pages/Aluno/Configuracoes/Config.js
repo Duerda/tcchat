@@ -1,8 +1,6 @@
-import { auth, db } from "../../../backend/firebase/config.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { db } from "../../../backend/firebase/config.js";
 import {
   doc,
-  getDoc,
   updateDoc,
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
@@ -12,18 +10,10 @@ let preferencias = {
   tamanhoFonte: 16,
   tipoFonte: "'DM Sans', sans-serif",
 };
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    location.href = "../../auth/Login/Log-aluno.html";
-    return;
-  }
-  perfilRef = doc(db, "usuarios", user.uid);
-  const snap = await getDoc(perfilRef);
-  if (!snap.exists() || snap.data().tipo !== "aluno") {
-    location.href = "../../auth/Login/Log-aluno.html";
-    return;
-  }
-  const dados = snap.data();
+window.alunoReady?.then((session) => {
+  if (!session) return;
+  perfilRef = doc(db, "usuarios", session.user.uid);
+  const dados = session.profile;
   const foto = document.querySelector("#foto span");
   const nome = document.querySelector("#NomeUC h4");
   const curso = document.querySelector("#NomeUC h5");
@@ -31,7 +21,6 @@ onAuthStateChanged(auth, async (user) => {
   if (nome) nome.textContent = dados.nome || "";
   if (curso) curso.textContent = dados.curso || "";
 
-  escutarAvisos(dados.codigoSala || "geral");
 });
 
 function aplicarPreferencias() {
@@ -92,7 +81,3 @@ window.Painel = () => (location.href = "../Turma/index.html");
 window.Forum = () => (location.href = "../Forum/Fo.html");
 window.Inspiracoes = () => (location.href = "../Inspiracoes/Inspiracoes.html");
 window.Configuracoes = () => (location.href = "Config.html");
-window.Voltar = async () => {
-  await auth.signOut();
-  location.href = "../../auth/Login/Log-aluno.html";
-};
