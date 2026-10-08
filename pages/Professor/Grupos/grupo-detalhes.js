@@ -332,21 +332,9 @@ function renderAba(aba) {
 
 
     if (aba === "arquivo") {
-
-        painel.innerHTML = `
-
-            <div class="arquivo-vazio">
-
-                <h2>Arquivos do grupo</h2>
-
-                <p>
-                    Nenhum arquivo disponível.
-                </p>
-
-            </div>
-
-        `;
-
+        painel.innerHTML = `<div class="arquivo-vazio"><h2>Arquivos do grupo</h2><div id="listaArquivos"></div><input id="nomeArquivo" placeholder="Nome do arquivo"><input id="urlArquivo" type="url" placeholder="URL do arquivo"><button id="btnSalvarArquivo">Adicionar arquivo</button></div>`;
+        carregarArquivos();
+        configurarSalvarArquivo();
         return;
     }
 
@@ -354,23 +342,9 @@ function renderAba(aba) {
 
 
     if (aba === "historico") {
-
-        painel.innerHTML = `
-
-            <div class="historico-vazio">
-
-                <h2>
-                    Histórico de entregas
-                </h2>
-
-                <p>
-                    Nenhuma entrega registrada.
-                </p>
-
-            </div>
-
-        `;
-
+        painel.innerHTML = `<div class="historico-vazio"><h2>Histórico de entregas</h2><div id="listaEntregas"></div><input id="tituloEntrega" placeholder="Título da entrega"><textarea id="descricaoEntrega" placeholder="Observação"></textarea><button id="btnSalvarEntrega">Registrar entrega</button></div>`;
+        carregarEntregas();
+        configurarSalvarEntrega();
         return;
     }
 
@@ -768,6 +742,62 @@ function carregarAnotacoes() {
 }
 
 
+
+function carregarArquivos() {
+    const lista = document.getElementById("listaArquivos");
+    if (!lista) return;
+    onSnapshot(collection(db, "grupos", grupoId, "arquivos"), (snapshot) => {
+        lista.innerHTML = "";
+        if (snapshot.empty) lista.textContent = "Nenhum arquivo cadastrado.";
+        snapshot.forEach((arquivoDoc) => {
+            const arquivo = arquivoDoc.data();
+            const link = document.createElement("a");
+            link.href = arquivo.url;
+            link.target = "_blank";
+            link.rel = "noopener noreferrer";
+            link.textContent = arquivo.nome || arquivo.url;
+            lista.appendChild(link);
+            lista.appendChild(document.createElement("br"));
+        });
+    });
+}
+
+function configurarSalvarArquivo() {
+    document.getElementById("btnSalvarArquivo")?.addEventListener("click", async () => {
+        const nome = document.getElementById("nomeArquivo").value.trim();
+        const url = document.getElementById("urlArquivo").value.trim();
+        if (!nome || !url) return alert("Informe o nome e a URL do arquivo.");
+        await addDoc(collection(db, "grupos", grupoId, "arquivos"), { nome, url, uid: usuarioAtual.uid, criadoEm: serverTimestamp() });
+        document.getElementById("nomeArquivo").value = "";
+        document.getElementById("urlArquivo").value = "";
+    });
+}
+
+function carregarEntregas() {
+    const lista = document.getElementById("listaEntregas");
+    if (!lista) return;
+    onSnapshot(collection(db, "grupos", grupoId, "entregas"), (snapshot) => {
+        lista.innerHTML = "";
+        if (snapshot.empty) lista.textContent = "Nenhuma entrega registrada.";
+        snapshot.forEach((entregaDoc) => {
+            const entrega = entregaDoc.data();
+            const item = document.createElement("p");
+            item.textContent = `${entrega.titulo || "Entrega"}: ${entrega.descricao || ""}`;
+            lista.appendChild(item);
+        });
+    });
+}
+
+function configurarSalvarEntrega() {
+    document.getElementById("btnSalvarEntrega")?.addEventListener("click", async () => {
+        const titulo = document.getElementById("tituloEntrega").value.trim();
+        const descricao = document.getElementById("descricaoEntrega").value.trim();
+        if (!titulo) return alert("Informe o título da entrega.");
+        await addDoc(collection(db, "grupos", grupoId, "entregas"), { titulo, descricao, uid: usuarioAtual.uid, criadoEm: serverTimestamp() });
+        document.getElementById("tituloEntrega").value = "";
+        document.getElementById("descricaoEntrega").value = "";
+    });
+}
 
 function escapeHtml(valor) {
 

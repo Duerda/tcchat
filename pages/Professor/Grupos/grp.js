@@ -1,621 +1,91 @@
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  onSnapshot,
-  query,
-  updateDoc,
-  where
-} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-
-import { auth, db } from "/backend/firebase/config.js";
-
-window.Voltar = () => {
-
-  auth
-    .signOut()
-    .then(() => {
-
-      window.location.href =
-        "/pages/auth/Login/Log-aluno.html";
-
-    });
-
-};
-
-
-window.VisaoGeral = () => {
-
-  window.location.href =
-    "/pages/Professor/Index.html";
-
-};
-
-
-window.Biblioteca = () => {
-
-  window.location.href =
-    "/pages/Professor/Biblioteca/Bib.html";
-
-};
-
-
-window.Avaliacoes = () => {
-
-  window.location.href =
-    "/pages/Professor/Avaliacoes/ava.html";
-
-};
-
-
-window.Grupos = () => {
-
-  window.location.href =
-    "grp.html";
-
-};
-
-
-window.Forum = () => {
-
-  window.location.href =
-    "/pages/Professor/Forum/Avisos.html";
-
-};
-
-
-window.Configuracoes = () => {
-
-  window.location.href =
-    "/pages/Professor/Configuracoes/Config.html";
-
-};
-
-
-let usuarioAtual = null;
-
-onAuthStateChanged(
-  auth,
-  async (user) => {
-
-    if (user) {
-
-      const userDoc =
-        await getDoc(
-          doc(db, "usuarios", user.uid)
-        );
-
-
-      const tipo =
-        userDoc.exists()
-          ? userDoc.data().tipo
-          : null;
-
-
-      if (
-        tipo === "professor" ||
-        tipo === "coordenador"
-      ) {
-
-        usuarioAtual = user;
-
-      } else {
-
-        alert(
-          "Acesso negado: Esta área é exclusiva para professores e coordenadores."
-        );
-
-
-        window.location.href =
-          "/pages/auth/Login/Log-aluno.html";
-
-      }
-
-
-    } else {
-
-      window.location.href =
-        "/pages/auth/Login/Log-aluno.html";
-
-    }
-
-  }
-);
-
-
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
-
-    const listaGrupos =
-      document.getElementById(
-        "listaGrupos"
-      );
-
-
-    if (!listaGrupos) {
-      return;
-    }
-
-
-    listaGrupos.addEventListener(
-      "click",
-      (e) => {
-
-        // Procura se clicou no botão Editar
-
-        const btnEditar =
-          e.target.closest(
-            ".btnEditar"
-          );
-
-
-        // Procura se clicou no botão Excluir
-
-        const btnExcluir =
-          e.target.closest(
-            ".btnExcluir"
-          );
-
-
-        // Procura o card inteiro
-
-        const grupoCard =
-          e.target.closest(
-            ".GT"
-          );
-
-
-
-        if (
-          grupoCard &&
-          !btnEditar &&
-          !btnExcluir
-        ) {
-
-          const id =
-            grupoCard.dataset.id;
-
-
-          if (id) {
-
-            window.location.href =
-              `grupo-detalhes.html?id=${encodeURIComponent(id)}`;
-
-          }
-
-
-          return;
-
-        }
-
-
-        if (btnEditar) {
-
-          const id =
-            btnEditar.dataset.id;
-
-
-          editarGrupo(id);
-
-          return;
-
-        }
-
-
-        if (btnExcluir) {
-
-          const id =
-            btnExcluir.dataset.id;
-
-
-          excluirGrupo(id);
-
-          return;
-
-        }
-
-      }
-    );
-
-  }
-);
-
-function carregarGrupos() {
-
-  const listaGrupos =
-    document.getElementById(
-      "listaGrupos"
-    );
-
-
-  if (!listaGrupos) {
+import { collection, deleteDoc, doc, getDoc, onSnapshot, query, updateDoc, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { db } from "/backend/firebase/config.js";
+import { fillHeader, logout, navigate, requireProfessor } from "/backend/firebase/professor.js";
+
+window.Voltar = logout;
+window.VisaoGeral = () => navigate("/pages/Professor/Index.html");
+window.Biblioteca = () => navigate("/pages/Professor/Biblioteca/Bib.html");
+window.Avaliacoes = () => navigate("/pages/Professor/Avaliacoes/ava.html");
+window.Grupos = () => navigate("grp.html");
+window.Forum = () => navigate("/pages/Professor/Forum/Avisos.html");
+window.Configuracoes = () => navigate("/pages/Professor/Configuracoes/Config.html");
+
+let currentProfile;
+const list = document.getElementById("listaGrupos");
+
+function escapeHtml(value = "") {
+  return String(value).replace(/[&<>\"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[char]));
+}
+
+function renderGroup(groupDoc) {
+  const group = groupDoc.data();
+  const card = document.createElement("article");
+  card.className = "GT";
+  card.dataset.id = groupDoc.id;
+  card.innerHTML = `<div class="sub-title-gp"><div style="display:flex;gap:220px"><h3>${escapeHtml(group.codigoSala || "")}</h3><h1>Grupo</h1></div><h2>${escapeHtml(group.nome || "Sem nome")}</h2><p>${escapeHtml(group.descricao || "")}</p><div class="GT-int"><hr class="linha-decorativa"><div style="display:flex"><div class="BL"></div><p>${Array.isArray(group.membros) ? group.membros.length : 0} membro(s)</p></div></div><button class="btnEditar" data-id="${groupDoc.id}">Editar</button><button class="btnExcluir" data-id="${groupDoc.id}">Excluir</button></div>`;
+  return card;
+}
+
+function listenGroups(profile) {
+  if (!list) return;
+  if (!profile.codigoSala) {
+    list.innerHTML = "<p>Seu perfil não possui uma sala vinculada.</p>";
     return;
   }
-
-
-  const q =
-    query(
-      collection(db, "grupos")
-    );
-
-
-  onSnapshot(
-    q,
-    (snapshot) => {
-
-      listaGrupos.innerHTML = "";
-
-
-      snapshot.forEach(
-        (grupoDoc) => {
-
-          const grupo =
-            grupoDoc.data();
-
-
-          const div =
-            document.createElement(
-              "div"
-            );
-
-
-          div.innerHTML = `
-
-            <div
-              class="GT"
-              data-id="${grupoDoc.id}"
-            >
-
-              <div class="sub-title-gp">
-
-
-                <div
-                  style="
-                    display: flex;
-                    gap: 220px;
-                  "
-                >
-
-                  <h3>
-                    ${grupo.codigoSala || ""}
-                  </h3>
-
-
-                  <h1>
-                    Grupo
-                  </h1>
-
-                </div>
-
-
-                <h2>
-                  ${grupo.nome || "Sem nome"}
-                </h2>
-
-
-                <p>
-                  ${grupo.descricao || ""}
-                </p>
-
-
-                <div class="GT-int">
-
-
-                  <hr
-                    class="linha-decorativa"
-                  />
-
-
-                  <div
-                    style="
-                      display: flex;
-                    "
-                  >
-
-                    <div
-                      class="BL"
-                    ></div>
-
-
-                    <p>
-                      Grupo ainda sem membros
-                    </p>
-
-                  </div>
-
-
-                </div>
-
-
-                <button
-                  class="btnEditar"
-                  data-id="${grupoDoc.id}"
-                >
-                  Editar
-                </button>
-
-
-                <button
-                  class="btnExcluir"
-                  data-id="${grupoDoc.id}"
-                >
-                  Excluir
-                </button>
-
-
-              </div>
-
-            </div>
-
-          `;
-
-
-          listaGrupos.appendChild(
-            div
-          );
-
-        }
-      );
-
+  const groupsQuery = query(collection(db, "grupos"), where("codigoSala", "==", profile.codigoSala));
+  onSnapshot(groupsQuery, (snapshot) => {
+    list.innerHTML = "";
+    if (snapshot.empty) {
+      list.innerHTML = "<p>Nenhum grupo encontrado para sua sala.</p>";
+      return;
     }
-  );
-
+    snapshot.forEach((groupDoc) => list.appendChild(renderGroup(groupDoc)));
+  }, (error) => {
+    console.error("Erro ao carregar grupos:", error);
+    list.innerHTML = "<p>Não foi possível carregar os grupos.</p>";
+  });
 }
 
-
-carregarGrupos();
-
-
-
-async function excluirGrupo(id) {
-
-  const confirmar =
-    confirm(
-      "Tem certeza que deseja excluir este grupo?"
-    );
-
-
-  if (!confirmar) {
-    return;
-  }
-
-
+async function editGroup(id) {
+  const ref = doc(db, "grupos", id);
+  const groupSnapshot = await getDoc(ref);
+  if (!groupSnapshot.exists()) return alert("Grupo não encontrado.");
+  const group = groupSnapshot.data();
+  const name = prompt("Nome do grupo:", group.nome || "");
+  if (name === null) return;
+  const description = prompt("Descrição do grupo:", group.descricao || "");
+  if (description === null) return;
   try {
-
-    await deleteDoc(
-      doc(db, "grupos", id)
-    );
-
-
-    alert(
-      "Grupo excluído com sucesso!"
-    );
-
-
-  } catch (erro) {
-
-    console.error(
-      "Erro ao excluir:",
-      erro
-    );
-
-
-    alert(
-      "Erro ao excluir o grupo."
-    );
-
+    await updateDoc(ref, { nome: name.trim() || group.nome || "Sem nome", descricao: description.trim() });
+    alert("Grupo atualizado com sucesso.");
+  } catch (error) {
+    console.error(error);
+    alert("Não foi possível atualizar o grupo.");
   }
-
 }
 
-
-
-async function editarGrupo(id) {
-
-  const grupoRef =
-    doc(db, "grupos", id);
-
-
+async function deleteGroup(id) {
+  if (!confirm("Tem certeza que deseja excluir este grupo?")) return;
   try {
-
-    const grupoDoc =
-      await getDoc(
-        grupoRef
-      );
-
-
-    if (!grupoDoc.exists()) {
-
-      alert(
-        "Grupo não encontrado."
-      );
-
-      return;
-
-    }
-
-
-    const grupo =
-      grupoDoc.data();
-
-
-    // Novo nome
-
-    const novoNome =
-      prompt(
-        "Nome do grupo:",
-        grupo.nome
-      );
-
-
-    if (novoNome === null) {
-      return;
-    }
-
-
-    // Nova descrição
-
-    const novaDescricao =
-      prompt(
-        "Descrição do grupo:",
-        grupo.descricao
-      );
-
-
-    if (novaDescricao === null) {
-      return;
-    }
-
-
-    await updateDoc(
-      grupoRef,
-      {
-
-        nome: novoNome,
-
-        descricao:
-          novaDescricao
-
-      }
-    );
-
-
-    alert(
-      "Grupo atualizado com sucesso!"
-    );
-
-
-  } catch (erro) {
-
-    console.error(
-      "Erro ao editar grupo:",
-      erro
-    );
-
-
-    alert(
-      "Erro ao editar o grupo."
-    );
-
+    await deleteDoc(doc(db, "grupos", id));
+    alert("Grupo excluído com sucesso.");
+  } catch (error) {
+    console.error(error);
+    alert("Não foi possível excluir o grupo.");
   }
-
 }
 
+list?.addEventListener("click", (event) => {
+  const editButton = event.target.closest(".btnEditar");
+  const deleteButton = event.target.closest(".btnExcluir");
+  const card = event.target.closest(".GT");
+  if (editButton) return editGroup(editButton.dataset.id);
+  if (deleteButton) return deleteGroup(deleteButton.dataset.id);
+  if (card) navigate(`grupo-detalhes.html?id=${encodeURIComponent(card.dataset.id)}`);
+});
 
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
-
-    const foto =
-      document.getElementById(
-        "foto"
-      );
-
-
-    if (!foto) {
-      return;
-    }
-
-
-    const spanIniciais =
-      foto.querySelector(
-        "span"
-      );
-
-
-    if (!spanIniciais) {
-      return;
-    }
-
-
-    const iniciaisSalvas =
-      localStorage.getItem(
-        "iniciaisUsuario"
-      );
-
-
-    spanIniciais.textContent =
-      iniciaisSalvas || "";
-
-  }
-);
-
-
-function carregarDadosPerfil(uid) {
-
-  const q =
-    query(
-      collection(db, "usuarios"),
-      where(
-        "uid",
-        "==",
-        uid
-      )
-    );
-
-
-  onSnapshot(
-    q,
-    (snapshot) => {
-
-      if (
-        snapshot.empty
-      ) {
-        return;
-      }
-
-
-      const data =
-        snapshot.docs[0].data();
-
-
-      const foto =
-        document.querySelector(
-          "#foto span"
-        );
-
-
-      const nome =
-        document.querySelector(
-          "#NomeUC h4"
-        );
-
-
-      const curso =
-        document.querySelector(
-          "#NomeUC h5"
-        );
-
-
-      if (foto) {
-
-        foto.textContent =
-          data.iniciais || "";
-
-      }
-
-
-      if (nome) {
-
-        nome.textContent =
-          data.nome || "";
-
-      }
-
-
-      if (curso) {
-
-        curso.textContent =
-          data.curso ||
-          "Coordenador/Professor";
-
-      }
-
-    }
-  );
-
-}
+requireProfessor((user, profile) => {
+  currentProfile = profile;
+  fillHeader(profile);
+  listenGroups(profile);
+});

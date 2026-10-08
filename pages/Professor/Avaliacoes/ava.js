@@ -1,116 +1,82 @@
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import {
-    addDoc,
-    collection,
-    doc,
-    getDoc,
-    onSnapshot,
-    query,
-    serverTimestamp,
-    where
-} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-import { auth, db } from "../../../backend/firebase/config.js";
+import { addDoc, collection, onSnapshot, query, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { db } from "/backend/firebase/config.js";
+import { fillHeader, logout, navigate, requireProfessor } from "/backend/firebase/professor.js";
 
-// Funções de Navegação
-window.Voltar = () => auth.signOut().then(() => window.location.href = "../../auth/Login/Log-aluno.html");
+window.Voltar = logout;
+window.VisaoGeral = () => navigate("../Index.html");
+window.Avaliacoes = () => navigate("ava.html");
+window.Biblioteca = () => navigate("../Biblioteca/Bib.html");
+window.Grupos = () => navigate("../Grupos/grp.html");
+window.Forum = () => navigate("../Forum/Avisos.html");
+window.Configuracoes = () => navigate("../Configuracoes/Config.html");
 
-window.VisaoGeral = function (){ 
-    window.location.href = "../Index.html";
-};
-window.Voltar = function(){
-    window.location.href = "../../auth/Cadastro/Cad.html";
-};
-window.Avaliacoes = function(){
-    window.location.href = "ava.html";
-};
-window.Biblioteca = function(){
-    window.location.href = "../Biblioteca/Bib.html";
-};
-window.Grupos = function(){
-    window.location.href = "../Grupos/grp.html";
-};
-window.Forum = function(){
-    window.location.href = "../Forum/Avisos.html";
-};
-window.Configuracoes = function(){
-    window.location.href = "../Configuracoes/Config.html";
-}
-
-let usuarioAtual = null;
-
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        const userDoc = await getDoc(doc(db, "usuarios", user.uid));
-        const tipo = userDoc.exists() ? userDoc.data().tipo : null;
-        if (tipo === "professor" || tipo === "coordenador") {
-            usuarioAtual = user;
-            carregarDadosPerfil(user.uid);
-        } else {
-            alert("Acesso negado: Esta área é exclusiva para professores e coordenadores.");
-            window.location.href = "../../auth/Login/Log-aluno.html";
-        }
-    } else {
-        window.location.href = "../../auth/Login/Log-aluno.html";
-    }
-});
-
-function carregarDadosPerfil(uid) {
-    const q = query(collection(db, "usuarios"), where("uid", "==", uid));
-    onSnapshot(q, (snapshot) => {
-        if (!snapshot.empty) {
-            const data = snapshot.docs[0].data();
-            document.querySelector("#foto span").textContent = data.iniciais || "";
-            document.querySelector("#NomeUC h4").textContent = data.nome || "";
-            document.querySelector("#NomeUC h5").textContent = data.curso || "Coordenador/Professor";
-        }
-    });
-}
-
-const botaoSalvar = document.getElementById("salvar-avaliacao");
-const botaoVoltar = document.getElementById("voltar-avaliacao");
-const card = document.getElementById("card-avaliacao");
-const arquivo = document.getElementById("arquivo-avaliacao");
-const nota = document.getElementById("nota");
+const groupSelect = document.getElementById("grupo-avaliacao");
+const form = document.getElementById("form-avaliacao");
 const feedback = document.getElementById("feedback");
+const note = document.getElementById("nota");
+const history = document.getElementById("historico-avaliacoes");
 
-botaoSalvar.addEventListener("click", async () => {
-    if (nota.value === "" || feedback.value === "") {
-        alert("Preencha a nota e o feedback.");
-        return;
+window.Cadastrar = () => {
+  history?.scrollIntoView({ behavior: "smooth" });
+};
+
+function renderHistory(snapshot) {
+  if (!history) return;
+  history.innerHTML = "";
+  snapshot.forEach((item) => {
+    const data = item.data();
+    const row = document.createElement("div");
+    row.className = "avaliacao-historico";
+    row.textContent = `${data.grupoNome || data.grupoId || "Grupo"}: ${data.nota}/10 — ${data.feedback || "Sem feedback"}`;
+    history.appendChild(row);
+  });
+}
+
+requireProfessor((user, profile) => {
+  fillHeader(profile);
+  if (!profile.codigoSala) return;
+  const groupsQuery = query(collection(db, "grupos"), where("codigoSala", "==", profile.codigoSala));
+  onSnapshot(groupsQuery, (snapshot) => {
+    if (groupSelect) {
+      groupSelect.innerHTML = '<option value="">Selecione o grupo</option>';
+      snapshot.forEach((item) => {
+        const option = document.createElement("option");
+        option.value = item.id;
+        option.textContent = item.data().nome || `Grupo ${item.id}`;
+        groupSelect.appendChild(option);
+      });
     }
+  });
 
-    if (!confirm("Deseja salvar a avaliação?")) return;
+  const evaluationsQuery = query(collection(db, "avaliacoes"), where("professorUid", "==", user.uid));
+  onSnapshot(evaluationsQuery, renderHistory);
 
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const groupId = groupSelect?.value;
+    const value = Number(note?.value);
+    const text = feedback?.value.trim();
+    if (!groupId || !Number.isFinite(value) || value < 0 || value > 10 || !text) {
+      alert("Selecione um grupo, informe uma nota entre 0 e 10 e escreva o feedback.");
+      return;
+    }
     try {
-        await addDoc(collection(db, "avaliacoes"), {
-            grupoId: "exemplo-grupo-1", // Em um cenário real, isso viria da seleção do grupo
-            professorUid: usuarioAtual.uid,
-            nota: parseFloat(nota.value),
-            feedback: feedback.value,
-            data: serverTimestamp()
-        });
-
-        alert("Avaliação salva com sucesso!");
-        
-        // Efeito visual (mantendo comportamento original)
-        arquivo.style.display = "none";
-        card.style.opacity = "0.7";
-        nota.disabled = true;
-        feedback.disabled = true;
-        botaoSalvar.style.display = "none";
-        botaoVoltar.style.display = "inline-block";
+      const selected = groupSelect.options[groupSelect.selectedIndex];
+      await addDoc(collection(db, "avaliacoes"), {
+        grupoId,
+        grupoNome: selected.textContent,
+        professorUid: user.uid,
+        professorNome: profile.nome || "",
+        nota: value,
+        feedback: text,
+        codigoSala: profile.codigoSala,
+        data: serverTimestamp()
+      });
+      form.reset();
+      alert("Avaliação salva no Firestore.");
     } catch (error) {
-        console.error("Erro ao salvar:", error);
+      console.error(error);
+      alert("Não foi possível salvar a avaliação.");
     }
+  });
 });
-
-botaoVoltar.addEventListener("click", () => {
-    if (!confirm("Deseja voltar a avaliação?")) return;
-    arquivo.style.display = "flex";
-    card.style.opacity = "1";
-    nota.disabled = false;
-    feedback.disabled = false;
-    botaoSalvar.style.display = "inline-block";
-    botaoVoltar.style.display = "none";
-});
-
