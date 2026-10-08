@@ -78,9 +78,16 @@
         </span>
     </div>
 
-    <form>
+    <form id="form-avaliacao">
 
         <div id="DT-CD">
+
+            <div>
+                <p style="font-size: 15px; color: #7a8699; margin-bottom: 4px;">Grupo</p>
+                <select id="grupo-avaliacao" required style="background: #0c1018; color: #e4e9f4; border: 1px solid #3d4d61; border-radius: 7px; padding: 10px; width: 100%;">
+                    <option value="">Carregando grupos...</option>
+                </select>
+            </div>
 
             <div>
                 <p style="font-size: 15px; color: #7a8699; margin-bottom: 4px;">
@@ -111,12 +118,11 @@
         </div>
 
         <!-- BOTÃO SALVAR -->
-        <input
-            type="button"
+        <button
+            type="submit"
             id="salvar-avaliacao"
-            value="Salvar Avaliação"
             class="botao-salvar"
-        >
+        >Salvar Avaliação</button>
 
         <!-- BOTÃO VOLTAR -->
         <button
@@ -128,6 +134,7 @@
         </button>
 
     </form>
+    <section id="historico-avaliacoes" aria-live="polite"></section>
 </div>
 </body>
 <script type="module" src="ava.js"></script>

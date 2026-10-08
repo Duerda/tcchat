@@ -119,21 +119,21 @@
             <p class="set-sub">Altere a senha da sua conta</p>
             <div class="campo">
                 <label>Senha atual</label>
-                <input type="password" placeholder="...">
+                <input type="password" id="senha-atual" placeholder="...">
             </div>
             <div class="campo">
                 <label>Nova senha</label>
-                <input type="password" placeholder="...">
+                <input type="password" id="senha-nova" placeholder="...">
             </div>
             <div class="campo">
                 <label>Confirmar nova senha</label>
-                <input type="password" placeholder="...">
+                <input type="password" id="senha-confirmacao" placeholder="...">
             </div>
-            <button class="btn-salvar" onclick="alert('Disponivel em breve.')">Alterar senha</button>
+            <button class="btn-salvar" onclick="alterarSenha()">Alterar senha</button>
         </div>
 
     </div>
 </div>
-<script src="Config.js"></script>
+<script type="module" src="Config.js"></script>
 </body>
 </html>
