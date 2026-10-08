@@ -42,7 +42,7 @@ window.abrirBloco = (id) => {
 };
 window.enviarFormulario = async (event) => {
   event.preventDefault();
-  if (!perfil) return;
+  if (!perfilRef) return;
   const titulo = document.getElementById("titulo-duvida").value.trim();
   const conteudo = document.getElementById("duvida").value.trim();
   if (!titulo || !conteudo) {
@@ -53,9 +53,9 @@ window.enviarFormulario = async (event) => {
     await addDoc(collection(db, "duvidas"), {
       titulo,
       conteudo,
-      autor: perfil.nome,
-      autorUid: perfil.uid,
-      codigoSala: perfil.codigoSala || "geral",
+      autor: perfilRef.nome,
+      autorUid: perfilRef.uid,
+      codigoSala: perfilRef.codigoSala || "geral",
       data: serverTimestamp(),
     });
     event.target.reset();

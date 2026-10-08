@@ -22,7 +22,7 @@ window.MeuGrupo = () => {
   location.href = "../Grupos/gp.chat.html";
 };
 
-auth.onAuthStateChanged(async (user) => {
+onAuthStateChanged(async (user) => {
   if (!user) return;
   try {
     const grupos = await getDocs(query(collection(db, "grupos"), where("membros", "array-contains", user.uid)));
@@ -41,7 +41,7 @@ window.Forum = () => location.href = "../Forum/av.html";
 window.Inspiracoes = () => location.href = "../Inspiracoes/Inspiracoes.html";
 window.Configuracoes = () => location.href = "../Configuracoes/Config.html";
 window.Voltar = async () => {
-  try { await auth.signOut(); }
+  try { await signOut(auth); }
   finally { location.href = "../../auth/Login/Log-aluno.html"; }
 };
 window.Painel = function () {

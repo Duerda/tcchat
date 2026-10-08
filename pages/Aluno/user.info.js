@@ -4,7 +4,7 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase
 
 onAuthStateChanged(auth, async (user) => {
     if (!user) {
-        window.location.href = "/pages/Auth/Login/Log-aluno.html";
+        window.location.href = "/pages/auth/Login/Log-aluno.html";
         return;
     }
 
