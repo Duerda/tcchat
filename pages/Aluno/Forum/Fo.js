@@ -53,6 +53,15 @@ function escutarDuvidas(codigoSala) {
       const conteudo = document.createElement("p");
       conteudo.textContent = item.conteudo || "";
       card.append(titulo, autor, conteudo);
+      // As respostas dos professores e coordenadores são salvas no próprio
+      // registro da dúvida. Este trecho as exibe para que o aluno possa consultar
+      // a resposta diretamente no fórum.
+      if (item.resposta) {
+        const resposta = document.createElement("p");
+        resposta.className = "resposta-duvida";
+        resposta.textContent = `${item.respondidoPor || "Resposta da equipe"}: ${item.resposta}`;
+        card.appendChild(resposta);
+      }
       quadro.append(card);
     });
   }, (error) => {

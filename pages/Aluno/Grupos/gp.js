@@ -6,6 +6,7 @@ const storage = getStorage(app);
 let session;
 let group;
 let stopListener;
+let stopSharedLibrary;
 const $ = (id) => document.getElementById(id);
 window.chat = () => (location.href = "gp.chat.html");
 window.orientador = () => (location.href = "gp-cha-ori.html");
@@ -156,12 +157,15 @@ function montarBiblioteca() {
   const list = document.createElement("div");
   list.id = "lista-links";
   area.append(form, list);
-  const filesRef = collection(db, "grupos", group.id, "arquivos");
-  stopListener?.();
-  stopListener = onSnapshot(filesRef, (snapshot) => {
+  let groupLinks = [];
+  let sharedLinks = [];
+  const renderLinks = () => {
     list.replaceChildren();
-    const links = snapshot.docs.map((item) => item.data()).filter((item) => item.url);
-    if (!links.length) list.textContent = "Nenhum link cadastrado para o grupo.";
+    const links = [...sharedLinks, ...groupLinks];
+    if (!links.length) {
+      list.textContent = "Nenhum link cadastrado para esta turma ou grupo.";
+      return;
+    }
     links.forEach((item) => {
       const card = document.createElement("article");
       const link = document.createElement("a");
@@ -169,12 +173,31 @@ function montarBiblioteca() {
       link.target = "_blank";
       link.rel = "noopener noreferrer";
       link.textContent = item.nome || "Link do projeto";
-      card.appendChild(link);
+      const source = document.createElement("small");
+      source.textContent = item.compartilhado ? "Recurso compartilhado pela turma" : "Recurso do grupo";
+      card.append(link, source);
       list.appendChild(card);
     });
+  };
+  const filesRef = collection(db, "grupos", group.id, "arquivos");
+  stopListener?.();
+  stopListener = onSnapshot(filesRef, (snapshot) => {
+    groupLinks = snapshot.docs.map((item) => item.data()).filter((item) => item.url);
+    renderLinks();
   }, (error) => {
     console.error("Erro ao carregar Biblioteca:", error);
     list.textContent = "Não foi possível carregar a Biblioteca.";
+  });
+  // Professores e coordenadores publicam materiais da turma na coleção
+  // compartilhada "biblioteca". Aqui, esses materiais são combinados aos links
+  // próprios do grupo para que a tela do aluno reúna as duas fontes descritas
+  // no manual como a biblioteca do projeto.
+  stopSharedLibrary?.();
+  stopSharedLibrary = onSnapshot(query(collection(db, "biblioteca"), where("codigoSala", "==", session.profile.codigoSala)), (snapshot) => {
+    sharedLinks = snapshot.docs.map((item) => ({ ...item.data(), compartilhado: true })).filter((item) => item.url);
+    renderLinks();
+  }, (error) => {
+    console.error("Erro ao carregar recursos compartilhados:", error);
   });
   form.addEventListener("submit", async (event) => {
     event.preventDefault();

@@ -93,6 +93,19 @@
             </div>
         </div>
 
+        <!-- O tema escolhido é mantido junto das outras preferências do aluno. -->
+        <div class="set-card">
+            <h3 class="set-titulo">Tema da interface</h3>
+            <p class="set-sub">Escolha o tema claro ou escuro para as páginas do aluno.</p>
+            <div class="campo">
+                <label for="select-tema">Tema</label>
+                <select id="select-tema" onchange="setTema(this.value)">
+                    <option value="dark-mode">Escuro</option>
+                    <option value="light-mode">Claro</option>
+                </select>
+            </div>
+        </div>
+
         <!-- PERFIL -->
         <div class="set-card">
             <h3 class="set-titulo">Meu Perfil</h3>

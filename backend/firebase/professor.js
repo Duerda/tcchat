@@ -33,7 +33,8 @@ export function requireProfessor(callback) {
     if (!user) return redirectLogin();
     try {
       const profile = await getProfile(user.uid);
-      if (!profile || !PROFESSOR_TYPES.has(profile.tipo)) {
+      if (!profile || !PROFESSOR_TYPES.has(profile.tipo) || profile.acessoAtivo === false) {
+        if (profile?.acessoAtivo === false) await signOut(auth);
         alert("Acesso negado: esta área é exclusiva para professores e coordenadores.");
         return redirectLogin();
       }

@@ -1,79 +1,92 @@
-window.Voltar = () =>
-  auth
-    .signOut()
-    .then(() => (window.location.href = "/Inicial-tela/Login/Log-Professor.html"));
-window.Avaliacoes = function (){ 
-    window.location.href = "/Professor/Avaliacoes/ava.html";
-};
-window.Biblioteca = function (){ 
-    window.location.href = "/Professor/Biblioteca/Bib.html";
-};
-window.VisaoGeral = function (){ 
-    window.location.href = "/Professor/Index.html";
-};
-window.Forum = function (){ 
-    window.location.href = "/Professor/Forum/Avisos.html";
-};
-window.Grupos = function (){ 
-    window.location.href = "/Inicial-tela/Cadastro/Cad.html";
-};
+import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { auth, db } from "../../../backend/firebase/config.js";
+import { fillHeader, getInitials, logout, requireProfessor } from "../../../backend/firebase/professor.js";
 
-function setFonte(nome, el) {
-    document.body.style.fontFamily = "'" + nome + "'," + nome + ",sans-serif";
-    document.querySelectorAll('.fonte-op').forEach(o => o.classList.remove('ativa'));
-    el.classList.add('ativa');
+let user;
+let profile;
+let settings = { tipoFonte: "DM Sans", tamanhoFonte: 16 };
+
+window.Voltar = logout;
+window.Painel = () => (window.location.href = "../Coord-Index.html");
+window.Usuarios = () => (window.location.href = "../Coord-Usuarios.html");
+window.GruposCoord = () => (window.location.href = "../Coord-Grupos.html");
+window.Biblioteca = () => (window.location.href = "../Biblioteca/Bib.html");
+window.Forum = () => (window.location.href = "../Coord-Forum.html");
+window.Configuracoes = () => (window.location.href = "Config.html");
+
+function applySettings() {
+  document.body.style.fontFamily = `'${settings.tipoFonte || "DM Sans"}', sans-serif`;
+  document.documentElement.style.fontSize = `${Number(settings.tamanhoFonte) || 16}px`;
+  document.querySelectorAll(".fonte-op").forEach((option) => {
+    option.classList.toggle("ativa", option.textContent.toLowerCase().includes(String(settings.tipoFonte).toLowerCase()));
+  });
+  document.querySelectorAll(".size-btn").forEach((button) => {
+    const value = Number(button.getAttribute("onclick")?.match(/\d+/)?.[0]);
+    button.classList.toggle("ativo", value === Number(settings.tamanhoFonte));
+  });
 }
 
-function aplicarFonteCustom() {
-    const v = document.getElementById('inp-fonte-custom').value.trim();
-    if (!v) return;
-    document.body.style.fontFamily = "'" + v + "'," + v + ",sans-serif";
-    document.querySelectorAll('.fonte-op').forEach(o => o.classList.remove('ativa'));
-    const prev = document.getElementById('fonte-preview');
-    prev.style.display = 'block';
-    prev.style.fontFamily = "'" + v + "'," + v + ",sans-serif";
-    prev.textContent = 'O rato roeu a roupa do rei de Roma. 0123456789.';
-}
+window.setFonte = (name, element) => {
+  settings.tipoFonte = name;
+  applySettings();
+  if (element) element.classList.add("ativa");
+};
+window.aplicarFonteCustom = () => {
+  const value = document.getElementById("inp-fonte-custom")?.value.trim();
+  if (!value) return;
+  settings.tipoFonte = value;
+  applySettings();
+  const preview = document.getElementById("fonte-preview");
+  if (preview) {
+    preview.style.display = "block";
+    preview.style.fontFamily = `'${value}', sans-serif`;
+    preview.textContent = "O rato roeu a roupa do rei de Roma. 0123456789.";
+  }
+};
+window.setTamanho = (size, element) => {
+  settings.tamanhoFonte = Number(size);
+  applySettings();
+  element?.classList.add("ativo");
+};
 
-function setTamanho(tam, el) {
-    document.body.style.fontSize = tam + 'px';
-    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('ativo'));
-    el.classList.add('ativo');
-}
+window.salvarPerfil = async () => {
+  const name = document.getElementById("inp-nome")?.value.trim();
+  if (!name || !user) return alert("Preencha o nome.");
+  try {
+    await updateDoc(doc(db, "usuarios", user.uid), { nome: name, iniciais: getInitials(name), configuracoes: settings });
+    profile = { ...profile, nome: name, iniciais: getInitials(name), configuracoes: settings };
+    fillHeader(profile);
+    alert("Perfil e preferências salvos.");
+  } catch (error) {
+    console.error("Não foi possível salvar as configurações:", error);
+    alert("Não foi possível salvar as alterações.");
+  }
+};
 
-function salvarPerfil() {
-    const nome = document.getElementById('inp-nome').value.trim();
-    if (!nome) { alert('Preencha o nome.'); return; }
-    localStorage.setItem('nomeUsuario', nome);
-    const iniciais = nome.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-    localStorage.setItem('iniciaisUsuario', iniciais);
-    alert('Perfil salvo!');
-}
+window.alterarSenha = async () => {
+  const current = document.getElementById("senha-atual")?.value;
+  const next = document.getElementById("senha-nova")?.value;
+  const confirmation = document.getElementById("senha-confirmacao")?.value;
+  if (!current || !next || next !== confirmation || next.length < 8) return alert("Informe a senha atual e uma nova senha de pelo menos 8 caracteres, repetida corretamente.");
+  try {
+    await reauthenticateWithCredential(user, EmailAuthProvider.credential(user.email, current));
+    await updatePassword(user, next);
+    ["senha-atual", "senha-nova", "senha-confirmacao"].forEach((id) => { document.getElementById(id).value = ""; });
+    alert("Senha alterada com sucesso.");
+  } catch (error) {
+    console.error("Não foi possível alterar a senha:", error);
+    alert(error.code === "auth/invalid-credential" ? "A senha atual está incorreta." : "Não foi possível alterar a senha.");
+  }
+};
 
-document.addEventListener('DOMContentLoaded', function () {
-    // Foto / iniciais
-    document.getElementById('foto').querySelector('span').textContent =
-        localStorage.getItem('iniciaisUsuario') || '';
-
-    // Nome
-    const nomeEl = document.getElementById('NomeUC').querySelector('h4');
-    nomeEl.textContent = localStorage.getItem('nomeUsuario') || '';
-
-    // Preenche campo de nome no perfil
-    const nomeGuardado = localStorage.getItem('nomeUsuario') || '';
-    document.getElementById('inp-nome').value = nomeGuardado;
-
-    // Curso
-    const cursos = {
-        'TMA': 'Tecnico em Meio Ambiente',
-        'DS':  'Desenvolvimento de Sistemas',
-        'ADM': 'Administracao',
-        'SRC': 'Secretariado',
-        'TDS': 'Tecnico de Design de Interiores'
-    };
-    const codigoCurso = localStorage.getItem('codigoCurso') || '';
-    document.getElementById('NomeUC').querySelector('h5').textContent =
-        cursos[codigoCurso] || '';
-    document.getElementById('inp-curso').value =
-        cursos[codigoCurso] || codigoCurso;
+requireProfessor((authenticatedUser, currentProfile) => {
+  user = authenticatedUser;
+  profile = currentProfile;
+  settings = { tipoFonte: "DM Sans", tamanhoFonte: 16, ...(profile.configuracoes || {}) };
+  fillHeader(profile);
+  document.getElementById("inp-nome").value = profile.nome || "";
+  document.getElementById("inp-email").value = profile.email || user.email || "";
+  document.getElementById("inp-curso").value = profile.curso || "";
+  applySettings();
 });

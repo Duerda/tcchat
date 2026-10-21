@@ -1,6 +1,6 @@
 import { auth, db } from "../../../backend/firebase/config.js";
 import { signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { doc, getDoc, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 window.Professor = function () {
     window.location.href = "Log-Prof.html";
@@ -46,6 +46,16 @@ async function Formulario(event) {
         
         if (userDoc.exists()) {
             const userData = userDoc.data();
+
+            // A revogação feita pelo coordenador fica registrada no perfil e passa
+            // a valer quando a conta tentar autenticar novamente, sem excluir os
+            // dados cadastrados desse usuário.
+            if (userData.acessoAtivo === false) {
+                await signOut(auth);
+                alert("O acesso desta conta foi revogado. Procure a coordenação.");
+                return;
+            }
+            await updateDoc(doc(db, "usuarios", user.uid), { ultimoAcesso: serverTimestamp() });
             
             // Salvar dados básicos para uso rápido (opcional, já que usamos Firestore)
             localStorage.setItem("iniciaisUsuario", userData.iniciais);
@@ -56,7 +66,7 @@ async function Formulario(event) {
             
             // Redirecionamento baseado no tipo
             if (userData.tipo === "coordenador") {
-                window.location.href = "../../Professor/Index.html"; // Redireciona para Professor se Coordenador não existir
+                window.location.href = "../../Coordenador/Coord-Index.html";
             } else if (userData.tipo === "professor") {
                 window.location.href = "../../Professor/Index.html";
             } else if (userData.tipo === "aluno") {

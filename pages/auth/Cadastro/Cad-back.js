@@ -2,7 +2,7 @@ import { auth, db }
 from "../../../backend/firebase/config.js";
 import { createUserWithEmailAndPassword } 
 from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { doc, setDoc } 
+import { collection, doc, getDocs, increment, query, serverTimestamp, setDoc, updateDoc, where } 
 from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 // Lista oficial de cursos e seus códigos
@@ -89,7 +89,32 @@ async function Formulario(event) {
         return;
     }
 
+    let usedAccessCodeRef = null;
     try {
+        // Os cadastros de alunos e professores exigem um código ativo emitido
+        // pelo coordenador. Isso vincula a inscrição ao gerenciamento de códigos
+        // da turma e permite controlar validade e revogação. Contas de coordenador
+        // usam a verificação separada pelo código C00RD e não passam por esta etapa.
+        if (tipo === "aluno" || tipo === "professor") {
+            const accessCodes = await getDocs(query(
+                collection(db, "codigosAcesso"),
+                where("codigo", "==", codigoDigitado)
+            ));
+            const now = Date.now();
+            const validCode = accessCodes.docs.find((item) => {
+                const code = item.data();
+                const expiry = code.expiraEm?.toDate?.()?.getTime?.() || (code.expiraEm ? new Date(code.expiraEm).getTime() : null);
+                return !code.revogado && (!expiry || expiry >= now) && (code.tipo === tipo || code.tipo === "ambos");
+            });
+            if (!validCode) {
+                alert(accessCodes.empty
+                    ? "Ainda não há um código de acesso para esta turma. Solicite um código ao coordenador."
+                    : "Este código está expirado, revogado ou não foi criado para o tipo de conta selecionado.");
+                return;
+            }
+            usedAccessCodeRef = validCode.ref;
+        }
+        
         const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
         const user = userCredential.user;
 
@@ -121,11 +146,14 @@ async function Formulario(event) {
         }
 
         await setDoc(doc(db, "usuarios", user.uid), userData);
+        if (usedAccessCodeRef) {
+            await updateDoc(usedAccessCodeRef, { usos: increment(1), ultimoUso: serverTimestamp() });
+        }
 
         alert(`Cadastro realizado com sucesso como ${tipo}!`);
 
         if (tipo === "coordenador") {
-            window.location.href = "../../Coordenador/Coord-Index.html"; // Redireciona para Professor se Coordenador não existir
+            window.location.href = "../../Coordenador/Coord-Index.html";
         } else if (tipo === "professor") {
             window.location.href = "../../Professor/Index.html";
         } else {

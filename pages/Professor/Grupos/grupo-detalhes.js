@@ -22,6 +22,8 @@ const grupoId = params.get("id");
 
 let grupoAtual = null;
 let usuarioAtual = null;
+let tipoChatAtual = "grupo";
+let pararChat = null;
 
 
 
@@ -278,11 +280,17 @@ function renderAba(aba) {
             "painelGrupo"
         );
 
+    if (aba !== "chat" && aba !== "orientador") {
+        pararChat?.();
+        pararChat = null;
+    }
+
     const nome =
         grupoAtual?.nome || "Grupo";
 
 
     if (aba === "chat") {
+        tipoChatAtual = "grupo";
 
         painel.innerHTML = `
 
@@ -329,6 +337,13 @@ function renderAba(aba) {
         return;
     }
 
+    if (aba === "orientador") {
+        tipoChatAtual = "orientador";
+        painel.innerHTML = `<div class="painel-titulo"><h2>Chat com Orientador — ${escapeHtml(nome)}</h2><p>Conversa do grupo com o professor orientador.</p></div><div id="chatMensagens" class="chat-area" aria-live="polite"></div><div class="chat-form"><textarea id="mensagemChat" placeholder="Digite uma mensagem..."></textarea><button id="btnEnviarMensagem">Enviar</button></div>`;
+        iniciarChat();
+        return;
+    }
+
 
 
     if (aba === "arquivo") {
@@ -342,7 +357,7 @@ function renderAba(aba) {
 
 
     if (aba === "historico") {
-        painel.innerHTML = `<div class="historico-vazio"><h2>Histórico de entregas</h2><div id="listaEntregas"></div><input id="tituloEntrega" placeholder="Título da entrega"><textarea id="descricaoEntrega" placeholder="Observação"></textarea><button id="btnSalvarEntrega">Registrar entrega</button></div>`;
+        painel.innerHTML = `<div class="historico-vazio"><h2>Atividades e entregas</h2><div id="listaEntregas"></div><label for="tituloEntrega">Título da atividade</label><input id="tituloEntrega" placeholder="Título da atividade"><label for="descricaoEntrega">Instruções</label><textarea id="descricaoEntrega" placeholder="Descreva o que o grupo deve entregar"></textarea><label for="prazoEntrega">Prazo</label><input id="prazoEntrega" type="date"><button id="btnSalvarEntrega">Publicar atividade</button></div>`;
         carregarEntregas();
         configurarSalvarEntrega();
         return;
@@ -435,28 +450,27 @@ function iniciarChat() {
         );
 
 
-    const q =
-        query(
-            mensagensRef,
-            orderBy(
-                "criadoEm",
-                "asc"
-            )
-        );
+    const q = query(mensagensRef, orderBy("criadoEm", "asc"));
 
 
-    onSnapshot(
+    pararChat?.();
+    pararChat = onSnapshot(
         q,
         (snapshot) => {
 
             mensagensDiv.innerHTML = "";
 
 
-            snapshot.forEach(
-                (mensagemDoc) => {
+            snapshot.forEach((mensagemDoc) => {
 
                     const mensagem =
                         mensagemDoc.data();
+
+                    // As telas de chat do aluno separam a conversa do grupo do
+                    // canal com o orientador. O filtro usa o mesmo campo chatTipo
+                    // para exibir aqui somente o canal correspondente.
+                    if (mensagem.chatTipo && mensagem.chatTipo !== tipoChatAtual) return;
+                    if (!mensagem.chatTipo && tipoChatAtual !== "grupo") return;
 
 
                     const div =
@@ -526,6 +540,8 @@ function iniciarChat() {
 
                         autor:
                             "professor",
+
+                        chatTipo: tipoChatAtual,
 
                         criadoEm:
                             serverTimestamp()
@@ -792,10 +808,15 @@ function configurarSalvarEntrega() {
     document.getElementById("btnSalvarEntrega")?.addEventListener("click", async () => {
         const titulo = document.getElementById("tituloEntrega").value.trim();
         const descricao = document.getElementById("descricaoEntrega").value.trim();
+        const prazo = document.getElementById("prazoEntrega").value;
         if (!titulo) return alert("Informe o título da entrega.");
-        await addDoc(collection(db, "grupos", grupoId, "entregas"), { titulo, descricao, uid: usuarioAtual.uid, criadoEm: serverTimestamp() });
+        // Cada atividade publicada é salva na coleção do grupo que também é lida
+        // pela página de atividades do aluno. A data limite permite identificar
+        // quando uma atividade está atrasada.
+        await addDoc(collection(db, "grupos", grupoId, "entregas"), { titulo, descricao, dataLimite: prazo ? new Date(`${prazo}T23:59:59`) : null, uid: usuarioAtual.uid, tipo: "atividade", criadoEm: serverTimestamp() });
         document.getElementById("tituloEntrega").value = "";
         document.getElementById("descricaoEntrega").value = "";
+        document.getElementById("prazoEntrega").value = "";
     });
 }
 

@@ -1,4 +1,5 @@
 import { auth, db } from "../../backend/firebase/config.js";
+import { aplicarAparenciaAluno } from "./aparencia.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
@@ -42,9 +43,14 @@ onAuthStateChanged(auth, async (user) => {
   try {
     const users = await getDocs(query(collection(db, "usuarios"), where("uid", "==", user.uid)));
     const profile = users.docs[0]?.data();
-    if (!profile || profile.tipo !== "aluno") {
+    if (!profile || profile.tipo !== "aluno" || profile.acessoAtivo === false) {
       resolverAluno(null);
-      alert("Acesso permitido somente para contas de aluno.");
+      if (profile?.acessoAtivo === false) {
+        await signOut(auth);
+        alert("O acesso desta conta foi revogado. Procure a coordenação.");
+      } else {
+        alert("Acesso permitido somente para contas de aluno.");
+      }
       location.href = LOGIN;
       return;
     }
@@ -59,13 +65,7 @@ onAuthStateChanged(auth, async (user) => {
       if (element) element.textContent = value;
     });
     if (profile.configuracoes) {
-      const { tema, tamanhoFonte, tipoFonte } = profile.configuracoes;
-      if (tema) {
-        document.body.classList.remove("dark-mode", "light-mode");
-        document.body.classList.add(tema);
-      }
-      if (tamanhoFonte) document.documentElement.style.fontSize = `${tamanhoFonte}px`;
-      if (tipoFonte) document.body.style.fontFamily = tipoFonte;
+      aplicarAparenciaAluno(profile.configuracoes);
     }
     document.body.classList.add("pronto");
     resolverAluno(session);

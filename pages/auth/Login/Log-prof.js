@@ -1,6 +1,6 @@
 import { auth, db } from "/backend/firebase/config.js";
-import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { doc, getDoc, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 // Código utilizado pelos coordenadores
 const CODIGO_COORDENADOR = "C00RD";
@@ -123,15 +123,26 @@ async function Formulario(event) {
 
         if (usuarioDoc.exists()) {
             const perfil = usuarioDoc.data();
+            if (perfil.acessoAtivo === false) {
+                await signOut(auth);
+                alert("O acesso desta conta foi revogado. Procure a coordenação.");
+                return;
+            }
             if (perfil.tipo && perfil.tipo !== "professor" && perfil.tipo !== "coordenador") {
                 await signOut(auth);
                 alert("Esta conta não possui perfil de professor.");
                 return;
             }
-            window.location.href = "../../Professor/Index.html";
+            if (entrouComoCoordenador && perfil.tipo !== "coordenador") {
+                await signOut(auth);
+                alert("Esta conta não possui perfil de coordenador.");
+                return;
+            }
+            await updateDoc(usuarioRef, { ultimoAcesso: serverTimestamp() });
         } else {
             await signOut(auth);
             alert("Esta conta não possui um perfil cadastrado.");
+            return;
         }
 
 
@@ -162,8 +173,7 @@ async function Formulario(event) {
         // PROFESSOR
         // ==========================================
 
-        window.location.href =
-            PAGINA_PROFESSOR;
+        window.location.href = PAGINA_PROFESSOR;
 
 
     } catch (error) {
