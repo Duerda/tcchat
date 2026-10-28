@@ -26,9 +26,9 @@ window.Voltar = async () => { await signOut(auth); window.location.href = LOGIN;
 window.Painel = () => (window.location.href = "Coord-Index.html");
 window.Usuarios = () => (window.location.href = "Coord-Usuarios.html");
 window.GruposCoord = () => (window.location.href = "Coord-Grupos.html");
-window.Biblioteca = () => (window.location.href = "Biblioteca/Bib.html");
+window.Biblioteca = () => (window.location.href = "Coord-Biblioteca.html");
 window.Forum = () => (window.location.href = "Coord-Forum.html");
-window.Configuracoes = () => (window.location.href = "Configuracoes/Config.html");
+window.Configuracoes = () => (window.location.href = "Config.html");
 window.Cursos = () => (window.location.href = "Coord-Index.html");
 
 function pageName() { return window.location.pathname.split("/").pop(); }

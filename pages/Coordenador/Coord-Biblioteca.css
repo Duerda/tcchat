@@ -1,0 +1,27 @@
+/* Biblioteca do Coordenador — usa as variáveis de Coord-style.css */
+#conteudo-superior p { color: var(--cor-texto-secundario); }
+.btn-acao {
+  padding: 10px 16px; border: 1px solid var(--cor-vermelho); border-radius: 8px;
+  background: var(--cor-vermelho); color: #fff; font-size: 13px; cursor: pointer;
+}
+.btn-acao.secundario { background: transparent; color: var(--cor-texto); border-color: var(--cor-borda); }
+.btn-acao:hover { opacity: .88; }
+#links, #arquivos { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; max-width: 900px; }
+.card-link, .card-arquivo {
+  display: flex; align-items: center; gap: 12px; padding: 14px;
+  background: var(--cor-fundo-card); border: 1px solid var(--cor-borda);
+  border-radius: 10px; min-width: 0;
+}
+.icone-box { display:flex; align-items:center; justify-content:center; width:38px; height:38px; flex-shrink:0; background:var(--cor-fundo-hover); border-radius:8px; }
+.icone-box img { object-fit:contain; max-width:24px; max-height:24px; }
+.nome-link, .nome-arquivo { color:var(--cor-texto); text-decoration:none; overflow-wrap:anywhere; flex:1; font-size:13px; }
+.nome-link:hover, .nome-arquivo:hover { color:var(--cor-vermelho); }
+.excluir { color:var(--cor-texto-secundario); cursor:pointer; margin:0; padding:4px 7px; border-radius:5px; }
+.excluir:hover { color:#fff; background:var(--cor-vermelho); }
+@media (max-width: 700px) {
+  #Geral { flex-direction:column; }
+  #lateral { width:100%; min-height:auto; position:relative; }
+  .VGABF { display:flex; flex-wrap:wrap; gap:4px; }
+  .VGABF div button, #configuracao { width:auto; }
+  #conteudo { padding:20px; }
+}

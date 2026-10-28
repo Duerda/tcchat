@@ -1,0 +1,186 @@
+/* Configurações do Coordenador — complementa Coord-style.css (sidebar e layout ficam lá) */
+
+/* Item "Configurações" marcado como ativo na sidebar */
+#configuracao {
+    background: var(--cor-vermelho-transparente);
+    background-position: left;
+    color: var(--cor-branco);
+    border: 1px solid var(--cor-vermelho);
+}
+#configuracao:hover {
+    cursor: default;
+    transform: none;
+}
+
+/* ===== CARDS ===== */
+.set-card {
+    background: var(--cor-fundo-card);
+    border: 1px solid var(--cor-borda);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 12px;
+    max-width: 860px;
+}
+
+.set-titulo {
+    color: var(--cor-texto);
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 0 4px;
+}
+
+.set-sub {
+    color: var(--cor-texto-secundario);
+    font-size: 12px;
+    margin: 0 0 14px;
+}
+
+/* ===== FONTE ===== */
+.fontes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 9px;
+    margin-bottom: 13px;
+}
+
+.fonte-op {
+    background: var(--cor-fundo-hover);
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    padding: 12px 14px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+}
+.fonte-op:hover { border-color: var(--cor-vermelho); }
+.fonte-op.ativa {
+    border-color: var(--cor-vermelho);
+    background: var(--cor-vermelho-transparente);
+}
+
+.fonte-prev {
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+    color: var(--cor-texto);
+}
+
+.fonte-nm {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--cor-texto);
+}
+
+.fonte-desc {
+    font-size: 10px;
+    color: var(--cor-texto-fraco);
+    margin-top: 2px;
+}
+
+.campo-inline {
+    display: flex;
+    gap: 8px;
+}
+
+.campo-inline input {
+    flex: 1;
+    padding: 10px 13px;
+    background: var(--cor-fundo-secundario);
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    color: var(--cor-texto);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.campo-inline input:focus { border-color: var(--cor-vermelho); }
+
+.btn-aplicar {
+    padding: 9px 16px;
+    border-radius: 8px;
+    background: var(--cor-fundo-secundario);
+    border: 1px solid var(--cor-borda);
+    color: var(--cor-texto-secundario);
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+}
+.btn-aplicar:hover { border-color: var(--cor-vermelho); color: var(--cor-texto); }
+
+#fonte-preview {
+    display: none;
+    margin-top: 9px;
+    padding: 11px 13px;
+    background: var(--cor-fundo-secundario);
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--cor-texto);
+}
+
+/* ===== TAMANHO ===== */
+.tamanhos { display: flex; gap: 9px; }
+
+.size-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    background: var(--cor-fundo-hover);
+    border: 1px solid var(--cor-borda);
+    color: var(--cor-texto);
+    cursor: pointer;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+.size-btn:hover { border-color: var(--cor-vermelho); }
+.size-btn.ativo {
+    border-color: var(--cor-vermelho);
+    background: var(--cor-vermelho-transparente);
+    color: var(--cor-vermelho);
+}
+
+/* ===== PERFIL / SENHA ===== */
+.campo { margin-bottom: 13px; }
+
+.campo label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--cor-texto-secundario);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 5px;
+}
+
+.campo input {
+    width: 100%;
+    padding: 10px 13px;
+    background: var(--cor-fundo-secundario);
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    color: var(--cor-texto);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+.campo input:focus { border-color: var(--cor-vermelho); }
+
+.btn-salvar {
+    padding: 10px 22px;
+    background: var(--cor-vermelho);
+    border: none;
+    border-radius: 8px;
+    color: var(--cor-branco);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: opacity 0.2s;
+}
+.btn-salvar:hover { opacity: 0.85; }

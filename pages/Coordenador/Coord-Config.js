@@ -1,18 +1,18 @@
 import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-import { auth, db } from "../../../backend/firebase/config.js";
-import { fillHeader, getInitials, logout, navigate, requireCoordinator } from "../../../backend/firebase/professor.js";
+import { db } from "../../backend/firebase/config.js";
+import { fillHeader, getInitials, logout, navigate, requireCoordinator } from "../../backend/firebase/professor.js";
 
 let user;
 let profile;
 let settings = { tipoFonte: "DM Sans", tamanhoFonte: 16 };
 
 window.Voltar = logout;
-window.Painel = () => navigate("../Coord-Index.html");
-window.Usuarios = () => navigate("../Coord-Usuarios.html");
-window.GruposCoord = () => navigate("../Coord-Grupos.html");
-window.Biblioteca = () => navigate("../Biblioteca/Bib.html");
-window.Forum = () => navigate("../Coord-Forum.html");
+window.Painel = () => navigate("Coord-Index.html");
+window.Usuarios = () => navigate("Coord-Usuarios.html");
+window.GruposCoord = () => navigate("Coord-Grupos.html");
+window.Biblioteca = () => navigate("Coord-Biblioteca.html");
+window.Forum = () => navigate("Coord-Forum.html");
 window.Configuracoes = () => navigate("Config.html");
 
 function applySettings() {
@@ -27,35 +27,42 @@ function applySettings() {
   });
 }
 
-window.setFonte = (name, element) => {
-  settings.tipoFonte = name;
-  applySettings();
-  if (element) element.classList.add("ativa");
-};
-window.aplicarFonteCustom = () => {
-  const value = document.getElementById("inp-fonte-custom")?.value.trim();
-  if (!value) return;
-  settings.tipoFonte = value;
-  applySettings();
-  const preview = document.getElementById("fonte-preview");
-  if (preview) {
-    preview.style.display = "block";
-    preview.style.fontFamily = `'${value}', sans-serif`;
-    preview.textContent = "O rato roeu a roupa do rei de Roma. 0123456789.";
-  }
-};
-window.setTamanho = (size, element) => {
-  settings.tamanhoFonte = Number(size);
-  applySettings();
-  element?.classList.add("ativo");
+// Troca de fonte
+window.setFonte = function (nome, el) {
+    settings.tipoFonte = nome;
+    applySettings();
+    el?.classList.add("ativa");
 };
 
-window.salvarPerfil = async () => {
+window.aplicarFonteCustom = function () {
+    const v = document.getElementById("inp-fonte-custom").value.trim();
+    if (!v) return;
+
+    settings.tipoFonte = v;
+    applySettings();
+    const familia = `'${v}', ${v}, sans-serif`;
+
+    const prev = document.getElementById("fonte-preview");
+    prev.style.display = "block";
+    prev.style.fontFamily = familia;
+    prev.textContent = "O rato roeu a roupa do rei de Roma. 0123456789.";
+};
+
+// Tamanho do texto
+window.setTamanho = function (tam, el) {
+    settings.tamanhoFonte = Number(tam);
+    applySettings();
+    el?.classList.add("ativo");
+};
+
+// Salva o nome no Firestore, para que a sidebar (Coord-script.js) também seja atualizada
+window.salvarPerfil = async function () {
   const name = document.getElementById("inp-nome")?.value.trim();
   if (!name || !user) return alert("Preencha o nome.");
   try {
-    await updateDoc(doc(db, "usuarios", user.uid), { nome: name, iniciais: getInitials(name), configuracoes: settings });
-    profile = { ...profile, nome: name, iniciais: getInitials(name), configuracoes: settings };
+    const initials = getInitials(name);
+    await updateDoc(doc(db, "usuarios", user.uid), { nome: name, iniciais: initials, configuracoes: settings });
+    profile = { ...profile, nome: name, iniciais: initials, configuracoes: settings };
     fillHeader(profile);
     alert("Perfil e preferências salvos.");
   } catch (error) {
@@ -68,7 +75,9 @@ window.alterarSenha = async () => {
   const current = document.getElementById("senha-atual")?.value;
   const next = document.getElementById("senha-nova")?.value;
   const confirmation = document.getElementById("senha-confirmacao")?.value;
-  if (!current || !next || next !== confirmation || next.length < 8) return alert("Informe a senha atual e uma nova senha de pelo menos 8 caracteres, repetida corretamente.");
+  if (!current || !next || next !== confirmation || next.length < 8) {
+    return alert("Informe a senha atual e uma nova senha de pelo menos 8 caracteres, repetida corretamente.");
+  }
   try {
     await reauthenticateWithCredential(user, EmailAuthProvider.credential(user.email, current));
     await updatePassword(user, next);
