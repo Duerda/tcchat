@@ -1,19 +1,19 @@
 import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { auth, db } from "../../../backend/firebase/config.js";
-import { fillHeader, getInitials, logout, requireProfessor } from "../../../backend/firebase/professor.js";
+import { fillHeader, getInitials, logout, navigate, requireCoordinator } from "../../../backend/firebase/professor.js";
 
 let user;
 let profile;
 let settings = { tipoFonte: "DM Sans", tamanhoFonte: 16 };
 
 window.Voltar = logout;
-window.Painel = () => (window.location.href = "../Coord-Index.html");
-window.Usuarios = () => (window.location.href = "../Coord-Usuarios.html");
-window.GruposCoord = () => (window.location.href = "../Coord-Grupos.html");
-window.Biblioteca = () => (window.location.href = "../Biblioteca/Bib.html");
-window.Forum = () => (window.location.href = "../Coord-Forum.html");
-window.Configuracoes = () => (window.location.href = "Config.html");
+window.Painel = () => navigate("../Coord-Index.html");
+window.Usuarios = () => navigate("../Coord-Usuarios.html");
+window.GruposCoord = () => navigate("../Coord-Grupos.html");
+window.Biblioteca = () => navigate("../Biblioteca/Bib.html");
+window.Forum = () => navigate("../Coord-Forum.html");
+window.Configuracoes = () => navigate("Config.html");
 
 function applySettings() {
   document.body.style.fontFamily = `'${settings.tipoFonte || "DM Sans"}', sans-serif`;
@@ -80,7 +80,7 @@ window.alterarSenha = async () => {
   }
 };
 
-requireProfessor((authenticatedUser, currentProfile) => {
+requireCoordinator((authenticatedUser, currentProfile) => {
   user = authenticatedUser;
   profile = currentProfile;
   settings = { tipoFonte: "DM Sans", tamanhoFonte: 16, ...(profile.configuracoes || {}) };

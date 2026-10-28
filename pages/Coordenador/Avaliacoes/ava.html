@@ -12,14 +12,14 @@
         <div id="lateral">
             <div id="lateral-superior">
                 <div><h2 style="margin-top: 2px;">T<span>CCHAT</span></h2></div>
-                <div id="Logo-de-professor">PROFESSOR</div>
+                <div id="Logo-de-professor">COORDENAÇÃO</div>
             </div>
             
             <!-- VGABF = Visão Geral, Grupos, Avaliações, Biblioteca e Fórum -->
             <div class="VGABF">
 
                 <div id="painel">Navegação</div>
-                <div><button onclick="VisaoGeral ()" >Visão Geral</button></div>
+                <div><button onclick="VisaoGeral ()" >Painel</button></div>
                 <div><button onclick="Grupos ()">Grupos</button></div>
                 <div><button onclick="Avaliacoes ()" id="Avaliacoes">Avaliações</button></div>
                 <div><button onclick="Biblioteca ()">Biblioteca</button></div>
@@ -42,43 +42,45 @@
 
         <div id="conteudo">
             <div id="conteudo-superior">
-                <h1>Avaliações</h1><p>Entregas aguardando nota</p>
+                <h1>Avaliações</h1><p>Registrar avaliação de um grupo da turma</p>
             </div>
         
-            <div id="EnCad"> <button id="Entrar">Pendentes</button> <button id="Cadastrar" onclick="Cadastrar ()">Históricos</button></div>
+            <div id="EnCad"><button id="Cadastrar" onclick="Cadastrar ()">Histórico</button></div>
 
-            <h1>Avaliações</h1>
+            <h1>Avaliar grupo</h1>
 
         <div class="Cards" id="card-avaliacao">
 
     <div id="top-card">
         <div>
-            <h3 style="margin-top: 0px; margin-bottom: 5px; color: #e4e9f4;">
-                Nome do TCC
+                <h3 style="margin-top: 0px; margin-bottom: 5px; color: #e4e9f4;">
+                Selecione um grupo
             </h3>
 
             <span style="color: #3d4d61 ;">
-                Prévia do que eles entregaram
+                Escolha um grupo da sua turma para registrar uma avaliação.
             </span>
         </div>
 
         <span class="Estado">
-            No Prazo
+            Coordenação
         </span>
     </div>
 
     <!-- DIV DO ARQUIVO -->
     <div class="Avaliacoes" id="arquivo-avaliacao">
         <p style="color: #7a8699; margin: 0px;">
-            Arquivo que vai ser avaliado
+            Selecione um grupo para ver os integrantes e o tema.
         </p>
 
-        <span style="margin-left: auto; color: hsl(210,82%,58%); font-size: 12px; cursor: pointer;">
-            Baixar
-        </span>
     </div>
 
     <form>
+
+        <label for="grupo-avaliacao">Grupo</label>
+        <select id="grupo-avaliacao" required style="background: #0c1018; color: #e4e9f4; border: 1px solid #3d4d61; border-radius: 7px; padding: 10px; width: 100%;">
+            <option value="">Carregando grupos...</option>
+        </select>
 
         <div id="DT-CD">
 
@@ -124,11 +126,12 @@
             id="voltar-avaliacao"
             class="botao-voltar"
         >
-            Voltar Avaliação
+            Limpar campos
         </button>
 
     </form>
 </div>
+<section id="historico-avaliacoes" aria-live="polite"></section>
 </body>
 <script type="module" src="ava.js"></script>
 </html>

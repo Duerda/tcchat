@@ -1,5 +1,3 @@
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-
 import {
   collection,
   doc,
@@ -12,7 +10,8 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-import { auth, db } from "/backend/firebase/config.js";
+import { db } from "../../../backend/firebase/config.js";
+import { fillHeader, navigate, requireProfessor } from "../../../backend/firebase/professor.js";
 
 
 
@@ -22,137 +21,47 @@ const grupoId = params.get("id");
 
 let grupoAtual = null;
 let usuarioAtual = null;
+let perfilAtual = null;
 let tipoChatAtual = "grupo";
 let pararChat = null;
 
 
 
 window.Voltar = () => {
-    window.location.href = "grp.html";
+    navigate("grp.html");
 };
 
 window.VisaoGeral = () => {
-    window.location.href = "/pages/Professor/Index.html";
+    navigate("/pages/Professor/Index.html");
 };
 
 window.Grupos = () => {
-    window.location.href = "/pages/Professor/Grupos/grp.html";
+    navigate("/pages/Professor/Grupos/grp.html");
 };
 
 window.Avaliacoes = () => {
-    window.location.href = "/pages/Professor/Avaliacoes/ava.html";
+    navigate("/pages/Professor/Avaliacoes/ava.html");
 };
 
 window.Biblioteca = () => {
-    window.location.href = "/pages/Professor/Biblioteca/Bib.html";
+    navigate("/pages/Professor/Biblioteca/Bib.html");
 };
 
 window.Forum = () => {
-    window.location.href = "/pages/Professor/Forum/Avisos.html";
+    navigate("/pages/Professor/Forum/Avisos.html");
 };
 
 window.Configuracoes = () => {
-    window.location.href = "/pages/Professor/Configuracoes/Config.html";
+    navigate("/pages/Professor/Configuracoes/Config.html");
 };
 
 
-onAuthStateChanged(auth, async (user) => {
-
-    if (!user) {
-        window.location.href =
-            "/pages/auth/Login/Log-aluno.html";
-
-        return;
-    }
-
+requireProfessor(async (user, profile) => {
     usuarioAtual = user;
-
-    try {
-
-        const userDoc = await getDoc(
-            doc(db, "usuarios", user.uid)
-        );
-
-        const tipo = userDoc.exists()
-            ? userDoc.data().tipo
-            : null;
-
-        if (
-            tipo !== "professor" &&
-            tipo !== "coordenador"
-        ) {
-
-            alert(
-                "Acesso negado: Esta área é exclusiva para professores e coordenadores."
-            );
-
-            window.location.href =
-                "/pages/auth/Login/Log-aluno.html";
-
-            return;
-        }
-
-        carregarPerfil(user.uid);
-
-        carregarGrupo();
-
-    } catch (erro) {
-
-        console.error(
-            "Erro ao verificar usuário:",
-            erro
-        );
-
-    }
-
+    perfilAtual = profile;
+    fillHeader(profile);
+    await carregarGrupo();
 });
-
-
-function carregarPerfil(uid) {
-
-    const q = query(
-        collection(db, "usuarios"),
-        where("uid", "==", uid)
-    );
-
-    onSnapshot(q, (snapshot) => {
-
-        if (snapshot.empty) {
-            return;
-        }
-
-        const data =
-            snapshot.docs[0].data();
-
-        const foto =
-            document.querySelector("#foto span");
-
-        const nome =
-            document.querySelector("#NomeUC h4");
-
-        const curso =
-            document.querySelector("#NomeUC h5");
-
-
-        if (foto) {
-            foto.textContent =
-                data.iniciais || "";
-        }
-
-        if (nome) {
-            nome.textContent =
-                data.nome || "";
-        }
-
-        if (curso) {
-            curso.textContent =
-                data.curso ||
-                "Professor/Coordenador";
-        }
-
-    });
-
-}
 
 
 async function carregarGrupo() {
@@ -190,8 +99,12 @@ async function carregarGrupo() {
             return;
         }
 
-        grupoAtual =
-            snap.data();
+        const groupData = snap.data();
+        if (!perfilAtual?.codigoSala || groupData.codigoSala !== perfilAtual.codigoSala) {
+            painel.textContent = "Acesso negado: este grupo não pertence à sua turma.";
+            return;
+        }
+        grupoAtual = groupData;
 
 
         const nomeGrupo =

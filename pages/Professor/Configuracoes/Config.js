@@ -1,7 +1,7 @@
 import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-import { auth, db } from "/backend/firebase/config.js";
-import { fillHeader, getInitials, logout, navigate, requireProfessor } from "/backend/firebase/professor.js";
+import { auth, db } from "../../../backend/firebase/config.js";
+import { fillHeader, getInitials, logout, navigate, requireProfessor } from "../../../backend/firebase/professor.js";
 
 window.Voltar = logout;
 window.Avaliacoes = () => navigate("../Avaliacoes/ava.html");

@@ -1,6 +1,6 @@
 import { addDoc, collection, onSnapshot, query, serverTimestamp, updateDoc, where, doc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-import { db } from "/backend/firebase/config.js";
-import { fillHeader, logout, navigate, requireProfessor } from "/backend/firebase/professor.js";
+import { db } from "../../../backend/firebase/config.js";
+import { fillHeader, logout, navigate, requireProfessor } from "../../../backend/firebase/professor.js";
 
 window.Voltar = logout;
 window.Avaliacoes = () => navigate("../Avaliacoes/ava.html");

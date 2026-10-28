@@ -47,12 +47,14 @@ async function Formulario(event) {
         if (userDoc.exists()) {
             const userData = userDoc.data();
 
-            // A revogação feita pelo coordenador fica registrada no perfil e passa
-            // a valer quando a conta tentar autenticar novamente, sem excluir os
-            // dados cadastrados desse usuário.
             if (userData.acessoAtivo === false) {
                 await signOut(auth);
                 alert("O acesso desta conta foi revogado. Procure a coordenação.");
+                return;
+            }
+            if (userData.tipo !== "aluno") {
+                await signOut(auth);
+                alert("Esta tela é exclusiva para alunos. Escolha o tipo de acesso correspondente.");
                 return;
             }
             await updateDoc(doc(db, "usuarios", user.uid), { ultimoAcesso: serverTimestamp() });
@@ -64,16 +66,7 @@ async function Formulario(event) {
             
             alert("Login realizado com sucesso!");
             
-            // Redirecionamento baseado no tipo
-            if (userData.tipo === "coordenador") {
-                window.location.href = "../../Coordenador/Coord-Index.html";
-            } else if (userData.tipo === "professor") {
-                window.location.href = "../../Professor/Index.html";
-            } else if (userData.tipo === "aluno") {
-                window.location.href = "../../Aluno/Turma/index.html";
-            } else {
-                window.location.href = "../../Aluno/Turma/index.html";
-            }
+            window.location.href = "../../Aluno/Turma/index.html";
         } else {
             // SE NÃO EXISTE NO BANCO, DESLOGA E NEGA O ACESSO
             await signOut(auth);

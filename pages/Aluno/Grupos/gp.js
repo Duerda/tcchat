@@ -1,4 +1,4 @@
-import { auth, db, app } from "/backend/firebase/config.js";
+import { auth, db, app } from "../../../backend/firebase/config.js";
 import { addDoc, collection, getDocs, onSnapshot, query, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-storage.js";
 

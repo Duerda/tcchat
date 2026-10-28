@@ -1,9 +1,7 @@
 import { auth, db } 
 from "../../../backend/firebase/config.js";
-import { createUserWithEmailAndPassword } 
-from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { collection, doc, getDocs, increment, query, serverTimestamp, setDoc, updateDoc, where } 
-from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { collection, doc, getDoc, getDocs, increment, query, serverTimestamp, setDoc, updateDoc, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 // Lista oficial de cursos e seus códigos
 const cursosValidos = {
@@ -90,6 +88,8 @@ async function Formulario(event) {
     }
 
     let usedAccessCodeRef = null;
+    let attemptedRecovery = false;
+    let profileWriteFailed = false;
     try {
         // Os cadastros de alunos e professores exigem um código ativo emitido
         // pelo coordenador. Isso vincula a inscrição ao gerenciamento de códigos
@@ -115,7 +115,29 @@ async function Formulario(event) {
             usedAccessCodeRef = validCode.ref;
         }
         
-        const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+        let userCredential;
+        try {
+            userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+        } catch (error) {
+            if (error.code !== "auth/email-already-in-use") throw error;
+            attemptedRecovery = true;
+
+            // Se a autenticação foi criada numa tentativa anterior, mas a gravação
+            // do perfil falhou, permite concluir o cadastro com o mesmo e-mail e senha.
+            userCredential = await signInWithEmailAndPassword(auth, email, senha);
+            let existingProfile;
+            try {
+                existingProfile = await getDoc(doc(db, "usuarios", userCredential.user.uid));
+            } catch (profileReadError) {
+                await signOut(auth);
+                throw profileReadError;
+            }
+            if (existingProfile.exists()) {
+                await signOut(auth);
+                alert("Este e-mail já possui um perfil. Entre pela tela de login.");
+                return;
+            }
+        }
         const user = userCredential.user;
 
         const prefixo = email.split("@")[0];
@@ -145,7 +167,13 @@ async function Formulario(event) {
             userData.curso = nomeCursoCompleto;
         }
 
-        await setDoc(doc(db, "usuarios", user.uid), userData);
+        try {
+            await setDoc(doc(db, "usuarios", user.uid), userData);
+        } catch (profileError) {
+            profileWriteFailed = true;
+            await signOut(auth);
+            throw profileError;
+        }
         if (usedAccessCodeRef) {
             await updateDoc(usedAccessCodeRef, { usos: increment(1), ultimoUso: serverTimestamp() });
         }
@@ -163,7 +191,15 @@ async function Formulario(event) {
     } catch (error) {
         console.error("Erro:", error);
         if (error.code === "auth/email-already-in-use") {
-            alert("Este e-mail já possui uma conta.");
+            alert("Este e-mail já possui uma conta. Confirme a senha ou entre pela tela de login.");
+            return;
+        }
+        if (attemptedRecovery && error.code === "auth/invalid-credential") {
+            alert("Este e-mail já possui uma conta. A senha informada não confere; use a tela de login ou recupere a senha.");
+            return;
+        }
+        if (profileWriteFailed) {
+            alert("A conta de autenticação foi criada, mas o perfil não foi salvo. Tente novamente com o mesmo e-mail e senha para concluir o cadastro.");
             return;
         }
         if (error.code === "auth/invalid-email") {

@@ -1,11 +1,12 @@
 import { auth, db } from "../../backend/firebase/config.js";
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import {
   addDoc, arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query,
   serverTimestamp, updateDoc, where, writeBatch,
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { appUrl, requireCoordinator } from "../../backend/firebase/professor.js";
 
-const LOGIN = "/pages/auth/Login/Log-aluno.html";
+const LOGIN = appUrl("pages/auth/Login/Log-aluno.html");
 const COURSE_NAMES = {
   DS: "Desenvolvimento de Sistemas", DI: "Design de Interiores", HOSP: "Hospedagem",
   IPI: "Informática para Internet - MTEC", MA: "Meio Ambiente", SEC: "Secretariado",
@@ -37,28 +38,15 @@ function reportError(message, error) {
   alert(message);
 }
 
-onAuthStateChanged(auth, async (authenticatedUser) => {
-  if (!authenticatedUser) { window.location.href = LOGIN; return; }
+requireCoordinator((authenticatedUser, currentProfile) => {
   user = authenticatedUser;
-  try {
-    const snapshot = await getDocs(query(collection(db, "usuarios"), where("uid", "==", user.uid)));
-    profile = snapshot.docs[0]?.data();
-    if (!profile || profile.tipo !== "coordenador" || profile.acessoAtivo === false) {
-      await signOut(auth);
-      alert("Acesso permitido somente para coordenadores ativos.");
-      window.location.href = LOGIN;
-      return;
-    }
-    fillHeader();
-    const currentPage = pageName();
-    if (currentPage === "Coord-Index.html") loadDashboard();
-    if (currentPage === "Coord-Usuarios.html") loadUsers();
-    if (["Coord-Grupos.html", "Coord-Criacao.html"].includes(currentPage)) loadGroups();
-    if (currentPage === "Coord-Forum.html") loadForum();
-  } catch (error) {
-    reportError("Não foi possível validar o acesso do coordenador.", error);
-    window.location.href = LOGIN;
-  }
+  profile = currentProfile;
+  fillHeader();
+  const currentPage = pageName();
+  if (currentPage === "Coord-Index.html") loadDashboard();
+  if (currentPage === "Coord-Usuarios.html") loadUsers();
+  if (["Coord-Grupos.html", "Coord-Criacao.html"].includes(currentPage)) loadGroups();
+  if (currentPage === "Coord-Forum.html") loadForum();
 });
 
 function fillHeader() {

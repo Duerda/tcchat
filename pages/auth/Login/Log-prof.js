@@ -1,4 +1,5 @@
-import { auth, db } from "/backend/firebase/config.js";
+import { auth, db } from "../../../backend/firebase/config.js";
+import { appUrl, navigate } from "../../../backend/navigation.js";
 import { signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, getDoc, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
@@ -6,10 +7,10 @@ import { doc, getDoc, serverTimestamp, updateDoc } from "https://www.gstatic.com
 const CODIGO_COORDENADOR = "C00RD";
 
 // Página para onde o coordenador será enviado
-const PAGINA_COORDENADOR = "/pages/Coordenador/Coord-Index.html";
+const PAGINA_COORDENADOR = appUrl("pages/Coordenador/Coord-Index.html");
 
 // Página normal do professor
-const PAGINA_PROFESSOR = "/pages/Professor/Index.html";
+const PAGINA_PROFESSOR = appUrl("pages/Professor/Index.html");
 
 
 window.Aluno = function () {
@@ -18,7 +19,7 @@ window.Aluno = function () {
 
 
 window.Cadastrar = function () {
-    window.location.href = "/pages/auth/Cadastro/Cad.html";
+    navigate("/pages/auth/Cadastro/Cad.html");
 };
 
 
@@ -128,7 +129,7 @@ async function Formulario(event) {
                 alert("O acesso desta conta foi revogado. Procure a coordenação.");
                 return;
             }
-            if (perfil.tipo && perfil.tipo !== "professor" && perfil.tipo !== "coordenador") {
+            if (perfil.tipo !== "professor" && perfil.tipo !== "coordenador") {
                 await signOut(auth);
                 alert("Esta conta não possui perfil de professor.");
                 return;
@@ -136,6 +137,11 @@ async function Formulario(event) {
             if (entrouComoCoordenador && perfil.tipo !== "coordenador") {
                 await signOut(auth);
                 alert("Esta conta não possui perfil de coordenador.");
+                return;
+            }
+            if (!entrouComoCoordenador && perfil.tipo !== "professor") {
+                await signOut(auth);
+                alert("Para entrar como coordenador, abra a opção Coordenador e informe o código.");
                 return;
             }
             await updateDoc(usuarioRef, { ultimoAcesso: serverTimestamp() });

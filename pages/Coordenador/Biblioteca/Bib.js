@@ -1,163 +1,103 @@
-import { auth, db } from "../../../backend/firebase/config.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import {
-  collection,
-  query,
-  onSnapshot,
-  doc,
-  getDoc,
-  updateDoc,
-  deleteDoc,
-  where,
-  addDoc,
-  serverTimestamp,
-  orderBy,
-} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { addDoc, collection, deleteDoc, doc, onSnapshot, query, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { db } from "../../../backend/firebase/config.js";
+import { fillHeader, logout, navigate, requireCoordinator } from "../../../backend/firebase/professor.js";
 
-window.Voltar = function(){
-    window.location.href = "/Inicial-tela/Cadastro/Cad.html";
-};
-window.Voltar = () => auth.signOut().then(() => window.location.href = "/Inicial-tela/Login/Log-aluno.html");
-window.Avaliacoes = function(){
-    window.location.href = "/Professor/Avaliacoes/ava.html";
-};
-window.VisaoGeral = function (){ 
-    window.location.href = "/Professor/Index.html";
-};
-window.Grupos = function(){
-    window.location.href = "/Professor/Grupos/grp.html";
-};
-window.Forum = function(){
-    window.location.href = "/Professor/Forum/Avisos.html";
-};
-window.Configuracoes = function(){
-    window.location.href = "/Professor/Configuracoes/Config.html";
-}
+window.Voltar = logout;
+window.Avaliacoes = () => navigate("../Avaliacoes/ava.html");
+window.VisaoGeral = () => navigate("../Coord-Index.html");
+window.Grupos = () => navigate("../Coord-Grupos.html");
+window.Biblioteca = () => navigate("Bib.html");
+window.Forum = () => navigate("../Coord-Forum.html");
+window.Configuracoes = () => navigate("../Configuracoes/Config.html");
 
-document.addEventListener('DOMContentLoaded', function() {
-    const spanIniciais = document.getElementById("foto").querySelector("span"); // Seleciona o span dentro de #foto
-    const iniciaisSalvas = localStorage.getItem("iniciaisUsuario");
-    spanIniciais.textContent = iniciaisSalvas || ""; // Define o texto ou vazio
-});
-document.addEventListener('DOMContentLoaded', function() {
-    const spanIniciais = document.getElementById("NomeUC").querySelector("h4"); // Seleciona o span dentro de #foto
-    const nomeUsuario = localStorage.getItem("nomeUsuario");
-    spanIniciais.textContent = nomeUsuario || ""; // Define o texto ou vazio
-});
+const linksArea = document.getElementById("links");
+const filesArea = document.getElementById("arquivos");
+let user;
+let profile;
 
-// Funções de Navegação
-window.Voltar = () => auth.signOut().then(() => window.location.href = "/Inicial-tela/Login/Log-aluno.html");
+async function addResource(type) {
+  const name = prompt("Nome do recurso:")?.trim();
+  const rawUrl = prompt(type === "link" ? "URL do site:" : "URL do arquivo:")?.trim();
+  if (!name || !rawUrl || !profile?.codigoSala) return;
 
+  let url;
+  try {
+    url = new URL(rawUrl);
+    if (!["http:", "https:"].includes(url.protocol)) throw new Error("Protocolo inválido");
+  } catch {
+    alert("Informe uma URL válida iniciada por http:// ou https://.");
+    return;
+  }
 
-let usuarioAtual = null;
-
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        const userDoc = await getDoc(doc(db, "usuarios", user.uid));
-        const tipo = userDoc.exists() ? userDoc.data().tipo : null;
-        if (tipo === "professor" || tipo === "coordenador") {
-            usuarioAtual = user;
-            carregarDadosPerfil(user.uid);
-            escutarBiblioteca();
-        } else {
-            alert("Acesso negado: Esta área é exclusiva para professores e coordenadores.");
-            window.location.href = "/Inicial-tela/Login/Log-aluno.html";
-        }
-    } else {
-        window.location.href = "/Inicial-tela/Login/Log-aluno.html";
-    }
-});
-
-function carregarDadosPerfil(uid) {
-    const q = query(collection(db, "usuarios"), where("uid", "==", uid));
-    onSnapshot(q, (snapshot) => {
-        if (!snapshot.empty) {
-            const data = snapshot.docs[0].data();
-            document.querySelector("#foto span").textContent = data.iniciais || "";
-            document.querySelector("#NomeUC h4").textContent = data.nome || "";
-            document.querySelector("#NomeUC h5").textContent = data.curso || "Coordenador/Professor";
-        }
+  try {
+    await addDoc(collection(db, "biblioteca"), {
+      nome: name,
+      url: url.href,
+      tipo: type,
+      enviadoPor: user.uid,
+      autorNome: profile.nome || "",
+      codigoSala: profile.codigoSala,
+      criadoEm: serverTimestamp(),
     });
+  } catch (error) {
+    console.error("Não foi possível salvar o recurso:", error);
+    alert("Não foi possível salvar o recurso.");
+  }
 }
 
-const areaLinks = document.getElementById("links");
-const areaArquivos = document.getElementById("arquivos");
+document.getElementById("Link")?.addEventListener("click", () => addResource("link"));
+document.getElementById("ArquivoModelo")?.addEventListener("click", () => addResource("arquivo"));
 
-// Função para salvar log de acessos em Cookies (simulado via localStorage para persistência de arquivos)
-function salvarLogBiblioteca(acao, nomeItem) {
-    let historico = JSON.parse(localStorage.getItem("historico_biblioteca") || "[]");
-    historico.unshift({ acao, nomeItem, data: new Date().toLocaleString() });
-    if (historico.length > 5) historico.pop(); // Mantém apenas os 5 últimos
-    localStorage.setItem("historico_biblioteca", JSON.stringify(historico));
-    console.log("Cookie de histórico atualizado:", historico);
+function renderResource(item, id) {
+  const card = document.createElement("div");
+  card.className = item.tipo === "link" ? "card-link" : "card-arquivo";
+
+  const anchor = document.createElement("a");
+  anchor.href = item.url;
+  anchor.target = "_blank";
+  anchor.rel = "noopener noreferrer";
+  anchor.textContent = item.nome || "Recurso";
+  anchor.className = item.tipo === "link" ? "nome-link" : "nome-arquivo";
+  card.appendChild(anchor);
+
+  const remove = document.createElement("button");
+  remove.type = "button";
+  remove.className = "excluir";
+  remove.textContent = "Excluir";
+  remove.addEventListener("click", async () => {
+    if (!confirm("Excluir este recurso?")) return;
+    try {
+      await deleteDoc(doc(db, "biblioteca", id));
+    } catch (error) {
+      console.error("Não foi possível excluir o recurso:", error);
+      alert("Não foi possível excluir o recurso.");
+    }
+  });
+  card.appendChild(remove);
+  return card;
 }
 
-document.getElementById("Link").addEventListener("click", async () => {
-    let nome = prompt("Digite o nome do link:");
-    let imagem = prompt("Cole a URL da imagem do ícone:");
-    let endereco = prompt("Digite o link do site:");
-
-    if (nome && imagem && endereco) {
-        try {
-            await addDoc(collection(db, "biblioteca"), {
-                nome, url: endereco, icone: imagem, tipo: "link", enviadoPor: usuarioAtual.uid,
-                codigoSala: localStorage.getItem("codigoSala") || "geral"
-            });
-            salvarLogBiblioteca("Adicionou Link", nome);
-        } catch (error) { console.error(error); }
-    }
-});
-
-document.getElementById("ArquivoModelo").addEventListener("click", async () => {
-    let nome = prompt("Digite o nome do arquivo:");
-    let url = prompt("Cole a URL do arquivo (Ex: Google Drive/OneDrive):");
-
-    if (nome && url) {
-        try {
-            await addDoc(collection(db, "biblioteca"), {
-                nome, url, tipo: "arquivo", enviadoPor: usuarioAtual.uid,
-                codigoSala: localStorage.getItem("codigoSala") || "geral"
-            });
-            salvarLogBiblioteca("Adicionou Arquivo", nome);
-        } catch (error) { console.error(error); }
-    }
-});
-
-function escutarBiblioteca() {
-    const codigoSala = localStorage.getItem("codigoSala") || "geral";
-    const q = query(collection(db, "biblioteca"), where("codigoSala", "==", codigoSala));
-    
-    onSnapshot(q, (snapshot) => {
-        areaLinks.innerHTML = "";
-        areaArquivos.innerHTML = "";
-
-        snapshot.forEach((docSnap) => {
-            const item = docSnap.data();
-            const id = docSnap.id;
-            const card = document.createElement("div");
-            
-            if (item.tipo === "link") {
-                card.className = "card-link";
-                card.innerHTML = `
-                    <div class="icone-box"><img src="${item.icone}" width="24"></div>
-                    <a href="${item.url}" target="_blank" class="nome-link">${item.nome}</a>
-                    <p class="excluir" data-id="${id}">X</p>
-                `;
-                areaLinks.appendChild(card);
-            } else {
-                card.className = "card-arquivo";
-                card.innerHTML = `
-                    <a href="${item.url}" target="_blank" class="nome-arquivo">${item.nome}</a>
-                    <p class="excluir" data-id="${id}">X</p>
-                `;
-                areaArquivos.appendChild(card);
-            }
-
-            card.querySelector(".excluir").onclick = async () => {
-                if (confirm("Excluir este item?")) {
-                    await deleteDoc(doc(db, "biblioteca", id));
-                }
-            };
-        });
+function watchResources() {
+  if (!profile?.codigoSala) return;
+  const resourcesQuery = query(collection(db, "biblioteca"), where("codigoSala", "==", profile.codigoSala));
+  onSnapshot(resourcesQuery, (snapshot) => {
+    linksArea?.replaceChildren();
+    filesArea?.replaceChildren();
+    snapshot.forEach((item) => {
+      const data = item.data();
+      if (!["link", "arquivo"].includes(data.tipo) || !data.url) return;
+      const resource = renderResource(data, item.id);
+      (data.tipo === "link" ? linksArea : filesArea)?.appendChild(resource);
     });
+  }, (error) => {
+    console.error("Erro ao carregar a biblioteca:", error);
+    alert("Não foi possível carregar a biblioteca.");
+  });
 }
+
+requireCoordinator((authenticatedUser, currentProfile) => {
+  user = authenticatedUser;
+  profile = currentProfile;
+  fillHeader(profile);
+  watchResources();
+});

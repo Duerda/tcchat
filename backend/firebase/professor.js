@@ -1,9 +1,12 @@
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, getDoc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-import { auth, db } from "/backend/firebase/config.js";
+import { auth, db } from "./config.js";
+import { appUrl, navigate } from "../navigation.js";
 
-export const LOGIN_PATH = "/pages/auth/Login/Log-aluno.html";
+export const LOGIN_PATH = appUrl("pages/auth/Login/Log-aluno.html");
 export const PROFESSOR_TYPES = new Set(["professor", "coordenador"]);
+
+export { appUrl, navigate };
 
 export function redirectLogin() {
   window.location.href = LOGIN_PATH;
@@ -11,10 +14,6 @@ export function redirectLogin() {
 
 export function logout() {
   return signOut(auth).finally(redirectLogin);
-}
-
-export function navigate(path) {
-  window.location.href = path;
 }
 
 export async function getProfile(uid) {
@@ -28,23 +27,35 @@ export function watchProfile(uid, callback) {
   });
 }
 
-export function requireProfessor(callback) {
+export function requireRole(allowedTypes, callback) {
   return onAuthStateChanged(auth, async (user) => {
     if (!user) return redirectLogin();
     try {
       const profile = await getProfile(user.uid);
-      if (!profile || !PROFESSOR_TYPES.has(profile.tipo) || profile.acessoAtivo === false) {
-        if (profile?.acessoAtivo === false) await signOut(auth);
-        alert("Acesso negado: esta área é exclusiva para professores e coordenadores.");
+      if (!profile || !allowedTypes.has(profile.tipo) || profile.acessoAtivo === false) {
+        await signOut(auth);
+        alert("Acesso negado: seu perfil não tem permissão para esta área ou está inativo.");
         return redirectLogin();
       }
-      callback(user, profile);
+      await callback(user, profile);
     } catch (error) {
       console.error("Não foi possível carregar o perfil:", error);
       alert("Não foi possível validar seu acesso. Tente novamente.");
       redirectLogin();
     }
   });
+}
+
+export function requireProfessor(callback) {
+  return requireRole(PROFESSOR_TYPES, callback);
+}
+
+export function requireCoordinator(callback) {
+  return requireRole(new Set(["coordenador"]), callback);
+}
+
+export function requireStudent(callback) {
+  return requireRole(new Set(["aluno"]), callback);
 }
 
 export function fillHeader(profile) {

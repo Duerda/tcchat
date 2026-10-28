@@ -1,23 +1,20 @@
-import { auth, db } from "../../backend/firebase/config.js";
+import { navigate } from "../../backend/navigation.js";
+import { logout, requireStudent } from "../../backend/firebase/professor.js";
 import { aplicarAparenciaAluno } from "./aparencia.js";
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { db } from "../../backend/firebase/config.js";
 
-const LOGIN = "/pages/auth/Login/Log-aluno.html";
 let resolverAluno;
 window.alunoReady = new Promise((resolve) => { resolverAluno = resolve; });
 
-window.Painel = () => (location.href = "/pages/Aluno/Turma/index.html");
-window.Forum = () => (location.href = "/pages/Aluno/Forum/Fo.html");
-window.Avisos = () => (location.href = "/pages/Aluno/Forum/av.html");
-window.Atividades = () => (location.href = "/pages/Aluno/Grupos/gp.ativ.html");
-window.Biblioteca = () => (location.href = "/pages/Aluno/Grupos/gp.link.html");
-window.Inspiracoes = () => (location.href = "/pages/Aluno/Inspiracoes/Inspiracoes.html");
-window.Configuracoes = () => (location.href = "/pages/Aluno/Configuracoes/Config.html");
-window.Voltar = async () => {
-  try { await signOut(auth); }
-  finally { location.href = LOGIN; }
-};
+window.Painel = () => navigate("/pages/Aluno/Turma/index.html");
+window.Forum = () => navigate("/pages/Aluno/Forum/Fo.html");
+window.Avisos = () => navigate("/pages/Aluno/Forum/av.html");
+window.Atividades = () => navigate("/pages/Aluno/Grupos/gp.ativ.html");
+window.Biblioteca = () => navigate("/pages/Aluno/Grupos/gp.link.html");
+window.Inspiracoes = () => navigate("/pages/Aluno/Inspiracoes/Inspiracoes.html");
+window.Configuracoes = () => navigate("/pages/Aluno/Configuracoes/Config.html");
+window.Voltar = logout;
 window.MeuGrupo = async () => {
   const sessao = await window.alunoReady;
   if (!sessao) return;
@@ -27,33 +24,15 @@ window.MeuGrupo = async () => {
       alert("Seu grupo ainda não foi criado ou você ainda não foi associado a ele.");
       return;
     }
-    location.href = "/pages/Aluno/Grupos/gp.chat.html";
+    navigate("/pages/Aluno/Grupos/gp.chat.html");
   } catch (error) {
     console.error("Erro ao verificar o grupo do aluno:", error);
     alert("Não foi possível verificar seu grupo. Tente novamente.");
   }
 };
 
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    resolverAluno(null);
-    location.href = LOGIN;
-    return;
-  }
+requireStudent(async (user, profile) => {
   try {
-    const users = await getDocs(query(collection(db, "usuarios"), where("uid", "==", user.uid)));
-    const profile = users.docs[0]?.data();
-    if (!profile || profile.tipo !== "aluno" || profile.acessoAtivo === false) {
-      resolverAluno(null);
-      if (profile?.acessoAtivo === false) {
-        await signOut(auth);
-        alert("O acesso desta conta foi revogado. Procure a coordenação.");
-      } else {
-        alert("Acesso permitido somente para contas de aluno.");
-      }
-      location.href = LOGIN;
-      return;
-    }
     const session = { user, profile };
     window.perfilAluno = profile;
     [

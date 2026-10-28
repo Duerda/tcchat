@@ -3,10 +3,10 @@
 // Função de navegação para as páginas específicas
 function irPara(tipo) {
     if (tipo === 'todos') {
-        window.location.href = "/pages/Aluno/Inspiracoes/Inspiracoes.html";
+        window.location.href = "Inspiracoes.html";
     } else {
         const nomeArquivo = tipo.charAt(0).toUpperCase() + tipo.slice(1);
-        window.location.href = "/pages/Aluno/Inspiracoes/Inspiracoes-" + nomeArquivo + ".html";
+        window.location.href = "Inspiracoes-" + nomeArquivo + ".html";
     }
 }
 

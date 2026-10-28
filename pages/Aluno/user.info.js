@@ -1,50 +1,22 @@
-import { auth, db } from "../../backend/firebase/config.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { requireStudent } from "../../backend/firebase/professor.js";
 
-onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-        window.location.href = "/pages/auth/Login/Log-aluno.html";
-        return;
-    }
+requireStudent((_user, data) => {
+  document.body.classList.add("pronto");
 
-    try {
-        const userDoc = await getDoc(doc(db, "usuarios", user.uid));
-        if (!userDoc.exists() || userDoc.data().tipo !== "aluno") {
-            alert("Acesso negado: Esta área é exclusiva para alunos.");
-            window.location.href = "/pages/Auth/Login/Log-aluno.html";
-            return;
-        }
+  const name = document.querySelector(".Usuario h4");
+  if (name) name.textContent = data.nome || "Usuário";
 
-        const data = userDoc.data();
+  const course = document.querySelector(".Usuario h5");
+  if (course) course.textContent = data.curso || "Sem curso";
 
-        // Libera a página (se o CSS usar visibility: hidden)
-        document.body.classList.add("pronto");
-
-        // Preenche nome
-        const nomeEl = document.querySelector(".Usuario h4");
-        if (nomeEl) nomeEl.textContent = data.nome || "Usuário";
-
-        // Preenche curso
-        const cursoEl = document.querySelector(".Usuario h5");
-        if (cursoEl) cursoEl.textContent = data.curso || "Sem Curso";
-
-        // Preenche iniciais
-        const iniciaisEl = document.querySelector("#foto span");
-        if (iniciaisEl) {
-            if (data.iniciais) {
-                iniciaisEl.textContent = data.iniciais;
-            } else if (data.nome) {
-                iniciaisEl.textContent = data.nome
-                    .split(" ")
-                    .map(w => w[0])
-                    .join("")
-                    .slice(0, 2)
-                    .toUpperCase();
-            }
-        }
-    } catch (err) {
-        console.error("Erro ao carregar dados do aluno:", err);
-        document.body.classList.add("pronto");
-    }
+  const initials = document.querySelector("#foto span");
+  if (initials) {
+    initials.textContent = data.iniciais || (data.nome || "")
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((part) => part[0])
+      .slice(0, 2)
+      .join("")
+      .toUpperCase();
+  }
 });
