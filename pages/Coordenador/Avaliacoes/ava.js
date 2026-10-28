@@ -1,6 +1,7 @@
 import { addDoc, collection, onSnapshot, query, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { db } from "../../../backend/firebase/config.js";
 import { fillHeader, logout, navigate, requireCoordinator } from "../../../backend/firebase/professor.js";
+import { validateEvaluation } from "../../../backend/auth/validation.js";
 
 window.Voltar = logout;
 window.VisaoGeral = () => navigate("../Coord-Index.html");
@@ -94,11 +95,18 @@ requireCoordinator((user, profile) => {
     const group = groupsById.get(groupId);
     const grade = Number(noteInput?.value);
     const feedback = feedbackInput?.value.trim();
-    if (!group || !profile.codigoSala || group.codigoSala !== profile.codigoSala) {
+    const invalidField = validateEvaluation({
+      groupId,
+      group,
+      roomCode: profile.codigoSala,
+      grade: noteInput?.value,
+      feedback,
+    });
+    if (invalidField === "group") {
       alert("Selecione um grupo válido da sua turma.");
       return;
     }
-    if (!Number.isFinite(grade) || grade < 0 || grade > 10 || !feedback) {
+    if (invalidField) {
       alert("Informe uma nota entre 0 e 10 e escreva o feedback.");
       return;
     }

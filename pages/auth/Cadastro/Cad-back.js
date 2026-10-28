@@ -2,18 +2,7 @@ import { auth, db }
 from "../../../backend/firebase/config.js";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { collection, doc, getDoc, getDocs, increment, query, serverTimestamp, setDoc, updateDoc, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-
-// Lista oficial de cursos e seus códigos
-const cursosValidos = {
-    "DS": "Desenvolvimento de Sistemas",
-    "DI": "Design de Interiores",
-    "HOSP": "Hospedagem",
-    "IPI": "Informática para Internet - MTEC",
-    "MA": "Meio Ambiente",
-    "SEC": "Secretariado",
-    "ADM": "Administração",
-    "INF": "Informática - MTEC"
-};
+import { getAccountType, parseClassCode } from "../../../backend/auth/validation.js";
 
 //Navegação
 window.Entraralpr = function () {
@@ -42,17 +31,14 @@ async function Formulario(event) {
     }
 
     // 2. Validação do Código (Ex: DS-1, ADM-3)
-    const partesCodigo = codigoDigitado.split("-");
-    const sigla = partesCodigo[0];
-    const ano = partesCodigo[1];
-
-    if (!cursosValidos[sigla] || !["1", "2", "3"].includes(ano)) {
+    const classInfo = parseClassCode(codigoDigitado);
+    if (!classInfo) {
         alert("Código de sala inválido! Use o formato SIGLA-ANO (Ex: DS-1, ADM-3).\n\nSiglas válidas: DS, DI, HOSP, IPI, MA, SEC, ADM, INF");
         document.getElementById("Codigo-da-pessoa").style.border = "1px solid red";
         return;
     }
 
-    const nomeCursoCompleto = cursosValidos[sigla];
+    const { code: codigoSala, courseName: nomeCursoCompleto, year: ano } = classInfo;
 
     // 3. Validação de senha
     if (senha !== repitaSenha) {
@@ -66,23 +52,9 @@ async function Formulario(event) {
     }
 
     // 4. Definir tipo de usuário
-    const partesEmail = email.split("@");
-    if (partesEmail.length !== 2 || !partesEmail[0] || !partesEmail[1]) {
-        alert("Digite um e-mail válido");
-        document.getElementById("Email").focus();
-        return;
-    }
-
-    const dominio = partesEmail[1];
-    let tipo = "";
-    if (dominio === "aluno.cps.sp.gov.br") {
-        tipo = "aluno";
-    } else if (dominio === "professor.cps.sp.gov.br") {
-        tipo = "professor";
-    } else if (dominio === "cps.sp.gov.br") {
-        tipo = "coordenador";
-    } else {
-        alert(`O domínio "@${dominio}" não é aceito. Use exatamente @aluno.cps.sp.gov.br, @professor.cps.sp.gov.br ou @cps.sp.gov.br.`);
+    const tipo = getAccountType(email);
+    if (!tipo) {
+        alert("Digite um e-mail válido com domínio institucional autorizado.");
         document.getElementById("Email").focus();
         return;
     }
@@ -157,7 +129,7 @@ async function Formulario(event) {
         };
 
         // O código da sala é importante para todos os usuários (vincula o professor/coordenador à sua turma)
-        userData.codigoSala = codigoDigitado;
+        userData.codigoSala = codigoSala;
         
         if (tipo === "aluno") {
             userData.curso = nomeCursoCompleto;
