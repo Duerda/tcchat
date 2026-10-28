@@ -5,6 +5,7 @@ import {
   serverTimestamp, updateDoc, where, writeBatch,
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { appUrl, requireCoordinator } from "../../backend/firebase/professor.js";
+import { deleteGroupData } from "../../backend/firebase/delete-group.js";
 
 const LOGIN = appUrl("pages/auth/Login/Log-aluno.html");
 const COURSE_NAMES = {
@@ -95,10 +96,17 @@ function loadDashboard() {
         getDocs(collection(db, "grupos", item.id, "entregas")),
         getDocs(collection(db, "grupos", item.id, "submissoes")),
       ]);
-      const submittedTaskIds = new Set(submissions.docs.map((submission) => submission.data().atividadeId));
+      const group = item.data();
+      const memberIds = [...new Set(Array.isArray(group.membros) ? group.membros : [])];
+      const submittedPairs = new Set(submissions.docs.map((submission) => {
+        const data = submission.data();
+        return JSON.stringify([data.alunoUid, data.atividadeId]);
+      }));
       const assignments = tasks.docs.filter((task) => task.data().tipo !== "envio");
-      pending += assignments.filter((task) => !submittedTaskIds.has(task.id)).length;
-      groupActivity.push({ data: item.data(), taskCount: assignments.length, submissionCount: submissions.size });
+      assignments.forEach((task) => {
+        pending += memberIds.filter((memberId) => !submittedPairs.has(JSON.stringify([memberId, task.id]))).length;
+      });
+      groupActivity.push({ data: group, taskCount: assignments.length, submissionCount: submissions.size });
     }
     if (stats[5]) stats[5].textContent = pending;
     const courses = document.getElementById("ListaCursos");
@@ -335,12 +343,11 @@ window.fecharModalExclusao = () => { const modal = document.getElementById("moda
 window.confirmarExclusao = async () => {
   if (!groupToDelete) return;
   try {
-    const groupRef = doc(db, "grupos", groupToDelete);
-    const groupSnapshot = await getDoc(groupRef);
-    const batch = writeBatch(db);
-    (groupSnapshot.data()?.membros || []).forEach((memberId) => batch.update(doc(db, "usuarios", memberId), { grupoId: "", grupoNome: "" }));
-    batch.delete(groupRef);
-    await batch.commit();
+    const deleted = await deleteGroupData(groupToDelete);
+    if (!deleted) {
+      alert("Grupo não encontrado.");
+      return;
+    }
     window.fecharModalExclusao();
   }
   catch (error) { reportError("Não foi possível excluir o grupo.", error); }

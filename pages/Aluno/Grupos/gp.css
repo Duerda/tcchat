@@ -29,6 +29,19 @@
     background: var(--cor-fundo-secundario);
 }
 .chat-form { grid-template-columns: 1fr auto; }
+.atividade-card {
+    box-sizing: border-box;
+    width: 95%;
+    margin-top: 20px;
+    padding: 18px;
+    border: 1px solid var(--cor-borda);
+    border-left: 4px solid var(--cor-azul);
+    border-radius: 12px;
+    color: var(--cor-texto);
+    background: var(--cor-fundo-secundario);
+}
+.atividade-card h2 { margin: 0 0 12px; font-size: 22px; font-weight: 500; }
+.atividade-card p { color: var(--cor-texto-secundario); }
 .chat-form input, .entrega-form input, .entrega-form textarea,
 .link-form input, .link-form textarea {
     box-sizing: border-box;

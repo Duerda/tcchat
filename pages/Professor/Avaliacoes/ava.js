@@ -54,9 +54,10 @@ requireProfessor((user, profile) => {
   form?.addEventListener("submit", async (event) => {
     event.preventDefault();
     const groupId = groupSelect?.value;
-    const value = Number(note?.value);
+    const gradeText = note?.value.trim();
+    const value = Number(gradeText);
     const text = feedback?.value.trim();
-    if (!groupId || !Number.isFinite(value) || value < 0 || value > 10 || !text) {
+    if (!groupId || !gradeText || !Number.isFinite(value) || value < 0 || value > 10 || !text) {
       alert("Selecione um grupo, informe uma nota entre 0 e 10 e escreva o feedback.");
       return;
     }
