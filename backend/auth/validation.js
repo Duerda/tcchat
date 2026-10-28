@@ -23,6 +23,11 @@ export function getAccountType(email) {
   return EMAIL_TYPES[parts[1]] || null;
 }
 
+export function hasTwoPartEmailName(email) {
+  const localPart = String(email || "").trim().toLowerCase().split("@")[0] || "";
+  return /^[a-z0-9]+\.[a-z0-9]+$/.test(localPart);
+}
+
 export function parseClassCode(value) {
   const code = String(value || "").trim().toUpperCase();
   const match = /^([A-Z]+)-([123])$/.exec(code);

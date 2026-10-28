@@ -373,5 +373,11 @@ background: var(--cor-fundo-secundario);
 }
 
 .card-aviso-meta small {
-    color: #7a8699;
+    color: #ffffff;
+}
+
+.card-aviso > .card-aviso-meta {
+    display: block;
+    color: #ffffff;
+    margin-top: 15px;
 }

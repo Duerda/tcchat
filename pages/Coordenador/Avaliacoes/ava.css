@@ -35,6 +35,7 @@
 body {
     margin: 0px;
     padding: 0px;
+    color: var(--cor-texto);
 }
 
 #Geral {
@@ -274,6 +275,7 @@ div {
 #conteudo {
     flex: 1;
     background-color: var(--cor-fundo-principal);
+    color: var(--cor-texto);
     padding: 20px;
     padding-top: 18px;
     padding-left: 40px;

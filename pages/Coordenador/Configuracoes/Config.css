@@ -17,7 +17,7 @@
 }
 
 #Geral { display: flex; }
-body   { margin: 0; padding: 0; }
+body   { margin: 0; padding: 0; color: var(--cor-texto); }
 
 /* ===== LATERAL ===== */
 #lateral {
@@ -167,6 +167,7 @@ div {
 #conteudo {
     flex: 1;
     background-color: var(--cor-fundo-principal);
+    color: var(--cor-texto);
     padding: 20px 20px 20px 40px;
     overflow-y: auto;
 }

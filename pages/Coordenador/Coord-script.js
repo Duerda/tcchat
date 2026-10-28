@@ -19,6 +19,7 @@ let stopDoubts;
 let stopNotices;
 let stopGroups;
 let stopUsers;
+let stopRoomSources = [];
 let groupToDelete;
 
 window.Voltar = async () => { await signOut(auth); window.location.href = LOGIN; };
@@ -212,26 +213,103 @@ function renderUserRows(tbody, records, role) {
   tbody.replaceChildren();
   if (!records.length) {
     const row = document.createElement("tr");
-    row.innerHTML = '<td colspan="5">Nenhum usuário encontrado nesta turma.</td>';
+    row.innerHTML = '<td colspan="5">Nenhum usuário encontrado.</td>';
     tbody.appendChild(row);
     return;
   }
   records.forEach((record) => {
     const data = record.data();
     const row = document.createElement("tr");
-    const status = data.acessoAtivo === false ? "Acesso revogado" : data.ultimoAcesso?.toDate?.().toLocaleString("pt-BR") || "Ainda não entrou";
-    row.innerHTML = `<td>${safe(data.nome || data.email || "Usuário")}</td><td>${safe(data.curso || profile.curso || "")}</td><td>${safe(data.grupoNome || "—")}</td><td>${safe(status)}</td><td><button class="btn-tabela vermelho" data-user="${record.id}">${data.acessoAtivo === false ? "Reativar" : "Revogar acesso"}</button></td>`;
-    row.querySelector("[data-user]")?.addEventListener("click", () => toggleUserAccess(record.id, data.acessoAtivo !== false));
+    const status = data.usuarioRemovido
+      ? "Removido do sistema"
+      : data.acessoAtivo === false
+        ? "Acesso revogado"
+        : data.ultimoAcesso?.toDate?.().toLocaleString("pt-BR") || "Ainda não entrou";
+    const actions = data.usuarioRemovido
+      ? `<button class="btn-tabela" data-restore="${record.id}">Restaurar</button>`
+      : `<button class="btn-tabela" data-edit="${record.id}">Editar</button><button class="btn-tabela vermelho" data-remove="${record.id}">Excluir</button>`;
+    row.innerHTML = `<td>${safe(data.nome || data.email || "Usuário")}</td><td>${safe(data.curso || "")}</td><td>${safe(data.grupoNome || "—")}</td><td>${safe(status)}</td><td>${actions}</td>`;
+    row.querySelector("[data-edit]")?.addEventListener("click", () => editUser(record.id, data));
+    row.querySelector("[data-remove]")?.addEventListener("click", () => removeUser(record.id, data));
+    row.querySelector("[data-restore]")?.addEventListener("click", () => restoreUser(record.id));
     tbody.appendChild(row);
   });
+}
+
+async function editUser(id, currentData) {
+  const name = prompt("Nome do usuário:", currentData.nome || "")?.trim();
+  if (!name) return;
+  try {
+    const userRef = doc(db, "usuarios", id);
+    const batch = writeBatch(db);
+    const initials = name.split(/\s+/).map((part) => part[0]).slice(0, 2).join("").toUpperCase();
+    batch.update(userRef, { nome: name, iniciais: initials });
+    if (currentData.grupoId) {
+      const groupRef = doc(db, "grupos", currentData.grupoId);
+      const groupSnapshot = await getDoc(groupRef);
+      if (groupSnapshot.exists()) {
+        const group = groupSnapshot.data();
+        const oldName = currentData.nome || currentData.email || "";
+        const replaceName = (names = []) => names.map((item) => item === oldName ? name : item);
+        batch.update(groupRef, {
+          integrantes: replaceName(group.integrantes || []),
+          nomesMembros: replaceName(group.nomesMembros || group.integrantes || []),
+        });
+      }
+    }
+    await batch.commit();
+  } catch (error) { reportError("Não foi possível editar o usuário.", error); }
+}
+
+async function removeUser(id, currentData) {
+  const name = currentData.nome || currentData.email || "este usuário";
+  if (!confirm(`Excluir ${name} do sistema? O acesso será desativado e o cadastro poderá ser restaurado depois.`)) return;
+  try {
+    const updates = {
+      usuarioRemovido: true,
+      acessoAtivo: false,
+      removidoEm: serverTimestamp(),
+      removidoPor: user.uid,
+      grupoId: null,
+      grupoNome: null,
+    };
+    const batch = writeBatch(db);
+    batch.update(doc(db, "usuarios", id), updates);
+    if (currentData.grupoId) {
+      const groupRef = doc(db, "grupos", currentData.grupoId);
+      const groupSnapshot = await getDoc(groupRef);
+      if (groupSnapshot.exists()) {
+        const group = groupSnapshot.data();
+        const memberIds = (group.membros || []).filter((memberId) => memberId !== id);
+        const oldName = currentData.nome || currentData.email || "";
+        const memberNames = (group.integrantes || group.nomesMembros || []).filter((memberName) => memberName !== oldName);
+        batch.update(groupRef, { membros: memberIds, integrantes: memberNames, nomesMembros: memberNames });
+      }
+    }
+    await batch.commit();
+  } catch (error) { reportError("Não foi possível excluir o usuário.", error); }
+}
+
+async function restoreUser(id) {
+  if (!confirm("Restaurar este usuário e reativar o acesso?")) return;
+  try {
+    await updateDoc(doc(db, "usuarios", id), {
+      usuarioRemovido: false,
+      acessoAtivo: true,
+      removidoEm: null,
+      removidoPor: null,
+    });
+  } catch (error) { reportError("Não foi possível restaurar o usuário.", error); }
 }
 
 window.gerarCodigo = async (tipo) => {
   const sala = requestRoomCode();
   if (!sala) return;
-  const expiry = prompt("Validade opcional (AAAA-MM-DD). Deixe vazio para não expirar:")?.trim();
-  if (expiry && !/^\d{4}-\d{2}-\d{2}$/.test(expiry)) return alert("Informe a data no formato AAAA-MM-DD.");
-  const expiryDate = expiry ? new Date(`${expiry}T23:59:59`) : null;
+  const expiry = prompt("Validade opcional (DD-MM-AAAA). Deixe vazio para não expirar:")?.trim();
+  if (expiry && !/^\d{2}-\d{2}-\d{4}$/.test(expiry)) return alert("Informe a data no formato DD-MM-AAAA.");
+  const [day, month, year] = expiry ? expiry.split("-").map(Number) : [];
+  const expiryDate = expiry ? new Date(year, month - 1, day, 23, 59, 59) : null;
+  if (expiryDate && (expiryDate.getFullYear() !== year || expiryDate.getMonth() !== month - 1 || expiryDate.getDate() !== day)) return alert("Informe uma data válida no formato DD-MM-AAAA.");
   if (expiryDate && (Number.isNaN(expiryDate.getTime()) || expiryDate.getTime() < Date.now())) return alert("A validade deve ser uma data futura válida.");
   try {
     await addDoc(collection(db, "codigosAcesso"), {
@@ -255,14 +333,12 @@ async function revokeCode(id) {
   catch (error) { reportError("Não foi possível revogar o código.", error); }
 }
 
-async function toggleUserAccess(id, currentlyActive) {
-  const action = currentlyActive ? "revogar o acesso" : "reativar o acesso";
-  if (!confirm(`Confirma ${action} deste usuário?`)) return;
-  try { await updateDoc(doc(db, "usuarios", id), { acessoAtivo: !currentlyActive, acessoAtualizadoEm: serverTimestamp() }); }
-  catch (error) { reportError("Não foi possível atualizar o acesso do usuário.", error); }
-}
-
 function loadGroups() {
+  if (document.getElementById("abas-turmas") && document.getElementById("painel-turmas")) {
+    loadGroupsByRoom();
+    return;
+  }
+
   const container = document.getElementById("listaGruposCoord") || document.getElementById("GT");
   if (!container) return;
   container.replaceChildren();
@@ -290,6 +366,110 @@ function loadGroups() {
       container.appendChild(card);
     });
   }, (error) => reportError("Não foi possível carregar grupos da turma.", error));
+}
+
+function loadGroupsByRoom() {
+  const tabs = document.getElementById("abas-turmas");
+  const panels = document.getElementById("painel-turmas");
+  const sources = { users: [], groups: [], accessCodes: [] };
+  let activeRoom = "";
+
+  const render = () => {
+    const roomCodes = new Set();
+    const addRoom = (value) => {
+      const code = String(value || "").trim().toUpperCase();
+      if (/^(DS|DI|HOSP|IPI|MA|SEC|ADM|INF)-[123]$/.test(code)) roomCodes.add(code);
+    };
+    sources.users.forEach((item) => {
+      if (["aluno", "professor"].includes(item.tipo)) addRoom(item.codigoSala);
+    });
+    sources.groups.forEach((item) => addRoom(item.data.codigoSala));
+    sources.accessCodes.forEach((item) => addRoom(item.codigoSala || item.codigo));
+
+    const rooms = [...roomCodes].sort((a, b) => a.localeCompare(b, "pt-BR", { numeric: true }));
+    if (!rooms.includes(activeRoom)) activeRoom = rooms[0] || "";
+    tabs.replaceChildren();
+    panels.replaceChildren();
+
+    if (!rooms.length) {
+      panels.textContent = "Nenhuma turma cadastrada. Gere um código de acesso ou cadastre usuários para uma turma.";
+      return;
+    }
+
+    rooms.forEach((room) => {
+      const key = `turma-${room.replace(/[^A-Z0-9_-]/g, "-")}`;
+      const groupRecords = sources.groups.filter((item) => item.data.codigoSala === room);
+      const courseCode = room.split("-")[0];
+      const courseName = COURSE_NAMES[courseCode] || courseCode;
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `aba${room === activeRoom ? " ativa" : ""}`;
+      button.id = `aba-${key}`;
+      button.setAttribute("role", "tab");
+      button.setAttribute("aria-selected", String(room === activeRoom));
+      button.textContent = `${room} · ${courseName} · ${groupRecords.length} grupo(s)`;
+      button.addEventListener("click", () => {
+        activeRoom = room;
+        window.mudarAba(key);
+        tabs.querySelectorAll("[role='tab']").forEach((tab) => tab.setAttribute("aria-selected", String(tab === button)));
+      });
+      tabs.appendChild(button);
+
+      const panel = document.createElement("section");
+      panel.className = "conteudo-aba";
+      panel.id = `tab-${key}`;
+      panel.setAttribute("role", "tabpanel");
+      panel.style.display = room === activeRoom ? "block" : "none";
+      const groupList = document.createElement("div");
+      groupList.className = "listaGruposCoord";
+
+      if (!groupRecords.length) {
+        groupList.textContent = "Ainda não há grupos nesta turma.";
+      } else {
+        groupRecords.forEach(({ id, data: group }) => {
+          const card = document.createElement("article");
+          card.className = "GT";
+          card.dataset.id = id;
+          card.innerHTML = `<h2>${safe(group.nome || "Grupo sem nome")}</h2><h3>${safe(group.tema || group.proposta || "Tema não informado")}</h3><p>${safe(group.codigoSala || "Turma não informada")}</p><p>${safe(group.descricao || "")}</p><p>Integrantes: ${safe((group.integrantes || group.nomesMembros || []).join(", ") || "Ainda não associados")}</p><p>Orientador: ${safe(group.orientador || "A definir")}</p><label>Status <select class="select-status"><option value="no-prazo">No prazo</option><option value="atencao">Atenção</option><option value="atraso">Atrasado</option></select></label><div><button class="btn-tabela" data-add-member>+ Membro</button><button class="btn-tabela" data-advisor>Orientador</button><button class="btn-tabela vermelho" data-delete>Excluir</button></div>`;
+          const statusSelect = card.querySelector("select");
+          statusSelect.value = group.status || "no-prazo";
+          statusSelect.addEventListener("change", () => updateDoc(doc(db, "grupos", id), { status: statusSelect.value }));
+          card.querySelector("[data-add-member]").addEventListener("click", () => addGroupMember(id));
+          card.querySelector("[data-advisor]").addEventListener("click", () => assignAdvisor(id));
+          card.querySelector("[data-delete]").addEventListener("click", () => window.excluirGrupo(id, group.nome));
+          groupList.appendChild(card);
+        });
+      }
+
+      panel.appendChild(groupList);
+      panels.appendChild(panel);
+    });
+  };
+
+  stopRoomSources.forEach((stop) => stop());
+  stopRoomSources = [
+    onSnapshot(collection(db, "usuarios"), (snapshot) => {
+      sources.users = snapshot.docs.map((item) => item.data());
+      render();
+    }, (error) => {
+      console.error("Não foi possível carregar as turmas dos usuários:", error);
+      panels.textContent = "Não foi possível carregar as turmas.";
+    }),
+    onSnapshot(collection(db, "grupos"), (snapshot) => {
+      sources.groups = snapshot.docs.map((item) => ({ id: item.id, data: item.data() }));
+      render();
+    }, (error) => {
+      console.error("Não foi possível carregar grupos:", error);
+      panels.textContent = "Não foi possível carregar os grupos.";
+    }),
+    onSnapshot(collection(db, "codigosAcesso"), (snapshot) => {
+      sources.accessCodes = snapshot.docs.map((item) => item.data());
+      render();
+    }, (error) => {
+      console.error("Não foi possível carregar os códigos de acesso:", error);
+    }),
+  ];
+  window.addEventListener("pagehide", () => stopRoomSources.forEach((stop) => stop()), { once: true });
 }
 
 window.abrirModalCriarGrupo = () => { const modal = document.getElementById("modal-criar-grupo"); if (modal) modal.style.display = "flex"; };

@@ -54,81 +54,8 @@
             <button class="btn-tabela" style="margin-left:12px;" onclick="configurarLimites()">Alterar limites</button>
         </div>
 
-        <!-- ABAS POR CURSO -->
-        <div id="EnCad">
-            <button class="aba ativa" id="aba-ds"  onclick="mudarAba('ds')"> DS — 8 grupos</button>
-            <button class="aba"       id="aba-tma" onclick="mudarAba('tma')"> TMA — 0 grupos</button>
-        </div>
-
-        <!-- DS -->
-        <div class="conteudo-aba" id="tab-ds">
-            <div id="listaGruposCoord">
-
-                <div class="GT">
-                    <div class="sub-title-gp">
-                        <div style="display:flex; justify-content:space-between; padding: 0 20px;">
-                            <h3>Grupo 1 · 4/5</h3>
-                            <h1 style="margin:0; font-size:13px;">No Prazo</h1>
-                        </div>
-                        <h2>AppGenius</h2>
-                        <p>Sistema de gestão para pequenos negócios</p>
-                        <div class="GT-int">
-                            <hr class="linha-decorativa">
-                            <div style="display:flex;"><div class="BL"></div><p style="color:#7a8699;">Rafael Moura (Líder)</p></div>
-                            <div style="display:flex;"><div class="BL" style="background:#3d4d61;"></div><p style="color:#7a8699;">Julia Santos</p></div>
-                            <div style="display:flex;"><div class="BL" style="background:#3d4d61;"></div><p style="color:#7a8699;">Ana Lima</p></div>
-                            <div style="display:flex;"><div class="BL" style="background:#3d4d61;"></div><p style="color:#7a8699;">Lucas Ferreira</p></div>
-                        </div>
-                        <div id="Tcc-conteudo-inferior">
-                            <div id="progresso">No Prazo</div>
-                            <div id="Orientador">Prof. Carlos Mendes</div>
-                        </div>
-                        <div style="display:flex; gap:7px; padding: 0 20px 15px;">
-                            <button class="btn-tabela" onclick="adicionarMembro(this)">+ Membro</button>
-                            <button class="btn-tabela" onclick="definirOrientador(this)">Orientador</button>
-                            <button class="btn-tabela vermelho" onclick="excluirGrupo(this)">Excluir</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="GT">
-                    <div class="sub-title-gp">
-                        <div style="display:flex; justify-content:space-between; padding: 0 20px;">
-                            <h3>Grupo 2 · 3/5</h3>
-                            <h1 style="margin:0; font-size:13px; color:#f87171;">Atrasado</h1>
-                        </div>
-                        <h2>HealthApp</h2>
-                        <p>App de monitoramento de saúde pessoal</p>
-                        <div class="GT-int">
-                            <hr class="linha-decorativa">
-                            <div style="display:flex;"><div class="BL"></div><p style="color:#7a8699;">Marcos Lima (Líder)</p></div>
-                            <div style="display:flex;"><div class="BL" style="background:#3d4d61;"></div><p style="color:#7a8699;">Sandra Costa</p></div>
-                            <div style="display:flex;"><div class="BL" style="background:#3d4d61;"></div><p style="color:#7a8699;">Paulo Henrique</p></div>
-                        </div>
-                        <div id="Tcc-conteudo-inferior">
-                            <div id="progresso" style="background:rgba(248,113,113,.12); color:#f87171;">Atrasado</div>
-                            <div id="Orientador">Prof. Carlos Mendes</div>
-                        </div>
-                        <div style="display:flex; gap:7px; padding: 0 20px 15px;">
-                            <button class="btn-tabela" onclick="adicionarMembro(this)">+ Membro</button>
-                            <button class="btn-tabela" onclick="definirOrientador(this)">Orientador</button>
-                            <button class="btn-tabela vermelho" onclick="excluirGrupo(this)">Excluir</button>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- TMA -->
-        <div class="conteudo-aba" id="tab-tma" style="display:none;">
-            <div class="Vazio">
-                <div style="font-size:36px; margin-bottom:12px;"></div>
-                <h3 style="color:#e4e9f4; margin:0 0 7px;">Nenhum grupo em TMA</h3>
-                <p style="color:#7a8699; font-size:13px; margin:0 0 16px;">Nenhum aluno se cadastrou com código TMA ainda.</p>
-                <button class="btn-acao" onclick="criarGrupo()">+ Criar grupos TMA</button>
-            </div>
-        </div>
+        <div id="abas-turmas" role="tablist" aria-label="Turmas"></div>
+        <div id="painel-turmas"></div>
 
     </div>
 </div>

@@ -2,7 +2,7 @@ import { auth, db }
 from "../../../backend/firebase/config.js";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { collection, doc, getDoc, getDocs, increment, query, serverTimestamp, setDoc, updateDoc, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-import { COORDINATOR_ACCESS_CODE, getAccountType, parseClassCode } from "../../../backend/auth/validation.js";
+import { COORDINATOR_ACCESS_CODE, getAccountType, hasTwoPartEmailName, parseClassCode } from "../../../backend/auth/validation.js";
 
 //Navegação
 window.Entraralpr = function () {
@@ -27,6 +27,12 @@ async function Formulario(event) {
     // 1. Validação de campos vazios
     if (!nome || !email || !senha || !repitaSenha || !codigoDigitado) {
         alert("Preencha todos os campos!");
+        return;
+    }
+
+    if (!hasTwoPartEmailName(email)) {
+        alert("O e-mail deve ter exatamente duas partes antes do @, separadas por um ponto. Ex.: jose.silva@aluno.cps.sp.gov.br ou coord.1@cps.sp.gov.br.");
+        document.getElementById("Email").focus();
         return;
     }
 

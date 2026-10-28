@@ -85,6 +85,7 @@ function renderNotice(item) {
   const body = document.createElement("p");
   body.textContent = notice.conteudo || "";
   const meta = document.createElement("small");
+  meta.className = "card-aviso-meta";
   const date = notice.data?.toDate ? notice.data.toDate().toLocaleDateString("pt-BR") : "Agora";
   meta.textContent = `Postado por: ${notice.autor || "Professor"} · ${date}`;
   card.append(title, body, meta);
@@ -94,9 +95,12 @@ function renderNotice(item) {
 function watchNotices() {
   const noticesQuery = query(collection(db, "avisos"), where("codigoSala", "==", profile.codigoSala));
   onSnapshot(noticesQuery, (snapshot) => {
-    content?.querySelectorAll(".card-aviso").forEach((card) => card.remove());
+    const list = document.getElementById("lista-avisos");
+    const emptyMessage = document.getElementById("avisos-vazio");
+    list?.replaceChildren();
     const notices = [...snapshot.docs].sort((a, b) => (b.data().data?.toMillis?.() || 0) - (a.data().data?.toMillis?.() || 0));
-    notices.forEach((item) => content?.appendChild(renderNotice(item)));
+    if (emptyMessage) emptyMessage.hidden = notices.length > 0;
+    notices.forEach((item) => list?.appendChild(renderNotice(item)));
   }, (error) => console.error("Erro ao carregar avisos:", error));
 }
 

@@ -27,7 +27,7 @@
 }
 
 #Geral { display: flex; }
-body   { margin: 0; padding: 0; }
+body   { margin: 0; padding: 0; color: var(--cor-texto); }
 
 /* ===== LATERAL ===== */
 #lateral {
@@ -146,6 +146,7 @@ h2 { font-size: 32px; color: var(--cor-branco); margin-left: 8px; }
 #conteudo {
     flex: 1;
     background-color: var(--cor-fundo-principal);
+    color: var(--cor-texto);
     padding: 20px 20px 20px 40px;
     overflow-y: auto;
 }
@@ -266,7 +267,8 @@ div {
 }
 
 /* ===== ABAS ===== */
-#EnCad {
+#EnCad,
+#abas-turmas {
     background-color: var(--cor-fundo-secundario);
     border-radius: 8px;
     display: flex;
@@ -390,7 +392,8 @@ div {
 .Badge.tma { background: hsla(145,82%,45%,.15); color: hsl(145,82%,55%); }
 
 /* ===== GRUPOS GRID ===== */
-#listaGruposCoord {
+#listaGruposCoord,
+.listaGruposCoord {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
     gap: 16px;
@@ -1054,7 +1057,8 @@ div {
     transition: all 0.5s;
 }
 
-#EnCad {
+#EnCad,
+#abas-turmas {
     background-color: var(--cor-fundo-secundario);
     border-radius: 8px;
     display: flex;
