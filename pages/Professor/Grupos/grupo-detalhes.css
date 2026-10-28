@@ -1,8 +1,29 @@
-/* ===== FORMULÁRIO DE NOVA ATIVIDADE ===== */
+/* Variáveis (se já tiver, não precisa duplicar) */
+:root {
+  --bg-principal: #080b12;
+  --bg-secundario: #0c1018;
+  --texto-principal: #fff;
+  --texto-claro: #e4e9f4;
+  --texto-secundario: #7a8699;
+  --texto-fraco: #3d4d61;
+  --cinza-claro: #161d2a;
+  --cinza-escuro: #111520;
+  --vermelho: rgb(236, 60, 60);
+  --vermelho-transparente: hsl(0deg 82% 58% / 16%);
+  --verde: #34d399;
+  --verde-transparente: rgb(52 211 153 / 12%);
+  --azul: #0062ff;
+  --azul-letra: #3c94ec;
+  --borda: rgb(255 255 255 / 7%);
+}
+
+/* ===== FORMULÁRIO DE NOVA ATIVIDADE (O que você mandou) ===== */
 .form-atividade {
     padding: 24px;
     border-top: 1px solid var(--borda);
     background: var(--cinza-escuro);
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
 }
 
 .form-atividade h3 {
@@ -26,7 +47,7 @@
     font-family: 'Segoe UI', sans-serif;
 }
 
-/* Estilização dos campos (Input e Textarea) */
+/* Estilização dos campos */
 .form-group input[type="text"],
 .form-group input[type="date"],
 .form-group textarea {
@@ -47,14 +68,14 @@
     resize: vertical;
 }
 
-/* Efeito ao clicar no campo */
+/* Foco */
 .form-group input:focus,
 .form-group textarea:focus {
     border-color: var(--vermelho);
     box-shadow: 0 0 0 2px var(--vermelho-transparente);
 }
 
-/* Ajuste do calendário (ícone de data) no Chrome */
+/* Calendário */
 .form-group input[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(1);
     cursor: pointer;
