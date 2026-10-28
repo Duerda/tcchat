@@ -14,9 +14,9 @@ window.Voltar        = () => auth.signOut().then(() => window.location.href = ".
 window.Painel        = () => window.location.href = "Coord-Index.html";
 window.Usuarios      = () => window.location.href = "Coord-Usuarios.html";
 window.GruposCoord   = () => window.location.href = "Coord-Grupos.html";
-window.Biblioteca    = () => window.location.href = "/pages/Coordenador/Biblioteca/Coord-Biblioteca.html";
+window.Biblioteca    = () => window.location.href = "Coord-Biblioteca.html";
 window.Forum         = () => window.location.href = "Coord-Forum.html";
-window.Configuracoes = () => window.location.href = "/pages/Coordenador/Configuracoes/Config.html";
+window.Configuracoes = () => window.location.href = "Config.html";
 
 
 onAuthStateChanged(auth, async (user) => {
