@@ -11,13 +11,12 @@ import {
 
 
 window.Voltar        = () => auth.signOut().then(() => window.location.href = "../../auth/Login/Log-aluno.html");
-window.Painel        = () => window.location.href = "./Coord-Index.html";
-window.Usuarios      = () => window.location.href = "./Coord-Usuarios.html";
-window.Cursos        = () => window.location.href = "/Coordenador/Coord-Cursos.html";
+window.Painel        = () => window.location.href = "Coord-Index.html";
+window.Usuarios      = () => window.location.href = "Coord-Usuarios.html";
 window.GruposCoord   = () => window.location.href = "Coord-Grupos.html";
-window.Biblioteca    = () => window.location.href = "/Coordenador/Coord-Biblioteca.html";
+window.Biblioteca    = () => window.location.href = "/pages/Coordenador/Biblioteca/Coord-Biblioteca.html";
 window.Forum         = () => window.location.href = "Coord-Forum.html";
-window.Configuracoes = () => window.location.href = "/Coordenador/Coord-Config.html";
+window.Configuracoes = () => window.location.href = "/pages/Coordenador/Configuracoes/Config.html";
 
 
 onAuthStateChanged(auth, async (user) => {

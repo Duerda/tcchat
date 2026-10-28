@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="stylesheet" href="/pages/Coordenador/Coord-style.css">
+    <link rel="stylesheet" href="Coord-Biblioteca.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coordenador - Biblioteca</title>
+</head>
+<body>
+<div id="Geral">
+
+    <!-- LATERAL -->
+    <div id="lateral">
+        <div id="lateral-superior">
+            <div><h2 style="margin-top: 2px;">T<span>CCHAT</span></h2></div>
+            <div id="Logo-de-professor">COORD</div>
+        </div>
+
+        <div class="VGABF">
+            <div id="painel">Navegação</div>
+            <div><button onclick="Painel()">Painel</button></div>
+            <div><button onclick="Usuarios()">Usuários</button></div>
+            <div><button onclick="GruposCoord()">Grupos</button></div>
+            <div><button onclick="Biblioteca()" id="ativo">Biblioteca</button></div>
+            <div><button onclick="Forum()">Fórum</button></div>
+        </div>
+
+        <div id="sistema"><button onclick="Configuracoes()" id="configuracao">Configurações</button></div>
+
+        <div class="lateral-inferior">
+            <div class="Usuario">
+                <div id="foto"><span></span></div>
+                <div id="NomeUC">
+                    <h4 style="margin: 0; color: #e4e9f4; width: 100px;"></h4>
+                    <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;"></h5>
+                </div>
+                <p id="voltar" style="margin-top: 31px; margin-bottom: 0px; margin-left: 30px;" onclick="Voltar()">X</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTEÚDO -->
+    <div id="conteudo">
+        <div id="conteudo-superior">
+            <h1>Biblioteca</h1>
+            <p>Material de apoio para todos os alunos do curso</p>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
+            <button class="btn-acao" id="Link">+ Link</button>
+            <button class="btn-acao secundario" id="ArquivoModelo">+ Arquivo/Modelo</button>
+        </div>
+
+        <h3 style="color: #e4e9f4;">Links <span style="color: rgb(236, 60, 60);">webs</span></h3>
+        <div id="links"></div>
+
+        <h3 style="color: rgb(236, 60, 60); margin-top:50px">Arquivos e Modelos</h3>
+        <div id="arquivos"></div>
+    </div>
+</div>
+
+<script src="/pages/Aluno/navegacao.js"></script>
+<script type="module" src="/pages/Aluno/user-info.js"></script>
+<script type="module" src="/pages/Coordenador/Coord-script.js"></script>
+<script type="module" src="Coord-Biblioteca.js"></script>
+</body>
+</html>

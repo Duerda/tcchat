@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <link rel="stylesheet" href="Config.css">
+    <link rel="stylesheet" href="/pages/Coordenador/Coord-style.css">
+    <link rel="stylesheet" href="Coord-Config.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Configurações</title>
+    <title>Coordenador - Configurações</title>
 </head>
 <body>
 <div id="Geral">
@@ -13,21 +14,19 @@
     <div id="lateral">
         <div id="lateral-superior">
             <div><h2 style="margin-top: 2px;">T<span>CCHAT</span></h2></div>
-            <div id="Logo-de-professor">PROFESSOR</div>
+            <div id="Logo-de-professor">COORD</div>
         </div>
 
         <div class="VGABF">
             <div id="painel">Navegação</div>
-            <div><button onclick="VisaoGeral()">Visão Geral</button></div>
-            <div><button onclick="Grupos()">Grupos</button></div>
-            <div><button onclick="Avaliacoes()">Avaliações</button></div>
+            <div><button onclick="Painel()">Painel</button></div>
+            <div><button onclick="Usuarios()">Usuários</button></div>
+            <div><button onclick="GruposCoord()">Grupos</button></div>
             <div><button onclick="Biblioteca()">Biblioteca</button></div>
             <div><button onclick="Forum()">Fórum</button></div>
         </div>
 
-        <div id="sistema">
-            <button id="configuracao" onclick="Configuracoes()">Configurações</button>
-        </div>
+        <div id="sistema"><button id="configuracao" onclick="Configuracoes()">Configurações</button></div>
 
         <div class="lateral-inferior">
             <div class="Usuario">
@@ -36,28 +35,27 @@
                     <h4 style="margin: 0; color: #e4e9f4; width: 100px;"></h4>
                     <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;"></h5>
                 </div>
-                <p id="voltar" onclick="Voltar()">X</p>
+                <p id="voltar" style="margin-top: 31px; margin-bottom: 0px; margin-left: 30px;" onclick="Voltar()">X</p>
             </div>
         </div>
     </div>
 
-    <!-- CONTEUDO -->
+    <!-- CONTEÚDO -->
     <div id="conteudo">
-
         <div id="conteudo-superior">
-            <h1>Configuracoes</h1>
-            <p>Personalize sua experiencia</p>
+            <h1>Configurações</h1>
+            <p>Personalize sua experiência</p>
         </div>
 
         <!-- FONTE -->
         <div class="set-card">
             <h3 class="set-titulo">Fonte da interface</h3>
-            <p class="set-sub">Escolha uma fonte pre-definida ou digite o nome de qualquer fonte do seu sistema</p>
+            <p class="set-sub">Escolha uma fonte pré-definida ou digite o nome de qualquer fonte do seu sistema</p>
             <div class="fontes-grid">
                 <div class="fonte-op ativa" onclick="setFonte('DM Sans', this)" style="font-family:'DM Sans',sans-serif;">
                     <div class="fonte-prev">Aa</div>
                     <div class="fonte-nm">DM Sans</div>
-                    <div class="fonte-desc">Padrao</div>
+                    <div class="fonte-desc">Padrão</div>
                 </div>
                 <div class="fonte-op" onclick="setFonte('Georgia', this)" style="font-family:Georgia,serif;">
                     <div class="fonte-prev">Aa</div>
@@ -67,7 +65,7 @@
                 <div class="fonte-op" onclick="setFonte('monospace', this)" style="font-family:monospace;">
                     <div class="fonte-prev">Aa</div>
                     <div class="fonte-nm">Mono</div>
-                    <div class="fonte-desc">Tecnico</div>
+                    <div class="fonte-desc">Técnico</div>
                 </div>
                 <div class="fonte-op" onclick="setFonte('Trebuchet MS', this)" style="font-family:'Trebuchet MS',sans-serif;">
                     <div class="fonte-prev">Aa</div>
@@ -88,7 +86,7 @@
             <h3 class="set-titulo">Tamanho do texto</h3>
             <p class="set-sub">Ajuste para melhor leitura</p>
             <div class="tamanhos">
-                <button class="size-btn" onclick="setTamanho(14, this)" style="font-size:13px;">A<sup>P</sup></button>
+                <button class="size-btn" onclick="setTamanho(14, this)" style="font-size:13px;">A</button>
                 <button class="size-btn ativo" onclick="setTamanho(16, this)" style="font-size:16px;">A</button>
                 <button class="size-btn" onclick="setTamanho(18, this)" style="font-size:19px;">A</button>
             </div>
@@ -97,7 +95,7 @@
         <!-- PERFIL -->
         <div class="set-card">
             <h3 class="set-titulo">Meu Perfil</h3>
-            <p class="set-sub">Suas informacoes de conta</p>
+            <p class="set-sub">Suas informações de conta</p>
             <div class="campo">
                 <label>Nome completo</label>
                 <input type="text" id="inp-nome" placeholder="Seu nome completo">
@@ -107,15 +105,15 @@
                 <input type="email" id="inp-email" disabled style="opacity:.45;" placeholder="seu@email.com">
             </div>
             <div class="campo">
-                <label>Curso (definido pelo codigo, nao editavel)</label>
+                <label>Função</label>
                 <input type="text" id="inp-curso" disabled style="opacity:.45;">
             </div>
             <button class="btn-salvar" onclick="salvarPerfil()">Salvar perfil</button>
         </div>
 
-        <!-- SENHA -->
+        <!-- SEGURANÇA -->
         <div class="set-card">
-            <h3 class="set-titulo">Seguranca</h3>
+            <h3 class="set-titulo">Segurança</h3>
             <p class="set-sub">Altere a senha da sua conta</p>
             <div class="campo">
                 <label>Senha atual</label>
@@ -129,11 +127,14 @@
                 <label>Confirmar nova senha</label>
                 <input type="password" placeholder="...">
             </div>
-            <button class="btn-salvar" onclick="alert('Disponivel em breve.')">Alterar senha</button>
+            <button class="btn-salvar" onclick="alert('Disponível em breve.')">Alterar senha</button>
         </div>
 
     </div>
 </div>
-<script src="Config.js"></script>
+
+<script src="/pages/Aluno/navegacao.js"></script>
+<script type="module" src="/pages/Coordenador/Coord-script.js"></script>
+<script type="module" src="Coord-Config.js"></script>
 </body>
 </html>
