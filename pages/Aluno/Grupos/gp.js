@@ -112,6 +112,7 @@ function montarAtividades() {
       const deadline = document.createElement("p");
       deadline.textContent = dueDate ? `Prazo: ${dueDate.toLocaleDateString("pt-BR")}${overdue ? " · Atrasada" : ""}` : (task.status === "atraso" ? "Atrasada" : "Prazo não informado");
       const form = document.createElement("form");
+      form.className = "entrega-form";
       form.innerHTML = '<label>Arquivo (opcional)<input type="file" accept=".pdf,.doc,.docx,.odt,.zip,.png,.jpg"></label><label>Observação<textarea rows="3" maxlength="2000"></textarea></label><button type="submit">Enviar atividade</button><p role="status"></p>';
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
