@@ -1,5 +1,5 @@
 /* =========================================================
-   VARIÁVEIS E RESET
+   1. VARIÁVEIS DE COR E RESET
    ========================================================= */
 :root {
   --bg-principal: #080b12;
@@ -45,7 +45,7 @@ button, textarea, input {
 }
 
 /* =========================================================
-   SIDEBAR
+   2. SIDEBAR (MENU LATERAL)
    ========================================================= */
 #lateral {
   padding: 18px 0;
@@ -162,7 +162,7 @@ button, textarea, input {
 #voltar:hover { color: var(--vermelho); }
 
 /* =========================================================
-   CONTEÚDO PRINCIPAL E ABAS
+   3. CABEÇALHO E ABAS DE NAVEGAÇÃO
    ========================================================= */
 #conteudo {
   flex: 1;
@@ -248,6 +248,9 @@ button, textarea, input {
   font-weight: bold;
 }
 
+/* =========================================================
+   4. ÁREA PRINCIPAL (ONDE O JS INJETA O CONTEÚDO)
+   ========================================================= */
 #painelGrupo {
   width: 100%;
   min-height: 600px;
@@ -257,9 +260,7 @@ button, textarea, input {
   overflow: hidden;
 }
 
-/* =========================================================
-   ESTILOS GERAIS DAS ABAS (Títulos e Formulários)
-   ========================================================= */
+/* Títulos internos das abas */
 .painel-titulo {
   padding: 24px;
   border-bottom: 1px solid var(--vermelho);
@@ -268,6 +269,9 @@ button, textarea, input {
 .painel-titulo h2 { margin: 0; color: white; font-weight: 200; font-size: 22px; }
 .painel-titulo p { margin: 4px 0 0; color: var(--texto-secundario); font-size: 14px; }
 
+/* =========================================================
+   5. FORMULÁRIOS (ARQUIVO, HISTÓRICO E ANOTAÇÕES)
+   ========================================================= */
 .form-container {
     padding: 24px;
 }
@@ -278,6 +282,7 @@ button, textarea, input {
     margin-bottom: 16px;
 }
 
+/* Linha com dois inputs (Nome e URL) lado a lado */
 .input-row {
     display: flex;
     gap: 20px;
@@ -287,12 +292,15 @@ button, textarea, input {
     flex: 1;
 }
 
+/* Labels */
 .form-group label {
     color: var(--texto-secundario);
     font-size: 13px;
     margin-bottom: 6px;
+    font-weight: bold;
 }
 
+/* Inputs, Textareas e Date */
 .form-group input,
 .form-group textarea {
     width: 100%;
@@ -302,19 +310,28 @@ button, textarea, input {
     padding: 12px;
     color: white;
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.form-group textarea { min-height: 120px; resize: vertical; }
+.form-group textarea { 
+    min-height: 120px; 
+    resize: vertical; 
+}
 
 .form-group input:focus,
-.form-group textarea:focus { border-color: var(--vermelho); }
+.form-group textarea:focus { 
+    border-color: var(--vermelho); 
+    box-shadow: 0 0 0 2px var(--vermelho-transparente);
+}
 
+/* Ícone do calendário no modo escuro */
 .form-group input[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(1);
     cursor: pointer;
+    opacity: 0.6;
 }
 
+/* Rodapé do formulário (Data e Botão) */
 .form-footer {
     display: flex;
     align-items: flex-end;
@@ -326,6 +343,7 @@ button, textarea, input {
 
 .data-group { margin-bottom: 0; width: 200px; }
 
+/* Botão Publicar / Salvar */
 .btn-publicar {
     background: var(--vermelho);
     color: white;
@@ -337,10 +355,14 @@ button, textarea, input {
     transition: 0.2s;
     width: fit-content;
 }
-.btn-publicar:hover { background: #b92828; transform: scale(1.02); }
+
+.btn-publicar:hover { 
+    background: #b92828; 
+    transform: scale(1.02); 
+}
 
 /* =========================================================
-   ESTILOS DO CHAT
+   6. ESTILOS DO CHAT (Caso o JS carregue as abas de chat)
    ========================================================= */
 .chat-area {
   height: 460px;
