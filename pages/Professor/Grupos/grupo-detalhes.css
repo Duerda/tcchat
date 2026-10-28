@@ -528,3 +528,84 @@ button, textarea, input {
     background: #b92828;
     transform: scale(1.02);
 }
+
+/* =========================================================
+   ESTILIZAÇÃO FORÇADA PARA A ABA HISTÓRICO
+   ========================================================= */
+
+/* Container do histórico */
+.historico-vazio {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+.historico-vazio h2 {
+    color: white;
+    font-weight: 200;
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+/* Texto "Nenhuma entrega registrada" */
+.historico-vazio p,
+.historico-vazio > div {
+    color: var(--texto-secundario);
+    font-size: 15px;
+    margin-bottom: 20px;
+}
+
+/* Força todos os inputs e textareas dentro do histórico a ficarem escuros e empilhados */
+.historico-vazio input,
+.historico-vazio textarea {
+    display: block;
+    width: 100%;
+    max-width: 600px;
+    background: var(--bg-principal) !important;
+    border: 1px solid var(--borda) !important;
+    border-radius: 8px;
+    padding: 12px;
+    color: white !important;
+    outline: none;
+    margin-bottom: 15px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.historico-vazio textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.historico-vazio input:focus,
+.historico-vazio textarea:focus {
+    border-color: var(--vermelho) !important;
+    box-shadow: 0 0 0 2px var(--vermelho-transparente);
+}
+
+/* Ícone do calendário no modo escuro */
+.historico-vazio input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+/* Botão de publicar */
+.historico-vazio button {
+    display: block;
+    background: var(--vermelho) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    width: fit-content;
+    margin-top: 10px;
+}
+
+.historico-vazio button:hover {
+    background: #b92828 !important;
+    transform: scale(1.02);
+}
