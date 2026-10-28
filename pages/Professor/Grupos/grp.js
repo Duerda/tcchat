@@ -1,5 +1,6 @@
-import { collection, doc, getDoc, onSnapshot, query, updateDoc, where, writeBatch } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { collection, doc, getDoc, onSnapshot, query, updateDoc, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { db } from "../../../backend/firebase/config.js";
+import { deleteGroupData } from "../../../backend/firebase/delete-group.js";
 import { fillHeader, logout, navigate, requireProfessor } from "../../../backend/firebase/professor.js";
 
 window.Voltar = logout;
@@ -67,22 +68,11 @@ async function editGroup(id) {
 async function deleteGroup(id) {
   if (!confirm("Tem certeza que deseja excluir este grupo?")) return;
   try {
-    const groupRef = doc(db, "grupos", id);
-    const groupSnapshot = await getDoc(groupRef);
-    if (!groupSnapshot.exists()) {
+    const deleted = await deleteGroupData(id);
+    if (!deleted) {
       alert("Grupo não encontrado.");
       return;
     }
-
-    const batch = writeBatch(db);
-    const memberIds = Array.isArray(groupSnapshot.data().membros)
-      ? groupSnapshot.data().membros
-      : [];
-    memberIds.forEach((memberId) => {
-      batch.update(doc(db, "usuarios", memberId), { grupoId: "", grupoNome: "" });
-    });
-    batch.delete(groupRef);
-    await batch.commit();
     alert("Grupo excluído com sucesso.");
   } catch (error) {
     console.error(error);

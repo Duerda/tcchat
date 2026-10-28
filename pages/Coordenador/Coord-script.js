@@ -5,6 +5,7 @@ import {
   serverTimestamp, updateDoc, where, writeBatch,
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { appUrl, requireCoordinator } from "../../backend/firebase/professor.js";
+import { deleteGroupData } from "../../backend/firebase/delete-group.js";
 
 const LOGIN = appUrl("pages/auth/Login/Log-aluno.html");
 const COURSE_NAMES = {
@@ -342,12 +343,11 @@ window.fecharModalExclusao = () => { const modal = document.getElementById("moda
 window.confirmarExclusao = async () => {
   if (!groupToDelete) return;
   try {
-    const groupRef = doc(db, "grupos", groupToDelete);
-    const groupSnapshot = await getDoc(groupRef);
-    const batch = writeBatch(db);
-    (groupSnapshot.data()?.membros || []).forEach((memberId) => batch.update(doc(db, "usuarios", memberId), { grupoId: "", grupoNome: "" }));
-    batch.delete(groupRef);
-    await batch.commit();
+    const deleted = await deleteGroupData(groupToDelete);
+    if (!deleted) {
+      alert("Grupo não encontrado.");
+      return;
+    }
     window.fecharModalExclusao();
   }
   catch (error) { reportError("Não foi possível excluir o grupo.", error); }
