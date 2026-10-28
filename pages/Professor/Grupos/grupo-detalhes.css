@@ -427,3 +427,104 @@ button, textarea, input {
   text-align: center;
   font-size: 15px;
 }
+
+/* =========================================================
+   ESTILIZAÇÃO FORÇADA PARA AS ABAS (BASEADO NO HTML DO JS)
+   ========================================================= */
+
+/* Container geral das abas vazias */
+.arquivo-vazio {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+.arquivo-vazio h2 {
+    color: white;
+    font-weight: 200;
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+/* Texto "Nenhum arquivo cadastrado" */
+#listaArquivos {
+    color: var(--texto-secundario);
+    font-size: 15px;
+    margin-bottom: 20px;
+}
+
+/* --- ESTILIZANDO OS INPUTS DIRETO PELO ID --- */
+#nomeArquivo, 
+#urlArquivo,
+.arquivo-vazio input[type="text"],
+.arquivo-vazio input[type="url"],
+.arquivo-vazio input[type="date"] {
+    width: 100%;
+    max-width: 500px;
+    background: var(--bg-principal);
+    border: 1px solid var(--borda);
+    border-radius: 8px;
+    padding: 12px;
+    color: white;
+    outline: none;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+    font-size: 14px;
+}
+
+#nomeArquivo:focus, 
+#urlArquivo:focus,
+.arquivo-vazio input:focus {
+    border-color: var(--vermelho);
+    box-shadow: 0 0 0 2px var(--vermelho-transparente);
+}
+
+/* --- ESTILIZANDO AS TEXTAREAS (HISTÓRICO / ANOTAÇÕES) --- */
+.arquivo-vazio textarea,
+#textoAnotacao,
+#instrucoesAtividade {
+    width: 100%;
+    max-width: 800px;
+    min-height: 120px;
+    background: var(--bg-principal);
+    border: 1px solid var(--borda);
+    border-radius: 8px;
+    padding: 12px;
+    color: white;
+    outline: none;
+    margin-bottom: 15px;
+    resize: vertical;
+    transition: border-color 0.2s;
+    font-size: 14px;
+}
+
+.arquivo-vazio textarea:focus {
+    border-color: var(--vermelho);
+    box-shadow: 0 0 0 2px var(--vermelho-transparente);
+}
+
+/* --- ESTILIZANDO OS BOTÕES DIRETO PELO ID --- */
+#btnSalvarArquivo,
+#btnSalvarAnotacao,
+#btnPublicarAtividade,
+.arquivo-vazio button {
+    background: var(--vermelho);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    width: fit-content;
+    margin-top: 5px;
+    margin-bottom: 20px;
+}
+
+#btnSalvarArquivo:hover,
+#btnSalvarAnotacao:hover,
+#btnPublicarAtividade:hover,
+.arquivo-vazio button:hover {
+    background: #b92828;
+    transform: scale(1.02);
+}
