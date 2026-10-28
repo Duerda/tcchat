@@ -9,7 +9,7 @@
 <body>
     <div id="Geral">
         <!--lateralAluno-->
-        <div id="lateral">
+        <div id="lateral" style="height: 100vh;">
             <div id="lateral-superior">
                 <div><h2 style="margin-top: 2px;">T<span>CCHAT</span></h2></div>
                 <div id="Logo-de-aluno">ALUNO</div>
@@ -19,13 +19,13 @@
             <div class="VGABF">
 
                 <div id="painel">Navegação</div>
-                <div><button id="painel-btn" onclick="Painel ()" >Painel</button></div>
-                <div><button id="Grupo-btn"onclick="MeuGrupo ()">Meu Grupo</button></div>
-                <div><button id="Forum-btn"onclick="Forum ()" >Fórum</button></div>
-                <div><button id="Inspiracoes-btn" onclick="Inspiracoes ()">Inspirações</button></div>
+                <div><button id="painel-btn" onclick="Painel()" >Painel</button></div>
+                <div><button id="Grupo-btn" onclick="MeuGrupo()">Meu Grupo</button></div>
+                <div><button id="Forum-btn" onclick="Forum()" >Fórum</button></div>
+                <div><button id="Inspiracoes-btn" onclick="Inspiracoes()">Inspirações</button></div>
 
             </div>
-            <div id="sistema"><button onclick="Configuracoes ()" id="configuracao">Configurações</button></div>
+            <div id="sistema"><button onclick="Configuracoes()" id="configuracao">Configurações</button></div>
             <div class="lateral-inferior">
                 <div class="Usuario">
                     <div id="foto"><span style="margin: 0px;color: #e4e9f4; "></span></div>
@@ -33,7 +33,7 @@
                         <h4 style="margin: 0; color: #e4e9f4; width: 100px;"></h4> 
                         <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;"></h5> 
                     </div>
-                    <p id="voltar"  onclick="Voltar ()">X</p>
+                    <p id="voltar"  onclick="Voltar()">X</p>
                 </div>
 
             </div>
@@ -47,10 +47,10 @@
             <div id="linha"></div>
         <!--btns-->
             <div id="navbar">
-                <button class="navbtn" id = "Chat" onclick=" chat ()" >Chat do Grupo</button>
-                <button class="navbtn" id = "Orientador" onclick=" orientador ()">Chat c/Orientador</button>
-                <button class="navbtn" id = "Atividades" onclick=" atividade ()">Atividades</button>
-                <button class="navbtn" style="background-color:rgba(236, 60, 60, 0.16) ; color: rgb(236, 60, 60);">Biblioteca</button>
+                <button class="navbtn" id="Chat" onclick="window.location.href = '/pages/Aluno/Grupos/gp.chat.html'">Chat do Grupo</button>
+                <button class="navbtn" onclick="window.location.href = '/pages/Aluno/Grupos/gp-cha-ori.html'" style="cursor: pointer;">Chat c/Orientador</button>
+                <button class="navbtn" id="Atividades" onclick="window.location.href = '/pages/Aluno/Grupos/gp.ativ.html'">Atividades</button>
+                <button class="navbtn" id="Biblioteca" onclick="window.location.href = '/pages/Aluno/Grupos/gp.link.html'" style="background-color:rgba(236, 60, 60, 0.16) ; color: rgb(236, 60, 60);">Biblioteca</button>
             </div>
             <!--ATT-->
             <h1 style="margin-top: 20px; margin-bottom: 25px; font-size: 35px;"><span>Links por </span>Curso</h1>
