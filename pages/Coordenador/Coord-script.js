@@ -95,10 +95,17 @@ function loadDashboard() {
         getDocs(collection(db, "grupos", item.id, "entregas")),
         getDocs(collection(db, "grupos", item.id, "submissoes")),
       ]);
-      const submittedTaskIds = new Set(submissions.docs.map((submission) => submission.data().atividadeId));
+      const group = item.data();
+      const memberIds = [...new Set(Array.isArray(group.membros) ? group.membros : [])];
+      const submittedPairs = new Set(submissions.docs.map((submission) => {
+        const data = submission.data();
+        return JSON.stringify([data.alunoUid, data.atividadeId]);
+      }));
       const assignments = tasks.docs.filter((task) => task.data().tipo !== "envio");
-      pending += assignments.filter((task) => !submittedTaskIds.has(task.id)).length;
-      groupActivity.push({ data: item.data(), taskCount: assignments.length, submissionCount: submissions.size });
+      assignments.forEach((task) => {
+        pending += memberIds.filter((memberId) => !submittedPairs.has(JSON.stringify([memberId, task.id]))).length;
+      });
+      groupActivity.push({ data: group, taskCount: assignments.length, submissionCount: submissions.size });
     }
     if (stats[5]) stats[5].textContent = pending;
     const courses = document.getElementById("ListaCursos");
