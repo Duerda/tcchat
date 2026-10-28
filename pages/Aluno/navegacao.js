@@ -9,8 +9,6 @@ window.alunoReady = new Promise((resolve) => { resolverAluno = resolve; });
 
 window.Painel = () => navigate("/pages/Aluno/Turma/index.html");
 window.Forum = () => navigate("/pages/Aluno/Forum/Fo.html");
-window.Avisos = () => navigate("/pages/Aluno/Forum/av.html");
-window.Atividades = () => navigate("/pages/Aluno/Grupos/gp.ativ.html");
 window.Biblioteca = () => navigate("/pages/Aluno/Grupos/gp.link.html");
 window.Inspiracoes = () => navigate("/pages/Aluno/Inspiracoes/Inspiracoes.html");
 window.Configuracoes = () => navigate("/pages/Aluno/Configuracoes/Config.html");
