@@ -69,11 +69,24 @@ window.mudarAba = (id) => {
 };
 
 function classQuery(collectionName) {
-  return query(collection(db, collectionName), where("codigoSala", "==", profile.codigoSala));
+  return query(collection(db, collectionName));
+}
+
+function queryForRoom(collectionName, roomCode) {
+  return query(collection(db, collectionName), where("codigoSala", "==", roomCode));
+}
+
+function requestRoomCode() {
+  const roomCode = prompt("Código da turma no formato SIGLA-ANO (ex.: DS-1):", "DS-1")?.trim().toUpperCase();
+  if (!roomCode) return null;
+  if (!/^(DS|DI|HOSP|IPI|MA|SEC|ADM|INF)-[123]$/.test(roomCode)) {
+    alert("Use um código de turma válido, como DS-1.");
+    return null;
+  }
+  return roomCode;
 }
 
 function loadDashboard() {
-  if (!profile.codigoSala) return;
   const stats = [...document.querySelectorAll("#Informacoes .Stat h3")];
   // Os contadores em tempo real substituem os números de exemplo pela lista
   // verdadeira de alunos e grupos do coordenador. Os grupos também são usados
@@ -115,7 +128,7 @@ function loadDashboard() {
       const card = document.createElement("article");
       card.className = "Cards";
       const overview = document.createElement("p");
-      overview.textContent = `${profile.curso || profile.codigoSala} · ${groups.length} grupos · ${users.filter((item) => item.tipo === "aluno").length} alunos`;
+      overview.textContent = `Todas as turmas · ${groups.length} grupos · ${users.filter((item) => item.tipo === "aluno").length} alunos`;
       card.appendChild(overview);
       groupActivity.forEach(({ data, taskCount, submissionCount }) => {
         const item = document.createElement("p");
@@ -144,7 +157,7 @@ function renderAlerts(groups) {
   if (!delayed.length) {
     const empty = document.createElement("p");
     empty.className = "Alerta";
-    empty.textContent = "Nenhum grupo sinalizado como atenção ou atraso nesta turma.";
+    empty.textContent = "Nenhum grupo sinalizado como atenção ou atraso.";
     heading.after(empty);
     return;
   }
@@ -163,7 +176,6 @@ function loadUsers() {
   if (codeRows) codeRows.replaceChildren();
   if (studentRows) studentRows.replaceChildren();
   if (teacherRows) teacherRows.replaceChildren();
-  if (!profile.codigoSala) return;
 
   // Os códigos gerados ficam no Firestore junto com o tipo de conta permitido e
   // uma validade opcional. Assim, é possível contabilizar os cadastros feitos com
@@ -174,12 +186,12 @@ function loadUsers() {
     renderUserRows(studentRows, students, "aluno");
     renderUserRows(teacherRows, teachers, "professor");
   });
-  onSnapshot(query(collection(db, "codigosAcesso"), where("criadoPor", "==", user.uid)), (snapshot) => {
+  onSnapshot(collection(db, "codigosAcesso"), (snapshot) => {
     if (!codeRows) return;
     codeRows.replaceChildren();
     if (snapshot.empty) {
       const row = document.createElement("tr");
-      row.innerHTML = '<td colspan="6">Nenhum código criado para esta turma.</td>';
+      row.innerHTML = '<td colspan="6">Nenhum código de acesso encontrado.</td>';
       codeRows.appendChild(row);
       return;
     }
@@ -188,7 +200,7 @@ function loadUsers() {
       const row = document.createElement("tr");
       const expiry = code.expiraEm?.toDate?.();
       const dateText = expiry ? expiry.toLocaleDateString("pt-BR") : "Sem limite";
-      row.innerHTML = `<td><span class="Chip">${safe(code.codigo)}</span></td><td>${safe(code.tipo)}</td><td>${safe(code.curso || profile.curso || profile.codigoSala)}</td><td>${Number(code.usos || 0)}</td><td>${safe(dateText)}${code.revogado ? " · Revogado" : ""}</td><td><button class="btn-tabela vermelho" data-revogar="${item.id}" ${code.revogado ? "disabled" : ""}>Revogar</button></td>`;
+      row.innerHTML = `<td><span class="Chip">${safe(code.codigo)}</span></td><td>${safe(code.tipo)}</td><td>${safe(code.codigoSala || code.curso || "Turma não informada")}</td><td>${Number(code.usos || 0)}</td><td>${safe(dateText)}${code.revogado ? " · Revogado" : ""}</td><td><button class="btn-tabela vermelho" data-revogar="${item.id}" ${code.revogado ? "disabled" : ""}>Revogar</button></td>`;
       row.querySelector("[data-revogar]")?.addEventListener("click", () => revokeCode(item.id));
       codeRows.appendChild(row);
     });
@@ -215,9 +227,8 @@ function renderUserRows(tbody, records, role) {
 }
 
 window.gerarCodigo = async (tipo) => {
-  const sala = prompt("Código da turma no formato SIGLA-ANO (ex.: DS-1):", profile.codigoSala || "DS-1")?.trim().toUpperCase();
+  const sala = requestRoomCode();
   if (!sala) return;
-  if (!/^(DS|DI|HOSP|IPI|MA|SEC|ADM|INF)-[123]$/.test(sala)) return alert("Use um código de turma válido, como DS-1.");
   const expiry = prompt("Validade opcional (AAAA-MM-DD). Deixe vazio para não expirar:")?.trim();
   if (expiry && !/^\d{4}-\d{2}-\d{2}$/.test(expiry)) return alert("Informe a data no formato AAAA-MM-DD.");
   const expiryDate = expiry ? new Date(`${expiry}T23:59:59`) : null;
@@ -253,7 +264,7 @@ async function toggleUserAccess(id, currentlyActive) {
 
 function loadGroups() {
   const container = document.getElementById("listaGruposCoord") || document.getElementById("GT");
-  if (!container || !profile.codigoSala) return;
+  if (!container) return;
   container.replaceChildren();
   stopGroups?.();
   stopGroups = onSnapshot(classQuery("grupos"), (snapshot) => {
@@ -269,7 +280,7 @@ function loadGroups() {
       const card = document.createElement("article");
       card.className = "GT";
       card.dataset.id = item.id;
-      card.innerHTML = `<h2>${safe(group.nome || "Grupo sem nome")}</h2><h3>${safe(group.tema || group.proposta || "Tema não informado")}</h3><p>${safe(group.descricao || "")}</p><p>Integrantes: ${safe((group.integrantes || group.nomesMembros || []).join(", ") || "Ainda não associados")}</p><p>Orientador: ${safe(group.orientador || "A definir")}</p><label>Status <select class="select-status"><option value="no-prazo">No prazo</option><option value="atencao">Atenção</option><option value="atraso">Atrasado</option></select></label><div><button class="btn-tabela" data-add-member>+ Membro</button><button class="btn-tabela" data-advisor>Orientador</button><button class="btn-tabela vermelho" data-delete>Excluir</button></div>`;
+      card.innerHTML = `<h2>${safe(group.nome || "Grupo sem nome")}</h2><h3>${safe(group.tema || group.proposta || "Tema não informado")}</h3><p>${safe(group.codigoSala || "Turma não informada")}</p><p>${safe(group.descricao || "")}</p><p>Integrantes: ${safe((group.integrantes || group.nomesMembros || []).join(", ") || "Ainda não associados")}</p><p>Orientador: ${safe(group.orientador || "A definir")}</p><label>Status <select class="select-status"><option value="no-prazo">No prazo</option><option value="atencao">Atenção</option><option value="atraso">Atrasado</option></select></label><div><button class="btn-tabela" data-add-member>+ Membro</button><button class="btn-tabela" data-advisor>Orientador</button><button class="btn-tabela vermelho" data-delete>Excluir</button></div>`;
       const statusSelect = card.querySelector("select");
       statusSelect.value = group.status || "no-prazo";
       statusSelect.addEventListener("change", () => updateDoc(doc(db, "grupos", item.id), { status: statusSelect.value }));
@@ -291,11 +302,13 @@ window.criarGrupo = async (event) => {
   const memberNames = (document.getElementById("inp-integrantes")?.value || "").split(",").map((name) => name.trim()).filter(Boolean);
   const advisor = document.getElementById("inp-orientador")?.value.trim() || "";
   if (!name || !description || !theme || !memberNames.length) return alert("Preencha nome, tema, descrição e integrantes.");
+  const roomCode = requestRoomCode();
+  if (!roomCode) return;
   try {
     // Procura os nomes digitados nos perfis reais dos alunos. Dessa forma, o
     // grupo novo aparece nas consultas de participação de cada aluno, em vez de
     // existir somente como um cartão visual na tela do coordenador.
-    const people = await getDocs(classQuery("usuarios"));
+    const people = await getDocs(queryForRoom("usuarios", roomCode));
     const students = people.docs.filter((item) => item.data().tipo === "aluno");
     const members = memberNames.map((memberName) => students.find((item) => item.data().nome?.trim().toLowerCase() === memberName.toLowerCase()));
     const missing = memberNames.filter((_, index) => !members[index]);
@@ -307,7 +320,7 @@ window.criarGrupo = async (event) => {
     const groupRef = doc(collection(db, "grupos"));
     const batch = writeBatch(db);
     batch.set(groupRef, {
-      codigoSala: profile.codigoSala,
+      codigoSala: roomCode,
       nome, descricao, tema,
       proposta: theme,
       membros: members.map((item) => item.id),
@@ -359,8 +372,10 @@ window.mudarStatus = async (id, status) => {
 window.scrollGrupos = (direction) => document.getElementById("GT")?.scrollBy({ left: direction * 360, behavior: "smooth" });
 window.sortearGrupos = async () => {
   if (!confirm("Sortear grupos automaticamente entre alunos ainda sem grupo?")) return;
+  const roomCode = requestRoomCode();
+  if (!roomCode) return;
   try {
-    const [people, groups] = await Promise.all([getDocs(classQuery("usuarios")), getDocs(classQuery("grupos"))]);
+    const [people, groups] = await Promise.all([getDocs(queryForRoom("usuarios", roomCode)), getDocs(queryForRoom("grupos", roomCode))]);
     const assigned = new Set(groups.docs.flatMap((item) => item.data().membros || []));
     const students = people.docs.filter((item) => item.data().tipo === "aluno" && !assigned.has(item.id) && !item.data().grupoId).sort(() => Math.random() - 0.5);
     if (!students.length) return alert("Não há alunos sem grupo para sortear.");
@@ -372,7 +387,7 @@ window.sortearGrupos = async () => {
       const ref = doc(collection(db, "grupos"));
       const names = members.map((item) => item.data().nome || item.data().email);
       const groupName = `Grupo sorteado ${created + 1}`;
-      batch.set(ref, { codigoSala: profile.codigoSala, nome: groupName, descricao: "Grupo formado pelo sorteio do coordenador.", tema: "A definir", membros: members.map((item) => item.id), integrantes: names, nomesMembros: names, orientador: "A definir", status: "no-prazo", criadoPor: user.uid, criadoEm: serverTimestamp() });
+      batch.set(ref, { codigoSala: roomCode, nome: groupName, descricao: "Grupo formado pelo sorteio do coordenador.", tema: "A definir", membros: members.map((item) => item.id), integrantes: names, nomesMembros: names, orientador: "A definir", status: "no-prazo", criadoPor: user.uid, criadoEm: serverTimestamp() });
       members.forEach((member) => batch.update(doc(db, "usuarios", member.id), { grupoId: ref.id, grupoNome: groupName }));
       created++;
     }
@@ -386,12 +401,14 @@ async function addGroupMember(groupId) {
   const email = prompt("Informe o e-mail cadastrado do aluno:")?.trim().toLowerCase();
   if (!email) return;
   try {
-    const people = await getDocs(classQuery("usuarios"));
-    const member = people.docs.find((item) => item.data().tipo === "aluno" && item.data().email?.toLowerCase() === email);
-    if (!member) return alert("Aluno não encontrado nesta turma.");
     const groupSnapshot = await getDoc(doc(db, "grupos", groupId));
+    if (!groupSnapshot.exists()) return alert("Grupo não encontrado.");
+    const group = groupSnapshot.data();
+    const people = await getDocs(queryForRoom("usuarios", group.codigoSala));
+    const member = people.docs.find((item) => item.data().tipo === "aluno" && item.data().email?.toLowerCase() === email);
+    if (!member) return alert("Aluno não encontrado na turma deste grupo.");
     if (member.data().grupoId && member.data().grupoId !== groupId) return alert("Este aluno já está associado a outro grupo.");
-    const groupName = groupSnapshot.data()?.nome || "Grupo";
+    const groupName = group.nome || "Grupo";
     const batch = writeBatch(db);
     batch.update(doc(db, "grupos", groupId), { membros: arrayUnion(member.id), integrantes: arrayUnion(member.data().nome || email), nomesMembros: arrayUnion(member.data().nome || email) });
     batch.update(doc(db, "usuarios", member.id), { grupoId: groupId, grupoNome: groupName });
@@ -402,9 +419,11 @@ async function assignAdvisor(groupId) {
   const email = prompt("Informe o e-mail cadastrado do professor orientador:")?.trim().toLowerCase();
   if (!email) return;
   try {
-    const people = await getDocs(classQuery("usuarios"));
+    const groupSnapshot = await getDoc(doc(db, "grupos", groupId));
+    if (!groupSnapshot.exists()) return alert("Grupo não encontrado.");
+    const people = await getDocs(queryForRoom("usuarios", groupSnapshot.data().codigoSala));
     const teacher = people.docs.find((item) => item.data().tipo === "professor" && item.data().email?.toLowerCase() === email);
-    if (!teacher) return alert("Professor não encontrado nesta turma.");
+    if (!teacher) return alert("Professor não encontrado na turma deste grupo.");
     await updateDoc(doc(db, "grupos", groupId), { orientador: teacher.data().nome || email, orientadorUid: teacher.id });
   } catch (error) { reportError("Não foi possível definir o orientador.", error); }
 }
@@ -412,7 +431,7 @@ async function assignAdvisor(groupId) {
 function loadForum() {
   const notices = document.getElementById("lista-avisos");
   const createButton = document.getElementById("novo-aviso");
-  if (notices && profile.codigoSala) {
+  if (notices) {
     stopNotices?.();
     stopNotices = onSnapshot(classQuery("avisos"), (snapshot) => {
       notices.replaceChildren();
@@ -421,7 +440,7 @@ function loadForum() {
         const notice = item.data();
         const card = document.createElement("article");
         card.className = "Cards";
-        card.innerHTML = `<div id="top-card"><div><h3>${safe(notice.titulo || "Aviso")}</h3><small>${safe(notice.autor || "Coordenador")} · ${safe(notice.data?.toDate?.().toLocaleDateString("pt-BR") || "Agora")}</small></div><button class="btn-tabela vermelho">Excluir</button></div><p>${safe(notice.conteudo || "")}</p>`;
+        card.innerHTML = `<div id="top-card"><div><h3>${safe(notice.titulo || "Aviso")}</h3><small>${safe(notice.codigoSala || "Turma não informada")} · ${safe(notice.autor || "Coordenador")} · ${safe(notice.data?.toDate?.().toLocaleDateString("pt-BR") || "Agora")}</small></div><button class="btn-tabela vermelho">Excluir</button></div><p>${safe(notice.conteudo || "")}</p>`;
         card.querySelector("button").addEventListener("click", async () => {
           if (!confirm("Excluir este aviso?")) return;
           try { await deleteDoc(doc(db, "avisos", item.id)); }
@@ -437,17 +456,19 @@ function loadForum() {
 }
 
 window.novoAviso = async () => {
+  const roomCode = requestRoomCode();
+  if (!roomCode) return;
   const title = prompt("Título do aviso:")?.trim();
   const content = prompt("Conteúdo do aviso:")?.trim();
-  if (!title || !content || !profile.codigoSala) return;
+  if (!title || !content) return;
   try {
-    await addDoc(collection(db, "avisos"), { titulo: title, conteudo: content, autor: profile.nome || "Coordenador", autorUid: user.uid, tipoAutor: "Coordenador", codigoSala: profile.codigoSala, data: serverTimestamp() });
+    await addDoc(collection(db, "avisos"), { titulo: title, conteudo: content, autor: profile.nome || "Coordenador", autorUid: user.uid, tipoAutor: "Coordenador", codigoSala: roomCode, data: serverTimestamp() });
   } catch (error) { reportError("Não foi possível publicar o aviso.", error); }
 };
 
 function loadDoubts() {
   const panel = document.getElementById("tab-duvidas");
-  if (!panel || !profile.codigoSala) return;
+  if (!panel) return;
   panel.querySelectorAll(".duvidas-dinamicas").forEach((item) => item.remove());
   const list = document.createElement("div");
   list.className = "duvidas-dinamicas";
@@ -461,7 +482,7 @@ function loadDoubts() {
       const card = document.createElement("article");
       card.className = "Duvidas";
       const heading = document.createElement("h3");
-      heading.textContent = `${doubt.autor || "Aluno"} — ${doubt.titulo || "Dúvida"}`;
+      heading.textContent = `${doubt.codigoSala || "Turma não informada"} · ${doubt.autor || "Aluno"} — ${doubt.titulo || "Dúvida"}`;
       const body = document.createElement("p");
       body.textContent = doubt.conteudo || "";
       card.append(heading, body);

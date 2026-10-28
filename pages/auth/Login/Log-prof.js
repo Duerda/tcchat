@@ -2,9 +2,10 @@ import { auth, db } from "../../../backend/firebase/config.js";
 import { appUrl, navigate } from "../../../backend/navigation.js";
 import { signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, getDoc, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { COORDINATOR_ACCESS_CODE, getAccountType } from "../../../backend/auth/validation.js";
 
 // Código utilizado pelos coordenadores
-const CODIGO_COORDENADOR = "C00RD";
+const CODIGO_COORDENADOR = COORDINATOR_ACCESS_CODE;
 
 // Página para onde o coordenador será enviado
 const PAGINA_COORDENADOR = appUrl("pages/Coordenador/Coord-Index.html");
@@ -57,7 +58,7 @@ async function Formulario(event) {
 
     const box = document.getElementById("Coor-box");
 
-    const email = emailInput.value.trim();
+    const email = emailInput.value.trim().toLowerCase();
     const senha = senhaInput.value;
 
     const codigo = codigoInput
@@ -80,6 +81,12 @@ async function Formulario(event) {
 
     // Se estiver entrando como coordenador
     if (entrouComoCoordenador) {
+
+        if (getAccountType(email) !== "coordenador") {
+            alert("Para entrar como coordenador, use um e-mail com domínio @cps.sp.gov.br.");
+            emailInput.focus();
+            return;
+        }
 
         // Código vazio
         if (!codigo) {

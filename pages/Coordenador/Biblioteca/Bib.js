@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, onSnapshot, query, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { addDoc, collection, deleteDoc, doc, onSnapshot, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { db } from "../../../backend/firebase/config.js";
 import { fillHeader, logout, navigate, requireCoordinator } from "../../../backend/firebase/professor.js";
 
@@ -18,7 +18,13 @@ let profile;
 async function addResource(type) {
   const name = prompt("Nome do recurso:")?.trim();
   const rawUrl = prompt(type === "link" ? "URL do site:" : "URL do arquivo:")?.trim();
-  if (!name || !rawUrl || !profile?.codigoSala) return;
+  if (!name || !rawUrl) return;
+  const codigoSala = prompt("Código da turma no formato SIGLA-ANO (ex.: DS-1):", "DS-1")?.trim().toUpperCase();
+  if (!codigoSala) return;
+  if (!/^(DS|DI|HOSP|IPI|MA|SEC|ADM|INF)-[123]$/.test(codigoSala)) {
+    alert("Use um código de turma válido, como DS-1.");
+    return;
+  }
 
   let url;
   try {
@@ -36,7 +42,7 @@ async function addResource(type) {
       tipo: type,
       enviadoPor: user.uid,
       autorNome: profile.nome || "",
-      codigoSala: profile.codigoSala,
+      codigoSala,
       criadoEm: serverTimestamp(),
     });
   } catch (error) {
@@ -78,8 +84,7 @@ function renderResource(item, id) {
 }
 
 function watchResources() {
-  if (!profile?.codigoSala) return;
-  const resourcesQuery = query(collection(db, "biblioteca"), where("codigoSala", "==", profile.codigoSala));
+  const resourcesQuery = query(collection(db, "biblioteca"));
   onSnapshot(resourcesQuery, (snapshot) => {
     linksArea?.replaceChildren();
     filesArea?.replaceChildren();
@@ -87,6 +92,9 @@ function watchResources() {
       const data = item.data();
       if (!["link", "arquivo"].includes(data.tipo) || !data.url) return;
       const resource = renderResource(data, item.id);
+      const room = document.createElement("small");
+      room.textContent = data.codigoSala || "Turma não informada";
+      resource.appendChild(room);
       (data.tipo === "link" ? linksArea : filesArea)?.appendChild(resource);
     });
   }, (error) => {

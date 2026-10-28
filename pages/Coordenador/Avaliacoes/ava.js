@@ -1,4 +1,4 @@
-import { addDoc, collection, onSnapshot, query, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { addDoc, collection, onSnapshot, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { db } from "../../../backend/firebase/config.js";
 import { fillHeader, logout, navigate, requireCoordinator } from "../../../backend/firebase/professor.js";
 import { validateEvaluation } from "../../../backend/auth/validation.js";
@@ -41,7 +41,7 @@ function renderHistory(snapshot) {
       const data = item.data();
       const row = document.createElement("article");
       row.className = "avaliacao-historico";
-      row.textContent = `${data.grupoNome || "Grupo"}: ${data.nota}/10 — ${data.feedback || "Sem feedback"}`;
+      row.textContent = `${data.codigoSala || "Turma não informada"} · ${data.grupoNome || "Grupo"}: ${data.nota}/10 — ${data.feedback || "Sem feedback"}`;
       history.appendChild(row);
     });
 }
@@ -51,7 +51,7 @@ function updateSelectedGroup() {
   if (groupHeading) groupHeading.textContent = group ? `Avaliação · ${group.nome || "Grupo"}` : "Selecione um grupo";
   if (groupSummary) {
     if (!group) {
-      groupSummary.textContent = "Selecione um grupo da sua turma para registrar a avaliação.";
+      groupSummary.textContent = "Selecione um grupo de qualquer turma para registrar a avaliação.";
       return;
     }
     const members = Array.isArray(group.integrantes) ? group.integrantes : group.nomesMembros;
@@ -59,18 +59,14 @@ function updateSelectedGroup() {
   }
 }
 
-function watchGroups(profile) {
+function watchGroups() {
   if (!groupSelect) return;
-  if (!profile.codigoSala) {
-    groupSelect.replaceChildren(new Option("Seu perfil não tem turma vinculada", ""));
-    return;
-  }
-  const groupsQuery = query(collection(db, "grupos"), where("codigoSala", "==", profile.codigoSala));
+  const groupsQuery = query(collection(db, "grupos"));
   onSnapshot(groupsQuery, (snapshot) => {
     groupsById = new Map(snapshot.docs.map((item) => [item.id, item.data()]));
     groupSelect.replaceChildren(new Option("Selecione o grupo", ""));
     snapshot.docs.forEach((item) => {
-      const option = new Option(item.data().nome || `Grupo ${item.id}`, item.id);
+      const option = new Option(`${item.data().codigoSala || "Turma sem código"} · ${item.data().nome || `Grupo ${item.id}`}`, item.id);
       groupSelect.appendChild(option);
     });
     updateSelectedGroup();
@@ -82,8 +78,8 @@ function watchGroups(profile) {
 
 requireCoordinator((user, profile) => {
   fillHeader(profile);
-  watchGroups(profile);
-  const historyQuery = query(collection(db, "avaliacoes"), where("coordenadorUid", "==", user.uid));
+  watchGroups();
+  const historyQuery = query(collection(db, "avaliacoes"));
   onSnapshot(historyQuery, renderHistory, (error) => {
     console.error("Não foi possível carregar o histórico de avaliações:", error);
     if (history) history.textContent = "Não foi possível carregar o histórico.";
@@ -98,12 +94,12 @@ requireCoordinator((user, profile) => {
     const invalidField = validateEvaluation({
       groupId,
       group,
-      roomCode: profile.codigoSala,
+      roomCode: group?.codigoSala,
       grade: noteInput?.value,
       feedback,
     });
     if (invalidField === "group") {
-      alert("Selecione um grupo válido da sua turma.");
+      alert("Selecione um grupo válido.");
       return;
     }
     if (invalidField) {
@@ -118,7 +114,7 @@ requireCoordinator((user, profile) => {
         coordenadorUid: user.uid,
         coordenadorNome: profile.nome || "",
         tipoAvaliador: "coordenador",
-        codigoSala: profile.codigoSala,
+        codigoSala: group.codigoSala,
         nota: grade,
         feedback,
         data: serverTimestamp(),

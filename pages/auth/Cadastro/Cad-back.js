@@ -2,7 +2,7 @@ import { auth, db }
 from "../../../backend/firebase/config.js";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { collection, doc, getDoc, getDocs, increment, query, serverTimestamp, setDoc, updateDoc, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-import { getAccountType, parseClassCode } from "../../../backend/auth/validation.js";
+import { COORDINATOR_ACCESS_CODE, getAccountType, parseClassCode } from "../../../backend/auth/validation.js";
 
 //Navegação
 window.Entraralpr = function () {
@@ -30,17 +30,7 @@ async function Formulario(event) {
         return;
     }
 
-    // 2. Validação do Código (Ex: DS-1, ADM-3)
-    const classInfo = parseClassCode(codigoDigitado);
-    if (!classInfo) {
-        alert("Código de sala inválido! Use o formato SIGLA-ANO (Ex: DS-1, ADM-3).\n\nSiglas válidas: DS, DI, HOSP, IPI, MA, SEC, ADM, INF");
-        document.getElementById("Codigo-da-pessoa").style.border = "1px solid red";
-        return;
-    }
-
-    const { code: codigoSala, courseName: nomeCursoCompleto, year: ano } = classInfo;
-
-    // 3. Validação de senha
+    // 2. Validação de senha
     if (senha !== repitaSenha) {
         alert("As senhas não coincidem!");
         return;
@@ -51,13 +41,31 @@ async function Formulario(event) {
         return;
     }
 
-    // 4. Definir tipo de usuário
+    // 3. Definir o perfil pelo domínio antes de validar o código específico.
     const tipo = getAccountType(email);
     if (!tipo) {
         alert("Digite um e-mail válido com domínio institucional autorizado.");
         document.getElementById("Email").focus();
         return;
     }
+
+    let classInfo = null;
+    if (tipo === "coordenador") {
+        if (codigoDigitado !== COORDINATOR_ACCESS_CODE) {
+            alert(`Para cadastro de coordenador, informe o código ${COORDINATOR_ACCESS_CODE}.`);
+            document.getElementById("Codigo-da-pessoa").style.border = "1px solid red";
+            return;
+        }
+    } else {
+        classInfo = parseClassCode(codigoDigitado);
+        if (!classInfo) {
+            alert("Código de sala inválido! Use o formato SIGLA-ANO (Ex: DS-1, ADM-3).\n\nSiglas válidas: DS, DI, HOSP, IPI, MA, SEC, ADM, INF");
+            document.getElementById("Codigo-da-pessoa").style.border = "1px solid red";
+            return;
+        }
+    }
+
+    const { code: codigoSala, courseName: nomeCursoCompleto, year: ano } = classInfo || {};
 
     let usedAccessCodeRef = null;
     let attemptedRecovery = false;
@@ -66,7 +74,7 @@ async function Formulario(event) {
         // Os cadastros de alunos e professores exigem um código ativo emitido
         // pelo coordenador. Isso vincula a inscrição ao gerenciamento de códigos
         // da turma e permite controlar validade e revogação. Contas de coordenador
-        // usam a verificação separada pelo código C00RD e não passam por esta etapa.
+        // usam o domínio institucional e o código C00RD e não passam por esta etapa.
         if (tipo === "aluno" || tipo === "professor") {
             const accessCodes = await getDocs(query(
                 collection(db, "codigosAcesso"),
@@ -118,7 +126,7 @@ async function Formulario(event) {
             ? partes[0].charAt(0).toUpperCase() + partes[1].charAt(0).toUpperCase()
             : prefixo.substring(0, 2).toUpperCase();
 
-        // 5. Salvar no Firestore com os dados do curso validados
+        // 4. Salvar o perfil. Um coordenador tem escopo global e não recebe codigoSala.
         const userData = {
             uid: user.uid,
             nome: nome,
@@ -128,15 +136,16 @@ async function Formulario(event) {
             dataCadastro: new Date().toISOString()
         };
 
-        // O código da sala é importante para todos os usuários (vincula o professor/coordenador à sua turma)
-        userData.codigoSala = codigoSala;
-        
         if (tipo === "aluno") {
+            userData.codigoSala = codigoSala;
             userData.curso = nomeCursoCompleto;
             userData.ano = ano + "º Ano";
-        } else {
-            // Para professores e coordenadores, buscamos o curso pela sigla do código
+        } else if (tipo === "professor") {
+            userData.codigoSala = codigoSala;
             userData.curso = nomeCursoCompleto;
+        } else {
+            userData.escopo = "global";
+            userData.curso = "Coordenação global";
         }
 
         try {
