@@ -275,6 +275,7 @@ h1 span {
     text-align: center;
         border: var(--cor-borda) 3px solid;
         border-radius: 8px;
+
 }
 
 #btn-ativo {
@@ -314,6 +315,7 @@ h1 span {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     text-decoration: none;
     align-items: center;
+            cursor: pointer;
 }
 
 #quadro {
@@ -698,6 +700,7 @@ h1 span {
     font-family: "arial narrow", sans-serif;
     font-size: 15px;
     border: none;
+    cursor: pointer;
 }
 #Chat:hover {
     cursor: pointer;
