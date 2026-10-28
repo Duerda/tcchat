@@ -52,9 +52,15 @@ function montarChat(container, orientador) {
   container.append(list, form);
   stopListener?.();
   const messagesRef = collection(db, "grupos", group.id, "mensagens");
-  stopListener = onSnapshot(query(messagesRef, where("chatTipo", "==", orientador ? "orientador" : "grupo")), (snapshot) => {
+  const currentChatType = orientador ? "orientador" : "grupo";
+  stopListener = onSnapshot(query(messagesRef), (snapshot) => {
     list.replaceChildren();
-    const messages = snapshot.docs.map((item) => item.data()).sort((a, b) => (a.criadoEm?.toMillis?.() || 0) - (b.criadoEm?.toMillis?.() || 0));
+    const messages = snapshot.docs
+      .map((item) => item.data())
+      .filter((message) => message.chatTipo
+        ? message.chatTipo === currentChatType
+        : currentChatType === "grupo")
+      .sort((a, b) => (a.criadoEm?.toMillis?.() || 0) - (b.criadoEm?.toMillis?.() || 0));
     messages.forEach((message) => {
       const line = document.createElement("p");
       const author = document.createElement("strong");
