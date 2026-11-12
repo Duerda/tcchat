@@ -16,10 +16,14 @@ const areaArquivos = document.getElementById("arquivos");
 
 let usuarioAtual = null;
 
-// A biblioteca do coordenador é compartilhada com todos os alunos do curso.
+// Usa o mesmo codigoSala consultado nas telas de aluno e professor.
 function chaveBiblioteca() {
-    const curso = localStorage.getItem("codigoCurso");
-    return curso ? `curso-${curso}` : "geral";
+    const sala = document.getElementById("codigo-sala-biblioteca")?.value.trim().toUpperCase();
+    if (!sala || !/^[A-Z]{2,6}-\d{1,2}$/.test(sala)) {
+        alert("Informe um código de turma válido, como DS-3.");
+        return null;
+    }
+    return sala;
 }
 
 function escapar(texto = "") {
@@ -47,7 +51,9 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 // Adicionar link
-document.getElementById("Link").addEventListener("click", async () => {
+document.getElementById("Link")?.addEventListener("click", async () => {
+    const codigoSala = chaveBiblioteca();
+    if (!codigoSala || !usuarioAtual) return;
     const nome = prompt("Digite o nome do link:");
     const imagem = prompt("Cole a URL da imagem do ícone:");
     const endereco = prompt("Digite o link do site:");
@@ -60,7 +66,7 @@ document.getElementById("Link").addEventListener("click", async () => {
                 icone: imagem,
                 tipo: "link",
                 enviadoPor: usuarioAtual.uid,
-                codigoSala: chaveBiblioteca()
+                codigoSala
             });
         } catch (error) {
             console.error(error);
@@ -70,7 +76,9 @@ document.getElementById("Link").addEventListener("click", async () => {
 });
 
 // Adicionar arquivo/modelo
-document.getElementById("ArquivoModelo").addEventListener("click", async () => {
+document.getElementById("ArquivoModelo")?.addEventListener("click", async () => {
+    const codigoSala = chaveBiblioteca();
+    if (!codigoSala || !usuarioAtual) return;
     const nome = prompt("Digite o nome do arquivo:");
     const url = prompt("Cole a URL do arquivo (Ex: Google Drive/OneDrive):");
 
@@ -81,7 +89,7 @@ document.getElementById("ArquivoModelo").addEventListener("click", async () => {
                 url,
                 tipo: "arquivo",
                 enviadoPor: usuarioAtual.uid,
-                codigoSala: chaveBiblioteca()
+                codigoSala
             });
         } catch (error) {
             console.error(error);
@@ -92,39 +100,51 @@ document.getElementById("ArquivoModelo").addEventListener("click", async () => {
 
 // Lista em tempo real
 function escutarBiblioteca() {
-    const q = query(collection(db, "biblioteca"), where("codigoSala", "==", chaveBiblioteca()));
+    const salaInput = document.getElementById("codigo-sala-biblioteca");
+    let pararDeOuvir = null;
+    const carregarSala = () => {
+        const codigoSala = chaveBiblioteca();
+        if (!codigoSala) return;
+        pararDeOuvir?.();
+        const q = query(collection(db, "biblioteca"), where("codigoSala", "==", codigoSala));
+        pararDeOuvir = onSnapshot(q, (snapshot) => {
+            areaLinks.innerHTML = "";
+            areaArquivos.innerHTML = "";
 
-    onSnapshot(q, (snapshot) => {
-        areaLinks.innerHTML = "";
-        areaArquivos.innerHTML = "";
+            snapshot.forEach((docSnap) => {
+                const item = docSnap.data();
+                const id = docSnap.id;
+                const card = document.createElement("div");
 
-        snapshot.forEach((docSnap) => {
-            const item = docSnap.data();
-            const id = docSnap.id;
-            const card = document.createElement("div");
-
-            if (item.tipo === "link") {
-                card.className = "card-link";
-                card.innerHTML = `
+                if (item.tipo === "link") {
+                    card.className = "card-link";
+                    card.innerHTML = `
                     <div class="icone-box"><img src="${escapar(item.icone)}" width="24"></div>
                     <a href="${escapar(item.url)}" target="_blank" class="nome-link">${escapar(item.nome)}</a>
                     <p class="excluir" data-id="${id}">X</p>
                 `;
-                areaLinks.appendChild(card);
-            } else {
-                card.className = "card-arquivo";
-                card.innerHTML = `
+                    areaLinks.appendChild(card);
+                } else {
+                    card.className = "card-arquivo";
+                    card.innerHTML = `
                     <a href="${escapar(item.url)}" target="_blank" class="nome-arquivo">${escapar(item.nome)}</a>
                     <p class="excluir" data-id="${id}">X</p>
                 `;
-                areaArquivos.appendChild(card);
-            }
-
-            card.querySelector(".excluir").onclick = async () => {
-                if (confirm("Excluir este item?")) {
-                    await deleteDoc(doc(db, "biblioteca", id));
+                    areaArquivos.appendChild(card);
                 }
-            };
+
+                card.querySelector(".excluir").onclick = async () => {
+                    if (confirm("Excluir este item?")) {
+                        await deleteDoc(doc(db, "biblioteca", id));
+                    }
+                };
+            });
+        }, (error) => {
+            console.error("Não foi possível carregar a biblioteca da turma:", error);
+            alert("Não foi possível carregar os recursos desta turma.");
         });
-    });
+    };
+    if (areaLinks) areaLinks.textContent = "Informe um código de turma para listar os recursos.";
+    if (areaArquivos) areaArquivos.textContent = "Informe um código de turma para listar os recursos.";
+    salaInput?.addEventListener("change", carregarSala);
 }
