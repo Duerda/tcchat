@@ -1,10 +1,10 @@
 # TCChat - Documentação Final do Sistema (Backend & Firebase)
 
-Este documento resume todas as implementações realizadas para transformar o TCChat em um sistema de gestão de projetos profissional, acessível e sincronizado em tempo real.
+Este documento resume as funcionalidades do TCChat e sua integração com Firebase. Algumas áreas ainda estão em implementação; consulte também o registro de [complementação do projeto](IMPLEMENTACAO_COMPLEMENTAR.md) para saber o que foi concluído nesta etapa e quais dependências continuam pendentes.
 
 ## 1. Arquitetura de Dados (NoSQL Firestore)
 
-O sistema utiliza o **Firebase Firestore**, um banco de dados NoSQL de alto desempenho, garantindo que 100% das funcionalidades sejam dinâmicas e sincronizadas em tempo real.
+O sistema utiliza o **Firebase Firestore** para persistir e sincronizar em tempo real os dados das funcionalidades conectadas ao banco. A integração não significa que todas as áreas do sistema estejam completas.
 
 ### Estrutura NoSQL (Coleções)
 - **`usuarios`**: Perfil completo, cargo (Aluno/Professor/Coordenador) e preferências.
