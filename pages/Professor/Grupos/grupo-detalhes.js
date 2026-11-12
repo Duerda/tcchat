@@ -6,7 +6,6 @@ import {
   onSnapshot,
   query,
   orderBy,
-  where,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
@@ -66,8 +65,8 @@ requireProfessor(async (user, profile) => {
 
 async function carregarGrupo() {
 
-    const painel =
-        document.getElementById("painelGrupo");
+    const painel = document.getElementById("painelGrupo");
+    if (!painel) return;
 
     if (!grupoId) {
 
@@ -149,8 +148,6 @@ async function carregarGrupo() {
     }
 
 }
-
-
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -270,8 +267,9 @@ function renderAba(aba) {
 
 
     if (aba === "historico") {
-        painel.innerHTML = `<div class="historico-vazio"><h2>Atividades e entregas</h2><div id="listaEntregas"></div><label for="tituloEntrega">Título da atividade</label><input id="tituloEntrega" placeholder="Título da atividade"><label for="descricaoEntrega">Instruções</label><textarea id="descricaoEntrega" placeholder="Descreva o que o grupo deve entregar"></textarea><label for="prazoEntrega">Prazo</label><input id="prazoEntrega" type="date"><button id="btnSalvarEntrega">Publicar atividade</button></div>`;
+        painel.innerHTML = `<div class="historico-vazio"><h2>Atividades publicadas</h2><div id="listaEntregas"></div><label for="tituloEntrega">Título da atividade</label><input id="tituloEntrega" placeholder="Título da atividade"><label for="descricaoEntrega">Instruções</label><textarea id="descricaoEntrega" placeholder="Descreva o que o grupo deve entregar"></textarea><label for="prazoEntrega">Prazo</label><input id="prazoEntrega" type="date"><button id="btnSalvarEntrega">Publicar atividade</button><h2>Entregas dos alunos</h2><div id="listaSubmissoes" aria-live="polite"></div></div>`;
         carregarEntregas();
+        carregarSubmissoes();
         configurarSalvarEntrega();
         return;
     }
@@ -486,8 +484,6 @@ function iniciarChat() {
     );
 
 }
-
-
 
 function configurarSalvarAnotacao() {
 
@@ -717,6 +713,45 @@ function carregarEntregas() {
     });
 }
 
+function carregarSubmissoes() {
+    const lista = document.getElementById("listaSubmissoes");
+    if (!lista) return;
+    onSnapshot(query(collection(db, "grupos", grupoId, "submissoes"), orderBy("enviadoEm", "desc")), (snapshot) => {
+        lista.replaceChildren();
+        if (snapshot.empty) {
+            lista.textContent = "Nenhuma entrega recebida ainda.";
+            return;
+        }
+        snapshot.forEach((submissionDoc) => {
+            const submission = submissionDoc.data();
+            const card = document.createElement("article");
+            card.className = "anotacao-card";
+            const title = document.createElement("h3");
+            title.textContent = submission.atividade || "Atividade";
+            const author = document.createElement("p");
+            author.textContent = `Enviado por ${submission.alunoNome || "Aluno"}${submission.enviadoAtrasado ? " · após o prazo" : ""}`;
+            card.append(title, author);
+            if (submission.observacao) {
+                const note = document.createElement("p");
+                note.textContent = submission.observacao;
+                card.appendChild(note);
+            }
+            if (submission.arquivoUrl) {
+                const file = document.createElement("a");
+                file.href = submission.arquivoUrl;
+                file.target = "_blank";
+                file.rel = "noopener noreferrer";
+                file.textContent = `Abrir arquivo: ${submission.arquivoNome || "entrega"}`;
+                card.appendChild(file);
+            }
+            lista.appendChild(card);
+        });
+    }, (error) => {
+        console.error("Não foi possível carregar as entregas:", error);
+        lista.textContent = "Não foi possível carregar as entregas recebidas.";
+    });
+}
+
 function configurarSalvarEntrega() {
     document.getElementById("btnSalvarEntrega")?.addEventListener("click", async () => {
         const titulo = document.getElementById("tituloEntrega").value.trim();
@@ -748,79 +783,4 @@ function escapeHtml(valor) {
         })[char]
     );
 
-}
-
-
-// Cole isso dentro da sua função que renderiza as abas no painelGrupo.innerHTML
-
-if (aba === 'arquivo') {
-    painelGrupo.innerHTML = `
-        <div class="painel-titulo">
-            <h2>Arquivos do grupo</h2>
-            <p>Adicione links e referências para o projeto</p>
-        </div>
-        <div class="form-container">
-            <p style="color: #7a8699; margin-bottom: 20px;">Nenhum arquivo cadastrado.</p>
-            <form onsubmit="event.preventDefault(); alert('Arquivo adicionado!');">
-                <div class="input-row">
-                    <div class="form-group">
-                        <label>Nome do arquivo</label>
-                        <input type="text" placeholder="Ex: Protótipo no Figma" required>
-                    </div>
-                    <div class="form-group">
-                        <label>URL do arquivo</label>
-                        <input type="url" placeholder="https://..." required>
-                    </div>
-                </div>
-                <button type="submit" class="btn-publicar">Adicionar arquivo</button>
-            </form>
-        </div>
-    `;
-}
-
-if (aba === 'historico') {
-    painelGrupo.innerHTML = `
-        <div class="painel-titulo">
-            <h2>Atividades e entregas</h2>
-            <p>Gerencie as tarefas do grupo</p>
-        </div>
-        <div class="form-container">
-            <p style="color: #7a8699; margin-bottom: 20px;">Nenhuma entrega registrada.</p>
-            <form onsubmit="event.preventDefault(); alert('Atividade publicada!');">
-                <div class="form-group">
-                    <label>Título da atividade</label>
-                    <input type="text" placeholder="Ex: Entrega do Pré-Projeto" required>
-                </div>
-                <div class="form-group">
-                    <label>Instruções</label>
-                    <textarea placeholder="Descreva o que o grupo deve entregar..." required></textarea>
-                </div>
-                <div class="form-footer">
-                    <div class="form-group data-group">
-                        <label>Prazo final</label>
-                        <input type="date" required>
-                    </div>
-                    <button type="submit" class="btn-publicar">Publicar atividade</button>
-                </div>
-            </form>
-        </div>
-    `;
-}
-
-if (aba === 'anotacoes') {
-    painelGrupo.innerHTML = `
-        <div class="painel-titulo">
-            <h2>Anotações</h2>
-            <p>Visíveis apenas para professores e coordenadores</p>
-        </div>
-        <div class="form-container">
-            <form onsubmit="event.preventDefault(); alert('Anotação salva!');">
-                <div class="form-group">
-                    <label>Salvar anotação</label>
-                    <textarea placeholder="Digite uma anotação sobre o grupo..." required style="min-height: 150px;"></textarea>
-                </div>
-                <button type="submit" class="btn-publicar" style="margin-top: 10px;">Salvar anotação</button>
-            </form>
-        </div>
-    `;
 }
