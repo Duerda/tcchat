@@ -5,6 +5,7 @@ let stopGroups = null;
 let stopAssignments = [];
 let groups = [];
 let studentUid = null;
+let evaluations = [];
 const statusInfo = (status = "no-prazo") => ({
   atraso: ["Atrasado", "status-atraso"],
   atencao: ["Atenção", "status-atencao"],
@@ -46,7 +47,28 @@ function renderGroups() {
   document.getElementById("stat-atencao").textContent = counts.atencao;
   document.getElementById("stat-atraso").textContent = counts.atraso;
   renderAssignments();
+  renderEvaluations();
   updateArrows();
+}
+
+function renderEvaluations() {
+  const list = document.getElementById("lista-avaliacoes-aluno");
+  if (!list) return;
+  list.replaceChildren();
+  const ownGroupIds = new Set(groups.filter((group) => (group.membros || []).includes(studentUid)).map((group) => group.id));
+  const visible = evaluations.filter((evaluation) => ownGroupIds.has(evaluation.grupoId));
+  if (!visible.length) {
+    appendText(list, "p", "Ainda não há avaliações para o seu grupo.");
+    return;
+  }
+  visible.forEach((evaluation) => {
+    const card = document.createElement("article");
+    card.className = "atividade-painel avaliacao-aluno";
+    appendText(card, "h2", `${evaluation.grupoNome || "Avaliação"} · Nota ${evaluation.nota}/10`);
+    appendText(card, "p", evaluation.feedback || "Sem feedback registrado.");
+    appendText(card, "small", `Professor(a): ${evaluation.professorNome || "Não informado"}`);
+    list.appendChild(card);
+  });
 }
 
 function renderAssignments() {
@@ -147,6 +169,14 @@ window.alunoReady?.then((session) => {
       document.getElementById("GT").textContent = "Não foi possível carregar os grupos.";
     },
   );
+  onSnapshot(query(collection(db, "avaliacoes"), where("codigoSala", "==", room)), (snapshot) => {
+    evaluations = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
+    renderEvaluations();
+  }, (error) => {
+    console.error("Não foi possível carregar as avaliações:", error);
+    const list = document.getElementById("lista-avaliacoes-aluno");
+    if (list) list.textContent = "Não foi possível carregar as avaliações.";
+  });
 });
 
 document.getElementById("GT")?.addEventListener("scroll", updateArrows);
