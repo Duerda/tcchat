@@ -131,17 +131,17 @@
             <p class="set-sub">Altere a senha da sua conta</p>
             <div class="campo">
                 <label>Senha atual</label>
-                <input type="password" placeholder="...">
+                <input type="password" id="senha-atual" autocomplete="current-password" placeholder="Senha atual">
             </div>
             <div class="campo">
                 <label>Nova senha</label>
-                <input type="password" placeholder="...">
+                <input type="password" id="senha-nova" autocomplete="new-password" placeholder="Nova senha (mínimo 8 caracteres)">
             </div>
             <div class="campo">
                 <label>Confirmar nova senha</label>
-                <input type="password" placeholder="...">
+                <input type="password" id="senha-confirmacao" autocomplete="new-password" placeholder="Repita a nova senha">
             </div>
-            <button class="btn-salvar" onclick="alert('Disponivel em breve.')">Alterar senha</button>
+            <button class="btn-salvar" onclick="alterarSenha()">Alterar senha</button>
         </div>
 
     </div>

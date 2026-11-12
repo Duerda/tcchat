@@ -1,8 +1,10 @@
 import { db } from "../../../backend/firebase/config.js";
 import { aplicarAparenciaAluno } from "../aparencia.js";
+import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 let perfilRef = null;
+let usuarioAutenticado = null;
 // Os valores padrão servem apenas como alternativa para perfis antigos que ainda
 // não têm preferências salvas. As configurações existentes são mescladas ao carregar
 // os dados, para que salvar o nome não apague as escolhas do aluno.
@@ -17,6 +19,7 @@ const fontesPredefinidas = ["DM Sans", "Georgia", "monospace", "Trebuchet MS"];
 window.alunoReady?.then((session) => {
   if (!session) return;
   perfilRef = doc(db, "usuarios", session.user.uid);
+  usuarioAutenticado = session.user;
   const dados = session.profile;
   const foto = document.querySelector("#foto span");
   const nome = document.querySelector("#NomeUC h4");
@@ -120,6 +123,30 @@ window.salvarPerfil = async () => {
   } catch (error) {
     console.error("Não foi possível salvar o perfil do aluno:", error);
     alert("Não foi possível salvar as alterações.");
+  }
+};
+
+window.alterarSenha = async () => {
+  const atual = document.getElementById("senha-atual").value;
+  const nova = document.getElementById("senha-nova").value;
+  const confirmacao = document.getElementById("senha-confirmacao").value;
+  if (!usuarioAutenticado?.email) return alert("Sua sessão não está pronta. Atualize a página.");
+  if (!atual || !nova || nova.length < 8 || nova !== confirmacao) {
+    return alert("Informe a senha atual e uma nova senha de pelo menos 8 caracteres, repetida corretamente.");
+  }
+  try {
+    const credential = EmailAuthProvider.credential(usuarioAutenticado.email, atual);
+    await reauthenticateWithCredential(usuarioAutenticado, credential);
+    await updatePassword(usuarioAutenticado, nova);
+    document.getElementById("senha-atual").value = "";
+    document.getElementById("senha-nova").value = "";
+    document.getElementById("senha-confirmacao").value = "";
+    alert("Senha alterada com sucesso.");
+  } catch (error) {
+    console.error("Não foi possível alterar a senha do aluno:", error);
+    alert(error.code === "auth/invalid-credential" || error.code === "auth/wrong-password"
+      ? "A senha atual está incorreta."
+      : "Não foi possível alterar a senha. Confira os dados e tente novamente.");
   }
 };
 
