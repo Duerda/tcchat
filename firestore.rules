@@ -1,0 +1,255 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function profilePath(uid) {
+      return /databases/$(database)/documents/usuarios/$(uid);
+    }
+
+    function hasProfile() {
+      return signedIn() && exists(profilePath(request.auth.uid));
+    }
+
+    function profile() {
+      return get(profilePath(request.auth.uid)).data;
+    }
+
+    function isCoordinator() {
+      return hasProfile() && profile().tipo == 'coordenador'
+        && profile().acessoAtivo != false;
+    }
+
+    function isTeacher() {
+      return hasProfile() && profile().tipo == 'professor'
+        && profile().acessoAtivo != false;
+    }
+
+    function isStudent() {
+      return hasProfile() && profile().tipo == 'aluno'
+        && profile().acessoAtivo != false;
+    }
+
+    function validRoom(room) {
+      return room is string
+        && room.matches('^(DS|DI|HOSP|IPI|MA|SEC|ADM|INF)-[123]$');
+    }
+
+    function inSameRoom(room) {
+      return hasProfile() && profile().acessoAtivo != false
+        && profile().tipo in ['aluno', 'professor']
+        && profile().codigoSala == room;
+    }
+
+    function groupPath(groupId) {
+      return /databases/$(database)/documents/grupos/$(groupId);
+    }
+
+    function groupExists(groupId) {
+      return exists(groupPath(groupId));
+    }
+
+    function groupData(groupId) {
+      return get(groupPath(groupId)).data;
+    }
+
+    function groupMember(groupId) {
+      return signedIn() && groupExists(groupId)
+        && request.auth.uid in groupData(groupId).membros;
+    }
+
+    function staffForGroup(groupId) {
+      return (isCoordinator() || isTeacher()) && groupExists(groupId)
+        && (isCoordinator() || profile().codigoSala == groupData(groupId).codigoSala);
+    }
+
+    function canReadGroup(groupId) {
+      return staffForGroup(groupId) || (isStudent() && groupMember(groupId));
+    }
+
+    function validActivity(groupId, activityId) {
+      return exists(/databases/$(database)/documents/grupos/$(groupId)/entregas/$(activityId));
+    }
+
+    match /usuarios/{userId} {
+      allow get: if signedIn() && (request.auth.uid == userId || isCoordinator());
+      allow list: if isCoordinator();
+
+      // O cadastro atual cria perfis diretamente pelo navegador e escolhe a
+      // turma no formulário. Até migrar a validação do código de acesso para
+      // um backend confiável, negar criação evita autoatribuição de papel/turma.
+      allow create: if false;
+
+      // Usuários alteram somente nome e preferências. Campos de papel, turma,
+      // acesso e associação ao grupo ficam protegidos contra autoelevação.
+      allow update: if signedIn() && request.auth.uid == userId
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['nome', 'iniciais', 'configuracoes', 'ultimoAcesso'])
+        && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['ultimoAcesso'])
+          || request.resource.data.ultimoAcesso == request.time);
+
+      allow update: if isCoordinator()
+        && resource.data.tipo != 'coordenador'
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['nome', 'iniciais', 'usuarioRemovido', 'acessoAtivo', 'removidoEm', 'removidoPor', 'grupoId', 'grupoNome']);
+
+      allow delete: if false;
+    }
+
+    match /codigosAcesso/{codeId} {
+      // A validação atual do cadastro consulta esta coleção antes do login.
+      // Não exponha a lista inteira; mova a validação/consumo para backend e
+      // depois permita leitura somente pelo processo confiável.
+      allow read: if isCoordinator();
+      allow create: if isCoordinator()
+        && request.resource.data.criadoPor == request.auth.uid
+        && request.resource.data.codigo is string
+        && validRoom(request.resource.data.codigoSala)
+        && request.resource.data.codigo == request.resource.data.codigoSala
+        && request.resource.data.tipo in ['aluno', 'professor', 'ambos'];
+      allow update: if isCoordinator()
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['revogado', 'revogadoEm']);
+      allow delete: if false;
+    }
+
+    match /grupos/{groupId} {
+      // A turma precisa ser restringida no próprio Firestore query do cliente.
+      allow read: if isCoordinator() || inSameRoom(resource.data.codigoSala);
+      allow create: if isCoordinator()
+        && validRoom(request.resource.data.codigoSala)
+        && request.resource.data.criadoPor == request.auth.uid;
+      allow update: if isCoordinator()
+        || (isTeacher() && inSameRoom(resource.data.codigoSala)
+          && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['nome', 'descricao']));
+      allow delete: if isCoordinator();
+
+      match /mensagens/{messageId} {
+        allow read: if canReadGroup(groupId);
+        allow create: if canReadGroup(groupId)
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.chatTipo in ['grupo', 'orientador']
+          && request.resource.data.texto is string
+          && ((isStudent() && groupMember(groupId)
+              && request.resource.data.autor == 'aluno')
+            || (staffForGroup(groupId)
+              && request.resource.data.autor == 'professor'));
+        allow update: if false;
+        allow delete: if isCoordinator();
+      }
+
+      match /entregas/{activityId} {
+        allow read: if canReadGroup(groupId);
+        allow create: if staffForGroup(groupId)
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.tipo == 'atividade'
+          && request.resource.data.titulo is string;
+        allow update: if staffForGroup(groupId)
+          && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['titulo', 'descricao', 'dataLimite']);
+        allow delete: if isCoordinator();
+      }
+
+      match /submissoes/{submissionId} {
+        allow read: if canReadGroup(groupId);
+        allow create: if isStudent() && groupMember(groupId)
+          && request.resource.data.alunoUid == request.auth.uid
+          && request.resource.data.atividadeId is string
+          && validActivity(groupId, request.resource.data.atividadeId)
+          && request.resource.data.observacao is string;
+        allow update: if false;
+        allow delete: if isCoordinator();
+      }
+
+      match /arquivos/{fileId} {
+        allow read: if canReadGroup(groupId);
+        allow create: if canReadGroup(groupId)
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.nome is string
+          && request.resource.data.url is string;
+        allow update: if false;
+        allow delete: if isCoordinator()
+          || (isTeacher() && staffForGroup(groupId)
+            && resource.data.uid == request.auth.uid);
+      }
+
+      match /anotacoes/{noteId} {
+        allow read: if staffForGroup(groupId);
+        allow create: if isTeacher() && staffForGroup(groupId)
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.autor == 'professor'
+          && request.resource.data.texto is string;
+        allow update: if false;
+        allow delete: if isCoordinator();
+      }
+    }
+
+    match /avisos/{noticeId} {
+      allow read: if isCoordinator() || inSameRoom(resource.data.codigoSala);
+      allow create: if request.resource.data.autorUid == request.auth.uid
+        && request.resource.data.titulo is string
+        && request.resource.data.conteudo is string
+        && ((isCoordinator() && validRoom(request.resource.data.codigoSala))
+          || ((isTeacher() || isCoordinator())
+            && inSameRoom(request.resource.data.codigoSala)));
+      allow update: if false;
+      allow delete: if isCoordinator()
+        || (isTeacher() && inSameRoom(resource.data.codigoSala)
+          && resource.data.autorUid == request.auth.uid);
+    }
+
+    match /duvidas/{doubtId} {
+      allow read: if isCoordinator() || inSameRoom(resource.data.codigoSala);
+      allow create: if isStudent()
+        && request.resource.data.autorUid == request.auth.uid
+        && request.resource.data.codigoSala == profile().codigoSala
+        && request.resource.data.titulo is string
+        && request.resource.data.conteudo is string;
+      allow update: if (isTeacher() || isCoordinator())
+        && (isCoordinator() || inSameRoom(resource.data.codigoSala))
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['resposta', 'respondidoPor', 'respondidoPorUid', 'status', 'respondidoEm'])
+        && request.resource.data.respondidoPorUid == request.auth.uid
+        && request.resource.data.status == 'respondido';
+      allow delete: if isCoordinator();
+    }
+
+    match /biblioteca/{resourceId} {
+      allow read: if isCoordinator() || inSameRoom(resource.data.codigoSala);
+      allow create: if request.resource.data.enviadoPor == request.auth.uid
+        && request.resource.data.nome is string
+        && request.resource.data.url is string
+        && request.resource.data.tipo in ['link', 'arquivo']
+        && ((isCoordinator() && request.resource.data.codigoSala is string)
+          || (isTeacher() && inSameRoom(request.resource.data.codigoSala)));
+      allow update: if false;
+      allow delete: if isCoordinator()
+        || (isTeacher() && inSameRoom(resource.data.codigoSala)
+          && resource.data.enviadoPor == request.auth.uid);
+    }
+
+    match /avaliacoes/{evaluationId} {
+      allow read: if isCoordinator()
+        || (isTeacher() && resource.data.professorUid == request.auth.uid)
+        || (isStudent() && groupMember(resource.data.grupoId));
+      allow create: if isTeacher()
+        && request.resource.data.professorUid == request.auth.uid
+        && request.resource.data.codigoSala == profile().codigoSala
+        && request.resource.data.grupoNome is string
+        && request.resource.data.nota is number
+        && request.resource.data.nota >= 0
+        && request.resource.data.nota <= 10
+        && request.resource.data.feedback is string
+        && request.resource.data.feedback.size() > 0
+        && request.resource.data.grupoId is string
+        && groupExists(request.resource.data.grupoId)
+        && groupData(request.resource.data.grupoId).codigoSala == profile().codigoSala;
+      allow update, delete: if false;
+    }
+
+    // Qualquer coleção não declarada acima permanece bloqueada.
+  }
+}
