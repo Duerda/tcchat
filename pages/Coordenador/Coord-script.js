@@ -2,7 +2,7 @@ import { auth, db } from "../../backend/firebase/config.js";
 import { signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import {
   addDoc, arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query,
-  serverTimestamp, updateDoc, where, writeBatch,
+  serverTimestamp, setDoc, updateDoc, where, writeBatch,
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { appUrl, requireCoordinator } from "../../backend/firebase/professor.js";
 import { deleteGroupData } from "../../backend/firebase/delete-group.js";
@@ -201,7 +201,7 @@ function loadUsers() {
       const row = document.createElement("tr");
       const expiry = code.expiraEm?.toDate?.();
       const dateText = expiry ? expiry.toLocaleDateString("pt-BR") : "Sem limite";
-      row.innerHTML = `<td><span class="Chip">${safe(code.codigo)}</span></td><td>${safe(code.tipo)}</td><td>${safe(code.codigoSala || code.curso || "Turma não informada")}</td><td>${Number(code.usos || 0)}</td><td>${safe(dateText)}${code.revogado ? " · Revogado" : ""}</td><td><button class="btn-tabela vermelho" data-revogar="${item.id}" ${code.revogado ? "disabled" : ""}>Revogar</button></td>`;
+      row.innerHTML = `<td><span class="Chip">${safe(code.codigo || item.id)}</span></td><td>${safe(code.tipo)}</td><td>${safe(code.codigoSala || code.curso || "Turma não informada")}</td><td>${Number(code.usos || 0)}</td><td>${safe(dateText)}${code.revogado ? " · Revogado" : ""}</td><td><button class="btn-tabela vermelho" data-revogar="${item.id}" ${code.revogado ? "disabled" : ""}>Revogar</button></td>`;
       row.querySelector("[data-revogar]")?.addEventListener("click", () => revokeCode(item.id));
       codeRows.appendChild(row);
     });
@@ -312,8 +312,12 @@ window.gerarCodigo = async (tipo) => {
   if (expiryDate && (expiryDate.getFullYear() !== year || expiryDate.getMonth() !== month - 1 || expiryDate.getDate() !== day)) return alert("Informe uma data válida no formato DD-MM-AAAA.");
   if (expiryDate && (Number.isNaN(expiryDate.getTime()) || expiryDate.getTime() < Date.now())) return alert("A validade deve ser uma data futura válida.");
   try {
-    await addDoc(collection(db, "codigosAcesso"), {
-      codigo: sala,
+    // O código de convite é aleatório e independente do código identificador da turma.
+    const randomBytes = new Uint8Array(18);
+    crypto.getRandomValues(randomBytes);
+    const inviteCode = Array.from(randomBytes, (byte) => byte.toString(16).padStart(2, "0")).join("").toUpperCase();
+    await setDoc(doc(db, "codigosAcesso", inviteCode), {
+      codigo: inviteCode,
       codigoSala: sala,
       curso: COURSE_NAMES[sala.split("-")[0]],
       tipo,
@@ -321,9 +325,10 @@ window.gerarCodigo = async (tipo) => {
       criadoEm: serverTimestamp(),
       expiraEm: expiryDate,
       usos: 0,
+      usadosPor: [],
       revogado: false,
     });
-    alert(`Código ${sala} criado para ${tipo}.`);
+    prompt(`Convite criado para ${tipo} · turma ${sala}. Copie e envie somente às pessoas autorizadas:`, inviteCode);
   } catch (error) { reportError("Não foi possível criar o código de acesso.", error); }
 };
 

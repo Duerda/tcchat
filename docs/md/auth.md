@@ -1,31 +1,27 @@
 ## Cadastro
 
-O formulário pede nome, e-mail, senha, confirmação da senha e código. A senha precisa ter pelo menos 8 caracteres. O código deve ter formato de turma, como `DS-1` ou `ADM-3`; isso vale para todos os perfis, inclusive coordenação ([Cad-back.js](/home/e/codigos/tcchat/pages/auth/Cadastro/Cad-back.js:21), [validation.js](/home/e/codigos/tcchat/backend/auth/validation.js:24)).
+O formulário público é destinado a alunos e professores. O domínio institucional define o perfil. A coordenação gera um convite aleatório ligado a uma turma e ao tipo de conta permitido; o cadastro consulta esse convite pelo identificador exato, deriva dele a turma e cria o perfil em `usuarios/{uid}` com a referência `codigoAcessoId`. As regras do Firestore verificam que o convite existe, não foi revogado nem expirou e corresponde ao tipo e à turma do perfil. O uso do convite é registrado uma vez por UID.
 
-O domínio do e-mail define o perfil:
+Convites antigos cujo valor era apenas o código da turma (por exemplo, `DS-1`) não servem para o novo fluxo. Gere e distribua novos convites pela tela da coordenação. Como o convite autoriza um cadastro, compartilhe-o somente com a pessoa a quem se destina.
 
-- `@aluno.cps.sp.gov.br` → aluno
-- `@professor.cps.sp.gov.br` → professor
-- `@cps.sp.gov.br` → coordenador ([validation.js](/home/e/codigos/tcchat/backend/auth/validation.js:12))
-
-Para **alunos e professores**, o código de turma também precisa existir em `codigosAcesso`, ter o tipo correspondente — ou `ambos` — e não estar revogado nem vencido. A coordenação cria esses códigos no painel; o sistema registra quando são usados ([Cad-back.js](/home/e/codigos/tcchat/pages/auth/Cadastro/Cad-back.js:70), [Coord-script.js](/home/e/codigos/tcchat/pages/Coordenador/Coord-script.js:217)).
-
-Depois, o sistema cria a conta no Firebase Authentication e grava o perfil em `usuarios/{uid}` no Firestore. Se o perfil for salvo, redireciona a pessoa para a área correspondente. Se a conta de autenticação já tiver sido criada numa tentativa anterior, mas faltar o perfil, o cadastro tenta concluir esse perfil com o mesmo e-mail e senha ([Cad-back.js](/home/e/codigos/tcchat/pages/auth/Cadastro/Cad-back.js:90), [Cad-back.js](/home/e/codigos/tcchat/pages/auth/Cadastro/Cad-back.js:142)).
+Contas de coordenação não são criadas pelo formulário público. Um administrador provisiona a conta no Firebase Authentication e cria o perfil correspondente no Firestore. Isso evita conceder o papel de coordenador por meio de uma senha compartilhada incluída no JavaScript.
 
 ## Login
 
-**Aluno:** informa e-mail e senha. O sistema verifica se existe perfil no Firestore, se o tipo é `aluno` e se o acesso não foi revogado. Então atualiza o último acesso e abre a área do aluno ([Log-aluno.js](/home/e/codigos/tcchat/pages/auth/Login/Log-aluno.js:34)).
+**Aluno:** entra pela tela de aluno. O sistema verifica se existe um perfil no Firestore, se o tipo é `aluno` e se o acesso está ativo.
 
-**Professor:** informa e-mail e senha na tela compartilhada com coordenação. O perfil precisa ser `professor`, estar ativo e existir no Firestore. Se tudo estiver correto, abre a área do professor ([Log-prof.js](/home/e/codigos/tcchat/pages/auth/Login/Log-prof.js:107)).
+**Professor:** entra pela tela compartilhada de professor e coordenação, selecionando “Professor”. O sistema verifica o perfil e exige `tipo: "professor"`.
 
-**Coordenador:** na mesma tela, abre a opção “Coordenador” e informa e-mail, senha e o código fixo `C00RD`. Depois do login, o perfil no Firestore também precisa estar marcado como `coordenador` e ativo. A tela então abre o painel da coordenação ([Log-prof.js](/home/e/codigos/tcchat/pages/auth/Login/Log-prof.js:6), [Log-prof.js](/home/e/codigos/tcchat/pages/auth/Login/Log-prof.js:81)).
+**Coordenador:** usa a mesma tela e seleciona “Coordenador”. A seleção apenas define a área esperada; a autorização vem do perfil `usuarios/{uid}`, que deve ter `tipo: "coordenador"` e acesso ativo. Não existe código compartilhado de coordenação.
 
-As páginas internas repetem a conferência de sessão, tipo de perfil e status do acesso quando são abertas ([professor.js](/home/e/codigos/tcchat/backend/firebase/professor.js:30)).
+As páginas internas repetem a validação da sessão, do tipo de perfil e do status de acesso.
 
-## A coordenação precisa de outro coordenador?
+## Provisionamento de coordenadores
 
-Para aluno e professor, **sim: precisam receber da coordenação um código de acesso válido antes de se cadastrar**.
+O administrador cria a conta no Firebase Authentication e, em seguida, cria `usuarios/{uid}` usando como ID do documento o UID gerado pelo Firebase. O documento precisa conter `uid`, `nome`, `email`, `tipo: "coordenador"`, `iniciais`, `escopo: "global"`, `curso: "Coordenação global"` e `acessoAtivo: true`.
 
-Para criar uma conta de coordenador, o código de acesso da coleção `codigosAcesso` **não é exigido**. O cadastro classifica como coordenador pelo domínio `@cps.sp.gov.br`, embora ainda exija um código de turma válido, como `DS-1`. Depois, para entrar, a pessoa precisa informar `C00RD` na opção de coordenador.
+O formulário público bloqueia e informa que contas de coordenação devem ser solicitadas à administração. A coordenação deve ser provisionada antes do primeiro login.
 
-Portanto, no fluxo atual, `C00RD` é um código fixo usado no login; não é um código de cadastro emitido por outro coordenador. Também é diferente do código de turma informado no formulário.
+## Observação de implantação
+
+As regras em `firestore.rules` agora permitem criar perfis de alunos e professores quando há um convite válido e permitem a consulta de um convite pelo ID exato, sem permitir que usuários comuns listem a coleção. Ainda não publique as regras sem revisar os demais fluxos do sistema e validar todas as operações existentes: as permissões para grupos, atividades, entregas e outras coleções também precisam corresponder às consultas e gravações reais do TCCHAT.

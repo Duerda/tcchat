@@ -37,6 +37,22 @@ service cloud.firestore {
         && room.matches('^(DS|DI|HOSP|IPI|MA|SEC|ADM|INF)-[123]$');
     }
 
+    function invitePath(codeId) {
+      return /databases/$(database)/documents/codigosAcesso/$(codeId);
+    }
+
+    function validInvite(codeId, accountType, room) {
+      return codeId is string
+        && exists(invitePath(codeId))
+        && get(invitePath(codeId)).data.codigo == codeId
+        && get(invitePath(codeId)).data.codigoSala == room
+        && get(invitePath(codeId)).data.revogado == false
+        && (get(invitePath(codeId)).data.expiraEm == null
+          || get(invitePath(codeId)).data.expiraEm > request.time)
+        && (get(invitePath(codeId)).data.tipo == accountType
+          || get(invitePath(codeId)).data.tipo == 'ambos');
+    }
+
     function inSameRoom(room) {
       return hasProfile() && profile().acessoAtivo != false
         && profile().tipo in ['aluno', 'professor']
@@ -77,10 +93,24 @@ service cloud.firestore {
       allow get: if signedIn() && (request.auth.uid == userId || isCoordinator());
       allow list: if isCoordinator();
 
-      // O cadastro atual cria perfis diretamente pelo navegador e escolhe a
-      // turma no formulário. Até migrar a validação do código de acesso para
-      // um backend confiável, negar criação evita autoatribuição de papel/turma.
-      allow create: if false;
+      // O perfil só pode ser criado para o próprio usuário autenticado e com
+      // papel/turma correspondentes a um convite válido da coordenação.
+      allow create: if signedIn() && request.auth.uid == userId
+        && request.resource.data.keys().hasOnly([
+          'uid', 'nome', 'email', 'tipo', 'iniciais', 'dataCadastro',
+          'codigoAcessoId', 'codigoSala', 'curso', 'ano'
+        ])
+        && request.resource.data.uid == userId
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.tipo in ['aluno', 'professor']
+        && request.resource.data.codigoAcessoId is string
+        && validRoom(request.resource.data.codigoSala)
+        && validInvite(request.resource.data.codigoAcessoId,
+          request.resource.data.tipo, request.resource.data.codigoSala)
+        && ((request.resource.data.tipo == 'aluno'
+            && request.auth.token.email.matches('^[a-z0-9]+\\.[a-z0-9]+@aluno\\.cps\\.sp\\.gov\\.br$'))
+          || (request.resource.data.tipo == 'professor'
+            && request.auth.token.email.matches('^[a-z0-9]+\\.[a-z0-9]+@professor\\.cps\\.sp\\.gov\\.br$')));
 
       // Usuários alteram somente nome e preferências. Campos de papel, turma,
       // acesso e associação ao grupo ficam protegidos contra autoelevação.
@@ -99,19 +129,33 @@ service cloud.firestore {
     }
 
     match /codigosAcesso/{codeId} {
-      // A validação atual do cadastro consulta esta coleção antes do login.
-      // Não exponha a lista inteira; mova a validação/consumo para backend e
-      // depois permita leitura somente pelo processo confiável.
-      allow read: if isCoordinator();
+      // Convites podem ser buscados somente pelo ID aleatório exato; listagem
+      // permanece exclusiva da coordenação.
+      allow get: if isCoordinator() || (signedIn()
+        && exists(invitePath(codeId))
+        && resource.data.codigo == codeId
+        && resource.data.revogado == false
+        && (resource.data.expiraEm == null || resource.data.expiraEm > request.time));
+      allow list: if isCoordinator();
       allow create: if isCoordinator()
         && request.resource.data.criadoPor == request.auth.uid
         && request.resource.data.codigo is string
         && validRoom(request.resource.data.codigoSala)
-        && request.resource.data.codigo == request.resource.data.codigoSala
-        && request.resource.data.tipo in ['aluno', 'professor', 'ambos'];
-      allow update: if isCoordinator()
+        && request.resource.data.codigo == codeId
+        && request.resource.data.tipo in ['aluno', 'professor', 'ambos']
+        && request.resource.data.usos == 0
+        && request.resource.data.usadosPor == []
+        && request.resource.data.revogado == false;
+      allow update: if (isCoordinator()
         && request.resource.data.diff(resource.data).affectedKeys()
-          .hasOnly(['revogado', 'revogadoEm']);
+          .hasOnly(['revogado', 'revogadoEm']))
+        || (signedIn() && exists(profilePath(request.auth.uid))
+          && get(profilePath(request.auth.uid)).data.codigoAcessoId == codeId
+          && !(request.auth.uid in resource.data.usadosPor)
+          && request.auth.uid in request.resource.data.usadosPor
+          && request.resource.data.usos == resource.data.usos + 1
+          && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['usos', 'usadosPor', 'ultimoUso']));
       allow delete: if false;
     }
 

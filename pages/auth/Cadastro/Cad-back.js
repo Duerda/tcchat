@@ -1,8 +1,8 @@
 import { auth, db } 
 from "../../../backend/firebase/config.js";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { collection, doc, getDoc, getDocs, increment, query, serverTimestamp, setDoc, updateDoc, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-import { COORDINATOR_ACCESS_CODE, getAccountType, hasTwoPartEmailName, parseClassCode } from "../../../backend/auth/validation.js";
+import { arrayUnion, doc, getDoc, increment, serverTimestamp, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { getAccountType, hasTwoPartEmailName, parseClassCode } from "../../../backend/auth/validation.js";
 
 //Navegação
 window.Entraralpr = function () {
@@ -23,6 +23,11 @@ async function Formulario(event) {
     const senha = document.getElementById("Senha").value;
     const repitaSenha = document.getElementById("RepitaSenha").value;
     const codigoDigitado = document.getElementById("Codigo-da-pessoa").value.trim().toUpperCase();
+
+    if (getAccountType(email) === "coordenador") {
+        alert("Contas de coordenação são criadas pela administração do sistema. Solicite o provisionamento ao responsável pelo TCCHAT.");
+        return;
+    }
 
     // 1. Validação de campos vazios
     if (!nome || !email || !senha || !repitaSenha || !codigoDigitado) {
@@ -55,51 +60,30 @@ async function Formulario(event) {
         return;
     }
 
-    let classInfo = null;
-    if (tipo === "coordenador") {
-        if (codigoDigitado !== COORDINATOR_ACCESS_CODE) {
-            alert(`Para cadastro de coordenador, informe o código ${COORDINATOR_ACCESS_CODE}.`);
-            document.getElementById("Codigo-da-pessoa").style.border = "1px solid red";
-            return;
-        }
-    } else {
-        classInfo = parseClassCode(codigoDigitado);
-        if (!classInfo) {
-            alert("Código de sala inválido! Use o formato SIGLA-ANO (Ex: DS-1, ADM-3).\n\nSiglas válidas: DS, DI, HOSP, IPI, MA, SEC, ADM, INF");
-            document.getElementById("Codigo-da-pessoa").style.border = "1px solid red";
-            return;
-        }
-    }
-
-    const { code: codigoSala, courseName: nomeCursoCompleto, year: ano } = classInfo || {};
-
     let usedAccessCodeRef = null;
+    let accessCodeId = null;
+    let classInfo = null;
     let attemptedRecovery = false;
     let profileWriteFailed = false;
     try {
         // Os cadastros de alunos e professores exigem um código ativo emitido
-        // pelo coordenador. Isso vincula a inscrição ao gerenciamento de códigos
-        // da turma e permite controlar validade e revogação. Contas de coordenador
-        // usam o domínio institucional e o código C00RD e não passam por esta etapa.
+        // pela coordenação. Contas de coordenador são criadas pela administração.
         if (tipo === "aluno" || tipo === "professor") {
-            const accessCodes = await getDocs(query(
-                collection(db, "codigosAcesso"),
-                where("codigo", "==", codigoDigitado)
-            ));
+            const validCode = await getDoc(doc(db, "codigosAcesso", codigoDigitado));
             const now = Date.now();
-            const validCode = accessCodes.docs.find((item) => {
-                const code = item.data();
-                const expiry = code.expiraEm?.toDate?.()?.getTime?.() || (code.expiraEm ? new Date(code.expiraEm).getTime() : null);
-                return !code.revogado && (!expiry || expiry >= now) && (code.tipo === tipo || code.tipo === "ambos");
-            });
-            if (!validCode) {
-                alert(accessCodes.empty
-                    ? "Ainda não há um código de acesso para esta turma. Solicite um código ao coordenador."
-                    : "Este código está expirado, revogado ou não foi criado para o tipo de conta selecionado.");
+            const code = validCode.exists() ? validCode.data() : null;
+            const expiry = code?.expiraEm?.toDate?.()?.getTime?.() || (code?.expiraEm ? new Date(code.expiraEm).getTime() : null);
+            classInfo = parseClassCode(code?.codigoSala);
+            if (!code || code.codigo !== codigoDigitado || code.revogado || (expiry && expiry < now)
+                || (code.tipo !== tipo && code.tipo !== "ambos") || !classInfo) {
+                alert("Convite inválido, expirado, revogado ou incompatível com o tipo de conta. Solicite um novo à coordenação.");
                 return;
             }
+            accessCodeId = validCode.id;
             usedAccessCodeRef = validCode.ref;
         }
+
+        const { code: codigoSala, courseName: nomeCursoCompleto, year: ano } = classInfo;
         
         let userCredential;
         try {
@@ -142,6 +126,8 @@ async function Formulario(event) {
             dataCadastro: new Date().toISOString()
         };
 
+        if (accessCodeId) userData.codigoAcessoId = accessCodeId;
+
         if (tipo === "aluno") {
             userData.codigoSala = codigoSala;
             userData.curso = nomeCursoCompleto;
@@ -162,7 +148,11 @@ async function Formulario(event) {
             throw profileError;
         }
         if (usedAccessCodeRef) {
-            await updateDoc(usedAccessCodeRef, { usos: increment(1), ultimoUso: serverTimestamp() });
+            await updateDoc(usedAccessCodeRef, {
+                usos: increment(1),
+                usadosPor: arrayUnion(user.uid),
+                ultimoUso: serverTimestamp()
+            });
         }
 
         alert(`Cadastro realizado com sucesso como ${tipo}!`);
