@@ -9,8 +9,6 @@ export const COURSES = Object.freeze({
   INF: "Informática - MTEC",
 });
 
-export const COORDINATOR_ACCESS_CODE = "C00RD";
-
 const EMAIL_TYPES = Object.freeze({
   "aluno.cps.sp.gov.br": "aluno",
   "professor.cps.sp.gov.br": "professor",

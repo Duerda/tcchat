@@ -80,11 +80,11 @@ Personalizar as Configurações.
 
 Encerrar a sessão pelo X. 
 
- 
 
-4. Cadastro como Coordenador 
 
-Após voltar à sessão Cadastro, o usuário irá à sessão Entrar, Professor e colocará o seguinte código: “C00RD”. Após isso, deverá clicar em Entrar. 
+4. Acesso como Coordenador
+
+A conta de coordenação deve ser provisionada previamente pela administração no Firebase Authentication e na coleção `usuarios` do Firestore. Depois disso, o coordenador abre a tela Entrar, seleciona Coordenador e acessa com seu próprio e-mail e senha. Não há código compartilhado de coordenação.
 
 Na sessão Painel, você verá breves alertas dos grupos do seu curso, saberá quais estão realizando as atividades e quantas pessoas ainda estão no curso. 
 
@@ -106,4 +106,4 @@ Por último, clique no X, no canto inferior esquerdo, e finalize a sessão.
 
  
 
- 
+

@@ -2,10 +2,7 @@ import { auth, db } from "../../../backend/firebase/config.js";
 import { appUrl, navigate } from "../../../backend/navigation.js";
 import { signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, getDoc, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-import { COORDINATOR_ACCESS_CODE, getAccountType } from "../../../backend/auth/validation.js";
-
-// Código utilizado pelos coordenadores
-const CODIGO_COORDENADOR = COORDINATOR_ACCESS_CODE;
+import { getAccountType } from "../../../backend/auth/validation.js";
 
 // Página para onde o coordenador será enviado
 const PAGINA_COORDENADOR = appUrl("pages/Coordenador/Coord-Index.html");
@@ -54,18 +51,13 @@ async function Formulario(event) {
 
     const emailInput = document.getElementById("E-mail");
     const senhaInput = document.getElementById("Senhas");
-    const codigoInput = document.getElementById("Codigo-coordenador");
-
     const box = document.getElementById("Coor-box");
 
     const email = emailInput.value.trim().toLowerCase();
     const senha = senhaInput.value;
 
-    const codigo = codigoInput
-        ? codigoInput.value.trim().toUpperCase()
-        : "";
-
-    // Verifica se o usuário abriu a área de coordenador
+    // A seleção só define a área esperada. A autorização real é feita pelo
+    // perfil existente em usuarios/{uid}, após autenticar no Firebase.
     const entrouComoCoordenador =
         box && box.classList.contains("ativo");
 
@@ -88,26 +80,6 @@ async function Formulario(event) {
             return;
         }
 
-        // Código vazio
-        if (!codigo) {
-
-            alert("Digite o código do coordenador.");
-
-            codigoInput.focus();
-
-            return;
-        }
-
-
-        // Código incorreto
-        if (codigo !== CODIGO_COORDENADOR) {
-
-            alert("Código de coordenador inválido.");
-
-            codigoInput.focus();
-
-            return;
-        }
     }
 
 
@@ -148,7 +120,7 @@ async function Formulario(event) {
             }
             if (!entrouComoCoordenador && perfil.tipo !== "professor") {
                 await signOut(auth);
-                alert("Para entrar como coordenador, abra a opção Coordenador e informe o código.");
+                alert("Esta conta é de coordenação. Selecione a opção Coordenador para entrar.");
                 return;
             }
             await updateDoc(usuarioRef, { ultimoAcesso: serverTimestamp() });
@@ -229,12 +201,6 @@ document.addEventListener(
         const coorHead =
             document.getElementById("Coor-head");
 
-        const codigoInput =
-            document.getElementById(
-                "Codigo-coordenador"
-            );
-
-
         // Formulário de login
         if (form) {
 
@@ -255,29 +221,6 @@ document.addEventListener(
                     toggleCoor();
 
 
-                    // Coloca o cursor no código
-                    // quando a área abrir
-                    const box =
-                        document.getElementById(
-                            "Coor-box"
-                        );
-
-
-                    if (
-                        box.classList.contains("ativo")
-                    ) {
-
-                        setTimeout(
-                            () => {
-
-                                if (codigoInput) {
-                                    codigoInput.focus();
-                                }
-
-                            },
-                            300
-                        );
-                    }
                 }
             );
         }
