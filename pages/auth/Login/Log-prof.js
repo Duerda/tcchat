@@ -1,6 +1,6 @@
 import { auth, db } from "../../../backend/firebase/config.js";
 import { appUrl, navigate } from "../../../backend/navigation.js";
-import { signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { getIdToken, reload, sendEmailVerification, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, getDoc, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { getAccountType } from "../../../backend/auth/validation.js";
 
@@ -95,6 +95,18 @@ async function Formulario(event) {
 
 
         const user = userCredential.user;
+
+        await reload(user);
+        if (!user.emailVerified) {
+            try {
+                await sendEmailVerification(user);
+            } finally {
+                await signOut(auth);
+            }
+            alert("Seu e-mail ainda não foi verificado. Enviamos um novo link; confirme-o e tente entrar novamente.");
+            return;
+        }
+        await getIdToken(user, true);
 
         const usuarioRef = doc(db, "usuarios", user.uid);
 

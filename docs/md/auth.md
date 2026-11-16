@@ -1,6 +1,6 @@
 ## Cadastro
 
-O formulário público é destinado a alunos e professores. O domínio institucional define o perfil. A coordenação gera um convite aleatório ligado a uma turma e ao tipo de conta permitido; o cadastro consulta esse convite pelo identificador exato, deriva dele a turma e cria o perfil em `usuarios/{uid}` com a referência `codigoAcessoId`. As regras do Firestore verificam que o convite existe, não foi revogado nem expirou e corresponde ao tipo e à turma do perfil. O uso do convite é registrado uma vez por UID.
+O formulário público é destinado a alunos e professores. O domínio institucional define o perfil. A coordenação gera um convite aleatório ligado a uma turma e ao tipo de conta permitido; o cadastro consulta esse convite pelo identificador exato, deriva dele a turma e cria o perfil em `usuarios/{uid}` com a referência `codigoAcessoId`. O Firebase envia um link de verificação ao endereço informado. A pessoa precisa confirmar o endereço e entrar novamente; enquanto não confirmar, as regras não reconhecem o perfil como autorizado. As regras também verificam que o convite existe, não foi revogado nem expirou e corresponde ao tipo e à turma do perfil. O uso do convite é registrado uma vez por UID.
 
 Convites antigos cujo valor era apenas o código da turma (por exemplo, `DS-1`) não servem para o novo fluxo. Gere e distribua novos convites pela tela da coordenação. Como o convite autoriza um cadastro, compartilhe-o somente com a pessoa a quem se destina.
 
@@ -18,7 +18,7 @@ As páginas internas repetem a validação da sessão, do tipo de perfil e do st
 
 ## Provisionamento de coordenadores
 
-O administrador cria a conta no Firebase Authentication e, em seguida, cria `usuarios/{uid}` usando como ID do documento o UID gerado pelo Firebase. O documento precisa conter `uid`, `nome`, `email`, `tipo: "coordenador"`, `iniciais`, `escopo: "global"`, `curso: "Coordenação global"` e `acessoAtivo: true`.
+O administrador cria a conta no Firebase Authentication e, em seguida, cria `usuarios/{uid}` usando como ID do documento o UID gerado pelo Firebase. O documento precisa conter `uid`, `nome`, `email`, `tipo: "coordenador"`, `iniciais`, `escopo: "global"`, `curso: "Coordenação global"` e `acessoAtivo: true`. No primeiro login, o Firebase envia um link de verificação ao coordenador; o painel só fica acessível depois da confirmação.
 
 O formulário público bloqueia e informa que contas de coordenação devem ser solicitadas à administração. A coordenação deve ser provisionada antes do primeiro login.
 
