@@ -3,9 +3,11 @@ import { collection, onSnapshot, query, where } from "https://www.gstatic.com/fi
 
 let stopGroups = null;
 let stopAssignments = [];
+let stopEvaluationListeners = [];
 let groups = [];
 let studentUid = null;
 let evaluations = [];
+const evaluationsByGroup = new Map();
 const statusInfo = (status = "no-prazo") => ({
   atraso: ["Atrasado", "status-atraso"],
   atencao: ["Atenção", "status-atencao"],
@@ -68,6 +70,34 @@ function renderEvaluations() {
     appendText(card, "p", evaluation.feedback || "Sem feedback registrado.");
     appendText(card, "small", `Professor(a): ${evaluation.professorNome || "Não informado"}`);
     list.appendChild(card);
+  });
+}
+
+function watchEvaluationsForOwnGroups(room) {
+  stopEvaluationListeners.forEach((stop) => stop());
+  stopEvaluationListeners = [];
+  evaluationsByGroup.clear();
+  const ownGroups = groups.filter((group) => (group.membros || []).includes(studentUid));
+  if (!ownGroups.length) {
+    evaluations = [];
+    renderEvaluations();
+    return;
+  }
+  ownGroups.forEach((group) => {
+    const evaluationQuery = query(collection(db, "avaliacoes"),
+      where("codigoSala", "==", room),
+      where("grupoId", "==", group.id),
+      where("membros", "array-contains", studentUid));
+    const stop = onSnapshot(evaluationQuery, (snapshot) => {
+      evaluationsByGroup.set(group.id, snapshot.docs.map((item) => ({ id: item.id, ...item.data() })));
+      evaluations = [...evaluationsByGroup.values()].flat();
+      renderEvaluations();
+    }, (error) => {
+      console.error("Não foi possível carregar as avaliações do grupo:", error);
+      const list = document.getElementById("lista-avaliacoes-aluno");
+      if (list) list.textContent = "Não foi possível carregar as avaliações.";
+    });
+    stopEvaluationListeners.push(stop);
   });
 }
 
@@ -163,20 +193,13 @@ window.alunoReady?.then((session) => {
     (snapshot) => {
       groups = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
       renderGroups();
+      watchEvaluationsForOwnGroups(room);
     },
     (error) => {
       console.error("Não foi possível carregar os grupos:", error);
       document.getElementById("GT").textContent = "Não foi possível carregar os grupos.";
     },
   );
-  onSnapshot(query(collection(db, "avaliacoes"), where("codigoSala", "==", room)), (snapshot) => {
-    evaluations = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
-    renderEvaluations();
-  }, (error) => {
-    console.error("Não foi possível carregar as avaliações:", error);
-    const list = document.getElementById("lista-avaliacoes-aluno");
-    if (list) list.textContent = "Não foi possível carregar as avaliações.";
-  });
 });
 
 document.getElementById("GT")?.addEventListener("scroll", updateArrows);

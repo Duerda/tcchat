@@ -17,7 +17,9 @@ window.MeuGrupo = async () => {
   const sessao = await window.alunoReady;
   if (!sessao) return;
   try {
-    const grupos = await getDocs(query(collection(db, "grupos"), where("membros", "array-contains", sessao.user.uid)));
+    const grupos = await getDocs(query(collection(db, "grupos"),
+      where("codigoSala", "==", sessao.profile.codigoSala),
+      where("membros", "array-contains", sessao.user.uid)));
     if (grupos.empty) {
       alert("Seu grupo ainda não foi criado ou você ainda não foi associado a ele.");
       return;
@@ -47,7 +49,9 @@ requireStudent(async (user, profile) => {
     document.body.classList.add("pronto");
     resolverAluno(session);
     const myGroupButtons = [...document.querySelectorAll("button")].filter((button) => button.textContent.trim().toLowerCase() === "meu grupo");
-    const groups = await getDocs(query(collection(db, "grupos"), where("membros", "array-contains", user.uid)));
+    const groups = await getDocs(query(collection(db, "grupos"),
+      where("codigoSala", "==", profile.codigoSala),
+      where("membros", "array-contains", user.uid)));
     myGroupButtons.forEach((button) => {
       button.disabled = groups.empty;
       button.title = groups.empty ? "Aguarde a associação do coordenador ao seu grupo." : "Acesse o chat e os recursos do grupo.";

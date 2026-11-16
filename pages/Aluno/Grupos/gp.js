@@ -15,7 +15,9 @@ window.biblioteca = () => (location.href = "gp.link.html");
 
 async function carregarGrupo() {
   if (!session) return;
-  const snapshot = await getDocs(query(collection(db, "grupos"), where("membros", "array-contains", session.user.uid)));
+  const snapshot = await getDocs(query(collection(db, "grupos"),
+    where("codigoSala", "==", session.profile.codigoSala),
+    where("membros", "array-contains", session.user.uid)));
   group = snapshot.docs[0] ? { id: snapshot.docs[0].id, ...snapshot.docs[0].data() } : null;
   const subtitle = document.querySelector("#conteudo-superior p");
   if (!group) {

@@ -25,3 +25,5 @@ O formulário público bloqueia e informa que contas de coordenação devem ser 
 ## Observação de implantação
 
 As regras em `firestore.rules` agora permitem criar perfis de alunos e professores quando há um convite válido e permitem a consulta de um convite pelo ID exato, sem permitir que usuários comuns listem a coleção. Ainda não publique as regras sem revisar os demais fluxos do sistema e validar todas as operações existentes: as permissões para grupos, atividades, entregas e outras coleções também precisam corresponder às consultas e gravações reais do TCCHAT.
+
+As avaliações agora registram os UIDs dos integrantes do grupo no momento em que são publicadas. A tela do aluno consulta avaliações destinadas ao seu grupo, e as regras impedem a leitura de avaliações de outros grupos. Avaliações antigas sem o campo `membros` não serão exibidas para alunos sob essas regras; antes da implantação, será necessário preencher esse campo nos documentos antigos a partir do grupo referenciado, usando uma migração administrativa confiável.

@@ -15,6 +15,7 @@ const form = document.getElementById("form-avaliacao");
 const feedback = document.getElementById("feedback");
 const note = document.getElementById("nota");
 const history = document.getElementById("historico-avaliacoes");
+let groupsById = new Map();
 
 window.Cadastrar = () => {
   history?.scrollIntoView({ behavior: "smooth" });
@@ -39,7 +40,9 @@ requireProfessor((user, profile) => {
   onSnapshot(groupsQuery, (snapshot) => {
     if (groupSelect) {
       groupSelect.innerHTML = '<option value="">Selecione o grupo</option>';
+      groupsById = new Map();
       snapshot.forEach((item) => {
+        groupsById.set(item.id, item.data());
         const option = document.createElement("option");
         option.value = item.id;
         option.textContent = item.data().nome || `Grupo ${item.id}`;
@@ -54,10 +57,11 @@ requireProfessor((user, profile) => {
   form?.addEventListener("submit", async (event) => {
     event.preventDefault();
     const groupId = groupSelect?.value;
+    const selectedGroup = groupsById.get(groupId);
     const gradeText = note?.value.trim();
     const value = Number(gradeText);
     const text = feedback?.value.trim();
-    if (!groupId || !gradeText || !Number.isFinite(value) || value < 0 || value > 10 || !text) {
+    if (!groupId || !selectedGroup || !gradeText || !Number.isFinite(value) || value < 0 || value > 10 || !text) {
       alert("Selecione um grupo, informe uma nota entre 0 e 10 e escreva o feedback.");
       return;
     }
@@ -65,6 +69,7 @@ requireProfessor((user, profile) => {
       const selected = groupSelect.options[groupSelect.selectedIndex];
       await addDoc(collection(db, "avaliacoes"), {
         grupoId,
+        membros: selectedGroup.membros || [],
         grupoNome: selected.textContent,
         professorUid: user.uid,
         professorNome: profile.nome || "",

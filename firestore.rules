@@ -278,7 +278,8 @@ service cloud.firestore {
     match /avaliacoes/{evaluationId} {
       allow read: if isCoordinator()
         || (isTeacher() && resource.data.professorUid == request.auth.uid)
-        || (isStudent() && groupMember(resource.data.grupoId));
+        || (isStudent() && profile().codigoSala == resource.data.codigoSala
+          && request.auth.uid in resource.data.membros);
       allow create: if isTeacher()
         && request.resource.data.professorUid == request.auth.uid
         && request.resource.data.codigoSala == profile().codigoSala
@@ -289,8 +290,10 @@ service cloud.firestore {
         && request.resource.data.feedback is string
         && request.resource.data.feedback.size() > 0
         && request.resource.data.grupoId is string
+        && request.resource.data.membros is list
         && groupExists(request.resource.data.grupoId)
-        && groupData(request.resource.data.grupoId).codigoSala == profile().codigoSala;
+        && groupData(request.resource.data.grupoId).codigoSala == profile().codigoSala
+        && groupData(request.resource.data.grupoId).membros == request.resource.data.membros;
       allow update, delete: if false;
     }
 
