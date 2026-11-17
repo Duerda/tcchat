@@ -5,8 +5,8 @@
 O arquivo `firebase.json` aponta o Emulator para `firestore.rules`. Os testes usam o projeto fictício `demo-tcchat`, sem credenciais e sem conexão com o Firestore real.
 
 1. Instale as dependências do repositório com `npm install`.
-2. Execute `npm test`.
-3. O comando roda primeiro a verificação estática do projeto e depois inicia o Firestore Emulator, executa os casos de regras e encerra o Emulator.
+2. Execute `npm run test:rules` para validar somente as regras ou `npm run test:all` para rodar as verificações estática e de regras.
+3. O comando de regras inicia o Firestore Emulator, executa os casos e encerra o Emulator. `npm test` permanece como verificação estática rápida para o desenvolvimento comum.
 
 Os casos cobrem convites ativos, revogados e vencidos; criação de perfil; confirmação de e-mail; isolamento por turma; leitura de avaliações do próprio grupo; gravação de avaliação por professor; e proteção contra autoelevação de papel. O Firebase CLI baixa o binário do Emulator na primeira execução.
 
