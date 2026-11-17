@@ -8,7 +8,8 @@
     "test:static": "node scripts/check-project.js",
     "test:rules": "firebase emulators:exec --project demo-tcchat --only firestore \"node --test tests/firestore.rules.test.mjs\"",
     "test:all": "npm run test:static && npm run test:rules",
-    "migrate:evaluation-members": "node backend/scripts/migrate-evaluation-members.js"
+    "migrate:evaluation-members": "node backend/scripts/migrate-evaluation-members.js",
+    "demo:supabase-role": "node backend/scripts/assign-supabase-role.js"
   },
   "repository": {
     "type": "git",
