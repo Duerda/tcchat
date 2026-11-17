@@ -20,19 +20,24 @@ service cloud.firestore {
       return get(profilePath(request.auth.uid)).data;
     }
 
+    function hasActiveAccess() {
+      // Perfis legados e os recém-criados não possuem esse campo por padrão;
+      // somente o valor explícito false representa acesso revogado.
+      return hasProfile()
+        && (!profile().keys().hasAny(['acessoAtivo'])
+          || profile().acessoAtivo != false);
+    }
+
     function isCoordinator() {
-      return hasProfile() && profile().tipo == 'coordenador'
-        && profile().acessoAtivo != false;
+      return hasActiveAccess() && profile().tipo == 'coordenador';
     }
 
     function isTeacher() {
-      return hasProfile() && profile().tipo == 'professor'
-        && profile().acessoAtivo != false;
+      return hasActiveAccess() && profile().tipo == 'professor';
     }
 
     function isStudent() {
-      return hasProfile() && profile().tipo == 'aluno'
-        && profile().acessoAtivo != false;
+      return hasActiveAccess() && profile().tipo == 'aluno';
     }
 
     function validRoom(room) {
@@ -57,7 +62,7 @@ service cloud.firestore {
     }
 
     function inSameRoom(room) {
-      return hasProfile() && profile().acessoAtivo != false
+      return hasActiveAccess()
         && profile().tipo in ['aluno', 'professor']
         && profile().codigoSala == room;
     }
