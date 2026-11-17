@@ -11,6 +11,7 @@ import {
 
 import { db } from "../../../backend/firebase/config.js";
 import { fillHeader, navigate, requireProfessor } from "../../../backend/firebase/professor.js";
+import { supabase, SUPABASE_STORAGE_BUCKET } from "../../../backend/supabase/supabase.js";
 
 
 
@@ -736,7 +737,29 @@ function carregarSubmissoes() {
                 note.textContent = submission.observacao;
                 card.appendChild(note);
             }
-            if (submission.arquivoUrl) {
+            if (submission.arquivoPath) {
+                const file = document.createElement("a");
+                file.textContent = `Preparando acesso: ${submission.arquivoNome || "entrega"}`;
+                file.setAttribute("aria-live", "polite");
+                card.appendChild(file);
+                supabase.storage.from(SUPABASE_STORAGE_BUCKET)
+                    .createSignedUrl(submission.arquivoPath, 60 * 60)
+                    .then(({ data, error }) => {
+                        if (error) throw error;
+                        file.href = data.signedUrl;
+                        file.target = "_blank";
+                        file.rel = "noopener noreferrer";
+                        file.textContent = `Abrir arquivo: ${submission.arquivoNome || "entrega"}`;
+                    })
+                    .catch((error) => {
+                        console.error("Não foi possível gerar acesso ao arquivo:", error);
+                        file.remove();
+                        const message = document.createElement("p");
+                        message.textContent = "Não foi possível abrir o arquivo enviado.";
+                        card.appendChild(message);
+                    });
+            } else if (submission.arquivoUrl) {
+                // Compatibilidade com entregas antigas que ainda usam Firebase Storage.
                 const file = document.createElement("a");
                 file.href = submission.arquivoUrl;
                 file.target = "_blank";

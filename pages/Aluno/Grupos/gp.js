@@ -1,8 +1,18 @@
-import { auth, db, app } from "../../../backend/firebase/config.js";
+import { auth, db } from "../../../backend/firebase/config.js";
 import { addDoc, collection, getDocs, onSnapshot, query, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-import { getDownloadURL, getStorage, ref, uploadBytes } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-storage.js";
+import { supabase, SUPABASE_STORAGE_BUCKET } from "../../../backend/supabase/supabase.js";
 
-const storage = getStorage(app);
+const TIPOS_ARQUIVO = new Map([
+  [".pdf", "application/pdf"],
+  [".doc", "application/msword"],
+  [".docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"],
+  [".odt", "application/vnd.oasis.opendocument.text"],
+  [".zip", "application/zip"],
+  [".png", "image/png"],
+  [".jpg", "image/jpeg"],
+  [".jpeg", "image/jpeg"],
+]);
+const TAMANHO_MAXIMO_ARQUIVO = 25 * 1024 * 1024;
 let session;
 let group;
 let stopListener;
@@ -133,18 +143,28 @@ function montarAtividades() {
         const button = form.querySelector("button");
         button.disabled = true;
         try {
-          let arquivoUrl = "";
+          let arquivoPath = "";
           if (file) {
-            const storageRef = ref(storage, `entregas/${group.id}/${taskDoc.id}/${session.user.uid}/${Date.now()}-${file.name}`);
-            const upload = await uploadBytes(storageRef, file);
-            arquivoUrl = await getDownloadURL(upload.ref);
+            const extensao = file.name.match(/\.[^.]+$/)?.[0]?.toLowerCase() || "";
+            const tipoMime = TIPOS_ARQUIVO.get(extensao);
+            if (!tipoMime) throw new Error("tipo_arquivo_nao_permitido");
+            if (file.size > TAMANHO_MAXIMO_ARQUIVO) throw new Error("arquivo_maior_que_25mb");
+            const nomeSeguro = file.name.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9._-]/g, "_").slice(-120) || "entrega";
+            arquivoPath = `${session.user.uid}/entregas/${group.id}/${taskDoc.id}/${crypto.randomUUID()}-${nomeSeguro}`;
+            const { error: uploadError } = await supabase.storage.from(SUPABASE_STORAGE_BUCKET)
+              .upload(arquivoPath, file, { contentType: tipoMime, upsert: false });
+            if (uploadError) throw uploadError;
           }
-          await addDoc(collection(db, "grupos", group.id, "submissoes"), { atividadeId: taskDoc.id, atividade: task.titulo || "Atividade", alunoUid: session.user.uid, alunoNome: session.profile.nome || "Aluno", observacao: note, arquivoNome: file?.name || "", arquivoUrl, enviadoAtrasado: Boolean(dueDate && Date.now() > dueDate.getTime()), enviadoEm: serverTimestamp() });
+          await addDoc(collection(db, "grupos", group.id, "submissoes"), { atividadeId: taskDoc.id, atividade: task.titulo || "Atividade", alunoUid: session.user.uid, alunoNome: session.profile.nome || "Aluno", observacao: note, arquivoNome: file?.name || "", arquivoPath, enviadoAtrasado: Boolean(dueDate && Date.now() > dueDate.getTime()), enviadoEm: serverTimestamp() });
           status.textContent = "Atividade enviada com sucesso.";
           form.reset();
         } catch (error) {
           console.error("Erro ao enviar atividade:", error);
-          status.textContent = "Não foi possível enviar. Verifique a conexão e as permissões do Firebase Storage.";
+          status.textContent = error.message === "tipo_arquivo_nao_permitido"
+            ? "Tipo de arquivo não permitido. Envie PDF, DOC, DOCX, ODT, ZIP, PNG ou JPG."
+            : error.message === "arquivo_maior_que_25mb"
+              ? "O arquivo ultrapassa o limite de 25 MB."
+              : "Não foi possível enviar. Verifique a conexão e se o Supabase Storage foi configurado.";
         } finally { button.disabled = false; }
       });
       card.append(title, description, deadline, form);
