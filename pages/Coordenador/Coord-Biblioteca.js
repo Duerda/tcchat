@@ -1,15 +1,14 @@
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import {
     addDoc,
     collection,
     deleteDoc,
     doc,
-    getDoc,
     onSnapshot,
     query,
     where
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-import { auth, db } from "../../backend/firebase/config.js";
+import { db } from "../../backend/firebase/config.js";
+import { requireCoordinator } from "../../backend/firebase/professor.js";
 
 const areaLinks = document.getElementById("links");
 const areaArquivos = document.getElementById("arquivos");
@@ -32,22 +31,10 @@ function escapar(texto = "") {
     })[c]);
 }
 
-// Controle de acesso: somente coordenadores
-onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-        window.location.href = "../../auth/Login/Log-aluno.html";
-        return;
-    }
-    const userDoc = await getDoc(doc(db, "usuarios", user.uid));
-    const tipo = userDoc.exists() ? userDoc.data().tipo : null;
-
-    if (tipo === "coordenador") {
-        usuarioAtual = user;
-        escutarBiblioteca();
-    } else {
-        alert("Acesso negado: Esta área é exclusiva para coordenadores.");
-        window.location.href = "../../auth/Login/Log-aluno.html";
-    }
+// Usa a mesma proteção das demais telas: perfil de coordenação ativo e e-mail confirmado.
+requireCoordinator((user) => {
+    usuarioAtual = user;
+    escutarBiblioteca();
 });
 
 // Adicionar link

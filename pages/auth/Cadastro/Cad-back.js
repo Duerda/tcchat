@@ -1,6 +1,6 @@
 import { auth, db } 
 from "../../../backend/firebase/config.js";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { arrayUnion, doc, getDoc, increment, serverTimestamp, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { getAccountType, hasTwoPartEmailName, parseClassCode } from "../../../backend/auth/validation.js";
 
@@ -155,15 +155,18 @@ async function Formulario(event) {
             });
         }
 
-        alert(`Cadastro realizado com sucesso como ${tipo}!`);
-
-        if (tipo === "coordenador") {
-            window.location.href = "../../Coordenador/Coord-Index.html";
-        } else if (tipo === "professor") {
-            window.location.href = "../../Professor/Index.html";
-        } else {
-            window.location.href = "../../Aluno/Turma/index.html";
+        // O perfil é criado como pendente. As regras de acesso por papel exigem
+        // email_verified; enviamos o link e encerramos a sessão até a confirmação.
+        try {
+            await sendEmailVerification(user);
+        } finally {
+            await signOut(auth);
         }
+        alert(`Cadastro iniciado como ${tipo}. Enviamos um link de verificação para ${email}. Abra-o no seu e-mail e depois entre no TCCHAT.`);
+
+        window.location.href = tipo === "professor"
+            ? "../Login/Log-Prof.html"
+            : "../Login/Log-aluno.html";
 
     } catch (error) {
         console.error("Erro:", error);

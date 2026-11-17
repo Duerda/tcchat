@@ -1,4 +1,4 @@
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { getIdToken, onAuthStateChanged, reload, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, getDoc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { auth, db } from "./config.js";
 import { appUrl, navigate } from "../navigation.js";
@@ -31,6 +31,15 @@ export function requireRole(allowedTypes, callback) {
   return onAuthStateChanged(auth, async (user) => {
     if (!user) return redirectLogin();
     try {
+      // Atualiza o estado e o ID token; as regras do Firestore conferem a
+      // claim email_verified, então um token antigo não deve liberar acesso.
+      await reload(user);
+      if (!user.emailVerified) {
+        await signOut(auth);
+        alert("Confirme seu e-mail antes de acessar o TCCHAT. Entre novamente para receber outro link de verificação.");
+        return redirectLogin();
+      }
+      await getIdToken(user, true);
       const profile = await getProfile(user.uid);
       if (!profile || !allowedTypes.has(profile.tipo) || profile.acessoAtivo === false) {
         await signOut(auth);
