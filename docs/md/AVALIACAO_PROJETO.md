@@ -7,7 +7,7 @@
 
 O TCCHAT está em estágio de **protótipo funcional para demonstração acadêmica**, desde que os serviços externos sejam configurados e o ensaio manual seja concluído. Há fluxos de autenticação por papel, grupos, chat, atividades, submissões, avaliações, fórum, biblioteca e área de coordenação. A confirmação do e-mail está implementada no Firebase; o envio dos arquivos de atividade foi ligado ao Supabase Storage.
 
-O projeto **ainda não está comprovado como pronto para uso real**. A principal lacuna imediata é operacional: as configurações do Firebase e Supabase não podem ser confirmadas pelo código local. Também faltam testes de ponta a ponta dos fluxos na interface e há regras de leitura temporariamente amplas no Storage.
+O projeto **ainda não está comprovado como pronto para uso real**. A principal lacuna imediata é operacional: as configurações do Firebase e Supabase não podem ser confirmadas pelo código local. Como a automação de testes foi removida, a validação completa dependerá do ensaio manual dos fluxos na interface. Também há regras de leitura temporariamente amplas no Storage.
 
 ## Estado das funções principais
 
@@ -20,7 +20,7 @@ O projeto **ainda não está comprovado como pronto para uso real**. A principal
 | Atividades e entregas | Professor publica atividades; aluno envia observação e arquivo; tela do professor gera link assinado Supabase | Bucket, provedor Firebase, claim JWT e políticas configurados; upload e download reais |
 | Avaliações | Professor publica nota/feedback e aluno consulta avaliações direcionadas ao grupo | Fluxo completo com dados reais; telas de correção de submissões ainda não formam uma fila de avaliação |
 | Gestão e conteúdo | Há telas de coordenação, fórum e bibliotecas | Conferência funcional por papel e tratamento consistente de erros |
-| Verificação automatizada | `npm test` faz checagem estática; há oito testes de regras do Firestore no Emulator | Os testes de regras são optativos e não substituem ensaios de interface, e-mail, Storage ou implantação |
+| Verificação automatizada | Não há suíte nem scripts automatizados de teste no projeto, conforme decisão de priorizar a demonstração | Fazer ensaio manual dos fluxos principais antes da apresentação |
 
 ## O que precisa ser configurado para a demonstração
 
@@ -57,9 +57,8 @@ As instruções com comandos estão em [`supabase_upload_demo.md`](supabase_uplo
 2. Restringir leitura de submissões no Firestore ao aluno dono e aos professores/coordenadores autorizados. Atualmente, `canReadGroup()` permite que membros do mesmo grupo leiam documentos de submissão uns dos outros.
 3. Criar o fluxo do professor para revisar cada entrega e registrar nota/feedback vinculados à submissão.
 4. Automatizar a claim do Supabase para novos usuários ou documentar um processo administrativo repetível.
-5. Criar testes de interface para login confirmado/não confirmado, envio de arquivo, erro de permissão e abertura de link; manter os testes do Emulator como apoio às regras.
-6. Atualizar documentação operacional e de implantação à medida que os painéis forem configurados.
+5. Atualizar documentação operacional e de implantação à medida que os painéis forem configurados.
 
 ## Parecer
 
-Para um TCC de 20 minutos, o escopo atual é apresentável como demonstração de um protótipo se os itens de configuração e ensaio forem concluídos antes. A prioridade adequada agora é comprovar os dois caminhos demonstrados — confirmação de e-mail e entrega de arquivo — e verificar a publicação das regras mínimas necessárias. Uma auditoria de segurança abrangente e uma suíte extensa de testes podem ficar para depois da apresentação, mas as políticas temporárias de leitura devem ser tratadas como limitações explícitas do protótipo.
+Para um TCC de 20 minutos, o escopo atual é apresentável como demonstração de um protótipo se os itens de configuração e ensaio forem concluídos antes. A prioridade adequada agora é comprovar manualmente os dois caminhos demonstrados — confirmação de e-mail e entrega de arquivo — e verificar a publicação das regras mínimas necessárias. Uma auditoria de segurança abrangente pode ficar para depois da apresentação, mas as políticas temporárias de leitura devem ser tratadas como limitações explícitas do protótipo.

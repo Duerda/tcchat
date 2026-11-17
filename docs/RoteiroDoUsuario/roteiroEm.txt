@@ -62,7 +62,7 @@ Utilize um e-mail no formato:
 
 Finalize o cadastro e confirme o acesso como professor. 
 
-Testes das funcionalidades 
+Demonstração das funcionalidades
 
 Após o cadastro, o usuário deverá caso o professor já esteja atrelado a um grupo sendo o Orientador deverá ir cada sessão e fazer o que é pedido: 
 

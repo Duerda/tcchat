@@ -9,11 +9,6 @@ Este registro descreve a rodada de correções feita depois da revisão estátic
 3. **Senha do aluno:** a tela agora solicita a senha atual, a nova senha e sua confirmação. O fluxo reautentica o usuário e altera a senha no Firebase Authentication.
 4. **Avaliações para o aluno:** o painel da turma lista nota, feedback e professor das avaliações associadas aos grupos dos quais o aluno é membro.
 5. **Entregas para o professor:** no detalhe do grupo, o histórico mostra as submissões já registradas, incluindo observação e link para o arquivo, quando houver.
-6. **Checagem estática:** `npm test` deixou de retornar sucesso sem executar verificações. Ele confere a sintaxe dos scripts JavaScript em `backend/` e `pages/` e a existência dos scripts locais referenciados pelas páginas HTML.
-
-## Como a checagem funciona
-
-Execute `npm test` na raiz do projeto. A checagem procura erros de sintaxe e caminhos locais de scripts quebrados. Ela não conecta ao Firebase, não valida regras do Firestore, não simula autenticação e não substitui testes dos fluxos em navegador.
 
 ## Itens mantidos para outra etapa
 
