@@ -10,7 +10,10 @@ service cloud.firestore {
     }
 
     function hasProfile() {
-      return signedIn() && exists(profilePath(request.auth.uid));
+      // Perfil por si só não libera dados: o token precisa comprovar que o
+      // usuário confirmou o e-mail no Firebase Authentication.
+      return signedIn() && request.auth.token.email_verified == true
+        && exists(profilePath(request.auth.uid));
     }
 
     function profile() {
@@ -129,9 +132,10 @@ service cloud.firestore {
     }
 
     match /codigosAcesso/{codeId} {
-      // Convites podem ser buscados somente pelo ID aleatório exato; listagem
+      // O formulário consulta o convite antes da autenticação. Só é possível
+      // buscar um ID aleatório no formato emitido pelo sistema; listagem
       // permanece exclusiva da coordenação.
-      allow get: if isCoordinator() || (signedIn()
+      allow get: if isCoordinator() || (codeId.matches('^[A-F0-9]{36}$')
         && exists(invitePath(codeId))
         && resource.data.codigo == codeId
         && resource.data.revogado == false
