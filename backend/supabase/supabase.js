@@ -9,7 +9,7 @@ export const SUPABASE_STORAGE_BUCKET = "tcchat-arquivos";
 // obtido sob demanda, então não armazenamos credenciais de usuário no cliente.
 // Para autorizar este token, também será necessário habilitar Firebase Auth
 // como provedor de terceiros no projeto Supabase, emitir a claim `role` como
-// `authenticated` e configurar as políticas RLS descritas em docs/md/supabase_upload_demo.md.
+// `authenticated` e configurar as políticas RLS descritas em docs/md/demonstracao/supabase_upload_demo.md.
 export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
     accessToken: async () => {
         const user = auth.currentUser;

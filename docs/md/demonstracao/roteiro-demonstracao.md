@@ -5,7 +5,7 @@ Este roteiro prepara o fluxo de cadastro, confirmação por e-mail e entrega de 
 ## Preparação antecipada
 
 1. No Firebase Authentication, deixe prontas uma conta de aluno e uma conta de professor. Confirme que ambas têm perfil correspondente no Firestore e acesso ativo.
-2. Configure no Supabase a integração com o Firebase, execute [`../../supabase/setup_storage.sql`](../../supabase/setup_storage.sql) e atribua a claim do Supabase às contas conforme [`supabase_upload_demo.md`](supabase_upload_demo.md).
+2. Configure no Supabase a integração com o Firebase, execute [`../../../supabase/setup_storage.sql`](../../../supabase/setup_storage.sql) e atribua a claim do Supabase às contas conforme [`supabase_upload_demo.md`](supabase_upload_demo.md).
 3. Entre e saia de cada conta depois da atribuição da claim para renovar os tokens.
 4. Confirme que o remetente e o modelo de verificação estão configurados em **Firebase Console > Authentication > Templates**.
 5. Prepare uma atividade em um grupo de demonstração e um PDF pequeno (menos de 25 MB).

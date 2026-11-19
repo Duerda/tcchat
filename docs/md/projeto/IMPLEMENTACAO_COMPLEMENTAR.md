@@ -13,7 +13,7 @@ Este registro descreve a rodada de correções feita depois da revisão estátic
 ## Itens mantidos para outra etapa
 
 - A revisão e aplicação das regras de segurança do Firebase ficou fora desta rodada, conforme alinhado.
-- O envio de arquivos das atividades foi integrado ao Supabase Storage em uma etapa posterior. O código, o SQL inicial e as instruções estão em `backend/supabase/supabase.js`, `supabase/setup_storage.sql` e `docs/md/supabase_upload_demo.md`. A configuração do painel Supabase e a validação de um upload real ainda dependem do responsável pelo projeto.
+- O envio de arquivos das atividades foi integrado ao Supabase Storage em uma etapa posterior. O código, o SQL inicial e as instruções estão em `backend/supabase/supabase.js`, `supabase/setup_storage.sql` e `docs/md/demonstracao/supabase_upload_demo.md`. A configuração do painel Supabase e a validação de um upload real ainda dependem do responsável pelo projeto.
 - As avaliações são exibidas ao aluno, mas o fluxo do professor ainda não foi transformado em uma fila de submissões pendentes com lançamento de nota diretamente a partir do arquivo entregue.
 
 > Este documento registra uma rodada anterior. Para a situação atual e as pendências da apresentação, consulte [`AVALIACAO_PROJETO.md`](AVALIACAO_PROJETO.md).

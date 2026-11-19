@@ -9,7 +9,7 @@ Este guia configura o envio de arquivos das entregas de atividades. O navegador 
 - O caminho começa com o UID autenticado do Firebase e inclui grupo, atividade e nome aleatório.
 - Registro da entrega no Firestore usando `arquivoPath`, sem URL pública permanente.
 - A tela do professor solicita um link assinado com validade de uma hora. Entregas antigas com `arquivoUrl` do Firebase continuam abrindo.
-- O SQL inicial está em [`../../supabase/setup_storage.sql`](../../supabase/setup_storage.sql).
+- O SQL inicial está em [`../../../supabase/setup_storage.sql`](../../../supabase/setup_storage.sql).
 
 ## Configuração necessária nos painéis
 
@@ -40,7 +40,7 @@ Repita para cada conta da apresentação que precisa usar o Storage, incluindo a
 
 ### 3. Criar o bucket privado e as políticas
 
-No Supabase, abra **SQL Editor**, cole o conteúdo de [`../../supabase/setup_storage.sql`](../../supabase/setup_storage.sql) e execute. O script cria/atualiza o bucket privado e configura as políticas mínimas para upload e leitura na demonstração.
+No Supabase, abra **SQL Editor**, cole o conteúdo de [`../../../supabase/setup_storage.sql`](../../../supabase/setup_storage.sql) e execute. O script cria/atualiza o bucket privado e configura as políticas mínimas para upload e leitura na demonstração.
 
 O upload é permitido somente quando a primeira pasta do objeto corresponde ao UID (`sub`) presente no token. A leitura está aberta a qualquer usuário autenticado do projeto para que a conta do professor consiga abrir entregas dos alunos. Esse é um atalho deliberado para a apresentação; antes de uso real com dados de alunos, limite a leitura por papel, grupo e atividade.
 

@@ -29,7 +29,7 @@ O projeto **ainda não está comprovado como pronto para uso real**. A principal
 1. Em **Authentication > Sign-in method**, habilitar **Email/Password**.
 2. Em **Authentication > Settings > Authorized domains**, incluir o domínio onde o site será apresentado. Se for rodar localmente, conferir se `localhost` está autorizado; em projetos novos ele pode não estar incluído por padrão.
 3. Em **Authentication > Templates**, revisar o modelo **Email address verification** (idioma, remetente e texto) e fazer um envio real. O Firebase envia o link; a pessoa pode abri-lo no Outlook sem login Microsoft.
-4. Em **Authentication > Users**, preparar as contas de demonstração. Para o cadastro comum, também é preciso convite válido e perfil/grupo coerentes no Firestore; para coordenação, seguir [`provisionamento-coordenadores.md`](provisionamento-coordenadores.md).
+4. Em **Authentication > Users**, preparar as contas de demonstração. Para o cadastro comum, também é preciso convite válido e perfil/grupo coerentes no Firestore; para coordenação, seguir [`provisionamento-coordenadores.md`](../acesso/provisionamento-coordenadores.md).
 5. Em **Firestore Database > Rules**, publicar as regras do arquivo local `firestore.rules` somente após conferir que o projeto selecionado é `tcchat-13e85`. Não presumir que o arquivo local já está ativo no Console. O `firebase.json` aponta para esse arquivo; a publicação também pode ser feita pelo Firebase CLI.
 6. Preparar uma turma, grupo, membros e atividade de demonstração. As regras do projeto exigem esses vínculos para ler e enviar submissões.
 
@@ -40,7 +40,7 @@ O projeto **ainda não está comprovado como pronto para uso real**. A principal
 3. No **SQL Editor**, executar `supabase/setup_storage.sql`. Isso cria o bucket privado `tcchat-arquivos`, limita o tamanho a 25 MB e os tipos de arquivo aceitos, além de criar políticas de upload e leitura.
 4. Fazer upload de um PDF de ensaio, verificar o objeto no bucket e abrir o link assinado pela conta de professor.
 
-As instruções com comandos estão em [`supabase_upload_demo.md`](supabase_upload_demo.md), e o roteiro de ensaio está em [`roteiro-demonstracao.md`](roteiro-demonstracao.md).
+As instruções com comandos estão em [`supabase_upload_demo.md`](../demonstracao/supabase_upload_demo.md), e o roteiro de ensaio está em [`roteiro-demonstracao.md`](../demonstracao/roteiro-demonstracao.md).
 
 ## Pendências por prioridade
 
