@@ -17,6 +17,8 @@
   --azul: #0062ff;
   --azul-letra: #3c94ec;
   --borda: rgb(255 255 255 / 7%);
+      --cor-vermelho: rgb(236, 60, 60);
+    --cor-vermelho-transparente: hsl(0deg 82% 58% / 16%);
 }
 
 * { 
@@ -77,16 +79,16 @@ button, textarea, input {
 #lateral-superior h2 span { color: var(--vermelho); }
 
 #Logo-de-professor {
-  display: inline-flex;
-  font-size: 12px;
-  color: var(--vermelho);
-  margin-left: 8px;
-  background: var(--vermelho-transparente);
-  letter-spacing: .7px;
-  border-radius: 10px;
-  padding: 3px 8px;
-  width: 75px;
-  justify-content: center;
+    display: inline-flex;
+    font-size: 13px;
+    align-items: center;
+    background-color: var(--cor-vermelho-transparente);
+    color: var(--cor-vermelho);
+    letter-spacing: 0.7px;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-weight: bold;
+    width: fit-content;
 }
 
 .VGABF { padding: 0 8px 0 16px; }

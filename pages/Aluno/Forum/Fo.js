@@ -75,3 +75,4 @@ window.alunoReady?.then((session) => {
   aluno = session.profile;
   escutarDuvidas(aluno.codigoSala || "geral");
 });
+

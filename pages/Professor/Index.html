@@ -4,28 +4,27 @@
     <link rel="stylesheet" href="style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Visão Geral - Professor</title>
 </head>
 <body>
     <div id="Geral">
-        <!--Incio da sessão lateral-->
         <div id="lateral">
             <div id="lateral-superior">
                 <div><h2 style="margin-top: 2px;">T<span>CCHAT</span></h2></div>
                 <div id="Logo-de-professor">PROFESSOR</div>
             </div>
             
-            <!-- VGABF = Visão Geral, Grupos, Avaliações, Biblioteca e Fórum -->
             <div class="VGABF">
-
                 <div id="painel">Navegação</div>
-                <div><button onclick="VisaoGeral ()" id="bisao">Visão Geral</button></div>
-                <div><button onclick="Grupos ()">Grupos</button></div>
-                <div><button onclick="Avaliacoes ()">Avaliações</button></div>
-                <div><button onclick="Biblioteca ()">Biblioteca</button></div>
-                <div><button onclick="Forum ()">Fórum</button></div>
+                <div><button onclick="VisaoGeral()" id="bisao">Visão Geral</button></div>
+                <div><button onclick="Grupos()">Grupos</button></div>
+                <div><button onclick="Avaliacoes()">Avaliações</button></div>
+                <div><button onclick="Biblioteca()">Biblioteca</button></div>
+                <div><button onclick="Forum()">Fórum</button></div>
             </div>
-            <div id="sistema"><button onclick="Configuracoes ()" id="configuracao">Configurações</button></div>
+            
+            <div id="sistema"><button onclick="Configuracoes()" id="configuracao">Configurações</button></div>
+            
             <div class="lateral-inferior">
                 <div class="Usuario">
                     <div id="foto"><span style="margin: 0px;"></span></div>
@@ -33,59 +32,67 @@
                         <h4 style="margin: 0; color: #e4e9f4; width: 100px;"></h4> 
                         <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;"></h5> 
                     </div>
-                    <p id="voltar" style="margin-top: 31px; margin-bottom: 0px; margin-left: 30px;" onclick="Voltar ()">X</p>
+                    <p id="voltar" onclick="Voltar()">X</p>
                 </div>
-
             </div>
         </div>
-        <!--Fim da sessão lateral-->
 
         <div id="conteudo">
             <div id="conteudo-superior">
-                <h1><span>Visão</span> Geral</h1><p>Seus orientandos e outros</p>
+                <h1><span>Visão</span> Geral</h1>
+                <p>Seus orientandos e outros</p>
             </div>
-        <div id="Informacoes">
-            <div class="Grupos">
-                <div>
+            
+            <div id="Informacoes">
+                <div class="Grupos">
                     <h5>GRUPOS DESTA SALA</h5>
-                    <h3 id="gruposOrientados" style="text-align: initial; color:#e4e9f4;"></h3>
+                    <h3 id="gruposOrientados" style="color:#e4e9f4;">0</h3>
+                </div>
+                <div class="Grupos">
+                    <h5>ENTREGAS PENDENTES</h5>
+                    <h3 style="color: #fbbf24;">0</h3>
+                </div>
+                <div class="Grupos">
+                    <h5>DÚVIDA NA CAIXA</h5>
+                    <h3 style="color: hsl(210,82%,58%);">0</h3>
+                </div>
+                <div class="Grupos">
+                    <h5>GRUPOS EM ATRASO</h5>
+                    <h3 style="color: #f87171;">0</h3>
                 </div>
             </div>
-            <div class="Grupos">
-                <div><h5>ENTREGAS PENDENTES</h5><h3 style="text-align: initial; color: #fbbf24;">0</h3></div>
+            
+            <div id="listaGrupos">
             </div>
-            <div class="Grupos">
-                <div><h5>DÚVIDA NA CAIXA</h5><h3 style="text-align: initial; color: hsl(210,82%,58%);">0</h3></div>
-            </div>
-            <div class="Grupos"><div>
-                <h5>GRUPOS EM ATRASO</h5><h3 style="text-align: initial; color: #f87171;">0</h3></div>
-        </div>
-            <div id="conteudo-inferior"></div>
-        </div>
-        <h1>Meus Orientados</h1>
-        <div class="Cards">
-            <div id="top-card">
-                <div>
-               <h3 style="margin-top: 0px; margin-bottom: 5px; color: #e4e9f4;"> Nome do TCC </h3>
-               <span style="color: #3d4d61 ;">Ultima msg:Tempo</span>
-               </div>
-               <Span class="Estado" style="font-size: smaller;">No Prazo/Atenção/Atrazado</Span>
-            </div>
-            <div><p style="color: #7a8699;">Descrição completa do TCC</p></div>
-            <div style="color: #7a8699;">Aqui fica atividade que tem que ser entregue ainda </div>
-        </div>
-        <h1 style="margin-bottom: 11px; margin-top: 22px;">Bandeja de Dúvidas</h1>
-        <div class="Duvidas">
-            <div id="Pontinho"></div>
-            <div id="Top-duvidas">
-                <h3 style="margin: 0px; font: 600; font-size: 20px; color: #e4e9f4;">Nome-do-Aluno/TCC</h3>
-                <p style="color: #7a8699 ; margin-top: 7px; margin-bottom: 3px; font-size: 12px;">Prévia da dúvida</p>
-            </div>
-            <div style="color: #3d4d61;">Tempo</div>
 
+            <h1 style="margin-top: 30px;">Meus Orientados</h1>
+            
+            <div class="Cards">
+                <div id="top-card">
+                    <div>
+                        <h3 style="margin-top: 0px; margin-bottom: 5px; color: #e4e9f4;"> Nome do TCC </h3>
+                        <span style="color: #3d4d61 ;">Ultima msg: Tempo</span>
+                    </div>
+                    <span class="Estado">No Prazo</span>
+                </div>
+                <div><p style="color: #7a8699;">Descrição completa do TCC</p></div>
+                <div style="color: #7a8699;">Aqui fica atividade que tem que ser entregue ainda</div>
+            </div>
+
+            <h1 style="margin-bottom: 15px; margin-top: 30px;">Bandeja de Dúvidas</h1>
+            
+            <div class="Duvidas">
+                <div id="Pontinho"></div>
+                <div id="Top-duvidas">
+                    <h3 style="margin: 0px; font-size: 20px; color: #e4e9f4;">Nome-do-Aluno/TCC</h3>
+                    <p style="color: #7a8699; margin-top: 7px; margin-bottom: 3px; font-size: 12px;">Prévia da dúvida</p>
+                </div>
+                <div style="color: #3d4d61;">Tempo</div>
+            </div>
+            
         </div>
     </div>
 
+    <script type="module" src="script.js"></script>
 </body>
-<script type="module" src="script.js"></script>
 </html>

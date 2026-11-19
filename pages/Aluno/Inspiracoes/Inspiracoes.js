@@ -43,3 +43,5 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnTodos = document.querySelector('.filtro.ativo') || document.querySelector('.filtro');
     if (btnTodos) setFiltro('todos', btnTodos);
 });
+
+

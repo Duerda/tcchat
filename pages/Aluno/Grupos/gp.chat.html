@@ -15,20 +15,20 @@
             </div>
             <div class="VGABF">
                 <div id="painel">Navegação</div>
-                <div><button id="painel-btn" onclick="Painel()" >Painel</button></div>
-                <div><button id="Grupo-btn" onclick="MeuGrupo()">Meu Grupo</button></div>
-                <div><button id="Forum-btn" onclick="Forum()" >Fórum</button></div>
-                <div><button id="Inspiracoes-btn" onclick="Inspiracoes()">Inspirações</button></div>
+                <div><button id="painel-btn" onclick="window.location.href = '/pages/Aluno/Turma/index.html'">Painel</button></div>
+                <div><button id="Grupo-btn" onclick="window.location.href = '/pages/Aluno/Grupos/gp.chat.html'">Meu Grupo</button></div>
+                <div><button id="Forum-btn" onclick="window.location.href = '/pages/Aluno/Forum/Fo.html'">Fórum</button></div>
+                <div><button id="Inspiracoes-btn" onclick="window.location.href = '/pages/Aluno/Inspiracoes/Inspiracoes.html'">Inspirações</button></div>
             </div>
-            <div id="sistema"><button onclick="Configuracoes()" id="configuracao">Configurações</button></div>
+            <div id="sistema"><button onclick="window.location.href = '/pages/Aluno/Configuracoes/Config.html'" id="configuracao">Configurações</button></div>
             <div class="lateral-inferior">
                 <div class="Usuario">
-                    <div id="foto"><span style="margin: 0px;color: #e4e9f4; "></span></div>
+                    <div id="foto"><span style="margin: 0px;color: #e4e9f4;"></span></div>
                     <div id="NomeUC">
                         <h4 style="margin: 0; color: #e4e9f4; width: 100px;"></h4> 
                         <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;"></h5> 
                     </div>
-                    <p id="voltar"  onclick="Voltar()">X</p>
+                    <p id="voltar" onclick="window.location.href = '/pages/Auth/Login/Log-aluno.html'">X</p>
                 </div>
             </div>
         </div>
@@ -39,23 +39,29 @@
             </div>
             <div id="linha"></div>
             
-            <!-- NAVBAR -->
             <div id="navbar">
-                <button class="navbtn" onclick="window.location.href = 'gp.chat.html'" style="background-color:rgba(236, 60, 60, 0.16) ; color: rgb(236, 60, 60);">Chat do Grupo</button>
-                <button class="navbtn" onclick="window.location.href = 'gp-cha-ori.html'">Chat c/Orientador</button>
-                <button class="navbtn" onclick="window.location.href = 'gp.ativ.html'">Atividades</button>
-                <button class="navbtn" onclick="window.location.href = 'gp.link.html'">Biblioteca</button>
+                <button class="navbtn" onclick="window.location.href = '/pages/Aluno/Grupos/gp.chat.html'" style="background-color:rgba(236, 60, 60, 0.16); color: rgb(236, 60, 60);">Chat do Grupo</button>
+                <button class="navbtn" onclick="window.location.href = '/pages/Aluno/Grupos/gp-cha-ori.html'">Chat c/Orientador</button>
+                <button class="navbtn" onclick="window.location.href = '/pages/Aluno/Grupos/gp.ativ.html'">Atividades</button>
+                <button class="navbtn" onclick="window.location.href = '/pages/Aluno/Grupos/gp.link.html'">Biblioteca</button>
             </div>
-
-            <!-- CONTEÚDO -->
+            
             <div id="chat">
                 <h1>Chat do Grupo</h1>
                 <p>Conversa dos integrantes do grupo.</p>
-                <input type="text" placeholder="Digite sua Mensagem..." id="chat-text">
+                
+                <div id="chat-mensagens"></div>
+
+                <form class="chat-form">
+                    <input type="text" placeholder="Digite sua mensagem..." id="chat-text" required>
+                    <button type="submit">Enviar</button>
+                </form>
             </div>
         </div>
     </div>
 </body>
-<script type="module" src="../navegacao.js"></script>
-<script type="module" src="gp.js"></script>
+<script src="/pages/Aluno/navegacao.js"></script>
+<script type="module" src="/pages/Aluno/user-info.js"></script>
+<script src="gp.js"></script>
+</body>
 </html>

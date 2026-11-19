@@ -27,9 +27,13 @@
             margin-top: 0;
         }
         #Coor-box.ativo #Coor-body {
-            max-height: 100px;
+            max-height: 80px;
             opacity: 1;
             margin-top: 10px;
+        }
+        #Coor-body input {
+            width: 100%;
+            box-sizing: border-box;
         }
     </style>
 </head>
@@ -76,7 +80,9 @@
                 </div>
 
                 <div id="Coor-body">
-                    <p>Use o e-mail e a senha da conta de coordenação provisionada pela administração.</p>
+                    <input type="text" id="Codigo-coordenador"
+                           placeholder="Digite o código do coordenador"
+                           autocomplete="off">
                 </div>
             </div>
         </div>

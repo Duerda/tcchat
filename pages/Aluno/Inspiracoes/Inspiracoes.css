@@ -5,301 +5,241 @@
     --cor-fundo-card: #111520;
     --cor-branco: #fff;
     --cor-texto: #e4e9f4;
-    --cor-texto-secundario: #7a8699;
-    --cor-texto-fraco: #3d4d61;
+    --cor-texto-secundario: #a0aec0;
+    --cor-texto-fraco: #4a5a70;
     --cor-vermelho: rgb(236, 60, 60);
     --cor-vermelho-transparente: hsl(0deg 82% 58% / 16%);
-    --cor-verde: #34d399;
-    --cor-azul: #0062ff;
+    --cor-azul: #3b82f6;
     --cor-borda: rgb(255 255 255 / 7%);
 }
 
-#Geral {
-    display: flex;
-}
+* { box-sizing: border-box; }
 
 body {
     margin: 0;
     padding: 0;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background-color: var(--cor-fundo-principal);
+    color: var(--cor-texto);
 }
 
+#Geral {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
 
-/* LATERAL */
-
+/* =========================================
+   LATERAL (MENU PADRÃO)
+   ========================================= */
 #lateral {
-    padding: 18px 0;
     display: flex;
     flex-direction: column;
-    width: 229px;
+    width: 260px;
     height: 100vh;
     background-color: var(--cor-fundo-secundario);
-    position: sticky;
-    top: 0;
+    border-right: 1px solid var(--cor-borda);
 }
 
 #lateral-superior {
-        height: 59px;
-    width: 197px;
-    padding: 0 16px 18px;
+    padding: 24px 20px;
     border-bottom: 1px solid var(--cor-borda);
-    margin-bottom: 8px;
-}
-
-#lateral-superior div {
-    display: flex;
-    align-items: center;
-}
-
-h2 {
-    font-size: 32px;
-    color: var(--cor-branco);
-    margin-left: 8px;
+    margin-bottom: 15px;
 }
 
 #lateral-superior div h2 {
-    font-size: 32px;
+    font-size: 36px;
     color: var(--cor-branco);
-    margin-bottom: 5px;
-}
-
-#lateral-superior div span {
-    font-size: 32px;
-    color: var(--cor-vermelho);
-}
-
-#Logo-de-professor {
-        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    margin: 0 0 10px 0;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-weight: 200;
+    letter-spacing: 1px;
+}
+
+#lateral-superior div span { color: var(--cor-vermelho); }
+
+/* CORREÇÃO DO BADGE ALUNO/PROFESSOR */
+#Logo-de-aluno, #Logo-de-professor {
     display: inline-flex;
-    font-size: 12px;
-    margin-left: 8px;
-    align-items: center;
-    margin-top: 3px;
-    background-color: var(--cor-vermelho-transparente);
+    font-size: 13px;
     color: var(--cor-vermelho);
-    letter-spacing: 0.7px;
-    border-radius: 10px;
-    padding: 3px 8px;
-    width: 40px;
+    background-color: var(--cor-vermelho-transparente);
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-weight: 200;
+    letter-spacing: 1px;
 }
 
 #painel {
-    font-weight: 700;
     font-size: 14px;
     color: var(--cor-texto-fraco);
-    margin-bottom: 4px;
-    letter-spacing: 0.5px;
+    margin: 0 0 10px 20px;
+    margin-left: 0px;
+    text-transform: uppercase;
     font-family: "arial narrow", sans-serif;
     font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .VGABF {
-    padding: 0 8px 0 16px;
-}
-
-.VGABF div {
+    padding: 0 20px;
     display: flex;
-    align-items: center;
-    margin-bottom: 4px;
+    flex-direction: column;
+    gap: 8px;
 }
 
-.VGABF div button,
-#configuracao {
-    width: 220px;
-    height: 36px;
+.VGABF div { width: 100%; }
+
+.VGABF div button, #configuracao {
+    width: 100%;
+    height: 48px;
     color: var(--cor-texto-secundario);
-    padding: 10px;
+    padding: 0 15px;
     border-radius: 8px;
     border: none;
-    background: linear-gradient(
-        to right,
-        var(--cor-vermelho-transparente) 50%,
-        var(--cor-fundo-secundario) 50%
-    );
-    background-size: 201% 100%;
-    background-position: right;
-    background-repeat: no-repeat;
-    transition: background-position 1s ease;
+    background: transparent;
+    transition: all 0.2s ease;
     cursor: pointer;
-    text-align: center;
-    font-family: arial narrow;
-    font-size: 14px;
+    text-align: left;
+    font-size: 15px;
+    font-family: "arial", sans-serif;
+    font-weight: 200;
+    display: flex;
+    align-items: center;
 }
 
-.VGABF div button:hover,
-#configuracao:hover {
-    background-position: left;
-    border: 1px solid var(--cor-vermelho);
+.VGABF div button:hover, #configuracao:hover {
+    background: var(--cor-fundo-hover);
     color: var(--cor-branco);
-    transform: scale(1.02);
-    transition: all 0.5s;
+    transform: translateX(5px);
 }
 
-#InspiAtivo {
+#Inspiracoes-btn {
     background: var(--cor-vermelho-transparente) !important;
     color: var(--cor-branco) !important;
-    border: 1px solid var(--cor-vermelho) !important;
-    background-position: left !important;
-}
-
-#InspiAtivo:hover {
-    cursor: default !important;
+    font-weight: bold !important;
 }
 
 #sistema {
-    margin: auto;
-    padding-top: 6px;
-}
-
-.lateral-inferior {
-    padding: 7px;
+    margin-top: auto;
+    padding: 20px;
     border-top: 1px solid var(--cor-borda);
 }
 
-.Usuario {
-    display: flex;
-    align-items: center;
+.lateral-inferior {
+    padding: 15px 20px;
+    border-top: 1px solid var(--cor-borda);
+    background: var(--cor-fundo-principal);
 }
 
-#foto {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 100%;
-    background-color: var(--cor-vermelho);
-    margin-right: 8px;
-    flex-shrink: 0;
-}
+.Usuario { display: flex; align-items: center; gap: 12px; }
+#foto { display: flex; align-items: center; justify-content: center; width: 45px; height: 45px; border-radius: 50%; background-color: var(--cor-vermelho); }
+#foto span { color: white; font-size: 16px; font-weight: bold; }
+#NomeUC h4 { margin: 0 0 2px 0; color: var(--cor-texto); font-size: 15px; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;}
+#NomeUC h5 { margin: 0; color: var(--cor-azul); font-size: 13px; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;}
+#voltar { margin-left: auto; color: var(--cor-texto-fraco); cursor: pointer; font-weight: bold; font-family: arial;}
+#voltar:hover { color: var(--cor-vermelho); }
 
-#foto span {
-    color: var(--cor-branco);
-    font-size: 14px;
-    font-weight: 700;
-}
-
-#voltar {
-    margin-left: auto;
-    color: var(--cor-texto);
-    cursor: pointer;
-    font-size: 14px;
-}
-
-#voltar:hover {
-    color: var(--cor-vermelho);
-}
-
-
-/* CONTEÚDO */
-
+/* =========================================
+   CONTEÚDO INSPIRAÇÕES
+   ========================================= */
 #conteudo {
     flex: 1;
-    background-color: var(--cor-fundo-principal);
-    padding: 20px 20px 20px 40px;
+    height: 100vh;
     overflow-y: auto;
+    background-color: var(--cor-fundo-principal);
+    padding: 40px;
 }
 
-#conteudo-superior p {
-    color: var(--cor-texto-secundario);
-    margin-top: 7px;
-    font-family: arial narrow;
-}
-
-h1 {
-    margin-top: 7px;
-    color: var(--cor-vermelho);
-    margin-bottom: 5px;
+#conteudo-superior h1 {
+    color: var(--cor-branco);
+    font-size: 38px;
+    margin: 0 0 5px 0;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-weight: 100;
     letter-spacing: 1.2px;
-    font-weight: 200;
+}
+#conteudo-superior h1 span { color: var(--cor-vermelho); }
+#conteudo-superior p { color: var(--cor-texto-secundario); font-size: 16px; margin: 0; font-family: "arial narrow", sans-serif;}
+
+#linha {
+    width: 100%;
+    height: 1px;
+    background-color: var(--cor-borda);
+    margin: 20px 0 25px 0;
 }
 
-/* STATS */
-
+/* ESTATÍSTICAS */
 #stats-inspi {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 15px;
+    margin-bottom: 25px;
     flex-wrap: wrap;
-    margin-top: 15px;
 }
 
 .stat-bloco {
     background: var(--cor-fundo-card);
     border: 1px solid var(--cor-borda);
-    border-radius: 8px;
-    padding: 13px 18px;
-    min-width: 120px;
+    border-radius: 10px;
+    padding: 18px 25px;
+    min-width: 150px;
 }
 
 .stat-val {
-    font-size: 27px;
+    font-size: 32px;
     font-weight: 800;
     color: var(--cor-texto);
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-weight: 200;
 }
 
 .stat-lbl {
-    font-size: 11px;
-    color: var(--cor-texto-fraco);
-    margin-top: 3px;
-    font-family: arial, sans-serif;
+    font-size: 13px;
+    color: var(--cor-texto-secundario);
+    margin-top: 5px;
+    font-family: "arial", sans-serif;
 }
 
-
-/* BUSCA */
-
+/* BUSCA E FILTROS */
 #busca-wrap {
     position: relative;
-    margin-bottom: 13px;
+    margin-bottom: 20px;
     max-width: 500px;
 }
 
 #busca-inp {
     width: 100%;
-    padding: 10px 13px 10px 38px;
+    padding: 16px 20px;
     background: var(--cor-fundo-card);
     border: 1px solid var(--cor-borda);
     border-radius: 8px;
     color: var(--cor-texto);
-    font-size: 13px;
+    font-size: 16px;
+    font-family: "arial", sans-serif;
     outline: none;
     transition: border-color 0.2s;
-    box-sizing: border-box;
 }
 
-#busca-inp:focus {
-    border-color: var(--cor-vermelho);
-}
-
-#busca-wrap::before {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 12px;
-    pointer-events: none;
-}
-
-
-/* FILTROS */
+#busca-inp:focus { border-color: var(--cor-vermelho); }
 
 #filtros {
     display: flex;
-    gap: 7px;
+    gap: 10px;
     flex-wrap: wrap;
-    margin-bottom: 18px;
+    margin-bottom: 30px;
 }
 
 .filtro {
-    padding: 6px 14px;
+    padding: 10px 20px;
     border-radius: 20px;
     background: var(--cor-fundo-card);
     border: 1px solid var(--cor-borda);
     color: var(--cor-texto-secundario);
-    font-size: 12px;
+    font-size: 15px;
+    font-family: "arial narrow", sans-serif;
     cursor: pointer;
     transition: all 0.2s;
 }
@@ -313,354 +253,157 @@ h1 {
     background: var(--cor-vermelho-transparente);
     border-color: var(--cor-vermelho);
     color: var(--cor-vermelho);
+    font-weight: bold;
 }
 
-
-/* GRID INSPIRAÇÕES */
-
+/* GRID DE INSPIRAÇÕES */
 #inspi-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
 }
 
-.inspi-card {
-    background: var(--cor-fundo-card);
-    border: 1px solid var(--cor-borda);
-    border-radius: 10px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: all 0.22s;
-}
-
-.inspi-card:hover {
-    border-color: var(--cor-vermelho);
-    transform: translateY(-2px);
-}
-
-.inspi-banner {
-    height: 4px;
-}
-
-.inspi-body {
-    padding: 17px;
-}
-
-.inspi-topo {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-}
-
-.inspi-ano {
-    font-size: 10px;
-    font-weight: 800;
-    padding: 2px 9px;
-    border-radius: 20px;
-    white-space: nowrap;
-}
-
-.inspi-tipo {
-    font-size: 10px;
-    background: var(--cor-fundo-hover);
-    color: var(--cor-texto-secundario);
-    border: 1px solid var(--cor-borda);
-    padding: 2px 8px;
-    border-radius: 20px;
-    white-space: nowrap;
-}
-
-.inspi-titulo {
-    font-weight: 800;
-    font-size: 15px;
-    margin-bottom: 3px;
-    color: var(--cor-texto);
-}
-
-.inspi-sub {
-    font-size: 12px;
-    color: var(--cor-texto-secundario);
-    margin-bottom: 12px;
-}
-
-.inspi-ideia {
-    background: var(--cor-fundo-hover);
-    border-radius: 8px;
-    padding: 11px;
-    margin-bottom: 11px;
-}
-
-.inspi-ideia-lbl {
-    font-size: 9px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .1em;
-    margin-bottom: 5px;
-}
-
-.inspi-ideia-txt {
-    font-size: 12px;
-    color: var(--cor-texto-secundario);
-    line-height: 1.6;
-}
-
-.inspi-team {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    padding-top: 11px;
-    border-top: 1px solid var(--cor-borda);
-}
-
-.inspi-avs {
-    display: flex;
-}
-
-.inspi-av {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 9px;
-    font-weight: 700;
-    color: #fff;
-    border: 2px solid var(--cor-fundo-card);
-}
-h2 {
-    font-size: 35px;
-    color: var(--cor-branco);
-    margin-left: 8px;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-weight: 200;
-    letter-spacing: 3px;
-}
-#lateral-superior div h2 {
-    font-size: 32px;
-    color: var(--cor-branco);
-}
-
-#Inspiracoes-btn{   background: var(--cor-vermelho-transparente);
-    color: var(--cor-branco);
-    border: 1px solid var(--cor-vermelho);
-    cursor: pointer;
-    transform: scale(1.02);
-    transition: all 0.5s;
-}
-#Inspiracoes-btn:hover{
-    cursor: unset;
-}
-
-.inspi-nomes {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--cor-texto);
-}
-
-.inspi-curso {
-    font-size: 10px;
-    color: var(--cor-texto-fraco);
-}
-
-.inspi-mark {
-    font-size: 10px;
-    color: #fbbf24;
-    font-weight: 600;
-    background: rgba(251, 191, 36, .08);
-    padding: 2px 8px;
-    border-radius: 9px;
-    border: 1px solid rgba(251, 191, 36, .2);
-    white-space: nowrap;
-}
-
-.inspi-expand {
-    display: none;
-    padding: 0 17px 17px;
-}
-
-.inspi-card.expandido .inspi-expand {
-    display: block;
-}
-
-.inspi-expand-box {
-    background: var(--cor-fundo-hover);
-    border-radius: 8px;
-    padding: 12px;
-    font-size: 12px;
-    color: var(--cor-texto-secundario);
-    line-height: 1.7;
-    border-left: 3px solid var(--cor-vermelho);
-}
-
-.inspi-expand-lbl {
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--cor-vermelho);
-    text-transform: uppercase;
-    letter-spacing: .08em;
-    margin-bottom: 6px;
-}
-
-#linha {
-    width: 100%;
-    height: 1px;
-    background-color: var(--cor-borda);
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
+/* =========================================
+   CARDS DE TCC (CORES RESPEITANDO O TEMA)
+   ========================================= */
 #TCCs {
-    width: 100vh;
-    height: 300px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 30px;
+    width: 100%;
 }
 
 #TCCs-superior {
     background-color: var(--cor-fundo-secundario);
-    border-radius: 18px;
-    width: 500px;
-    border-top: 3px solid rgb(60, 148, 236);
-    height: 290px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 480px; /* Tamanho ideal para 3 colunas em notebook */
+    height: auto;
+    min-height: 320px;
+    border: 1px solid var(--cor-borda);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+#TCCs-superior:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255,255,255,0.2);
 }
 
 #data-tema {
-    margin-left: 18px;
-    margin-top: 15px;
-    margin-right: 18px;
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 20px 0 20px;
 }
 
-#data {
-    font-size: 16px;
-    color: rgb(60, 148, 236);
+#data, #data2, #data3 {
+    font-size: 14px;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-weight: 200;
-    background-color: #3c94ec29;
-    padding: 5px;
-    padding-left: 15px;
-    padding-right: 15px;
-    border-radius: 18px;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-weight: bold;
 }
 
 #tema {
-    font-size: 16px;
+    font-size: 14px;
     color: var(--cor-texto-secundario);
-    font-family: "arial", sans-serif;
-    font-weight: 200;
+    font-family: "arial narrow", sans-serif;
     background-color: var(--cor-fundo-hover);
-    padding: 5px;
-    padding-left: 15px;
-    padding-right: 15px;
-    border-radius: 18px;
-    margin-left: auto;
-}
-
-#data2 {
-    font-size: 16px;
-    color: rgb(60, 148, 236);
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-weight: 200;
-    background-color: #3c94ec29;
-    padding: 5px;
-    padding-left: 15px;
-    padding-right: 15px;
-    border-radius: 18px;
-}
-
-#data3 {
-    font-size: 16px;
-    color: rgb(60, 148, 236);
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-weight: 200;
-    background-color: #3c94ec29;
-    padding: 5px;
-    padding-left: 15px;
-    padding-right: 15px;
-    border-radius: 18px;
+    padding: 6px 15px;
+    border-radius: 20px;
 }
 
 #TCCs-superior h1 {
-    font-size: 25px;
+    font-size: 24px;
     color: var(--cor-branco);
-    margin-left: 8px;
+    margin: 15px 20px 5px 20px;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-weight: 200;
-    letter-spacing: 1.5px;
-    margin-left: 18px;
-    margin-bottom: 0px;
 }
 
-#TCCs-superior p {
-    font-size: 13px;
-    color: var(--cor-texto-fraco);
-    margin-left: 8px;
+#TCCs-superior > p {
+    font-size: 14px;
+    color: var(--cor-texto-secundario);
+    margin: 0 20px 15px 20px;
     font-family: "arial", sans-serif;
-    font-weight: 200;
-    margin-bottom: 15px;
-    margin-left: 18px;
-    margin-top: 0px;
+    line-height: 1.5;
 }
 
 #TCCs-int {
     background-color: var(--cor-fundo-card);
-    margin-left: 18px;
-    margin-right: 18px;
-    height: 100px;
-    margin-bottom: 18px;
-}
-
-#TCCs-int p {
-    font-size: 13px;
-    color: var(--cor-texto-fraco);
-    margin-left: 8px;
-    font-family: "arial", sans-serif;
-    font-weight: 200;
-    margin-bottom: 15px;
-    margin-left: 18px;
-    margin-top: 0px;
-    margin-right: 18px;
+    margin: 0 20px 20px 20px;
+    padding: 15px;
+    border-radius: 8px;
 }
 
 #TCCs-int h2 {
-    font-size: 16px;
-    color: rgb(59, 130, 246);
-    margin-left: 8px;
+    font-size: 15px;
+    margin: 0 0 5px 0;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-weight: 200;
-    letter-spacing: 1.5px;
-    margin-left: 18px;
-    margin-bottom: 3.5px;
-    padding-top: 12px;
+}
+
+#TCCs-int p {
+    font-size: 14px;
+    color: var(--cor-texto-secundario);
+    margin: 0;
+    font-family: "arial", sans-serif;
+    line-height: 1.5;
 }
 
 #integrantes {
     display: flex;
-    gap: 10px;
-    margin-left: 18px;
-    margin-top: 10px;
-    color: var(--cor-texto-fraco);
+    align-items: center;
+    gap: 8px;
+    margin: 0 20px 15px 20px;
+    color: var(--cor-texto-secundario);
     font-family: "arial", sans-serif;
+    font-size: 14px;
 }
 
 #bolinha {
-    width: 6px;
-    height: 6px;
-    border-radius: 100%;
-    background-color: var(--cor-texto-fraco);
-    margin-left: 10px;
-    margin-top: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--cor-vermelho);
 }
 
 #TCCs-inferior {
-    background-color: #fbbf2414;
-    margin-right: 18px;
-    color: rgb(251, 191, 36);
+    background-color: rgba(251, 191, 36, 0.1);
+    color: #fbbf24;
     font-family: "arial", sans-serif;
-    padding: 3px;
-    border-radius: 18px;
-    font-size: 12px;
-    padding-left: 15px;
-    padding-right: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 13px;
+    margin: 0 20px 20px 20px;
+    width: fit-content;
+    font-weight: bold;
 }
+
+/* --- REGRAS PARA APLICAR A COR CERTA EM CADA TEMA --- */
+
+/* 1. TEMA EMBARCADOS (VERDE) */
+#TCCs-superior[style*="#34d399"] { border-top: 4px solid #34d399; }
+#TCCs-superior[style*="#34d399"] #data { color: #34d399 !important; background-color: rgba(52, 211, 153, 0.15) !important; }
+#TCCs-superior[style*="#34d399"] #TCCs-int { border-left: 3px solid #34d399; }
+#TCCs-superior[style*="#34d399"] #TCCs-int h2 { color: #34d399 !important; }
+
+/* 2. TEMA SOFTWARE (VERMELHO/ROSA) */
+#TCCs-superior[style*="#f87171"] { border-top: 4px solid #f87171; }
+#TCCs-superior[style*="#f87171"] #data2 { color: #f87171 !important; background-color: rgba(248, 113, 113, 0.15) !important; }
+#TCCs-superior[style*="#f87171"] #TCCs-int { border-left: 3px solid #f87171; }
+#TCCs-superior[style*="#f87171"] #TCCs-int h2 { color: #f87171 !important; }
+
+/* 3. TEMA WEB (AMARELO/LARANJA) */
+#TCCs-superior[style*="#fbbf24"] { border-top: 4px solid #fbbf24; }
+#TCCs-superior[style*="#fbbf24"] #data { color: #fbbf24 !important; background-color: rgba(251, 191, 36, 0.15) !important; }
+#TCCs-superior[style*="#fbbf24"] #data2 { color: #fbbf24 !important; background-color: rgba(251, 191, 36, 0.15) !important; }
+#TCCs-superior[style*="#fbbf24"] #TCCs-int { border-left: 3px solid #fbbf24; }
+#TCCs-superior[style*="#fbbf24"] #TCCs-int h2 { color: #fbbf24 !important; }
+
+/* 4. TEMA MOBILE (AZUL - PADRÃO) */
+#TCCs-superior:not([style*="border-top"]) { border-top: 4px solid var(--cor-azul); }
+#TCCs-superior:not([style*="border-top"]) #data { color: var(--cor-azul) !important; background-color: rgba(59, 130, 246, 0.15) !important; }
+#TCCs-superior:not([style*="border-top"]) #TCCs-int { border-left: 3px solid var(--cor-azul); }
+#TCCs-superior:not([style*="border-top"]) #TCCs-int h2 { color: var(--cor-azul) !important; }

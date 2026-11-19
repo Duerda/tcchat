@@ -16,7 +16,7 @@ function escapeHtml(value = "") {
 requireProfessor((user, profile) => {
   fillHeader(profile);
   const codigoSala = profile.codigoSala;
-  const container = document.getElementById("conteudo-inferior");
+  const container = document.getElementById("listaGrupos");
   const counter = document.getElementById("gruposOrientados");
   if (!container || !codigoSala) return;
 

@@ -3,47 +3,48 @@
     --bg-secundario: #0c1018;
     --texto-principal: #fff;
     --texto-claro: #e4e9f4;
-    --texto-secundario: #7a8699;
-    --texto-fraco: #3d4d61;
-
+    --texto-secundario: #a0aec0;
+    --texto-fraco: #4a5a70;
     --cinza-claro: #161d2a;
     --cinza-escuro: #111520;
-
     --vermelho: rgb(236, 60, 60);
     --vermelho-transparente: hsl(0deg 82% 58% / 16%);
-
     --verde: #34d399;
     --verde-transparente: rgb(52 211 153 / 12%);
-
     --azul: #0062ff;
     --azul-letra: #3c94ec;
-
     --borda: rgb(255 255 255 / 7%);
+        --cor-vermelho: rgb(236, 60, 60);
+    --cor-vermelho-transparente: hsl(0deg 82% 58% / 16%);
+}
+
+* { 
+    box-sizing: border-box; 
 }
 
 #Geral {
     display: flex;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
 }
+
 body {
     margin: 0px;
     padding: 0px;
+    background-color: var(--bg-principal);
 }
 
 #lateral {
-    padding-bottom: 18px;
-    padding-top: 18px;
     display: flex;
     flex-direction: column;
-    left: 0px;
-    top: 0px;
-    width: 229px;
+    width: 260px;
     height: 100vh;
     background-color: var(--bg-secundario);
-    position: sticky;
-    top: 0;
+    border-right: 1px solid var(--borda);
 }
 
-h1 { color: var(--cor-vermelho); margin-top: 7px; margin-bottom: 5px; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-weight: 200;}
+h1 { color: var(--vermelho); margin-top: 7px; margin-bottom: 5px; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-weight: 200; font-size: 38px; letter-spacing: 1.2px;}
 p {font-family: Arial, Helvetica, sans-serif;}
 h5 {font-family: Arial, Helvetica, sans-serif;}
 h3 {font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-weight: 100;}
@@ -54,281 +55,253 @@ div {
 }
 
 #lateral-superior {
-    width: 197px;
-    height: 59px;
-    padding-top: 0px;
-    padding-bottom: 18px;
-    padding-left: 16px;
-    padding-right:16px ;    
+    padding: 24px 20px;
     border-bottom: 1px solid var(--borda);
-    margin-bottom: 8px;
+    margin-bottom: 15px;
 }
+
 #lateral-superior div {
     display: flex;
     align-items: center;
 }
-h2 {
-    font-size: 32px;
-    color: var(--texto-principal);
-    margin-left: 8px;
-}
+
 #lateral-superior div h2 {
-    font-size: 32px;
+    font-size: 36px;
     color: var(--texto-principal);
+    margin: 0 0 10px 0;
 }
+
 #lateral-superior div span {
-    font-size: 32px;
     color: var(--vermelho);
 }
-#lateral-superior div h2 {
-    margin-bottom: 5px;
-}
+
 .lateral-inferior {
-    padding: 7px;
+    padding: 15px 20px;
     border-top: 1px solid var(--borda);
+    background: var(--bg-principal);
 }
-#VGABF {
-    padding-top: 2px;
-    padding-right: 8px;
-    padding-bottom: 2px;
-    padding-left: 8px;
-    margin-bottom: 4px;
-}
+
 #painel {
     font-weight: 700;
     font-size: 14px;
     color: var(--texto-fraco);
-    margin-bottom: 4px;
-    letter-spacing: 0.5px;
-    border-radius: 10px;
+    margin: 0 0 10px 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
+
 .VGABF {
-    padding-top: 0px;
-    padding-right: 8px;
-    padding-bottom: 0px;
-    padding-left: 16px;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
+
 .VGABF div {
+    width: 100%;
+}
+
+.VGABF div button, #configuracao {
+    width: 100%;
+    height: 48px;
+    color: var(--texto-secundario);
+    padding: 0 15px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    text-align: left;
+    font-size: 15px;
     display: flex;
     align-items: center;
-    margin-bottom: 4px;
 }
-.VGABF div button {
-    width: 220px;
-    height: 36px;
-    color: var(--texto-secundario);
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
-    background: linear-gradient(to right, var(--vermelho-transparente) 50%, var(--bg-secundario) 50%);
-    background-size: 201% 100%;
-    background-position: right;
-    background-repeat: no-repeat;
-    transition: background-position 1s ease;
-}
-.VGABF div button:hover {
-    background-position: left;
-    border:1px solid var(--vermelho);
+
+.VGABF div button:hover, #configuracao:hover {
+    background: var(--cinza-claro);
     color: white;
-    cursor: pointer;
-    transform: scale(1.02);
-    transition: all 0.5s;
+    transform: translateX(5px);
 }
-#configuracao {
-    width: 220px;
-    height: 36px;
-    color: var(--texto-secundario);
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
-    background: linear-gradient(to right, var(--vermelho-transparente) 50%, var(--bg-secundario) 50%);
-    background-size: 201% 100%;
-    background-position: right;
-    background-repeat: no-repeat;
-    transition: background-position 1s ease;
+
+#Grupos {
+    background: var(--vermelho-transparente) !important;
+    color: var(--texto-principal) !important;
+    font-weight: bold !important;
 }
-#configuracao:hover {
-    background-position: left;
-    color: white;
-    border:1px solid var(--vermelho);
-    cursor: pointer;
-    transform: scale(1.02);
-    transition: all 0.5s;
-}
-#voltar {
-    margin-top: 31px;
-    margin-bottom: 0px; 
-    margin-left: 30px;
-    color: var(--texto-claro);
-}
-#voltar:hover {
-    color: red;
-    cursor: pointer;
-}   
-#Grupos:hover {
-    cursor: unset;
-}
+
 #sistema { 
-    margin: auto;
-    padding-top: 6px;
+    margin-top: auto;
+    padding: 20px;
+    border-top: 1px solid var(--borda);
 }
+
 .Usuario {
     display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
 }
+
 #foto {
     display: flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    gap: 10px;
-    width: 40px;
-    height: 40px;
-    border-radius: 100%;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
     background-color: var(--vermelho);
-    margin-right: 8px;
+    flex-shrink: 0;
 }
+
 #foto p {
     color: white;
     font-size: 16px;
     font-weight: 700;
 }
+
+#NomeUC {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+
+#NomeUC h4 {
+    margin: 0 0 4px 0;
+    color: var(--texto-claro);
+    font-size: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#NomeUC h5 {
+    margin: 0;
+    color: var(--azul-letra);
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#voltar {
+    margin-left: 5px;
+    color: var(--texto-claro);
+    cursor: pointer;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+#voltar:hover {
+    color: var(--vermelho);
+}   
+
 #Logo-de-professor {
     display: inline-flex;
-    font-size: 12px;
-    color: var(--texto-principal);
-    margin-left: 8px;
+    font-size: 13px;
     align-items: center;
-    margin-top: 3px;
-    background-color: var(--vermelho-transparente);
-    color: var(--vermelho);
+    background-color: var(--cor-vermelho-transparente);
+    color: var(--cor-vermelho);
     letter-spacing: 0.7px;
-    text-align: center;
-    border-radius: 10px;
-    padding-top: 3px;
-    padding-right: 8px;
-    padding-bottom: 3px;
-    padding-left: 8px;
-    width: 75px;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-weight: bold;
+    width: fit-content;
 }
 
 /* Fim sessão lateral.*/
 
-/* Aqui é a outra parte no caso o conteúdo do site */
 #conteudo {
     flex: 1;
+    height: 100vh;
+    overflow-y: auto;
     background-color: var(--bg-principal);
-    padding: 20px;
-    padding-top: 18px;
-    padding-left: 40px;
+    padding: 40px;
 }
+
 #conteudo-superior p {
     color: var(--texto-secundario);
     margin-top: 7px;
+    font-size: 16px;
+    font-family: "arial narrow", sans-serif;
 }
-h1 {
-    color: var(--vermelho);
-    margin-top: 7px;
-    margin-bottom: 5px;
-}
-#turmas {
-    width: 271px;
-    height: 244px;
-    border-radius: 10px;
-    border: 1px solid var(--borda);
-    background-color: var(--bg-secundario);
-}
-#turmas:hover {
-    border: 1px solid var(--vermelho);
-    cursor: pointer;
-    transform: scale(1.02);
-    transition: all 0.5s;
-}
-ul li{
-    margin-bottom: 5px;
-    color: var(--texto-secundario);
-}
-#progresso { 
-    border-radius: 10px;
-    width: 70px;
-    background-color: var(--verde-transparente);
-    color: var(--verde);
-    align-items: center;
-    text-align: center;
-    text-transform: uppercase;
-    font-size: small;
-    margin-left: 20px;
-}
-#Tcc-conteudo-inferior {
-    display: flex;
-    gap: 90px;
-    margin-top: 20px;
-}
-#Orientador {
-    text-transform: inherit;
-    color: var(--texto-fraco);
-    font-size: 11px
-} 
-.GT {
-    background-color: var(--cinza-claro);
-    border-radius: 8px;
-}
+
 #listaGrupos {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 20px;
-    margin-top: 25px;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
 }
+
+.GT {
+    background-color: var(--cinza-claro);
+    border-radius: 12px;
+    border: 1px solid var(--borda);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s;
+}
+
+.GT:hover {
+    border-color: var(--vermelho);
+    transform: translateY(-3px);
+}
+
+.sub-title-gp {
+    padding: 20px 20px 0 20px;
+    display: flex;
+    flex-direction: column;
+}
+
 .sub-title-gp h3 {
-    padding-left: 20px;
     color: var(--texto-fraco);
     font-family: "Roboto", sans-serif;
     font-weight: 400;
-    font-size: 18px;
-    margin: 0px;
-    padding-top: 20px;
-    padding-bottom: 0px;
-    width: 100px;
+    font-size: 16px;
+    margin: 0;
+}
+
+.sub-title-gp h1 {
+    color: var(--azul-letra);
+    font-size: 15px;
+    height: 26px;    
+    margin: 0 0 10px 0;
+    font-family: "Roboto", sans-serif;
+    background-color: #3c94ec26;
+    border-radius: 20px;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 12px;
+    width: fit-content;
 }
 
 .sub-title-gp h2 {
-    padding-left: 20px;
     color: var(--texto-principal);
     font-family: "Roboto", sans-serif;
     font-weight: 100;
     font-size: 28px;
-    margin: 0px;
-    padding-top: 0px;
-}
-.sub-title-gp h1 {
-    color: var(--azul-letra);
-    font-size: 15px;
-    width: 95px;
-    height: 23px;    
-    margin: 0px;
-    font-family: "Roboto", sans-serif;
-    font-weight: 100;
-    background-color: #3c94ec26;
-    margin-top: 20px;
-    border-radius: 11px;
-    text-align: center;
-    align-items: center;
+    margin: 0 0 5px 0;
 }
 
 .sub-title-gp p {
-    color: var(--texto-fraco);
-    font-size: 12px;
-    margin: 0px;
-    padding-left: 20px;
-    padding-bottom: 15px;
+    color: var(--texto-secundario);
+    font-size: 14px;
+    margin: 0;
+    padding-bottom: 20px;
     font-family: "Roboto", sans-serif;
 }
 
 .GT-int {
     background-color: var(--cinza-escuro);
-    height: 200px;
-    margin: 20px;
-    margin-top: 0;
+    min-height: 160px;
+    height: auto;
+    margin: 0 20px 20px 20px;
     border-radius: 8px;
+    display: flex;
+    flex-direction: column;
 }
 
 .linha-decorativa {
@@ -341,18 +314,47 @@ ul li{
 
 .BL {
     background-color: var(--vermelho);
-    height: 10px;
-    width: 10px;
-    border-radius: 100%;
-    margin-top: 20px;
-    margin-left: 10px;
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
 }
 
 .GT-int p {
     padding: 0;
-    width: 100px;
-    padding-top: 18px;
-    padding-left: 5px;
+    padding-top: 12px;
+    padding-left: 10px;
     font-family: "Roboto", sans-serif;
-    font-weight: 600;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--texto-secundario);
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
+
+#Tcc-conteudo-inferior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    padding: 15px 20px;
+    border-top: 1px solid var(--borda);
+}
+
+#progresso { 
+    border-radius: 20px;
+    padding: 6px 15px;
+    background-color: var(--verde-transparente);
+    color: var(--verde);
+    text-transform: uppercase;
+    font-size: 13px;
+    font-weight: bold;
+    margin: 0;
+}
+
+#Orientador {
+    color: var(--texto-secundario);
+    font-size: 14px;
+    margin: 0;
+} 
