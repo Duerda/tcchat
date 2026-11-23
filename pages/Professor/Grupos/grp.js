@@ -1,6 +1,5 @@
 import { collection, doc, getDoc, onSnapshot, query, updateDoc, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { db } from "../../../backend/firebase/config.js";
-import { deleteGroupData } from "../../../backend/firebase/delete-group.js";
 import { fillHeader, logout, navigate, requireProfessor } from "../../../backend/firebase/professor.js";
 
 window.Voltar = logout;
@@ -23,7 +22,7 @@ function renderGroup(groupDoc) {
   const card = document.createElement("article");
   card.className = "GT";
   card.dataset.id = groupDoc.id;
-  card.innerHTML = `<div class="sub-title-gp"><div style="display:flex;gap:220px"><h3>${escapeHtml(group.codigoSala || "")}</h3><h1>Grupo</h1></div><h2>${escapeHtml(group.nome || "Sem nome")}</h2><p>${escapeHtml(group.descricao || "")}</p><div class="GT-int"><hr class="linha-decorativa"><div style="display:flex"><div class="BL"></div><p>${Array.isArray(group.membros) ? group.membros.length : 0} membro(s)</p></div></div><button class="btnEditar" data-id="${groupDoc.id}">Editar</button><button class="btnExcluir" data-id="${groupDoc.id}">Excluir</button></div>`;
+  card.innerHTML = `<div class="sub-title-gp"><div style="display:flex;gap:220px"><h3>${escapeHtml(group.codigoSala || "")}</h3><h1>Grupo</h1></div><h2>${escapeHtml(group.nome || "Sem nome")}</h2><p>${escapeHtml(group.descricao || "")}</p><div class="GT-int"><hr class="linha-decorativa"><div style="display:flex"><div class="BL"></div><p>${Array.isArray(group.membros) ? group.membros.length : 0} membro(s)</p></div></div><button class="btnEditar" data-id="${groupDoc.id}">Editar</button></div>`;
   return card;
 }
 
@@ -65,27 +64,10 @@ async function editGroup(id) {
   }
 }
 
-async function deleteGroup(id) {
-  if (!confirm("Tem certeza que deseja excluir este grupo?")) return;
-  try {
-    const deleted = await deleteGroupData(id);
-    if (!deleted) {
-      alert("Grupo não encontrado.");
-      return;
-    }
-    alert("Grupo excluído com sucesso.");
-  } catch (error) {
-    console.error(error);
-    alert("Não foi possível excluir o grupo.");
-  }
-}
-
 list?.addEventListener("click", (event) => {
   const editButton = event.target.closest(".btnEditar");
-  const deleteButton = event.target.closest(".btnExcluir");
   const card = event.target.closest(".GT");
   if (editButton) return editGroup(editButton.dataset.id);
-  if (deleteButton) return deleteGroup(deleteButton.dataset.id);
   if (card) navigate(`grupo-detalhes.html?id=${encodeURIComponent(card.dataset.id)}`);
 });
 

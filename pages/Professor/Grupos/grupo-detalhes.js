@@ -106,6 +106,14 @@ async function carregarGrupo() {
         }
         grupoAtual = groupData;
 
+        const statusLabel = document.getElementById("statusGrupo");
+        if (statusLabel) {
+            const statusText = ({ atraso: "Atrasado", atencao: "Atenção", "no-prazo": "No prazo" })[grupoAtual.status];
+            statusLabel.textContent = statusText || "Status não informado";
+            statusLabel.classList.toggle("atrasado", grupoAtual.status === "atraso");
+            statusLabel.classList.toggle("atencao", grupoAtual.status === "atencao");
+        }
+
 
         const nomeGrupo =
             document.getElementById(

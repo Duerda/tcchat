@@ -1,0 +1,322 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function profilePath(uid) {
+      return /databases/$(database)/documents/usuarios/$(uid);
+    }
+
+    function hasProfile() {
+      // Perfil por si só não libera dados: o token precisa comprovar que o
+      // usuário confirmou o e-mail no Firebase Authentication.
+      return signedIn() && request.auth.token.email_verified == true
+        && exists(profilePath(request.auth.uid));
+    }
+
+    function profile() {
+      return get(profilePath(request.auth.uid)).data;
+    }
+
+    function hasActiveAccess() {
+      // Perfis legados e os recém-criados não possuem esse campo por padrão;
+      // somente o valor explícito false representa acesso revogado.
+      return hasProfile()
+        && (!profile().keys().hasAny(['acessoAtivo'])
+          || profile().acessoAtivo != false);
+    }
+
+    function isCoordinator() {
+      return hasActiveAccess() && profile().tipo == 'coordenador';
+    }
+
+    function isTeacher() {
+      return hasActiveAccess() && profile().tipo == 'professor';
+    }
+
+    function isStudent() {
+      return hasActiveAccess() && profile().tipo == 'aluno';
+    }
+
+    function validRoom(room) {
+      return room is string
+        && room.matches('^(DS|DI|HOSP|IPI|MA|SEC|ADM|INF)-[123]$');
+    }
+
+    function invitePath(codeId) {
+      return /databases/$(database)/documents/codigosAcesso/$(codeId);
+    }
+
+    function validInvite(codeId, accountType, room) {
+      return codeId is string
+        && exists(invitePath(codeId))
+        && get(invitePath(codeId)).data.codigo == codeId
+        && get(invitePath(codeId)).data.codigoSala == room
+        && get(invitePath(codeId)).data.revogado == false
+        && (get(invitePath(codeId)).data.expiraEm == null
+          || get(invitePath(codeId)).data.expiraEm > request.time)
+        && (get(invitePath(codeId)).data.tipo == accountType
+          || get(invitePath(codeId)).data.tipo == 'ambos');
+    }
+
+    function inSameRoom(room) {
+      return hasActiveAccess()
+        && profile().tipo in ['aluno', 'professor']
+        && profile().codigoSala == room;
+    }
+
+    function groupPath(groupId) {
+      return /databases/$(database)/documents/grupos/$(groupId);
+    }
+
+    function groupExists(groupId) {
+      return exists(groupPath(groupId));
+    }
+
+    function groupData(groupId) {
+      return get(groupPath(groupId)).data;
+    }
+
+    function groupMember(groupId) {
+      return signedIn() && groupExists(groupId)
+        && request.auth.uid in groupData(groupId).membros;
+    }
+
+    function staffForGroup(groupId) {
+      return (isCoordinator() || isTeacher()) && groupExists(groupId)
+        && (isCoordinator() || profile().codigoSala == groupData(groupId).codigoSala);
+    }
+
+    function canReadGroup(groupId) {
+      return staffForGroup(groupId) || (isStudent() && groupMember(groupId));
+    }
+
+    function validActivity(groupId, activityId) {
+      return exists(/databases/$(database)/documents/grupos/$(groupId)/entregas/$(activityId));
+    }
+
+    match /usuarios/{userId} {
+      allow get: if signedIn() && (request.auth.uid == userId || isCoordinator());
+      allow list: if isCoordinator();
+
+      // O perfil só pode ser criado para o próprio usuário autenticado e com
+      // papel/turma correspondentes a um convite válido da coordenação.
+      allow create: if signedIn() && request.auth.uid == userId
+        && request.resource.data.keys().hasOnly([
+          'uid', 'nome', 'email', 'tipo', 'iniciais', 'dataCadastro',
+          'codigoAcessoId', 'codigoSala', 'curso', 'ano'
+        ])
+        && request.resource.data.uid == userId
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.tipo in ['aluno', 'professor']
+        && request.resource.data.codigoAcessoId is string
+        && validRoom(request.resource.data.codigoSala)
+        && validInvite(request.resource.data.codigoAcessoId,
+          request.resource.data.tipo, request.resource.data.codigoSala)
+        && ((request.resource.data.tipo == 'aluno'
+            && request.auth.token.email.matches('^[a-z0-9]+\\.[a-z0-9]+@aluno\\.cps\\.sp\\.gov\\.br$'))
+          || (request.resource.data.tipo == 'professor'
+            && request.auth.token.email.matches('^[a-z0-9]+\\.[a-z0-9]+@professor\\.cps\\.sp\\.gov\\.br$')));
+
+      // Usuários alteram somente nome e preferências. Campos de papel, turma,
+      // acesso e associação ao grupo ficam protegidos contra autoelevação.
+      allow update: if signedIn() && request.auth.uid == userId
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['nome', 'iniciais', 'configuracoes', 'ultimoAcesso'])
+        && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['ultimoAcesso'])
+          || request.resource.data.ultimoAcesso == request.time);
+
+      allow update: if isCoordinator()
+        && resource.data.tipo != 'coordenador'
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['nome', 'iniciais', 'usuarioRemovido', 'acessoAtivo', 'removidoEm', 'removidoPor', 'grupoId', 'grupoNome']);
+
+      allow delete: if false;
+    }
+
+    match /codigosAcesso/{codeId} {
+      // O formulário consulta o convite antes da autenticação. Só é possível
+      // buscar um ID aleatório no formato emitido pelo sistema; listagem
+      // permanece exclusiva da coordenação.
+      allow get: if isCoordinator() || (codeId.matches('^[A-F0-9]{36}$')
+        && exists(invitePath(codeId))
+        && resource.data.codigo == codeId
+        && resource.data.revogado == false
+        && (resource.data.expiraEm == null || resource.data.expiraEm > request.time));
+      allow list: if isCoordinator();
+      allow create: if isCoordinator()
+        && request.resource.data.criadoPor == request.auth.uid
+        && request.resource.data.codigo is string
+        && validRoom(request.resource.data.codigoSala)
+        && request.resource.data.codigo == codeId
+        && request.resource.data.tipo in ['aluno', 'professor', 'ambos']
+        && request.resource.data.usos == 0
+        && request.resource.data.usadosPor == []
+        && request.resource.data.revogado == false;
+      allow update: if (isCoordinator()
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['revogado', 'revogadoEm']))
+        || (signedIn() && exists(profilePath(request.auth.uid))
+          && get(profilePath(request.auth.uid)).data.codigoAcessoId == codeId
+          && !(request.auth.uid in resource.data.usadosPor)
+          && request.auth.uid in request.resource.data.usadosPor
+          && request.resource.data.usos == resource.data.usos + 1
+          && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['usos', 'usadosPor', 'ultimoUso']));
+      allow delete: if false;
+    }
+
+    match /grupos/{groupId} {
+      // A turma precisa ser restringida no próprio Firestore query do cliente.
+      allow read: if isCoordinator() || inSameRoom(resource.data.codigoSala);
+      allow create: if isCoordinator()
+        && validRoom(request.resource.data.codigoSala)
+        && request.resource.data.criadoPor == request.auth.uid;
+      allow update: if isCoordinator()
+        || (isTeacher() && inSameRoom(resource.data.codigoSala)
+          && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['nome', 'descricao']));
+      allow delete: if isCoordinator();
+
+      match /mensagens/{messageId} {
+        allow read: if canReadGroup(groupId);
+        allow create: if canReadGroup(groupId)
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.chatTipo in ['grupo', 'orientador']
+          && request.resource.data.texto is string
+          && ((isStudent() && groupMember(groupId)
+              && request.resource.data.autor == 'aluno')
+            || (staffForGroup(groupId)
+              && request.resource.data.autor == 'professor'));
+        allow update: if false;
+        allow delete: if isCoordinator();
+      }
+
+      match /entregas/{activityId} {
+        allow read: if canReadGroup(groupId);
+        allow create: if staffForGroup(groupId)
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.tipo == 'atividade'
+          && request.resource.data.titulo is string;
+        allow update: if staffForGroup(groupId)
+          && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['titulo', 'descricao', 'dataLimite']);
+        allow delete: if isCoordinator();
+      }
+
+      match /submissoes/{submissionId} {
+        allow read: if canReadGroup(groupId);
+        allow create: if isStudent() && groupMember(groupId)
+          && request.resource.data.alunoUid == request.auth.uid
+          && request.resource.data.atividadeId is string
+          && validActivity(groupId, request.resource.data.atividadeId)
+          && request.resource.data.observacao is string;
+        allow update: if false;
+        allow delete: if isCoordinator();
+      }
+
+      match /arquivos/{fileId} {
+        allow read: if canReadGroup(groupId);
+        allow create: if canReadGroup(groupId)
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.nome is string
+          && request.resource.data.url is string;
+        allow update: if false;
+        allow delete: if isCoordinator()
+          || (isTeacher() && staffForGroup(groupId)
+            && resource.data.uid == request.auth.uid);
+      }
+
+      match /anotacoes/{noteId} {
+        allow read: if staffForGroup(groupId);
+        allow create: if isTeacher() && staffForGroup(groupId)
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.autor == 'professor'
+          && request.resource.data.texto is string;
+        allow update: if false;
+        allow delete: if isCoordinator();
+      }
+    }
+
+    match /avisos/{noticeId} {
+      allow read: if isCoordinator() || inSameRoom(resource.data.codigoSala);
+      allow create: if request.resource.data.autorUid == request.auth.uid
+        && request.resource.data.titulo is string
+        && request.resource.data.conteudo is string
+        && ((isCoordinator() && validRoom(request.resource.data.codigoSala))
+          || ((isTeacher() || isCoordinator())
+            && inSameRoom(request.resource.data.codigoSala)));
+      allow update: if false;
+      allow delete: if isCoordinator()
+        || (isTeacher() && inSameRoom(resource.data.codigoSala)
+          && resource.data.autorUid == request.auth.uid);
+    }
+
+    match /duvidas/{doubtId} {
+      allow read: if isCoordinator() || inSameRoom(resource.data.codigoSala);
+      allow create: if isStudent()
+        && request.resource.data.autorUid == request.auth.uid
+        && request.resource.data.codigoSala == profile().codigoSala
+        && request.resource.data.titulo is string
+        && request.resource.data.conteudo is string;
+      allow update: if (isTeacher() || isCoordinator())
+        && (isCoordinator() || inSameRoom(resource.data.codigoSala))
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['resposta', 'respondidoPor', 'respondidoPorUid', 'status', 'respondidoEm'])
+        && request.resource.data.respondidoPorUid == request.auth.uid
+        && request.resource.data.status == 'respondido';
+      allow delete: if isCoordinator();
+    }
+
+    match /biblioteca/{resourceId} {
+      allow read: if isCoordinator() || inSameRoom(resource.data.codigoSala);
+      allow create: if request.resource.data.enviadoPor == request.auth.uid
+        && request.resource.data.nome is string
+        && request.resource.data.url is string
+        && request.resource.data.tipo in ['link', 'arquivo']
+        && ((isCoordinator() && request.resource.data.codigoSala is string)
+          || (isTeacher() && inSameRoom(request.resource.data.codigoSala)));
+      allow update: if false;
+      allow delete: if isCoordinator()
+        || (isTeacher() && inSameRoom(resource.data.codigoSala)
+          && resource.data.enviadoPor == request.auth.uid);
+    }
+
+    match /avaliacoes/{evaluationId} {
+      allow read: if isCoordinator()
+        || (isTeacher() && resource.data.professorUid == request.auth.uid)
+        || (isTeacher() && inSameRoom(resource.data.codigoSala))
+        || (isStudent() && profile().codigoSala == resource.data.codigoSala
+          && request.auth.uid in resource.data.membros);
+      allow create: if isTeacher()
+        && request.resource.data.professorUid == request.auth.uid
+        && request.resource.data.codigoSala == profile().codigoSala
+        && request.resource.data.grupoNome is string
+        && request.resource.data.nota is number
+        && request.resource.data.nota >= 0
+        && request.resource.data.nota <= 10
+        && request.resource.data.feedback is string
+        && request.resource.data.feedback.size() > 0
+        && request.resource.data.grupoId is string
+        && request.resource.data.submissionId is string
+        && request.resource.data.atividadeId is string
+        && request.resource.data.membros is list
+        && groupExists(request.resource.data.grupoId)
+        && groupData(request.resource.data.grupoId).codigoSala == profile().codigoSala
+        && groupData(request.resource.data.grupoId).membros == request.resource.data.membros
+        && exists(/databases/$(database)/documents/grupos/$(request.resource.data.grupoId)/submissoes/$(request.resource.data.submissionId))
+        && get(/databases/$(database)/documents/grupos/$(request.resource.data.grupoId)/submissoes/$(request.resource.data.submissionId)).data.atividadeId == request.resource.data.atividadeId
+        && get(/databases/$(database)/documents/grupos/$(request.resource.data.grupoId)/submissoes/$(request.resource.data.submissionId)).data.alunoUid in request.resource.data.membros;
+      allow update, delete: if false;
+    }
+
+    match /inspiracoes/{projectId} {
+      allow read: if hasActiveAccess();
+      allow create, update, delete: if false;
+    }
+
+    // Qualquer coleção não declarada acima permanece bloqueada.
+  }
+}

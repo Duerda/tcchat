@@ -334,6 +334,15 @@ div {
     transform: translateY(-3px);
 }
 
+.fila-avaliacoes-wrap { margin-bottom: 24px; }
+.fila-avaliacoes-wrap h2 { color: var(--cor-texto); font-size: 23px; }
+.avaliacao-pendente, .avaliacao-historico { background: var(--cor-fundo-secundario); border: 1px solid var(--cor-borda); border-radius: 10px; padding: 18px; margin: 12px 0; }
+.avaliacao-pendente h3, .avaliacao-historico h3 { margin: 0 0 8px; color: var(--cor-texto); }
+.avaliacao-pendente p, .avaliacao-historico p { color: var(--cor-texto-secundario); white-space: pre-wrap; }
+.avaliacao-pendente small, .avaliacao-historico small { color: var(--cor-texto-fraco); }
+.avaliacao-pendente-acoes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+#entrega-selecionada { color: var(--cor-texto); }
+
 #feedback {
     background: var(--cor-fundo-card);
     border: 1px solid var(--cor-borda);

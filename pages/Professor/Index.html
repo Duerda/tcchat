@@ -46,49 +46,31 @@
             <div id="Informacoes">
                 <div class="Grupos">
                     <h5>GRUPOS DESTA SALA</h5>
-                    <h3 id="gruposOrientados" style="color:#e4e9f4;">0</h3>
+                    <h3 id="gruposOrientados" style="color:#e4e9f4;">—</h3>
                 </div>
                 <div class="Grupos">
                     <h5>ENTREGAS PENDENTES</h5>
-                    <h3 style="color: #fbbf24;">0</h3>
+                    <h3 id="entregasPendentes" style="color: #fbbf24;">—</h3>
                 </div>
                 <div class="Grupos">
                     <h5>DÚVIDA NA CAIXA</h5>
-                    <h3 style="color: hsl(210,82%,58%);">0</h3>
+                    <h3 id="duvidasPendentes" style="color: hsl(210,82%,58%);">—</h3>
                 </div>
                 <div class="Grupos">
                     <h5>GRUPOS EM ATRASO</h5>
-                    <h3 style="color: #f87171;">0</h3>
+                    <h3 id="gruposAtrasados" style="color: #f87171;">—</h3>
                 </div>
             </div>
             
             <div id="listaGrupos">
             </div>
 
-            <h1 style="margin-top: 30px;">Meus Orientados</h1>
-            
-            <div class="Cards">
-                <div id="top-card">
-                    <div>
-                        <h3 style="margin-top: 0px; margin-bottom: 5px; color: #e4e9f4;"> Nome do TCC </h3>
-                        <span style="color: #3d4d61 ;">Ultima msg: Tempo</span>
-                    </div>
-                    <span class="Estado">No Prazo</span>
-                </div>
-                <div><p style="color: #7a8699;">Descrição completa do TCC</p></div>
-                <div style="color: #7a8699;">Aqui fica atividade que tem que ser entregue ainda</div>
-            </div>
+            <h1 style="margin-top: 30px;">Grupos da sua turma</h1>
+            <div id="gruposResumo" aria-live="polite"></div>
 
             <h1 style="margin-bottom: 15px; margin-top: 30px;">Bandeja de Dúvidas</h1>
             
-            <div class="Duvidas">
-                <div id="Pontinho"></div>
-                <div id="Top-duvidas">
-                    <h3 style="margin: 0px; font-size: 20px; color: #e4e9f4;">Nome-do-Aluno/TCC</h3>
-                    <p style="color: #7a8699; margin-top: 7px; margin-bottom: 3px; font-size: 12px;">Prévia da dúvida</p>
-                </div>
-                <div style="color: #3d4d61;">Tempo</div>
-            </div>
+            <div id="bandejaDuvidas" aria-live="polite"></div>
             
         </div>
     </div>

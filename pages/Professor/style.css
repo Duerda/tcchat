@@ -304,6 +304,10 @@ span {
     width: 100%;
 }
 
+.GT[role="link"] { padding: 22px; cursor: pointer; }
+.GT[role="link"] h2 { margin: 8px 0; }
+.GT[role="link"] p { color: var(--cor-texto-secundario); margin: 5px 0; }
+
 .GT:hover {
     border-color: var(--cor-vermelho);
     transform: translateY(-3px);
@@ -484,3 +488,12 @@ span {
 #Top-duvidas {
     flex: 1;
 }
+
+.resumo-grupo-professor { cursor: default; }
+.resumo-grupo-professor:hover { cursor: default; }
+.resumo-grupo-cabecalho { display: flex; align-items: center; justify-content: space-between; gap: 15px; }
+.resumo-grupo-cabecalho h3 { margin: 0 0 5px; color: var(--cor-texto); }
+.resumo-grupo-professor p { color: var(--cor-texto-secundario); }
+.ponto-duvida { width: 8px; height: 8px; margin-top: 6px; border-radius: 50%; background: var(--cor-vermelho); flex: 0 0 auto; }
+.Duvidas h3 { margin: 0 0 7px; color: var(--cor-texto); font-size: 17px; }
+.Duvidas p { margin: 0; color: var(--cor-texto-secundario); }
