@@ -13,6 +13,9 @@ const COURSE_NAMES = {
   IPI: "Informática para Internet - MTEC", MA: "Meio Ambiente", SEC: "Secretariado",
   ADM: "Administração", INF: "Informática - MTEC",
 };
+const GROUP_MIN_MEMBERS = 3;
+const GROUP_MAX_MEMBERS = 5;
+const MAX_GROUPS_PER_ROOM = 8;
 let user;
 let profile;
 let stopDoubts;
@@ -487,13 +490,25 @@ window.criarGrupo = async (event) => {
   const memberNames = (document.getElementById("inp-integrantes")?.value || "").split(",").map((name) => name.trim()).filter(Boolean);
   const advisor = document.getElementById("inp-orientador")?.value.trim() || "";
   if (!name || !description || !theme || !memberNames.length) return alert("Preencha nome, tema, descrição e integrantes.");
+  if (new Set(memberNames.map((item) => item.toLocaleLowerCase("pt-BR"))).size !== memberNames.length) {
+    return alert("Remova nomes repetidos da lista de integrantes.");
+  }
+  if (memberNames.length < GROUP_MIN_MEMBERS || memberNames.length > GROUP_MAX_MEMBERS) {
+    return alert(`Cada grupo deve ter de ${GROUP_MIN_MEMBERS} a ${GROUP_MAX_MEMBERS} alunos.`);
+  }
   const roomCode = requestRoomCode();
   if (!roomCode) return;
   try {
     // Procura os nomes digitados nos perfis reais dos alunos. Dessa forma, o
     // grupo novo aparece nas consultas de participação de cada aluno, em vez de
     // existir somente como um cartão visual na tela do coordenador.
-    const people = await getDocs(queryForRoom("usuarios", roomCode));
+    const [people, existingGroups] = await Promise.all([
+      getDocs(queryForRoom("usuarios", roomCode)),
+      getDocs(queryForRoom("grupos", roomCode)),
+    ]);
+    if (existingGroups.size >= MAX_GROUPS_PER_ROOM) {
+      return alert(`Esta turma já atingiu o limite de ${MAX_GROUPS_PER_ROOM} grupos.`);
+    }
     const students = people.docs.filter((item) => item.data().tipo === "aluno");
     const members = memberNames.map((memberName) => students.find((item) => item.data().nome?.trim().toLowerCase() === memberName.toLowerCase()));
     const missing = memberNames.filter((_, index) => !members[index]);
@@ -564,11 +579,20 @@ window.sortearGrupos = async () => {
     const assigned = new Set(groups.docs.flatMap((item) => item.data().membros || []));
     const students = people.docs.filter((item) => item.data().tipo === "aluno" && !assigned.has(item.id) && !item.data().grupoId).sort(() => Math.random() - 0.5);
     if (!students.length) return alert("Não há alunos sem grupo para sortear.");
-    const size = Math.max(2, Math.min(5, Number(prompt("Quantidade de alunos por grupo (2 a 5):", "4")) || 4));
+    const remainingGroups = MAX_GROUPS_PER_ROOM - groups.size;
+    if (remainingGroups <= 0) return alert(`Esta turma já atingiu o limite de ${MAX_GROUPS_PER_ROOM} grupos.`);
+    const requestedSize = Number(prompt(`Quantidade de alunos por grupo (${GROUP_MIN_MEMBERS} a ${GROUP_MAX_MEMBERS}):`, "4"));
+    if (!Number.isInteger(requestedSize) || requestedSize < GROUP_MIN_MEMBERS || requestedSize > GROUP_MAX_MEMBERS) {
+      return alert(`Informe um tamanho entre ${GROUP_MIN_MEMBERS} e ${GROUP_MAX_MEMBERS} alunos.`);
+    }
+    const size = requestedSize;
+    const maxStudents = remainingGroups * size;
+    const eligibleStudents = students.slice(0, maxStudents);
     const batch = writeBatch(db);
     let created = 0;
-    for (let index = 0; index + 1 < students.length; index += size) {
-      const members = students.slice(index, index + size);
+    for (let index = 0; index + GROUP_MIN_MEMBERS <= eligibleStudents.length; index += size) {
+      const members = eligibleStudents.slice(index, index + size);
+      if (members.length < GROUP_MIN_MEMBERS) break;
       const ref = doc(collection(db, "grupos"));
       const names = members.map((item) => item.data().nome || item.data().email);
       const groupName = `Grupo sorteado ${created + 1}`;
@@ -577,10 +601,11 @@ window.sortearGrupos = async () => {
       created++;
     }
     await batch.commit();
-    alert(`${created} grupo(s) criado(s). Alunos restantes abaixo do tamanho escolhido ficaram sem associação.`);
+    const leftOut = students.length - Math.min(created * size, eligibleStudents.length);
+    alert(`${created} grupo(s) criado(s). ${leftOut} aluno(s) ficaram sem associação por falta de vagas ou por não completarem o mínimo de ${GROUP_MIN_MEMBERS}.`);
   } catch (error) { reportError("Não foi possível sortear os grupos.", error); }
 };
-window.configurarLimites = () => alert("A criação manual exige integrantes cadastrados na turma. O limite de integrantes pode ser ajustado diretamente na lista ao selecionar os alunos.");
+window.configurarLimites = () => alert(`Limites atuais: de ${GROUP_MIN_MEMBERS} a ${GROUP_MAX_MEMBERS} alunos por grupo e até ${MAX_GROUPS_PER_ROOM} grupos por turma.`);
 
 async function addGroupMember(groupId) {
   const email = prompt("Informe o e-mail cadastrado do aluno:")?.trim().toLowerCase();
@@ -589,9 +614,11 @@ async function addGroupMember(groupId) {
     const groupSnapshot = await getDoc(doc(db, "grupos", groupId));
     if (!groupSnapshot.exists()) return alert("Grupo não encontrado.");
     const group = groupSnapshot.data();
+    if ((group.membros || []).length >= GROUP_MAX_MEMBERS) return alert(`Cada grupo pode ter no máximo ${GROUP_MAX_MEMBERS} alunos.`);
     const people = await getDocs(queryForRoom("usuarios", group.codigoSala));
     const member = people.docs.find((item) => item.data().tipo === "aluno" && item.data().email?.toLowerCase() === email);
     if (!member) return alert("Aluno não encontrado na turma deste grupo.");
+    if ((group.membros || []).includes(member.id)) return alert("Este aluno já está neste grupo.");
     if (member.data().grupoId && member.data().grupoId !== groupId) return alert("Este aluno já está associado a outro grupo.");
     const groupName = group.nome || "Grupo";
     const batch = writeBatch(db);

@@ -26,6 +26,8 @@ function renderGroups() {
   const container = document.getElementById("GT");
   if (!container) return;
   container.replaceChildren();
+  const roomLabel = document.getElementById("turma-codigo");
+  if (roomLabel && window.alunoSession?.profile?.codigoSala) roomLabel.textContent = window.alunoSession.profile.codigoSala;
   const counts = { total: groups.length, prazo: 0, atencao: 0, atraso: 0 };
   groups.forEach((group, index) => {
     const [label, className] = statusInfo(group.status);
@@ -182,6 +184,7 @@ window.scrollGrupos = (direction) => {
 window.alunoReady?.then((session) => {
   if (!session) return;
   studentUid = session.user.uid;
+  window.alunoSession = session;
   const room = session.profile.codigoSala;
   if (!room) {
     document.getElementById("GT").textContent = "Seu perfil ainda não está associado a uma turma.";

@@ -57,8 +57,7 @@
             <div class="Aviso">
                 Configuração: <strong>mín. 3 · máx. 5 alunos</strong> por grupo · máx. <strong>8 grupos</strong> por
                 turma
-                <button class="btn-tabela" style="margin-left:12px;" onclick="configurarLimites()">Alterar
-                    limites</button>
+                <button class="btn-tabela" style="margin-left:12px;" onclick="configurarLimites()">Limites atuais</button>
             </div>
 
             <!--Grupos da Turma-->
@@ -82,20 +81,20 @@
                     <h2>Criar Novo Grupo</h2>
                     <form id="form-criar-grupo" onsubmit="criarGrupo(event)">
                         <label>Nome do grupo *</label>
-                        <input type="text" id="inp-nome-grupo" placeholder="Ex: Agro Connect" required>
+                        <input type="text" id="inp-nome-grupo" placeholder="Nome do projeto" required>
 
                         <label>Tema *</label>
-                        <input type="text" id="inp-tema" placeholder="Ex: Web, Mobile, Embarcados..." required>
+                        <input type="text" id="inp-tema" placeholder="Tema ou área do projeto" required>
 
                         <label>Descrição *</label>
                         <textarea id="inp-descricao" rows="3" placeholder="Breve descrição do projeto" required
                             style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;"></textarea>
 
                         <label>Integrantes (separe por vírgula) *</label>
-                        <input type="text" id="inp-integrantes" placeholder="Ana, Carlos, Mariana" required>
+                        <input type="text" id="inp-integrantes" placeholder="Nomes cadastrados separados por vírgula" required>
 
                         <label>Orientador</label>
-                        <input type="text" id="inp-orientador" placeholder="Prof. Carlos Mendes">
+                        <input type="text" id="inp-orientador" placeholder="Nome do professor orientador">
 
                         <div class="modal-botoes">
                             <button type="button" onclick="fecharModalCriarGrupo()">Cancelar</button>

@@ -256,154 +256,64 @@ body {
     font-weight: bold;
 }
 
-/* GRID DE INSPIRAÇÕES */
+/* Listagem dinâmica de projetos de inspiração */
 #inspi-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 20px;
+    margin-top: 20px;
 }
 
-/* =========================================
-   CARDS DE TCC (CORES RESPEITANDO O TEMA)
-   ========================================= */
-#TCCs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-top: 30px;
-    width: 100%;
+.inspi-empty {
+    grid-column: 1 / -1;
+    color: var(--cor-texto-secundario);
+    padding: 20px;
 }
 
-#TCCs-superior {
+.TCCs-superior {
     background-color: var(--cor-fundo-secundario);
     border-radius: 12px;
     width: 100%;
-    max-width: 480px; /* Tamanho ideal para 3 colunas em notebook */
-    height: auto;
-    min-height: 320px;
+    min-height: 260px;
     border: 1px solid var(--cor-borda);
+    border-top: 4px solid var(--cor-azul);
     display: flex;
     flex-direction: column;
     transition: transform 0.2s, border-color 0.2s;
 }
 
-#TCCs-superior:hover {
-    transform: translateY(-5px);
-    border-color: rgba(255,255,255,0.2);
-}
+.TCCs-superior:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.2); }
+.TCCs-superior.green { border-top-color: #34d399; }
+.TCCs-superior.rose { border-top-color: #f87171; }
+.TCCs-superior.amber { border-top-color: #fbbf24; }
+.TCCs-superior.blue { border-top-color: var(--cor-azul); }
 
-#data-tema {
-    display: flex;
-    justify-content: space-between;
-    margin: 20px 20px 0 20px;
-}
-
-#data, #data2, #data3 {
+.data-tema { display: flex; justify-content: space-between; gap: 10px; margin: 20px 20px 0; }
+.data, .tema {
     font-size: 14px;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     padding: 6px 15px;
     border-radius: 20px;
-    font-weight: bold;
 }
+.data { color: var(--cor-azul-claro); background: rgba(59, 130, 246, 0.15); font-weight: bold; }
+.green .data { color: #34d399; background: rgba(52, 211, 153, 0.15); }
+.rose .data { color: #f87171; background: rgba(248, 113, 113, 0.15); }
+.amber .data { color: #fbbf24; background: rgba(251, 191, 36, 0.15); }
+.tema { color: var(--cor-texto-secundario); background-color: var(--cor-fundo-hover); }
 
-#tema {
-    font-size: 14px;
-    color: var(--cor-texto-secundario);
-    font-family: "arial narrow", sans-serif;
-    background-color: var(--cor-fundo-hover);
-    padding: 6px 15px;
-    border-radius: 20px;
-}
-
-#TCCs-superior h1 {
+.TCCs-superior h2 {
     font-size: 24px;
     color: var(--cor-branco);
-    margin: 15px 20px 5px 20px;
+    margin: 15px 20px 5px;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-weight: 200;
 }
-
-#TCCs-superior > p {
-    font-size: 14px;
-    color: var(--cor-texto-secundario);
-    margin: 0 20px 15px 20px;
-    font-family: "arial", sans-serif;
-    line-height: 1.5;
-}
-
-#TCCs-int {
-    background-color: var(--cor-fundo-card);
-    margin: 0 20px 20px 20px;
-    padding: 15px;
-    border-radius: 8px;
-}
-
-#TCCs-int h2 {
-    font-size: 15px;
-    margin: 0 0 5px 0;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-}
-
-#TCCs-int p {
-    font-size: 14px;
-    color: var(--cor-texto-secundario);
-    margin: 0;
-    font-family: "arial", sans-serif;
-    line-height: 1.5;
-}
-
-#integrantes {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 0 20px 15px 20px;
-    color: var(--cor-texto-secundario);
-    font-family: "arial", sans-serif;
-    font-size: 14px;
-}
-
-#bolinha {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: var(--cor-vermelho);
-}
-
-#TCCs-inferior {
-    background-color: rgba(251, 191, 36, 0.1);
-    color: #fbbf24;
-    font-family: "arial", sans-serif;
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-size: 13px;
-    margin: 0 20px 20px 20px;
-    width: fit-content;
-    font-weight: bold;
-}
-
-/* --- REGRAS PARA APLICAR A COR CERTA EM CADA TEMA --- */
-
-/* 1. TEMA EMBARCADOS (VERDE) */
-#TCCs-superior[style*="#34d399"] { border-top: 4px solid #34d399; }
-#TCCs-superior[style*="#34d399"] #data { color: #34d399 !important; background-color: rgba(52, 211, 153, 0.15) !important; }
-#TCCs-superior[style*="#34d399"] #TCCs-int { border-left: 3px solid #34d399; }
-#TCCs-superior[style*="#34d399"] #TCCs-int h2 { color: #34d399 !important; }
-
-/* 2. TEMA SOFTWARE (VERMELHO/ROSA) */
-#TCCs-superior[style*="#f87171"] { border-top: 4px solid #f87171; }
-#TCCs-superior[style*="#f87171"] #data2 { color: #f87171 !important; background-color: rgba(248, 113, 113, 0.15) !important; }
-#TCCs-superior[style*="#f87171"] #TCCs-int { border-left: 3px solid #f87171; }
-#TCCs-superior[style*="#f87171"] #TCCs-int h2 { color: #f87171 !important; }
-
-/* 3. TEMA WEB (AMARELO/LARANJA) */
-#TCCs-superior[style*="#fbbf24"] { border-top: 4px solid #fbbf24; }
-#TCCs-superior[style*="#fbbf24"] #data { color: #fbbf24 !important; background-color: rgba(251, 191, 36, 0.15) !important; }
-#TCCs-superior[style*="#fbbf24"] #data2 { color: #fbbf24 !important; background-color: rgba(251, 191, 36, 0.15) !important; }
-#TCCs-superior[style*="#fbbf24"] #TCCs-int { border-left: 3px solid #fbbf24; }
-#TCCs-superior[style*="#fbbf24"] #TCCs-int h2 { color: #fbbf24 !important; }
-
-/* 4. TEMA MOBILE (AZUL - PADRÃO) */
-#TCCs-superior:not([style*="border-top"]) { border-top: 4px solid var(--cor-azul); }
-#TCCs-superior:not([style*="border-top"]) #data { color: var(--cor-azul) !important; background-color: rgba(59, 130, 246, 0.15) !important; }
-#TCCs-superior:not([style*="border-top"]) #TCCs-int { border-left: 3px solid var(--cor-azul); }
-#TCCs-superior:not([style*="border-top"]) #TCCs-int h2 { color: var(--cor-azul) !important; }
+.TCCs-superior > p { font-size: 14px; color: var(--cor-texto-secundario); margin: 0 20px 15px; line-height: 1.5; }
+.TCCs-int { background-color: var(--cor-fundo-card); margin: 0 20px 20px; padding: 15px; border-radius: 8px; }
+.TCCs-int h3 { font-size: 15px; margin: 0 0 5px; }
+.green .TCCs-int h3 { color: #34d399; }
+.rose .TCCs-int h3 { color: #f87171; }
+.amber .TCCs-int h3 { color: #fbbf24; }
+.TCCs-int p { font-size: 14px; color: var(--cor-texto-secundario); margin: 0; line-height: 1.5; }
+.integrantes { margin: auto 20px 15px; color: var(--cor-texto-secundario); font-size: 14px; }
+.TCCs-inferior { background: rgba(251, 191, 36, 0.1); color: #fbbf24; padding: 8px 15px; border-radius: 20px; font-size: 13px; margin: 0 20px 20px; width: fit-content; font-weight: bold; }

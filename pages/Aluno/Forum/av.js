@@ -38,9 +38,12 @@ function escutarAvisos(codigoSala) {
         cabecalho.id = "q1";
         const autor = document.createElement("h1");
         autor.textContent = aviso.autor || "Professor";
-        const fixado = document.createElement("p");
-        fixado.textContent = aviso.fixado ? "Fixado" : "";
-        cabecalho.append(autor, fixado);
+        cabecalho.appendChild(autor);
+        if (aviso.fixado === true) {
+          const fixado = document.createElement("p");
+          fixado.textContent = "Fixado";
+          cabecalho.appendChild(fixado);
+        }
 
         const tipoAutor = document.createElement("h2");
         tipoAutor.textContent = aviso.tipoAutor || "Coordenador";
@@ -52,9 +55,12 @@ function escutarAvisos(codigoSala) {
         conteudo.textContent = aviso.conteudo || "";
         const divisor = document.createElement("div");
         divisor.id = "linhav";
-        const urgencia = document.createElement("h6");
-        urgencia.textContent = aviso.urgencia || "Urgente";
-        card.append(cabecalho, tipoAutor, data, titulo, conteudo, divisor, urgencia);
+        card.append(cabecalho, tipoAutor, data, titulo, conteudo, divisor);
+        if (aviso.urgencia) {
+          const urgencia = document.createElement("h6");
+          urgencia.textContent = aviso.urgencia;
+          card.appendChild(urgencia);
+        }
         lista.appendChild(card);
       });
 

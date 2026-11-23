@@ -30,8 +30,8 @@
             <div class="Usuario">
                 <div id="foto"><span style="margin: 0px;color: #e4e9f4; "></span></div>
                 <div id="NomeUC">
-                    <h4 style="margin: 0; color: #e4e9f4; width: 100px;"></h4> 
-                    <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;"></h5> 
+                    <h4 style="margin: 0; color: #e4e9f4; width: 100px;"></h4>
+                    <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;"></h5>
                 </div>
                 <p id="voltar" onclick="Voltar()">X</p>
             </div>
@@ -45,12 +45,12 @@
             <p>TCCs de turmas anteriores</p>
         <div id="linha"></div>
         </div>
-        
+
 
         <!-- STATS -->
         <div id="stats-inspi">
-            <div class="stat-bloco"><div class="stat-val">3</div><div class="stat-lbl">TCCs catalogados </div></div>
-            <div class="stat-bloco"><div class="stat-val">2</div><div class="stat-lbl">Turmas anteriores</div></div>
+            <div class="stat-bloco"><div class="stat-val" id="inspi-total">—</div><div class="stat-lbl">TCCs catalogados</div></div>
+            <div class="stat-bloco"><div class="stat-val" id="inspi-years">—</div><div class="stat-lbl">Turmas anteriores</div></div>
         </div>
 
         <!-- BUSCA -->
@@ -67,44 +67,9 @@
             <button class="filtro" onclick="irPara('mobile')">Mobile</button>
         </div>
 
-        <!-- GRID -->
-        <div id="inspi-grid"></div>
-        <!--bloco de tcc-->
-        <div id="TCCs" style="display: flex; gap: 20px; margin-top: 20px;">
-            <div id="TCCs-superior" style="border-top: 3px solid #34d399;">
-                <div style="display: flex;" id="data-tema">
-                    <div id="data" style="color: #34d399; background-color: #34d39914;">2024</div><div id="tema">Embarcados</div>
-                </div>
-                <h1>Nome Exemplo</h1>
-                <p>exemplode descição</p>
-                <div id="TCCs-int">
-                    <h2 style="color:#34d399;">Como surgiu a ideia</h2>
-                    <p>Pequeno paragrafo que explica a origem do projeto</p>
-                </div>
-                <div id="linha" style="background-color: #fff; width: 464px; margin-left: 18px;"></div>
-                <div style="display: flex;">
-                <div id="integrantes"> <div id="bolinha"></div>Aluno 1 - Aluno 2 - Aluno 3</div>
-                <div id="TCCs-inferior" style="margin-left: auto;">⭐ Aceito pelo Centro Paula Souza</div>
-                </div>
-            </div>
-
-                        <div id="TCCs-superior" style="border-top: 3px solid #34d399;">
-                <div style="display: flex;" id="data-tema">
-                    <div id="data" style="color: #34d399; background-color: #34d39914;">2024</div><div id="tema">Embarcados</div>
-                </div>
-                <h1>Nome Exemplo</h1>
-                <p>exemplode descição</p>
-                <div id="TCCs-int">
-                    <h2 style="color:#34d399;">Como surgiu a ideia</h2>
-                    <p>Pequeno paragrafo que explica a origem do projeto</p>
-                </div>
-                <div id="linha" style="background-color: #fff; width: 464px; margin-left: 18px;"></div>
-                <div style="display: flex;">
-                <div id="integrantes"> <div id="bolinha"></div>Aluno 1 - Aluno 2 - Aluno 3</div>
-                <div id="TCCs-inferior" style="margin-left: auto;">⭐ Aceito pelo Centro Paula Souza</div>
-                </div>
-            </div>
-    </div><!-- /conteudo -->
+        <!-- Os cartões são montados com os projetos carregados do Firestore. -->
+        <div id="inspi-grid" aria-live="polite"></div>
+</div><!-- /conteudo -->
 </div>
 <script type="module" src="../navegacao.js"></script>
 <script type="module" src="Inspiracoes.js"></script>
