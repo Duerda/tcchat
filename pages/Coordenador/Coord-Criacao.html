@@ -90,8 +90,11 @@
                         <textarea id="inp-descricao" rows="3" placeholder="Breve descrição do projeto" required
                             style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;"></textarea>
 
-                        <label>Integrantes (separe por vírgula) *</label>
-                        <input type="text" id="inp-integrantes" placeholder="Nomes cadastrados separados por vírgula" required>
+                        <label for="busca-alunos">Selecionar alunos * (3 a 5)</label>
+                        <input type="search" id="busca-alunos" placeholder="Buscar aluno pelo nome" autocomplete="off">
+                        <p id="turma-selecao-alunos" class="ajuda-selecao-alunos">Escolha a turma para carregar os alunos.</p>
+                        <div id="lista-selecao-alunos" class="lista-selecao-alunos" role="group" aria-label="Alunos disponíveis"></div>
+                        <p id="contador-alunos-selecionados" class="contador-alunos-selecionados">0 de 5 alunos selecionados</p>
 
                         <label>Orientador</label>
                         <input type="text" id="inp-orientador" placeholder="Nome do professor orientador">

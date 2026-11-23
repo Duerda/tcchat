@@ -24,6 +24,9 @@ let stopGroups;
 let stopUsers;
 let stopRoomSources = [];
 let groupToDelete;
+let creationRoomCode = "";
+let creationStudents = [];
+let selectedCreationStudentIds = new Set();
 
 window.Voltar = async () => { await signOut(auth); window.location.href = LOGIN; };
 window.Painel = () => (window.location.href = "Coord-Index.html");
@@ -480,42 +483,117 @@ function loadGroupsByRoom() {
   window.addEventListener("pagehide", () => stopRoomSources.forEach((stop) => stop()), { once: true });
 }
 
-window.abrirModalCriarGrupo = () => { const modal = document.getElementById("modal-criar-grupo"); if (modal) modal.style.display = "flex"; };
+window.abrirModalCriarGrupo = async () => {
+  const roomCode = requestRoomCode();
+  if (!roomCode) return;
+  const modal = document.getElementById("modal-criar-grupo");
+  const list = document.getElementById("lista-selecao-alunos");
+  const roomLabel = document.getElementById("turma-selecao-alunos");
+  creationRoomCode = roomCode;
+  creationStudents = [];
+  selectedCreationStudentIds = new Set();
+  list?.replaceChildren();
+  const searchInput = document.getElementById("busca-alunos");
+  if (searchInput) searchInput.value = "";
+  if (roomLabel) roomLabel.textContent = `Alunos da turma ${roomCode}`;
+  updateSelectedStudents();
+  if (modal) modal.style.display = "flex";
+  if (list) {
+    const loading = document.createElement("p");
+    loading.textContent = "Carregando alunos…";
+    list.appendChild(loading);
+  }
+  try {
+    const [people, groups] = await Promise.all([
+      getDocs(queryForRoom("usuarios", roomCode)), getDocs(queryForRoom("grupos", roomCode)),
+    ]);
+    const assignedIds = new Set(groups.docs.flatMap((group) => group.data().membros || []));
+    creationStudents = people.docs
+      .filter((item) => item.data().tipo === "aluno")
+      .map((item) => ({ id: item.id, name: item.data().nome || item.data().email || "Aluno", assigned: Boolean(item.data().grupoId) || assignedIds.has(item.id) }))
+      .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+    renderStudentChoices();
+  } catch (error) {
+    reportError("Não foi possível carregar os alunos desta turma.", error);
+    if (list) list.textContent = "Falha ao carregar alunos.";
+  }
+};
 window.fecharModalCriarGrupo = () => { const modal = document.getElementById("modal-criar-grupo"); if (modal) modal.style.display = "none"; };
+
+function updateSelectedStudents() {
+  const selectedCount = selectedCreationStudentIds.size;
+  const counter = document.getElementById("contador-alunos-selecionados");
+  if (counter) counter.textContent = `${selectedCount} de ${GROUP_MAX_MEMBERS} alunos selecionados`;
+}
+
+function renderStudentChoices() {
+  const list = document.getElementById("lista-selecao-alunos");
+  if (!list) return;
+  const search = document.getElementById("busca-alunos")?.value.trim().toLocaleLowerCase("pt-BR") || "";
+  list.replaceChildren();
+  const matches = creationStudents.filter((student) => student.name.toLocaleLowerCase("pt-BR").includes(search));
+  if (!matches.length) {
+    list.textContent = creationStudents.length ? "Nenhum aluno corresponde à busca." : "Não há alunos cadastrados nesta turma.";
+    return;
+  }
+  matches.forEach((student) => {
+    const label = document.createElement("label");
+    label.className = "opcao-aluno";
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.value = student.id;
+    checkbox.disabled = student.assigned;
+    checkbox.checked = selectedCreationStudentIds.has(student.id);
+    checkbox.addEventListener("change", () => {
+      if (checkbox.checked) selectedCreationStudentIds.add(student.id);
+      else selectedCreationStudentIds.delete(student.id);
+      if (selectedCreationStudentIds.size > GROUP_MAX_MEMBERS) {
+        selectedCreationStudentIds.delete(student.id);
+        checkbox.checked = false;
+      }
+      updateSelectedStudents();
+    });
+    const name = document.createElement("span");
+    name.textContent = student.name;
+    label.append(checkbox, name);
+    if (student.assigned) {
+      const status = document.createElement("small");
+      status.textContent = "Já associado";
+      label.appendChild(status);
+    }
+    list.appendChild(label);
+  });
+  updateSelectedStudents();
+}
+
+document.getElementById("busca-alunos")?.addEventListener("input", renderStudentChoices);
 window.criarGrupo = async (event) => {
   event?.preventDefault();
   const name = document.getElementById("inp-nome-grupo")?.value.trim();
   const description = document.getElementById("inp-descricao")?.value.trim();
   const theme = document.getElementById("inp-tema")?.value.trim();
-  const memberNames = (document.getElementById("inp-integrantes")?.value || "").split(",").map((name) => name.trim()).filter(Boolean);
+  const memberIds = [...selectedCreationStudentIds];
   const advisor = document.getElementById("inp-orientador")?.value.trim() || "";
-  if (!name || !description || !theme || !memberNames.length) return alert("Preencha nome, tema, descrição e integrantes.");
-  if (new Set(memberNames.map((item) => item.toLocaleLowerCase("pt-BR"))).size !== memberNames.length) {
-    return alert("Remova nomes repetidos da lista de integrantes.");
-  }
-  if (memberNames.length < GROUP_MIN_MEMBERS || memberNames.length > GROUP_MAX_MEMBERS) {
-    return alert(`Cada grupo deve ter de ${GROUP_MIN_MEMBERS} a ${GROUP_MAX_MEMBERS} alunos.`);
-  }
-  const roomCode = requestRoomCode();
+  if (!name || !description || !theme) return alert("Preencha nome, tema e descrição.");
+  if (memberIds.length < GROUP_MIN_MEMBERS || memberIds.length > GROUP_MAX_MEMBERS) return alert(`Selecione de ${GROUP_MIN_MEMBERS} a ${GROUP_MAX_MEMBERS} alunos.`);
+  const roomCode = creationRoomCode;
   if (!roomCode) return;
   try {
-    // Procura os nomes digitados nos perfis reais dos alunos. Dessa forma, o
-    // grupo novo aparece nas consultas de participação de cada aluno, em vez de
-    // existir somente como um cartão visual na tela do coordenador.
-    const [people, existingGroups] = await Promise.all([
-      getDocs(queryForRoom("usuarios", roomCode)),
-      getDocs(queryForRoom("grupos", roomCode)),
-    ]);
+    // Revalida turma, grupo e vínculos no envio para evitar associar um aluno
+    // que tenha sido colocado em outro grupo enquanto o modal estava aberto.
+    const existingGroups = await getDocs(queryForRoom("grupos", roomCode));
     if (existingGroups.size >= MAX_GROUPS_PER_ROOM) {
       return alert(`Esta turma já atingiu o limite de ${MAX_GROUPS_PER_ROOM} grupos.`);
     }
-    const students = people.docs.filter((item) => item.data().tipo === "aluno");
-    const members = memberNames.map((memberName) => students.find((item) => item.data().nome?.trim().toLowerCase() === memberName.toLowerCase()));
-    const missing = memberNames.filter((_, index) => !members[index]);
-    if (missing.length) return alert(`Não encontrei estes alunos nesta turma: ${missing.join(", ")}. Use os nomes cadastrados no sistema.`);
-    const alreadyAssigned = members.filter((member) => member.data().grupoId);
-    if (alreadyAssigned.length) return alert(`Estes alunos já estão em um grupo: ${alreadyAssigned.map((member) => member.data().nome).join(", ")}. Remova a associação atual antes de criar outro grupo.`);
-    const matchedAdvisor = advisor ? people.docs.find((item) => item.data().tipo === "professor" && (item.data().nome?.toLowerCase() === advisor.toLowerCase() || item.data().email?.toLowerCase() === advisor.toLowerCase())) : null;
+    const people = await getDocs(queryForRoom("usuarios", roomCode));
+    const currentMembers = memberIds.map((id) => people.docs.find((item) => item.id === id));
+    if (currentMembers.some((member) => !member || member.data().tipo !== "aluno")) return alert("Atualize a lista e selecione alunos válidos desta turma.");
+    const alreadyAssigned = currentMembers.filter((member) => member.data().grupoId);
+    if (alreadyAssigned.length) return alert(`Estes alunos já estão em um grupo: ${alreadyAssigned.map((member) => member.data().nome).join(", ")}. Atualize a lista antes de continuar.`);
+    const selectedMembers = currentMembers;
+    const selectedMemberNames = currentMembers.map((member) => member.data().nome || member.data().email || "Aluno");
+    const teachers = people.docs;
+    const matchedAdvisor = advisor ? teachers.find((item) => item.data().tipo === "professor" && (item.data().nome?.toLowerCase() === advisor.toLowerCase() || item.data().email?.toLowerCase() === advisor.toLowerCase())) : null;
     if (advisor && !matchedAdvisor) return alert("Não encontrei esse professor cadastrado nesta turma. Informe o nome ou e-mail cadastrado.");
     const groupRef = doc(collection(db, "grupos"));
     const batch = writeBatch(db);
@@ -523,9 +601,9 @@ window.criarGrupo = async (event) => {
       codigoSala: roomCode,
       nome, descricao, tema,
       proposta: theme,
-      membros: members.map((item) => item.id),
-      integrantes: memberNames,
-      nomesMembros: memberNames,
+      membros: selectedMembers.map((item) => item.id),
+      integrantes: selectedMemberNames,
+      nomesMembros: selectedMemberNames,
       orientador: matchedAdvisor?.data().nome || "A definir",
       orientadorUid: matchedAdvisor?.id || "",
       status: "no-prazo",
@@ -535,7 +613,7 @@ window.criarGrupo = async (event) => {
     // Salva o vínculo de cada aluno com o grupo no mesmo lote que cria o grupo.
     // Assim, a barra lateral, o chat, as atividades e a lista de usuários passam
     // a mostrar a mesma composição de grupo.
-    members.forEach((member) => batch.update(doc(db, "usuarios", member.id), { grupoId: groupRef.id, grupoNome: name }));
+    selectedMembers.forEach((member) => batch.update(doc(db, "usuarios", member.id), { grupoId: groupRef.id, grupoNome: name }));
     await batch.commit();
     document.getElementById("form-criar-grupo")?.reset();
     window.fecharModalCriarGrupo();
