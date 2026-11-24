@@ -5,7 +5,7 @@ As contas de coordenação são criadas por um administrador do projeto Firebase
 ## Criar a conta
 
 1. Acesse o [Firebase Console](https://console.firebase.google.com/), selecione o projeto **TCCHAT** e abra **Authentication > Users**.
-2. Clique em **Add user** e informe o e-mail institucional do coordenador e uma senha inicial temporária.
+2. Clique em **Add user** e informe um endereço de e-mail acessível pelo coordenador e uma senha inicial temporária. Para demonstração, pode ser um e-mail pessoal; não é obrigatório usar `@cps.sp.gov.br`.
 3. Copie o UID exibido na lista. O UID é o identificador interno da conta, não o e-mail.
 4. Abra **Firestore Database > Data**, selecione ou crie a coleção `usuarios` e crie um documento com ID exatamente igual ao UID copiado.
 5. Adicione estes campos ao documento:
@@ -24,7 +24,7 @@ As contas de coordenação são criadas por um administrador do projeto Firebase
 6. Entregue a senha inicial por um canal seguro. No primeiro login pelo TCCHAT, o Firebase enviará um link de verificação ao endereço cadastrado. O coordenador deve abrir o link no próprio e-mail e depois entrar novamente. Se usar Outlook, basta abrir a mensagem no Outlook; não é necessário configurar login Microsoft.
 7. Depois do primeiro acesso, oriente o coordenador a trocar a senha temporária nas configurações da conta.
 
-A conta precisa existir no Authentication e o perfil correspondente precisa existir no Firestore antes do primeiro login. O perfil autoriza o papel de coordenador; a verificação confirma que a pessoa controla o endereço informado.
+A conta precisa existir no Authentication e o perfil correspondente precisa existir no Firestore antes do primeiro login. O perfil autoriza o papel de coordenador, independentemente do domínio do e-mail; a verificação confirma que a pessoa controla o endereço informado. O cadastro público continua sem criar contas de coordenação.
 
 ## Contas existentes
 

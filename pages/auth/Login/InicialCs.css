@@ -97,18 +97,62 @@ div {
     /*transition Serve principalmente para suavizar meio que sendo tipo uma pequena animação*/
     transition: all 0.3s;
 }
+#perfil-login {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    border: 0;
+    padding: 0;
+    margin: 0 0 18px;
+    width: 100%;
+    box-sizing: border-box;
+}
+#perfil-login legend {
+    grid-column: 1 / -1;
+    font-size: 14px;
+    color: #7a8699;
+    margin-bottom: 7px;
+}
 #Entre {
     font-size: 14px;
     color: #7a8699;
     margin-bottom: 7px;
 }
-
 #Al-Pro {
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 7px;
     margin-bottom: 10px;
 }
+.perfil-opcao {
+    width: 100%;
+    min-height: 42px;
+    box-sizing: border-box;
+    padding: 9px 12px;
+    margin: 0;
+    font: inherit;
+    color: #7a8699;
+    background: #0c1018;
+    border: 1px solid rgb(255 255 255 / 7%);
+    border-radius: 8px;
+    cursor: pointer;
+}
+.perfil-opcao.selecionado {
+    background: hsl(0deg 82% 58% / 16%);
+    color: #EC3C3C;
+    border-color: #EC3C3C;
+}
+.perfil-opcao:focus-visible {
+    outline: 2px solid #e4e9f4;
+    outline-offset: 2px;
+}
+.login-aluno-link {
+    color: #7a8699;
+    text-align: center;
+    font-size: 13px;
+}
+.login-aluno-link a { color: #e4e9f4; }
 #Aluno-1 {
     text-align: center;
     padding: 9px;
@@ -159,18 +203,6 @@ div {
     background-position: left;
     border:1px solid rgb(236, 60, 60);
     color: #EC3C3C;
-}
-
-#Professor-2 {
-    text-align: center;
-    padding: 9px;
-    width: 156px;
-    height: 20px;
-    background: hsl(0deg 82% 58% / 16%);
-    color: #EC3C3C;
-    border-radius: 8px;
-    border:1px solid rgb(236, 60, 60);
-    margin-left: 7px;
 }
 
 #Email label {
@@ -224,24 +256,6 @@ div {
     border: none;
     cursor: pointer; }
 
-#Coor-head {
-    display: flex;
-    justify-content: space-between;
-    text-align: initial;
-    width: 340px;
-    height: 20px;
-    padding: 10px;
-    background: #0c1018;
-    color: #7a8699;
-    border-radius: 8px;
-    cursor: pointer;
-    gap:235px;
-}
-#Coor-head  #Ctex {
-    font-size: 13px;
-    font-weight: 500;
-    flex:1 ;
-}
 a {
     text-decoration: none;
     color: inherit;
@@ -252,35 +266,3 @@ a {
    transition: all 0.5s;
 }
 
- #Coor-box {
-    background: #0c1018;
-    border-radius: 8px;
-    border: 1px solid rgb(255 255 255 / 7%);
-    overflow: hidden;
-    transition: all 0.4s ease;
-        margin-top: 20px;
-}
-/* Corpo escondido */
-#Coor-body {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease;
-    padding: 0 10px;
-    
-}
-
-/* Quando abre */
-#Coor-box.ativo #Coor-body {
-    max-height: 80px;
-    padding-bottom: 10px;
-}
-#Coor-body input {
-    width: 100%;
-    box-sizing: border-box; /* ESSENCIAL */
-    padding: 10px;
-    background: #080b12;
-    border: 1px solid rgb(255 255 255 / 7%);
-    border-radius: 8px;
-    color: #fff;
-    margin-top: 10px;
-}

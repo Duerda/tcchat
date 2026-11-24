@@ -21,29 +21,6 @@ window.Cadastrar = function () {
 };
 
 
-// Abre/fecha a área do coordenador
-function toggleCoor() {
-
-    const box = document.getElementById("Coor-box");
-    const seta = document.getElementById("seta");
-
-    if (!box || !seta) return;
-
-    box.classList.toggle("ativo");
-
-    if (box.classList.contains("ativo")) {
-
-        // Gira a seta 180 graus
-        seta.style.transform = "rotate(180deg)";
-
-    } else {
-
-        // Volta a seta para a posição original
-        seta.style.transform = "rotate(0deg)";
-    }
-}
-
-
 // Login
 async function Formulario(event) {
 
@@ -51,15 +28,14 @@ async function Formulario(event) {
 
     const emailInput = document.getElementById("E-mail");
     const senhaInput = document.getElementById("Senhas");
-    const box = document.getElementById("Coor-box");
+    const perfilSelecionado = document.querySelector(".perfil-opcao.selecionado");
 
     const email = emailInput.value.trim().toLowerCase();
     const senha = senhaInput.value;
 
     // A seleção só define a área esperada. A autorização real é feita pelo
     // perfil existente em usuarios/{uid}, após autenticar no Firebase.
-    const entrouComoCoordenador =
-        box && box.classList.contains("ativo");
+    const tipoEsperado = perfilSelecionado?.dataset.perfil;
 
 
     // Verifica e-mail e senha
@@ -70,16 +46,15 @@ async function Formulario(event) {
         return;
     }
 
+    if (!tipoEsperado) {
+        alert("Selecione Professor ou Coordenador.");
+        return;
+    }
 
-    // Se estiver entrando como coordenador
-    if (entrouComoCoordenador) {
-
-        if (getAccountType(email) !== "coordenador") {
-            alert("Para entrar como coordenador, use um e-mail com domínio @cps.sp.gov.br.");
-            emailInput.focus();
-            return;
-        }
-
+    if (tipoEsperado === "professor" && getAccountType(email) !== "professor") {
+        alert("Para entrar como professor, use seu e-mail institucional de professor.");
+        emailInput.focus();
+        return;
     }
 
 
@@ -100,10 +75,15 @@ async function Formulario(event) {
         if (!user.emailVerified) {
             try {
                 await sendEmailVerification(user);
-            } finally {
+            } catch (verificationError) {
+                console.error("Falha ao enviar verificação de e-mail:", verificationError);
                 await signOut(auth);
+                alert("O e-mail ainda não está confirmado e não foi possível enviar outro link. Confira a caixa de spam e tente novamente mais tarde. " + (verificationError.code || ""));
+                return;
+            } finally {
+                if (auth.currentUser) await signOut(auth);
             }
-            alert("Seu e-mail ainda não foi verificado. Enviamos um novo link; confirme-o e tente entrar novamente.");
+            alert(`Seu e-mail ainda não foi confirmado. Enviamos um novo link para ${email}; confira também a caixa de spam e tente entrar novamente após confirmar.`);
             return;
         }
         await getIdToken(user, true);
@@ -122,17 +102,14 @@ async function Formulario(event) {
             }
             if (perfil.tipo !== "professor" && perfil.tipo !== "coordenador") {
                 await signOut(auth);
-                alert("Esta conta não possui perfil de professor.");
+                alert("Esta conta não possui um perfil de professor ou coordenador.");
                 return;
             }
-            if (entrouComoCoordenador && perfil.tipo !== "coordenador") {
+            if (perfil.tipo !== tipoEsperado) {
                 await signOut(auth);
-                alert("Esta conta não possui perfil de coordenador.");
-                return;
-            }
-            if (!entrouComoCoordenador && perfil.tipo !== "professor") {
-                await signOut(auth);
-                alert("Esta conta é de coordenação. Selecione a opção Coordenador para entrar.");
+                alert(perfil.tipo === "coordenador"
+                    ? "Esta conta é de coordenador. Selecione Coordenador para entrar."
+                    : "Esta conta é de professor. Selecione Professor para entrar.");
                 return;
             }
             await updateDoc(usuarioRef, { ultimoAcesso: serverTimestamp() });
@@ -153,7 +130,7 @@ async function Formulario(event) {
         // COORDENADOR
         // ==========================================
 
-        if (entrouComoCoordenador) {
+        if (tipoEsperado === "coordenador") {
 
             alert(
                 "Login de coordenador realizado com sucesso!"
@@ -210,8 +187,8 @@ document.addEventListener(
         const form =
             document.getElementById("loginForm");
 
-        const coorHead =
-            document.getElementById("Coor-head");
+        const perfilBotoes = document.querySelectorAll(".perfil-opcao");
+        const emailInput = document.getElementById("E-mail");
 
         // Formulário de login
         if (form) {
@@ -223,18 +200,19 @@ document.addEventListener(
         }
 
 
-        // Botão "Coordenador"
-        if (coorHead) {
-
-            coorHead.addEventListener(
-                "click",
-                () => {
-
-                    toggleCoor();
-
-
+        perfilBotoes.forEach((botao) => {
+            botao.addEventListener("click", () => {
+                perfilBotoes.forEach((opcao) => {
+                    const selecionado = opcao === botao;
+                    opcao.classList.toggle("selecionado", selecionado);
+                    opcao.setAttribute("aria-pressed", String(selecionado));
+                });
+                if (emailInput) {
+                    emailInput.placeholder = botao.dataset.perfil === "coordenador"
+                        ? "coordenador@exemplo.com"
+                        : "Professor.Sobrenome@professor.cps.sp.gov.br";
                 }
-            );
-        }
+            });
+        });
     }
 )

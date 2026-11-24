@@ -6,36 +6,6 @@
     <link rel="stylesheet" href="InicialCs.css">
     <title>Login - Professor</title>
 
-    <style>
-        #Coor-box { width: 100%; }
-        #Coor-head {
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            user-select: none;
-        }
-        #seta {
-            display: inline-block;
-            transition: transform 0.3s ease;
-        }
-        #Coor-body {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            transition: max-height 0.35s ease, opacity 0.25s ease, margin-top 0.35s ease;
-            margin-top: 0;
-        }
-        #Coor-box.ativo #Coor-body {
-            max-height: 80px;
-            opacity: 1;
-            margin-top: 10px;
-        }
-        #Coor-body input {
-            width: 100%;
-            box-sizing: border-box;
-        }
-    </style>
 </head>
 
 <body>
@@ -49,13 +19,13 @@
                 <button id="Cadastrar" onclick="Cadastrar()">Cadastrar</button>
             </div>
 
-            <div id="Entre">Entrar como</div>
-
-            <div id="Al-Pro">
-            <div id="Aluno-2" onclick="Aluno()">Aluno</div>
-            <div id="Professor-2">Professor</div>
-            </div>
             <form id="loginForm" action="" method="post" novalidate>
+                <fieldset id="perfil-login" aria-label="Escolha o perfil de acesso">
+                    <legend>Entrar como</legend>
+                    <button type="button" class="perfil-opcao selecionado" data-perfil="professor" aria-pressed="true">Professor</button>
+                    <button type="button" class="perfil-opcao" data-perfil="coordenador" aria-pressed="false">Coordenador</button>
+                </fieldset>
+
                 <div id="Email">
                     <label for="E-mail">E-mail</label>
                     <input type="email" id="E-mail" required
@@ -73,18 +43,7 @@
                 </div>
             </form>
 
-            <div id="Coor-box">
-                <div id="Coor-head">
-                    <span>Coordenador</span>
-                    <span id="seta">▼</span>
-                </div>
-
-                <div id="Coor-body">
-                    <input type="text" id="Codigo-coordenador"
-                           placeholder="Digite o código do coordenador"
-                           autocomplete="off">
-                </div>
-            </div>
+            <p class="login-aluno-link">É aluno? <a href="Log-aluno.html">Entrar na área do aluno</a></p>
         </div>
     </div>
 </div>

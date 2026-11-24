@@ -12,7 +12,7 @@ Contas de coordenação não são criadas pelo formulário público. Um administ
 
 **Professor:** entra pela tela compartilhada de professor e coordenação, selecionando “Professor”. O sistema verifica o perfil e exige `tipo: "professor"`.
 
-**Coordenador:** usa a mesma tela e seleciona “Coordenador”. A seleção apenas define a área esperada; a autorização vem do perfil `usuarios/{uid}`, que deve ter `tipo: "coordenador"` e acesso ativo. Não existe código compartilhado de coordenação.
+**Coordenador:** usa a mesma tela e seleciona “Coordenador”. Pode entrar com qualquer endereço de e-mail que esteja cadastrado e acessível; a seleção apenas define a área esperada. A autorização vem do perfil `usuarios/{uid}`, que deve ter `tipo: "coordenador"` e acesso ativo. Não existe código compartilhado de coordenação, e o cadastro público continua bloqueado para esse papel.
 
 As páginas internas repetem a validação da sessão, do tipo de perfil e do status de acesso.
 
