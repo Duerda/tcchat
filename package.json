@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "migrate:evaluation-members": "node backend/scripts/migrate-evaluation-members.js",
+    "delete:all-users": "node backend/scripts/delete-all-users.js",
     "demo:supabase-role": "node backend/scripts/assign-supabase-role.js"
   },
   "repository": {
