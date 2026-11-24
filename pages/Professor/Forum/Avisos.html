@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="stylesheet" href="avisos.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fórum — Professor</title>
+</head>
+<body>
+    <div id="Geral">
+        <!--Incio da sessão lateral-->
+        <div id="lateral">
+            <div id="lateral-superior">
+                <div><h2 style="margin-top: 2px;">T<span>CCHAT</span></h2></div>
+                <div id="Logo-de-professor">PROFESSOR</div>
+            </div>
+            
+            <!-- VGABF = Visão Geral, Grupos, Avaliações, Biblioteca e Fórum -->
+            <div class="VGABF">
+
+                <div id="painel">Navegação</div>
+                <div><button onclick="VisaoGeral ()" >Visão Geral</button></div>
+                <div><button onclick="Grupos ()">Grupos</button></div>
+                <div><button onclick="Avaliacoes ()" >Avaliações</button></div>
+                <div><button onclick="Biblioteca ()">Biblioteca</button></div>
+                <div><button onclick="Forum ()"id="Forum">Fórum</button></div>
+            </div>
+            <div id="sistema"><button onclick="Configuracoes ()" id="configuracao">Configurações</button></div>
+            <div class="lateral-inferior">
+                <div class="Usuario">
+                    <div id="foto"><span style="margin: 0px; color: #e4e9f4; "></span></div>
+                    <div id="NomeUC">
+                        <h4 style="margin: 0; color: #e4e9f4; width: 100px;"></h4> 
+                        <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;"></h5> 
+                    </div>
+                    <p id="voltar" style="margin-top: 31px; margin-bottom: 0px; margin-left: 30px;" onclick="Voltar ()">X</p>
+                </div>
+
+            </div>
+        </div>
+        <!--Fim da sessão lateral-->
+
+        <div id="conteudo">
+            <div id="conteudo-superior">
+                <h1>Fórum</h1><p>Publique comunicados e responda dúvidas</p>
+            </div>
+        
+            <div id="EnCad"> <button id="Entrar">Avisos</button> <button id="Cadastrar" onclick="Cadastrar ()">Dúvida dos alunos</button></div>
+
+            <button id="novo-aviso" type="button">+ Novo aviso</button>
+            <p id="avisos-vazio">Nenhum aviso nesta sala ainda. Clique em + Novo aviso para publicar.</p>
+            <div id="lista-avisos"></div>
+        </div>
+    </div>
+</body>
+<script type="module" src="avisos.js"></script>
+<script>
+    const fonteSalva = localStorage.getItem('fontePreferida');
+    if (fonteSalva) {
+        let styleTag = document.createElement('style');
+        styleTag.id = 'dynamic-font-style';
+        styleTag.innerHTML = `* { font-family: ${fonteSalva} !important; }`;
+        document.head.appendChild(styleTag);
+    }
+
+    const tamanhoSalvo = localStorage.getItem('tamanhoPreferido');
+    if (tamanhoSalvo && tamanhoSalvo != 16) {
+        let fator = tamanhoSalvo / 16;
+        setTimeout(() => {
+            document.querySelectorAll('*').forEach(el => {
+                if (['SCRIPT', 'STYLE', 'SVG', 'PATH'].includes(el.tagName)) return;
+                if (!el.dataset.originalFontSize) {
+                    el.dataset.originalFontSize = window.getComputedStyle(el).fontSize;
+                }
+                let tamanhoOriginal = parseFloat(el.dataset.originalFontSize);
+                if (tamanhoOriginal > 0) {
+                    el.style.fontSize = (tamanhoOriginal * fator) + 'px';
+                }
+            });
+        }, 100);
+    }
+</script>
+<script type="module" src="user-info-prof.js"></script>
+</html>

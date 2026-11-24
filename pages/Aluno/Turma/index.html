@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <link rel="stylesheet" href="turma.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visão Geral</title>
+</head>
+
+<body>
+    <div id="Geral">
+        <!--lateralAluno-->
+        <div id="lateral">
+            <div id="lateral-superior">
+                <div>
+                    <h2 style="margin-top: 2px;">T<span>CCHAT</span></h2>
+                </div>
+                <div id="Logo-de-aluno">ALUNO</div>
+            </div>
+
+            <!-- VGABF - ALUNO -->
+            <div class="VGABF">
+                <div id="painel">Navegação</div>
+                <div><button id="painel-btn" onclick="Painel()">Painel</button></div>
+                <div><button onclick="window.location.href = '/pages/Aluno/Grupos/gp.chat.html'">Meu Grupo</button></div>
+                <div><button onclick="Forum()">Fórum</button></div>
+                <div><button onclick="Inspiracoes()">Inspirações</button></div>
+            </div>
+            <div id="sistema"><button onclick="Configuracoes()" id="configuracao">Configurações</button></div>
+            <div class="lateral-inferior">
+                <div class="Usuario">
+                    <div id="foto"><span style="margin: 0px;color: #e4e9f4; "></span></div>
+                    <div id="NomeUC">
+                        <h4 style="margin: 0; color: #e4e9f4; width: 100px;"></h4> 
+                        <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;"></h5> 
+                    </div>
+                    <p id="voltar"  onclick="Voltar ()">X</p>
+                </div>
+            </div>
+        </div>
+        <!--Fim da sessão lateral-->
+
+        <div id="conteudo">
+            <div id="conteudo-superior">
+                <h1>Turma <span>2026.1</span></h1>
+                <p>Acompanhe todos os grupos e o andamento dos TCCs</p>
+            </div>
+            <div id="linha"></div>
+
+            <div id="blocao">
+                <div id="Bloco-st">
+                    <h1>Grupos</h1>
+                    <p id="stat-total" style="color: #fff;">0</p>
+                </div>
+                <div id="Bloco-st">
+                    <h1>No Prazo</h1>
+                    <p id="stat-prazo" style="color: rgb(78, 228, 65);">0</p>
+                </div>
+                <div id="Bloco-st">
+                    <h1>Atenção</h1>
+                    <p id="stat-atencao" style="color: rgb(223, 150, 16);">0</p>
+                </div>
+                <div id="Bloco-st">
+                    <h1>Atrasados</h1>
+                    <p id="stat-atraso" style="color: rgb(223, 47, 16);">0</p>
+                </div>
+            </div>
+
+            <!--Grupos da Turma-->
+
+            <!--parte de setas-->
+            <div class="grupos-wrapper">
+                <button class="seta-grupos" id="seta-esq" onclick="scrollGrupos(-1)">&#10094;</button>
+                <div id="GT"></div>
+                <button class="seta-grupos" id="seta-dir" onclick="scrollGrupos(1)">&#10095;</button>
+            </div>
+
+            <!--Atividades e Entregas-->
+            
+            <h1 style="color: var(--cor-texto-secundario); margin-left: 8px; font-family: 'arial', sans-serif; font-weight: 200; letter-spacing: 1.2px; font-size: 32px; margin-bottom: 0px; font-weight: 100; margin-top: 30px;">
+                Atividades e Entregas</h1>
+            <div id="Progresso">
+                <div id="Prog-int" style="padding-right: 20px;">
+                    <h1>Progresso Semestre</h1>
+                    <h2 style="margin-left: auto;">35%</h2>
+                </div>
+                <div id="barra-progresso1">
+                    <div id="barra-progresso2"></div>
+                </div>
+            </div>
+
+            <div id="lista-atividades" aria-live="polite"></div>
+        </div>
+    </div>
+</body>
+<script type="module" src="../navegacao.js"></script>
+<script type="module" src="Turma.js"></script>
+<script type="module" src="../user.info.js"></script>
+</html>

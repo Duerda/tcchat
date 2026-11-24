@@ -1,0 +1,339 @@
+:root {
+    --bg-principal: #080b12;
+    --bg-secundario: #0c1018;
+    --texto-principal: #fff;
+    --texto-claro: #e4e9f4;
+    --texto-secundario: #a0aec0;
+    --texto-fraco: #4a5a70;
+    --cinza-claro: #161d2a;
+    --cinza-escuro: #111520;
+    --vermelho: rgb(236, 60, 60);
+    --vermelho-transparente: hsl(0deg 82% 58% / 16%);
+    --verde: #34d399;
+    --verde-transparente: rgb(52 211 153 / 12%);
+    --azul: #0062ff;
+    --azul-letra: #3c94ec;
+    --borda: rgb(255 255 255 / 7%);
+}
+
+* { 
+    box-sizing: border-box; 
+    margin: 0;
+    padding: 0;
+}
+
+#Geral {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
+body {
+    background-color: var(--bg-principal);
+    color: var(--texto-claro);
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    overflow: hidden;
+}
+
+h1 { color: var(--vermelho); margin-top: 7px; margin-bottom: 5px; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-weight: 200; font-size: 38px; letter-spacing: 1.2px;}
+p {font-family: Arial, Helvetica, sans-serif;}
+h5 {font-family: Arial, Helvetica, sans-serif;}
+h3 {font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-weight: 100;}
+h2 {font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; letter-spacing: 1px; font-weight: 250;}
+
+/* ===== LATERAL ===== */
+#lateral {
+    display: flex;
+    flex-direction: column;
+    width: 260px;
+    height: 100vh;
+    background-color: var(--bg-secundario);
+    border-right: 1px solid var(--borda);
+    flex-shrink: 0;
+}
+
+#lateral-superior {
+    padding: 24px 20px;
+    border-bottom: 1px solid var(--borda);
+    margin-bottom: 15px;
+}
+
+#lateral-superior div { display: flex; align-items: center; }
+#lateral-superior div h2 { font-size: 36px; color: var(--texto-principal); margin: 0 0 10px 0; }
+#lateral-superior div span { color: var(--vermelho); }
+
+#Logo-de-professor {
+    display: inline-flex;
+    font-size: 13px;
+    align-items: center;
+    background-color: var(--cor-vermelho-transparente, var(--vermelho-transparente));
+    color: var(--vermelho);
+    letter-spacing: 0.7px;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-weight: bold;
+    width: fit-content;
+}
+
+#painel {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--texto-fraco);
+    margin: 0 0 10px 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.VGABF {
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.VGABF div { width: 100%; }
+
+.VGABF div button, #configuracao {
+    width: 100%;
+    height: 48px;
+    color: var(--texto-secundario);
+    padding: 0 15px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    text-align: left;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.VGABF div button:hover, #configuracao:hover {
+    background: var(--cinza-claro);
+    color: white;
+    transform: translateX(5px);
+}
+
+#Grupos {
+    background: var(--vermelho-transparente) !important;
+    color: var(--texto-principal) !important;
+    font-weight: bold !important;
+}
+
+#sistema { 
+    margin-top: auto;
+    padding: 20px;
+    border-top: 1px solid var(--borda);
+}
+
+.lateral-inferior {
+    padding: 15px 20px;
+    border-top: 1px solid var(--borda);
+    background: var(--bg-principal);
+}
+
+.Usuario { display: flex; align-items: center; gap: 12px; width: 100%; }
+
+#foto {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: var(--vermelho);
+    flex-shrink: 0;
+}
+#foto p { color: white; font-size: 16px; font-weight: 700; }
+
+#NomeUC { display: flex; flex-direction: column; flex: 1; min-width: 0; overflow: hidden; }
+#NomeUC h4 { margin: 0 0 4px 0; color: var(--texto-claro); font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#NomeUC h5 { margin: 0; color: var(--azul-letra); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#voltar { margin-left: 5px; color: var(--texto-claro); cursor: pointer; font-weight: bold; flex-shrink: 0; }
+#voltar:hover { color: var(--vermelho); }   
+
+/* ===== CONTEÚDO ===== */
+#conteudo {
+    flex: 1;
+    height: 100vh;
+    overflow-y: auto;
+    background-color: var(--bg-principal);
+    padding: 40px;
+}
+
+#conteudo-superior p { color: var(--texto-secundario); margin-top: 7px; font-size: 16px; font-family: "arial narrow", sans-serif; }
+
+#listaGrupos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+    align-items: start; /* MUITO IMPORTANTE: Impede os cards de esticarem para baixo */
+}
+
+/* =========================================
+   CORREÇÃO TOTAL DOS CARDS (IGNORANDO O JS)
+   ========================================= */
+
+.GT, article.GT {
+    background-color: var(--cinza-claro) !important;
+    border: 1px solid var(--borda) !important;
+    border-radius: 12px !important;
+    padding: 0 !important; /* Remove padding para controlar tudo por dentro */
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important; /* Impede o card de esticar */
+    min-height: auto !important;
+    transition: 0.2s !important;
+}
+
+.GT:hover {
+    border-color: var(--vermelho) !important;
+    transform: translateY(-3px) !important;
+}
+
+.sub-title-gp {
+    padding: 20px 20px 0 20px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    text-align: left !important; /* Força alinhamento à esquerda */
+}
+
+/* O cabeçalho que o JS está quebrando com gap: 220px */
+.GT div[style*="gap: 220px"],
+.GT div[style*="gap:220px"],
+.sub-title-gp > div {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    gap: 0px !important;
+    margin-bottom: 15px !important;
+}
+
+.GT h3, .sub-title-gp h3 {
+    color: var(--texto-fraco) !important;
+    font-size: 14px !important;
+    margin: 0 !important;
+    font-family: Arial, sans-serif !important;
+}
+
+.GT h1, .sub-title-gp h1 {
+    color: var(--azul-letra) !important;
+    background-color: rgba(60, 148, 236, 0.15) !important;
+    padding: 5px 12px !important;
+    border-radius: 20px !important;
+    font-size: 13px !important;
+    margin: 0 !important;
+    font-family: Arial, sans-serif !important;
+    font-weight: bold !important;
+}
+
+.GT h2, .sub-title-gp h2 {
+    color: var(--texto-principal) !important;
+    font-size: 24px !important;
+    margin: 0 0 5px 0 !important;
+    font-family: Arial, sans-serif !important;
+    font-weight: bold !important;
+    text-align: left !important;
+}
+
+.GT p, .sub-title-gp p {
+    color: var(--texto-secundario) !important;
+    font-size: 14px !important;
+    margin: 0 0 15px 0 !important;
+    font-family: Arial, sans-serif !important;
+    text-align: left !important;
+}
+
+/* Caixa de membros */
+.GT-int {
+    background-color: var(--cinza-escuro) !important;
+    border-radius: 8px !important;
+    padding: 15px !important;
+    margin: 0 20px 20px 20px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    text-align: left !important;
+}
+
+.linha-decorativa, .GT hr {
+    border: none !important;
+    height: 2px !important;
+    background-color: var(--vermelho) !important;
+    width: 100% !important;
+    margin: 0 0 12px 0 !important;
+    display: block !important;
+}
+
+.GT-int p, .GT .GT-int div {
+    color: var(--texto-secundario) !important;
+    font-size: 14px !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    text-align: left !important;
+}
+
+.BL {
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    background-color: var(--vermelho) !important;
+    flex-shrink: 0 !important;
+}
+
+/* =========================================
+   BOTÕES (EDITAR E EXCLUIR) FIXOS NO RODAPÉ
+   ========================================= */
+
+/* Pega o container que o JS cria para os botões */
+.GT > div:last-child,
+.GT div[style*="display:flex; gap:7px"] {
+    display: flex !important;
+    gap: 10px !important;
+    width: 100% !important;
+    padding: 0 20px 20px 20px !important; /* Margem para não colar na borda */
+    margin-top: auto !important; /* Empurra pro fundo */
+}
+
+/* Botão Editar */
+.GT button:first-of-type, 
+button.btnEditar {
+    flex: 1 !important;
+    background-color: var(--azul) !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 8px !important;
+    height: 42px !important;
+    font-size: 15px !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    transition: 0.2s !important;
+}
+
+.GT button:first-of-type:hover {
+    background-color: #004ecc !important;
+}
+
+/* Botão Excluir */
+.GT button:last-of-type, 
+button.btnExcluir {
+    flex: 1 !important;
+    background-color: transparent !important;
+    color: var(--vermelho) !important;
+    border: 1px solid var(--vermelho) !important;
+    border-radius: 8px !important;
+    height: 42px !important;
+    font-size: 15px !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    transition: 0.2s !important;
+}
+
+.GT button:last-of-type:hover {
+    background-color: var(--vermelho-transparente) !important;
+}
