@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-const admin = require("firebase-admin");
+const { applicationDefault, initializeApp } = require("firebase-admin/app");
+const { getAuth } = require("firebase-admin/auth");
 
 async function main() {
   const args = process.argv.slice(2);
@@ -17,12 +18,13 @@ async function main() {
     throw new Error("Defina GOOGLE_APPLICATION_CREDENTIALS com a chave de uma conta de serviço autorizada.");
   }
 
-  admin.initializeApp({
-    credential: admin.credential.applicationDefault(),
+  initializeApp({
+    credential: applicationDefault(),
     projectId,
   });
 
-  const user = await admin.auth().getUserByEmail(email);
+  const auth = getAuth();
+  const user = await auth.getUserByEmail(email);
   const claims = { ...user.customClaims, role: "authenticated" };
   console.log(`Projeto: ${projectId}`);
   console.log(`Conta: ${user.email} (UID ${user.uid})`);
@@ -33,7 +35,7 @@ async function main() {
     return;
   }
 
-  await admin.auth().setCustomUserClaims(user.uid, claims);
+  await auth.setCustomUserClaims(user.uid, claims);
   console.log("Claim aplicada. A pessoa precisa sair e entrar novamente para receber um token atualizado.");
 }
 

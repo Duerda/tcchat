@@ -2,7 +2,9 @@
 
 // Remove todos os documentos de usuarios e todas as contas do Firebase Auth.
 // A execução é somente leitura até receber --apply e --confirm-project=<ID>.
-const admin = require("firebase-admin");
+const { applicationDefault, deleteApp, initializeApp } = require("firebase-admin/app");
+const { FieldPath, getFirestore } = require("firebase-admin/firestore");
+const { getAuth } = require("firebase-admin/auth");
 
 const args = process.argv.slice(2);
 const apply = args.includes("--apply");
@@ -24,13 +26,13 @@ if (apply && confirmedProject !== projectId) {
   process.exit(1);
 }
 
-admin.initializeApp({
-  credential: admin.credential.applicationDefault(),
+const app = initializeApp({
+  credential: applicationDefault(),
   projectId,
 });
 
-const db = admin.firestore();
-const auth = admin.auth();
+const db = getFirestore(app);
+const auth = getAuth(app);
 
 async function listAuthUsers() {
   const users = [];
@@ -51,7 +53,7 @@ async function countProfiles() {
 async function deleteProfiles() {
   let deleted = 0;
   while (true) {
-    const page = await db.collection("usuarios").orderBy(admin.firestore.FieldPath.documentId()).limit(400).get();
+    const page = await db.collection("usuarios").orderBy(FieldPath.documentId()).limit(400).get();
     if (page.empty) break;
     const batch = db.batch();
     page.docs.forEach((document) => batch.delete(document.ref));
@@ -102,4 +104,4 @@ main()
     console.error("Falha na limpeza:", error);
     process.exitCode = 1;
   })
-  .finally(() => admin.app().delete());
+  .finally(() => deleteApp(app));
