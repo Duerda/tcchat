@@ -654,7 +654,8 @@ div { font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; 
 }
 
 .modal-box input,
-.modal-box textarea {
+.modal-box textarea,
+.modal-box select {
     width: 100%;
     padding: 14px;
     background: var(--cor-fundo-principal);
@@ -668,7 +669,8 @@ div { font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; 
 }
 
 .modal-box input:focus,
-.modal-box textarea:focus {
+.modal-box textarea:focus,
+.modal-box select:focus {
     border-color: var(--cor-vermelho);
 }
 

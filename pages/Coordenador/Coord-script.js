@@ -26,6 +26,7 @@ let stopRoomSources = [];
 let groupToDelete;
 let creationRoomCode = "";
 let creationStudents = [];
+let creationAdvisors = [];
 let selectedCreationStudentIds = new Set();
 
 window.Voltar = async () => { await signOut(auth); window.location.href = LOGIN; };
@@ -46,16 +47,20 @@ function reportError(message, error) {
   alert(message);
 }
 
-requireCoordinator((authenticatedUser, currentProfile) => {
-  user = authenticatedUser;
-  profile = currentProfile;
-  fillHeader();
-  const currentPage = pageName();
-  if (currentPage === "Coord-Index.html") loadDashboard();
-  if (currentPage === "Coord-Usuarios.html") loadUsers();
-  if (["Coord-Grupos.html", "Coord-Criacao.html"].includes(currentPage)) loadGroups();
-  if (currentPage === "Coord-Forum.html") loadForum();
-});
+// A Biblioteca valida o acesso em seu próprio módulo. Evita duas validações
+// concorrentes da sessão ao abrir essa página.
+if (pageName() !== "Coord-Biblioteca.html") {
+  requireCoordinator((authenticatedUser, currentProfile) => {
+    user = authenticatedUser;
+    profile = currentProfile;
+    fillHeader();
+    const currentPage = pageName();
+    if (currentPage === "Coord-Index.html") loadDashboard();
+    if (currentPage === "Coord-Usuarios.html") loadUsers();
+    if (["Coord-Grupos.html", "Coord-Criacao.html"].includes(currentPage)) loadGroups();
+    if (currentPage === "Coord-Forum.html") loadForum();
+  });
+}
 
 function fillHeader() {
   const initial = document.querySelector("#foto span");
@@ -364,19 +369,41 @@ function loadGroups() {
     }
     snapshot.forEach((item) => {
       const group = item.data();
-      const card = document.createElement("article");
-      card.className = "GT";
-      card.dataset.id = item.id;
-      card.innerHTML = `<h2>${safe(group.nome || "Grupo sem nome")}</h2><h3>${safe(group.tema || group.proposta || "Tema não informado")}</h3><p>${safe(group.codigoSala || "Turma não informada")}</p><p>${safe(group.descricao || "")}</p><p>Integrantes: ${safe((group.integrantes || group.nomesMembros || []).join(", ") || "Ainda não associados")}</p><p>Orientador: ${safe(group.orientador || "A definir")}</p><label>Status <select class="select-status"><option value="no-prazo">No prazo</option><option value="atencao">Atenção</option><option value="atraso">Atrasado</option></select></label><div><button class="btn-tabela" data-add-member>+ Membro</button><button class="btn-tabela" data-advisor>Orientador</button><button class="btn-tabela vermelho" data-delete>Excluir</button></div>`;
-      const statusSelect = card.querySelector("select");
-      statusSelect.value = group.status || "no-prazo";
-      statusSelect.addEventListener("change", () => updateDoc(doc(db, "grupos", item.id), { status: statusSelect.value }));
-      card.querySelector("[data-add-member]").addEventListener("click", () => addGroupMember(item.id));
-      card.querySelector("[data-advisor]").addEventListener("click", () => assignAdvisor(item.id));
-      card.querySelector("[data-delete]").addEventListener("click", () => window.excluirGrupo(item.id, group.nome));
+      const card = createGroupCard(item.id, group);
       container.appendChild(card);
     });
   }, (error) => reportError("Não foi possível carregar grupos da turma.", error));
+}
+
+function createGroupCard(id, group) {
+  const card = document.createElement("article");
+  card.className = "GT";
+  card.dataset.id = id;
+  card.innerHTML = `<h2>${safe(group.nome || "Grupo sem nome")}</h2><h3>${safe(group.tema || group.proposta || "Tema não informado")}</h3><p>${safe(group.codigoSala || "Turma não informada")}</p><p>${safe(group.descricao || "")}</p><p>Integrantes: ${safe((group.integrantes || group.nomesMembros || []).join(", ") || "Ainda não associados")}</p><p>Orientador: ${safe(group.orientador || "A definir")}</p><label>Status <select class="select-status"><option value="no-prazo">No prazo</option><option value="atencao">Atenção</option><option value="atraso">Atrasado</option></select></label><div><button class="btn-tabela" data-rename>Editar nome</button><button class="btn-tabela" data-add-member>+ Membro</button><button class="btn-tabela" data-advisor>Orientador</button><button class="btn-tabela vermelho" data-delete>Excluir</button></div>`;
+  const statusSelect = card.querySelector("select");
+  statusSelect.value = group.status || "no-prazo";
+  statusSelect.addEventListener("change", () => updateDoc(doc(db, "grupos", id), { status: statusSelect.value }));
+  card.querySelector("[data-rename]").addEventListener("click", () => renameGroup(id, group.nome));
+  card.querySelector("[data-add-member]").addEventListener("click", () => addGroupMember(id));
+  card.querySelector("[data-advisor]").addEventListener("click", () => assignAdvisor(id));
+  card.querySelector("[data-delete]").addEventListener("click", () => window.excluirGrupo(id, group.nome));
+  return card;
+}
+
+async function renameGroup(groupId, currentName = "") {
+  const name = prompt("Novo nome do grupo:", currentName)?.trim();
+  if (!name || name === currentName) return;
+  try {
+    const groupRef = doc(db, "grupos", groupId);
+    const group = await getDoc(groupRef);
+    if (!group.exists()) return alert("Grupo não encontrado.");
+    const batch = writeBatch(db);
+    batch.update(groupRef, { nome: name });
+    for (const memberId of group.data().membros || []) {
+      batch.update(doc(db, "usuarios", memberId), { grupoNome: name });
+    }
+    await batch.commit();
+  } catch (error) { reportError("Não foi possível alterar o nome do grupo.", error); }
 }
 
 function loadGroupsByRoom() {
@@ -438,16 +465,7 @@ function loadGroupsByRoom() {
         groupList.textContent = "Ainda não há grupos nesta turma.";
       } else {
         groupRecords.forEach(({ id, data: group }) => {
-          const card = document.createElement("article");
-          card.className = "GT";
-          card.dataset.id = id;
-          card.innerHTML = `<h2>${safe(group.nome || "Grupo sem nome")}</h2><h3>${safe(group.tema || group.proposta || "Tema não informado")}</h3><p>${safe(group.codigoSala || "Turma não informada")}</p><p>${safe(group.descricao || "")}</p><p>Integrantes: ${safe((group.integrantes || group.nomesMembros || []).join(", ") || "Ainda não associados")}</p><p>Orientador: ${safe(group.orientador || "A definir")}</p><label>Status <select class="select-status"><option value="no-prazo">No prazo</option><option value="atencao">Atenção</option><option value="atraso">Atrasado</option></select></label><div><button class="btn-tabela" data-add-member>+ Membro</button><button class="btn-tabela" data-advisor>Orientador</button><button class="btn-tabela vermelho" data-delete>Excluir</button></div>`;
-          const statusSelect = card.querySelector("select");
-          statusSelect.value = group.status || "no-prazo";
-          statusSelect.addEventListener("change", () => updateDoc(doc(db, "grupos", id), { status: statusSelect.value }));
-          card.querySelector("[data-add-member]").addEventListener("click", () => addGroupMember(id));
-          card.querySelector("[data-advisor]").addEventListener("click", () => assignAdvisor(id));
-          card.querySelector("[data-delete]").addEventListener("click", () => window.excluirGrupo(id, group.nome));
+          const card = createGroupCard(id, group);
           groupList.appendChild(card);
         });
       }
@@ -491,10 +509,15 @@ window.abrirModalCriarGrupo = async () => {
   const roomLabel = document.getElementById("turma-selecao-alunos");
   creationRoomCode = roomCode;
   creationStudents = [];
+  creationAdvisors = [];
   selectedCreationStudentIds = new Set();
   list?.replaceChildren();
   const searchInput = document.getElementById("busca-alunos");
   if (searchInput) searchInput.value = "";
+  const advisorSearch = document.getElementById("busca-orientadores");
+  if (advisorSearch) advisorSearch.value = "";
+  const advisorSelect = document.getElementById("inp-orientador");
+  if (advisorSelect) advisorSelect.value = "";
   if (roomLabel) roomLabel.textContent = `Alunos da turma ${roomCode}`;
   updateSelectedStudents();
   if (modal) modal.style.display = "flex";
@@ -513,6 +536,10 @@ window.abrirModalCriarGrupo = async () => {
       .map((item) => ({ id: item.id, name: item.data().nome || item.data().email || "Aluno", assigned: Boolean(item.data().grupoId) || assignedIds.has(item.id) }))
       .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
     renderStudentChoices();
+    creationAdvisors = people.docs.filter((item) => item.data().tipo === "professor")
+      .map((item) => ({ id: item.id, name: item.data().nome || item.data().email || "Orientador", email: item.data().email || "" }))
+      .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+    renderAdvisorChoices();
   } catch (error) {
     reportError("Não foi possível carregar os alunos desta turma.", error);
     if (list) list.textContent = "Falha ao carregar alunos.";
@@ -524,6 +551,18 @@ function updateSelectedStudents() {
   const selectedCount = selectedCreationStudentIds.size;
   const counter = document.getElementById("contador-alunos-selecionados");
   if (counter) counter.textContent = `${selectedCount} de ${GROUP_MAX_MEMBERS} alunos selecionados`;
+}
+
+function renderAdvisorChoices() {
+  const select = document.getElementById("inp-orientador");
+  if (!select) return;
+  const search = document.getElementById("busca-orientadores")?.value.trim().toLocaleLowerCase("pt-BR") || "";
+  const selected = select.value;
+  select.replaceChildren(new Option("A definir", ""));
+  const matches = creationAdvisors.filter((advisor) => `${advisor.name} ${advisor.email}`.toLocaleLowerCase("pt-BR").includes(search));
+  matches.forEach((advisor) => select.add(new Option(`${advisor.name}${advisor.email ? ` · ${advisor.email}` : ""}`, advisor.id)));
+  if (creationAdvisors.length && !matches.length) select.add(new Option("Nenhum orientador corresponde à busca", "", true, true));
+  if (matches.some((advisor) => advisor.id === selected)) select.value = selected;
 }
 
 function renderStudentChoices() {
@@ -567,13 +606,14 @@ function renderStudentChoices() {
 }
 
 document.getElementById("busca-alunos")?.addEventListener("input", renderStudentChoices);
+document.getElementById("busca-orientadores")?.addEventListener("input", renderAdvisorChoices);
 window.criarGrupo = async (event) => {
   event?.preventDefault();
   const name = document.getElementById("inp-nome-grupo")?.value.trim();
   const description = document.getElementById("inp-descricao")?.value.trim();
   const theme = document.getElementById("inp-tema")?.value.trim();
   const memberIds = [...selectedCreationStudentIds];
-  const advisor = document.getElementById("inp-orientador")?.value.trim() || "";
+  const advisorId = document.getElementById("inp-orientador")?.value || "";
   if (!name || !description || !theme) return alert("Preencha nome, tema e descrição.");
   if (memberIds.length < GROUP_MIN_MEMBERS || memberIds.length > GROUP_MAX_MEMBERS) return alert(`Selecione de ${GROUP_MIN_MEMBERS} a ${GROUP_MAX_MEMBERS} alunos.`);
   const roomCode = creationRoomCode;
@@ -592,9 +632,8 @@ window.criarGrupo = async (event) => {
     if (alreadyAssigned.length) return alert(`Estes alunos já estão em um grupo: ${alreadyAssigned.map((member) => member.data().nome).join(", ")}. Atualize a lista antes de continuar.`);
     const selectedMembers = currentMembers;
     const selectedMemberNames = currentMembers.map((member) => member.data().nome || member.data().email || "Aluno");
-    const teachers = people.docs;
-    const matchedAdvisor = advisor ? teachers.find((item) => item.data().tipo === "professor" && (item.data().nome?.toLowerCase() === advisor.toLowerCase() || item.data().email?.toLowerCase() === advisor.toLowerCase())) : null;
-    if (advisor && !matchedAdvisor) return alert("Não encontrei esse professor cadastrado nesta turma. Informe o nome ou e-mail cadastrado.");
+    const matchedAdvisor = advisorId ? people.docs.find((item) => item.id === advisorId && item.data().tipo === "professor") : null;
+    if (advisorId && !matchedAdvisor) return alert("Atualize a lista e escolha um orientador válido desta turma.");
     const groupRef = doc(collection(db, "grupos"));
     const batch = writeBatch(db);
     batch.set(groupRef, {

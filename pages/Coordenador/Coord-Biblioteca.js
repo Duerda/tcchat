@@ -8,7 +8,7 @@ import {
     where
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { db } from "../../backend/firebase/config.js";
-import { requireCoordinator } from "../../backend/firebase/professor.js";
+import { fillHeader, requireCoordinator } from "../../backend/firebase/professor.js";
 
 const areaLinks = document.getElementById("links");
 const areaArquivos = document.getElementById("arquivos");
@@ -32,8 +32,9 @@ function escapar(texto = "") {
 }
 
 // Usa a mesma proteção das demais telas: perfil de coordenação ativo e e-mail confirmado.
-requireCoordinator((user) => {
+requireCoordinator((user, profile) => {
     usuarioAtual = user;
+    fillHeader(profile);
     escutarBiblioteca();
 });
 

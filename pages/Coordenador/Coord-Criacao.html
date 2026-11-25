@@ -96,8 +96,11 @@
                         <div id="lista-selecao-alunos" class="lista-selecao-alunos" role="group" aria-label="Alunos disponíveis"></div>
                         <p id="contador-alunos-selecionados" class="contador-alunos-selecionados">0 de 5 alunos selecionados</p>
 
-                        <label>Orientador</label>
-                        <input type="text" id="inp-orientador" placeholder="Nome do professor orientador">
+                        <label for="busca-orientadores">Orientador</label>
+                        <input type="search" id="busca-orientadores" placeholder="Buscar orientador pelo nome" autocomplete="off">
+                        <select id="inp-orientador">
+                            <option value="">A definir</option>
+                        </select>
 
                         <div class="modal-botoes">
                             <button type="button" onclick="fecharModalCriarGrupo()">Cancelar</button>
