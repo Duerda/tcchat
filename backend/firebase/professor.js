@@ -21,6 +21,42 @@ export async function getProfile(uid) {
   return snapshot.exists() ? { id: snapshot.id, ...snapshot.data() } : null;
 }
 
+function applyProfileAppearance(profile) {
+  const settings = profile.configuracoes || {};
+  if (typeof settings.tipoFonte === "string" && settings.tipoFonte.trim()) {
+    const savedFont = settings.tipoFonte.trim();
+    const fontFamily = savedFont.includes(",") || /['\"]/.test(savedFont)
+      ? savedFont
+      : `${JSON.stringify(savedFont)}, sans-serif`;
+    const style = document.getElementById("dynamic-font-style") || document.createElement("style");
+    style.id = "dynamic-font-style";
+    style.textContent = `* { font-family: ${fontFamily} !important; }`;
+    if (!style.isConnected) document.head.appendChild(style);
+  }
+
+  const size = [14, 16, 18].includes(Number(settings.tamanhoFonte)) ? Number(settings.tamanhoFonte) : 16;
+  const scale = size / 16;
+  const resizeTree = (root) => {
+    const elements = root.nodeType === Node.ELEMENT_NODE
+      ? [root, ...root.querySelectorAll("*")]
+      : [...(root.querySelectorAll?.("*") || [])];
+    elements.forEach((element) => {
+    if (["SCRIPT", "STYLE", "SVG", "PATH"].includes(element.tagName)) return;
+    if (!element.dataset.originalFontSize) {
+      element.dataset.originalFontSize = getComputedStyle(element).fontSize;
+    }
+    const originalSize = Number.parseFloat(element.dataset.originalFontSize);
+    if (originalSize > 0) element.style.fontSize = `${originalSize * scale}px`;
+    });
+  };
+  resizeTree(document.body);
+  window.__tcchatTextScaleObserver?.disconnect();
+  window.__tcchatTextScaleObserver = new MutationObserver((records) => {
+    records.forEach((record) => record.addedNodes.forEach(resizeTree));
+  });
+  window.__tcchatTextScaleObserver.observe(document.body, { childList: true, subtree: true });
+}
+
 export function watchProfile(uid, callback) {
   return onSnapshot(doc(db, "usuarios", uid), (snapshot) => {
     if (snapshot.exists()) callback({ id: snapshot.id, ...snapshot.data() });
@@ -46,6 +82,7 @@ export function requireRole(allowedTypes, callback) {
         alert("Acesso negado: seu perfil não tem permissão para esta área ou está inativo.");
         return redirectLogin();
       }
+      applyProfileAppearance(profile);
       await callback(user, profile);
     } catch (error) {
       console.error("Não foi possível carregar o perfil:", error);

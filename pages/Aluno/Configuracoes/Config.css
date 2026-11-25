@@ -375,3 +375,83 @@ body {
 }
 
 .btn-salvar:hover { background: #d13232; transform: translateY(-2px); }
+
+.fontes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.fonte-op {
+    background: var(--cor-fundo-hover);
+    border: 1px solid var(--cor-borda);
+    border-radius: 10px;
+    padding: 20px 15px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.fonte-op:hover { 
+    border-color: var(--cor-vermelho); 
+    transform: translateY(-2px); 
+}
+
+.fonte-op.ativa {
+    border-color: var(--cor-vermelho);
+    background: var(--cor-vermelho-transparente);
+    box-shadow: 0 0 0 1px var(--cor-vermelho);
+}
+
+.fonte-prev {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 10px;
+    color: var(--cor-texto);
+}
+
+.fonte-nm {
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--cor-texto);
+    font-family: arial, sans-serif;
+}
+
+.campo-inline {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.campo-inline input {
+    flex: 1;
+    padding: 14px 16px;
+    background: var(--cor-fundo-principal);
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    color: var(--cor-texto);
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.campo-inline input:focus {
+    border-color: var(--cor-vermelho);
+}
+
+#fonte-preview {
+    display: none;
+    margin-top: 15px;
+    padding: 15px;
+    background: var(--cor-fundo-principal);
+    border: 1px dashed var(--cor-borda);
+    border-radius: 8px;
+    font-size: 16px;
+    color: var(--cor-texto);
+}

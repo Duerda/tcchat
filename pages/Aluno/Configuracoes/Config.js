@@ -11,10 +11,8 @@ let usuarioAutenticado = null;
 let preferencias = {
   tema: "dark-mode",
   tamanhoFonte: 16,
-  tipoFonte: "'DM Sans', sans-serif",
+  tipoFonte: "'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif",
 };
-
-const fontesPredefinidas = ["DM Sans", "Georgia", "monospace", "Trebuchet MS"];
 
 window.alunoReady?.then((session) => {
   if (!session) return;
@@ -47,7 +45,7 @@ window.alunoReady?.then((session) => {
     tamanhoFonte: [14, 16, 18].includes(Number(salvas.tamanhoFonte)) ? Number(salvas.tamanhoFonte) : 16,
     tipoFonte: typeof salvas.tipoFonte === "string" && salvas.tipoFonte.trim()
       ? salvas.tipoFonte
-      : "'DM Sans', sans-serif",
+      : "'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif",
   };
   sincronizarControles();
   aplicarPreferencias();
@@ -64,8 +62,9 @@ function sincronizarControles() {
   document.querySelectorAll(".size-btn").forEach((button) => {
     button.classList.toggle("ativo", Number(button.getAttribute("onclick")?.match(/\d+/)?.[0]) === preferencias.tamanhoFonte);
   });
-  document.querySelectorAll(".fonte-op").forEach((option, index) => {
-    option.classList.toggle("ativa", fontesPredefinidas[index] && preferencias.tipoFonte.toLowerCase().includes(fontesPredefinidas[index].toLowerCase()));
+  const normalizarFonte = (value) => String(value || "").replace(/[\"']/g, "").replace(/\s+/g, "").toLowerCase();
+  document.querySelectorAll(".fonte-op").forEach((option) => {
+    option.classList.toggle("ativa", normalizarFonte(option.dataset.fonte) === normalizarFonte(preferencias.tipoFonte));
   });
 }
 
@@ -75,17 +74,18 @@ window.setTema = (tema) => {
   aplicarPreferencias();
 };
 
-window.setFonte = (nome, el) => {
-  preferencias.tipoFonte = `'${nome}', ${nome}, sans-serif`;
+window.setFonte = (familia, el) => {
+  preferencias.tipoFonte = String(familia || "").trim();
   aplicarPreferencias();
   document.querySelectorAll(".fonte-op").forEach((option) => option.classList.remove("ativa"));
   el?.classList.add("ativa");
+  document.getElementById("fonte-preview").style.display = "none";
 };
 
 window.aplicarFonteCustom = () => {
   const nome = document.getElementById("inp-fonte-custom").value.trim();
   if (!nome) return;
-  preferencias.tipoFonte = `'${nome}', ${nome}, sans-serif`;
+  preferencias.tipoFonte = `${JSON.stringify(nome)}, sans-serif`;
   aplicarPreferencias();
   document.querySelectorAll(".fonte-op").forEach((option) => option.classList.remove("ativa"));
   const preview = document.getElementById("fonte-preview");

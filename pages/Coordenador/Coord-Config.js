@@ -5,7 +5,8 @@ import { fillHeader, getInitials, logout, navigate, requireCoordinator } from ".
 
 let user;
 let profile;
-let settings = { tipoFonte: "DM Sans", tamanhoFonte: 16 };
+const DEFAULT_FONT = "'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif";
+let settings = { tipoFonte: DEFAULT_FONT, tamanhoFonte: 16 };
 
 window.Voltar = logout;
 window.Painel = () => navigate("Coord-Index.html");
@@ -15,11 +16,22 @@ window.Biblioteca = () => navigate("Coord-Biblioteca.html");
 window.Forum = () => navigate("Coord-Forum.html");
 window.Configuracoes = () => navigate("Config.html");
 
+function fontFamily(value) {
+  const saved = String(value || DEFAULT_FONT).trim();
+  return saved.includes(",") || /['\"]/.test(saved) ? saved : `${JSON.stringify(saved)}, sans-serif`;
+}
+
 function applySettings() {
-  document.body.style.fontFamily = `'${settings.tipoFonte || "DM Sans"}', sans-serif`;
+  settings.tipoFonte = fontFamily(settings.tipoFonte);
+  const fontStyle = document.getElementById("dynamic-font-style") || document.createElement("style");
+  fontStyle.id = "dynamic-font-style";
+  fontStyle.textContent = `* { font-family: ${settings.tipoFonte || DEFAULT_FONT} !important; }`;
+  if (!fontStyle.isConnected) document.head.appendChild(fontStyle);
   document.documentElement.style.fontSize = `${Number(settings.tamanhoFonte) || 16}px`;
+  localStorage.setItem("fontePreferida", settings.tipoFonte || DEFAULT_FONT);
+  localStorage.setItem("tamanhoPreferido", String(Number(settings.tamanhoFonte) || 16));
   document.querySelectorAll(".fonte-op").forEach((option) => {
-    option.classList.toggle("ativa", option.textContent.toLowerCase().includes(String(settings.tipoFonte).toLowerCase()));
+    option.classList.toggle("ativa", normalizeFont(option.dataset.fonte) === normalizeFont(settings.tipoFonte));
   });
   document.querySelectorAll(".size-btn").forEach((button) => {
     const value = Number(button.getAttribute("onclick")?.match(/\d+/)?.[0]);
@@ -27,10 +39,15 @@ function applySettings() {
   });
 }
 
+function normalizeFont(value = "") {
+  return String(value).replace(/[\"']/g, "").replace(/\s+/g, "").toLowerCase();
+}
+
 // Troca de fonte
-window.setFonte = function (nome, el) {
-    settings.tipoFonte = nome;
+window.setFonte = function (familia, el) {
+    settings.tipoFonte = fontFamily(familia);
     applySettings();
+    document.querySelectorAll(".fonte-op").forEach((option) => option.classList.remove("ativa"));
     el?.classList.add("ativa");
 };
 
@@ -38,14 +55,12 @@ window.aplicarFonteCustom = function () {
     const v = document.getElementById("inp-fonte-custom").value.trim();
     if (!v) return;
 
-    settings.tipoFonte = v;
+    settings.tipoFonte = `${JSON.stringify(v)}, sans-serif`;
     applySettings();
-    const familia = `'${v}', ${v}, sans-serif`;
-
-    const prev = document.getElementById("fonte-preview");
-    prev.style.display = "block";
-    prev.style.fontFamily = familia;
-    prev.textContent = "O rato roeu a roupa do rei de Roma. 0123456789.";
+    const preview = document.getElementById("fonte-preview");
+    preview.style.display = "block";
+    preview.style.fontFamily = settings.tipoFonte;
+    preview.textContent = "O rato roeu a roupa do rei de Roma. 0123456789.";
 };
 
 // Tamanho do texto
@@ -92,7 +107,7 @@ window.alterarSenha = async () => {
 requireCoordinator((authenticatedUser, currentProfile) => {
   user = authenticatedUser;
   profile = currentProfile;
-  settings = { tipoFonte: "DM Sans", tamanhoFonte: 16, ...(profile.configuracoes || {}) };
+  settings = { tipoFonte: DEFAULT_FONT, tamanhoFonte: 16, ...(profile.configuracoes || {}) };
   fillHeader(profile);
   document.getElementById("inp-nome").value = profile.nome || "";
   document.getElementById("inp-email").value = profile.email || user.email || "";

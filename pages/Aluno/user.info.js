@@ -1,3 +1,19 @@
+
+// Aplica as configurações salvas globalmente
+const fonteSalva = localStorage.getItem('fontePreferida');
+if (fonteSalva) {
+    let styleTag = document.createElement('style');
+    styleTag.id = 'dynamic-font-style';
+    styleTag.innerHTML = `* { font-family: ${fonteSalva} !important; }`;
+    document.head.appendChild(styleTag);
+}
+
+const tamanhoSalvo = localStorage.getItem('tamanhoPreferido');
+if (tamanhoSalvo) {
+    if (tamanhoSalvo == 14) document.body.style.zoom = "0.85";
+    if (tamanhoSalvo == 16) document.body.style.zoom = "1";
+    if (tamanhoSalvo == 18) document.body.style.zoom = "1.15";
+}
 import { requireStudent } from "../../backend/firebase/professor.js";
 
 requireStudent((_user, data) => {

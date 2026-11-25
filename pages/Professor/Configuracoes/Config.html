@@ -27,7 +27,7 @@
 
         <div id="sistema">
             <button id="configuracao" onclick="Configuracoes()">Configurações</button>
-        </div>s
+        </div>
 
         <div class="lateral-inferior">
             <div class="Usuario">
@@ -50,39 +50,39 @@
         </div>
 
         <!-- FONTE -->
-        <div class="set-card">
-            <h3 class="set-titulo">Fonte da interface</h3>
-            <p class="set-sub">Escolha uma fonte pre-definida ou digite o nome de qualquer fonte do seu sistema</p>
-            <div class="fontes-grid">
-                <div class="fonte-op ativa" onclick="setFonte('DM Sans', this)" style="font-family:'DM Sans',sans-serif;">
-                    <div class="fonte-prev">Aa</div>
-                    <div class="fonte-nm">DM Sans</div>
-                    <div class="fonte-desc">Padrao</div>
-                </div>
-                <div class="fonte-op" onclick="setFonte('Georgia', this)" style="font-family:Georgia,serif;">
-                    <div class="fonte-prev">Aa</div>
-                    <div class="fonte-nm">Georgia</div>
-                    <div class="fonte-desc">Serifado</div>
-                </div>
-                <div class="fonte-op" onclick="setFonte('monospace', this)" style="font-family:monospace;">
-                    <div class="fonte-prev">Aa</div>
-                    <div class="fonte-nm">Mono</div>
-                    <div class="fonte-desc">Tecnico</div>
-                </div>
-                <div class="fonte-op" onclick="setFonte('Trebuchet MS', this)" style="font-family:'Trebuchet MS',sans-serif;">
-                    <div class="fonte-prev">Aa</div>
-                    <div class="fonte-nm">Trebuchet</div>
-                    <div class="fonte-desc">Compacto</div>
-                </div>
-            </div>
-            <div class="campo-inline">
-                <input type="text" id="inp-fonte-custom" placeholder="Ex: Arial, Verdana..."
-                    onkeydown="if(event.key==='Enter') aplicarFonteCustom()">
-                <button class="btn-aplicar" onclick="aplicarFonteCustom()">Aplicar</button>
-            </div>
-            <div id="fonte-preview"></div>
+<div class="set-card">
+    <h3 class="set-titulo">Fonte da interface</h3>
+    <p class="set-sub">Escolha uma fonte pré-definida ou digite o nome de qualquer fonte instalada no seu computador.</p>
+    
+    <div class="fontes-grid">
+        <div class="fonte-op ativa" data-fonte="'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif" onclick="setFonte(this.dataset.fonte, this)">
+            <div class="fonte-prev" style="font-family: 'Franklin Gothic Medium', sans-serif;">Aa</div>
+            <div class="fonte-nm">Padrão</div>
         </div>
+        <div class="fonte-op" data-fonte="system-ui, -apple-system, sans-serif" onclick="setFonte(this.dataset.fonte, this)">
+            <div class="fonte-prev" style="font-family: system-ui;">Aa</div>
+            <div class="fonte-nm">Sistema</div>
+        </div>
+        <div class="fonte-op" data-fonte="Arial, sans-serif" onclick="setFonte(this.dataset.fonte, this)">
+            <div class="fonte-prev" style="font-family: Arial;">Aa</div>
+            <div class="fonte-nm">Arial</div>
+        </div>
+        <div class="fonte-op" data-fonte="Verdana, sans-serif" onclick="setFonte(this.dataset.fonte, this)">
+            <div class="fonte-prev" style="font-family: Verdana;">Aa</div>
+            <div class="fonte-nm">Verdana</div>
+        </div>
+        <div class="fonte-op" data-fonte="Georgia, serif" onclick="setFonte(this.dataset.fonte, this)">
+            <div class="fonte-prev" style="font-family: Georgia;">Aa</div>
+            <div class="fonte-nm">Georgia</div>
+        </div>
+    </div>
 
+    <div class="campo-inline">
+        <input type="text" id="inp-fonte-custom" placeholder="Ex: Impact, Comic Sans MS, Segoe UI...">
+        <button class="btn-aplicar" onclick="aplicarFonteCustom()">Aplicar</button>
+    </div>
+    <div id="fonte-preview">Texto de exemplo para testar a fonte.</div>
+</div>
         <!-- TAMANHO -->
         <div class="set-card">
             <h3 class="set-titulo">Tamanho do texto</h3>

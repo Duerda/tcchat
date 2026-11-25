@@ -13,26 +13,48 @@ window.Configuracoes = () => navigate("Config.html");
 
 let user;
 let profile;
-let settings = {};
+const DEFAULT_FONT = "'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif";
+let settings = { tipoFonte: DEFAULT_FONT, tamanhoFonte: 16 };
 
-function applySettings() {
-  if (settings.tipoFonte) document.body.style.fontFamily = `'${settings.tipoFonte}', sans-serif`;
-  if (settings.tamanhoFonte) document.body.style.fontSize = `${settings.tamanhoFonte}px`;
+function fontFamily(value) {
+  const saved = String(value || DEFAULT_FONT).trim();
+  return saved.includes(",") || /['\"]/.test(saved) ? saved : `${JSON.stringify(saved)}, sans-serif`;
 }
 
-window.setFonte = (name, element) => {
-  settings.tipoFonte = name;
-  document.body.style.fontFamily = `'${name}', sans-serif`;
+function applySettings() {
+  settings.tipoFonte = fontFamily(settings.tipoFonte);
+  const fontStyle = document.getElementById("dynamic-font-style") || document.createElement("style");
+  fontStyle.id = "dynamic-font-style";
+  fontStyle.textContent = `* { font-family: ${settings.tipoFonte || DEFAULT_FONT} !important; }`;
+  if (!fontStyle.isConnected) document.head.appendChild(fontStyle);
+  document.documentElement.style.fontSize = `${Number(settings.tamanhoFonte) || 16}px`;
+  localStorage.setItem("fontePreferida", settings.tipoFonte || DEFAULT_FONT);
+  localStorage.setItem("tamanhoPreferido", String(Number(settings.tamanhoFonte) || 16));
+  document.querySelectorAll(".fonte-op").forEach((option) => {
+    option.classList.toggle("ativa", normalizeFont(option.dataset.fonte) === normalizeFont(settings.tipoFonte));
+  });
+  document.querySelectorAll(".size-btn").forEach((button) => {
+    button.classList.toggle("ativo", Number(button.getAttribute("onclick")?.match(/\d+/)?.[0]) === Number(settings.tamanhoFonte));
+  });
+}
+
+function normalizeFont(value = "") {
+  return String(value).replace(/[\"']/g, "").replace(/\s+/g, "").toLowerCase();
+}
+
+window.setFonte = (family, element) => {
+  settings.tipoFonte = fontFamily(family);
+  applySettings();
   document.querySelectorAll(".fonte-op").forEach((option) => option.classList.remove("ativa"));
   element?.classList.add("ativa");
 };
 window.aplicarFonteCustom = () => {
   const value = document.getElementById("inp-fonte-custom")?.value.trim();
-  if (value) window.setFonte(value);
+  if (value) window.setFonte(`${JSON.stringify(value)}, sans-serif`);
 };
 window.setTamanho = (size, element) => {
-  settings.tamanhoFonte = size;
-  document.body.style.fontSize = `${size}px`;
+  settings.tamanhoFonte = Number(size);
+  applySettings();
   document.querySelectorAll(".size-btn").forEach((button) => button.classList.remove("ativo"));
   element?.classList.add("ativo");
 };
@@ -69,7 +91,7 @@ requireProfessor((authenticatedUser, currentProfile) => {
   user = authenticatedUser;
   profile = currentProfile;
   fillHeader(profile);
-  settings = { ...(profile.configuracoes || {}) };
+  settings = { tipoFonte: DEFAULT_FONT, tamanhoFonte: 16, ...(profile.configuracoes || {}) };
   const name = document.getElementById("inp-nome");
   const email = document.getElementById("inp-email");
   const course = document.getElementById("inp-curso");
