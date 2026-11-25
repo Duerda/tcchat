@@ -63,31 +63,52 @@ export function watchProfile(uid, callback) {
   });
 }
 
+function showRoleValidationError(step, error) {
+  const detail = error?.code || error?.message || "nenhuma sessão ativa encontrada";
+  const banner = document.createElement("div");
+  banner.setAttribute("role", "alert");
+  banner.style.cssText = "position:fixed;z-index:99999;top:12px;left:12px;right:12px;padding:14px 18px;background:#3b1118;color:#fff;border:1px solid #ef4444;border-radius:8px;font:14px/1.5 system-ui,sans-serif;box-shadow:0 8px 24px #0008";
+  const message = document.createElement("span");
+  message.textContent = `Falha ao validar o acesso (${step}): ${detail}. `;
+  const login = document.createElement("a");
+  login.href = LOGIN_PATH;
+  login.textContent = "Voltar ao login";
+  login.style.cssText = "color:#fff;text-decoration:underline;margin-left:6px";
+  banner.append(message, login);
+  document.body.prepend(banner);
+}
+
 export function requireRole(allowedTypes, callback) {
   return onAuthStateChanged(auth, async (user) => {
-    if (!user) return redirectLogin();
+    if (!user) {
+      return redirectLogin();
+    }
+    let validationStep = "renovar a sessão de acesso";
     try {
-      // Atualiza o estado e o ID token; as regras do Firestore conferem a
-      // claim email_verified, então um token antigo não deve liberar acesso.
+      // Atualiza o estado do usuário para reconhecer uma confirmação de e-mail
+      // feita depois da sessão anterior. O Firestore também valida o token.
       await reload(user);
       if (!user.emailVerified) {
         await signOut(auth);
         alert("Confirme seu e-mail antes de acessar o TCCHAT. Entre novamente para receber outro link de verificação.");
         return redirectLogin();
       }
-      await getIdToken(user, true);
+      await getIdToken(user);
+      validationStep = "carregar o perfil no Firestore";
       const profile = await getProfile(user.uid);
-      if (!profile || !allowedTypes.has(profile.tipo) || profile.acessoAtivo === false) {
+      const accessRevoked = profile?.acessoAtivo === false || profile?.acessoAtivo === "false";
+      if (!profile || !allowedTypes.has(profile.tipo) || accessRevoked) {
         await signOut(auth);
         alert("Acesso negado: seu perfil não tem permissão para esta área ou está inativo.");
         return redirectLogin();
       }
+      validationStep = "aplicar as preferências do perfil";
       applyProfileAppearance(profile);
+      validationStep = "iniciar a página";
       await callback(user, profile);
     } catch (error) {
       console.error("Não foi possível carregar o perfil:", error);
-      alert("Não foi possível validar seu acesso. Tente novamente.");
-      redirectLogin();
+      showRoleValidationError(validationStep, error);
     }
   });
 }
