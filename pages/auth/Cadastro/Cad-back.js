@@ -2,7 +2,7 @@ import { auth, db }
 from "../../../backend/firebase/config.js";
 import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { arrayUnion, doc, getDoc, increment, serverTimestamp, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-import { getAccountType, hasTwoPartEmailName, parseClassCode } from "../../../backend/auth/validation.js";
+import { parseClassCode } from "../../../backend/auth/validation.js";
 
 //Navegação
 window.Entraralpr = function () {
@@ -23,11 +23,8 @@ async function Formulario(event) {
     const senha = document.getElementById("Senha").value;
     const repitaSenha = document.getElementById("RepitaSenha").value;
     const codigoDigitado = document.getElementById("Codigo-da-pessoa").value.trim().toUpperCase();
-
-    if (getAccountType(email) === "coordenador") {
-        alert("Contas de coordenação são criadas pela administração do sistema. Solicite o provisionamento ao responsável pelo TCCHAT.");
-        return;
-    }
+    const tipo = document.getElementById("TipoConta").value;
+    const inviteCodes = [...new Set(codigoDigitado.split(/[\s,;]+/).filter(Boolean))];
 
     // 1. Validação de campos vazios
     if (!nome || !email || !senha || !repitaSenha || !codigoDigitado) {
@@ -35,11 +32,10 @@ async function Formulario(event) {
         return;
     }
 
-    if (!hasTwoPartEmailName(email)) {
-        alert("O e-mail deve ter exatamente duas partes antes do @, separadas por um ponto. Ex.: jose.silva@aluno.cps.sp.gov.br ou coord.1@cps.sp.gov.br.");
-        document.getElementById("Email").focus();
-        return;
-    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return alert("Informe um e-mail válido.");
+    if (!["aluno", "professor"].includes(tipo)) return alert("Escolha Aluno ou Professor/orientador.");
+    if (tipo === "aluno" && inviteCodes.length !== 1) return alert("Aluno deve usar um único convite de turma.");
+    if (tipo === "professor" && (inviteCodes.length < 1 || inviteCodes.length > 8)) return alert("Professor pode informar de 1 a 8 convites de turma.");
 
     // 2. Validação de senha
     if (senha !== repitaSenha) {
@@ -52,35 +48,36 @@ async function Formulario(event) {
         return;
     }
 
-    // 3. Definir o perfil pelo domínio antes de validar o código específico.
-    const tipo = getAccountType(email);
-    if (!tipo) {
-        alert("Digite um e-mail válido com domínio institucional autorizado.");
-        document.getElementById("Email").focus();
-        return;
-    }
-
     let usedAccessCodeRef = null;
     let accessCodeId = null;
     let classInfo = null;
+    let classRooms = [];
     let attemptedRecovery = false;
     let profileWriteFailed = false;
     try {
         // Os cadastros de alunos e professores exigem um código ativo emitido
         // pela coordenação. Contas de coordenador são criadas pela administração.
         if (tipo === "aluno" || tipo === "professor") {
-            const validCode = await getDoc(doc(db, "codigosAcesso", codigoDigitado));
+            const validCodes = await Promise.all(inviteCodes.map((code) => getDoc(doc(db, "codigosAcesso", code))));
             const now = Date.now();
-            const code = validCode.exists() ? validCode.data() : null;
-            const expiry = code?.expiraEm?.toDate?.()?.getTime?.() || (code?.expiraEm ? new Date(code.expiraEm).getTime() : null);
-            classInfo = parseClassCode(code?.codigoSala);
-            if (!code || code.codigo !== codigoDigitado || code.revogado || (expiry && expiry < now)
-                || (code.tipo !== tipo && code.tipo !== "ambos") || !classInfo) {
-                alert("Convite inválido, expirado, revogado ou incompatível com o tipo de conta. Solicite um novo à coordenação.");
+            const invites = validCodes.map((snapshot) => {
+                const code = snapshot.exists() ? snapshot.data() : null;
+                const expiry = code?.expiraEm?.toDate?.()?.getTime?.() || (code?.expiraEm ? new Date(code.expiraEm).getTime() : null);
+                const room = parseClassCode(code?.codigoSala);
+                if (!code || code.codigo !== snapshot.id || code.revogado || (expiry && expiry < now)
+                    || (code.tipo !== tipo && code.tipo !== "ambos") || !room) return null;
+                return { snapshot, room };
+            });
+            if (invites.some((invite) => !invite)) {
+                alert("Um ou mais convites são inválidos, expiraram, foram revogados ou não correspondem ao tipo de conta.");
                 return;
             }
-            accessCodeId = validCode.id;
-            usedAccessCodeRef = validCode.ref;
+            const rooms = [...new Set(invites.map((invite) => invite.room.code))];
+            if (rooms.length !== inviteCodes.length) return alert("Cada convite deve corresponder a uma turma diferente.");
+            classRooms = rooms;
+            classInfo = invites[0].room;
+            accessCodeId = invites[0].snapshot.id;
+            usedAccessCodeRef = invites.map((invite) => invite.snapshot.ref);
         }
 
         const { code: codigoSala, courseName: nomeCursoCompleto, year: ano } = classInfo;
@@ -126,15 +123,20 @@ async function Formulario(event) {
             dataCadastro: new Date().toISOString()
         };
 
-        if (accessCodeId) userData.codigoAcessoId = accessCodeId;
+        if (accessCodeId) {
+            userData.codigoAcessoId = accessCodeId;
+            userData.codigoAcessoIds = inviteCodes;
+        }
 
         if (tipo === "aluno") {
             userData.codigoSala = codigoSala;
+            userData.codigoSalas = [codigoSala];
             userData.curso = nomeCursoCompleto;
             userData.ano = ano + "º Ano";
         } else if (tipo === "professor") {
             userData.codigoSala = codigoSala;
-            userData.curso = nomeCursoCompleto;
+            userData.codigoSalas = classRooms;
+            userData.curso = classRooms.map((room) => parseClassCode(room).courseName).join(", ");
         } else {
             userData.escopo = "global";
             userData.curso = "Coordenação global";
@@ -148,11 +150,11 @@ async function Formulario(event) {
             throw profileError;
         }
         if (usedAccessCodeRef) {
-            await updateDoc(usedAccessCodeRef, {
+            await Promise.all(usedAccessCodeRef.map((inviteRef) => updateDoc(inviteRef, {
                 usos: increment(1),
                 usadosPor: arrayUnion(user.uid),
                 ultimoUso: serverTimestamp()
-            });
+            })));
         }
 
         // O perfil é criado como pendente. As regras de acesso por papel exigem

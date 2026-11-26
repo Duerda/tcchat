@@ -58,7 +58,7 @@ Após sair da conta de aluno, acesse novamente cadastrar e preencha os dados sol
 
 Utilize um e-mail no formato: 
 
-{usuario.sobrenome}@professor.cps.sp.gov.br 
+{usuario.sobrenome}@exemplo.com
 
 Finalize o cadastro e confirme o acesso como professor. 
 

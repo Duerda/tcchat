@@ -9,23 +9,6 @@ export const COURSES = Object.freeze({
   INF: "Informática - MTEC",
 });
 
-const EMAIL_TYPES = Object.freeze({
-  "aluno.cps.sp.gov.br": "aluno",
-  "professor.cps.sp.gov.br": "professor",
-  "cps.sp.gov.br": "coordenador",
-});
-
-export function getAccountType(email) {
-  const parts = String(email || "").trim().toLowerCase().split("@");
-  if (parts.length !== 2 || !parts[0] || !parts[1]) return null;
-  return EMAIL_TYPES[parts[1]] || null;
-}
-
-export function hasTwoPartEmailName(email) {
-  const localPart = String(email || "").trim().toLowerCase().split("@")[0] || "";
-  return /^[a-z0-9]+\.[a-z0-9]+$/.test(localPart);
-}
-
 export function parseClassCode(value) {
   const code = String(value || "").trim().toUpperCase();
   const match = /^([A-Z]+)-([123])$/.exec(code);

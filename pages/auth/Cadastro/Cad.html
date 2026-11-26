@@ -22,7 +22,11 @@
             </div>
             <div id="Campo-Email">
                 <label for="Email">E-mail</label>
-                <input id="Email" type="email"  placeholder="aluno.sobrenome@aluno.cps.sp.gov.br" required  >
+                <input id="Email" type="email" placeholder="seu@email.com" required>
+            </div>
+            <div id="Campo-Tipo">
+                <label for="TipoConta">Tipo de conta</label>
+                <select id="TipoConta" required><option value="aluno">Aluno</option><option value="professor">Professor / orientador</option></select>
             </div>
             <div class="Senha">
                 <label for="Senha">Senha</label>
@@ -34,8 +38,9 @@
                 <input id="RepitaSenha" type="password"  placeholder="Repita a senha" required  >
             </div>
                 <div id="Codigo">
-                <label for="Codigo-da-pessoa">Convite de acesso</label>
-                <input id="Codigo-da-pessoa" type="text" placeholder="Código de convite fornecido pela coordenação" autocomplete="off" required>
+                <label for="Codigo-da-pessoa">Convite(s) de acesso</label>
+                <input id="Codigo-da-pessoa" type="text" placeholder="Código fornecido pela coordenação" autocomplete="off" required>
+                <small>Para professor/orientador em várias turmas, informe um convite por turma, separados por vírgula.</small>
             </div>
             <div id="Entrar-al">
                 <input type="submit" value="Entrar" >

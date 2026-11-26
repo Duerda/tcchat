@@ -2,7 +2,6 @@ import { auth, db } from "../../../backend/firebase/config.js";
 import { appUrl, navigate } from "../../../backend/navigation.js";
 import { getIdToken, reload, sendEmailVerification, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, getDoc, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-import { getAccountType } from "../../../backend/auth/validation.js";
 
 // Página para onde o coordenador será enviado
 const PAGINA_COORDENADOR = appUrl("pages/Coordenador/Coord-Index.html");
@@ -50,13 +49,6 @@ async function Formulario(event) {
         alert("Selecione Professor ou Coordenador.");
         return;
     }
-
-    if (tipoEsperado === "professor" && getAccountType(email) !== "professor") {
-        alert("Para entrar como professor, use seu e-mail institucional de professor.");
-        emailInput.focus();
-        return;
-    }
-
 
     try {
 
@@ -210,7 +202,7 @@ document.addEventListener(
                 if (emailInput) {
                     emailInput.placeholder = botao.dataset.perfil === "coordenador"
                         ? "coordenador@exemplo.com"
-                        : "Professor.Sobrenome@professor.cps.sp.gov.br";
+                        : "seu@email.com";
                 }
             });
         });

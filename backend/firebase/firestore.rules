@@ -61,10 +61,31 @@ service cloud.firestore {
           || get(invitePath(codeId)).data.tipo == 'ambos');
     }
 
+    function validTeacherInvites(data) {
+      return data.codigoAcessoIds is list
+        && data.codigoSalas is list
+        && data.codigoAcessoIds.size() == data.codigoSalas.size()
+        && data.codigoAcessoIds.size() >= 1
+        && data.codigoAcessoIds.size() <= 8
+        && (data.codigoAcessoIds.size() < 1 || validInvite(data.codigoAcessoIds[0], 'professor', data.codigoSalas[0]))
+        && (data.codigoAcessoIds.size() < 2 || validInvite(data.codigoAcessoIds[1], 'professor', data.codigoSalas[1]))
+        && (data.codigoAcessoIds.size() < 3 || validInvite(data.codigoAcessoIds[2], 'professor', data.codigoSalas[2]))
+        && (data.codigoAcessoIds.size() < 4 || validInvite(data.codigoAcessoIds[3], 'professor', data.codigoSalas[3]))
+        && (data.codigoAcessoIds.size() < 5 || validInvite(data.codigoAcessoIds[4], 'professor', data.codigoSalas[4]))
+        && (data.codigoAcessoIds.size() < 6 || validInvite(data.codigoAcessoIds[5], 'professor', data.codigoSalas[5]))
+        && (data.codigoAcessoIds.size() < 7 || validInvite(data.codigoAcessoIds[6], 'professor', data.codigoSalas[6]))
+        && (data.codigoAcessoIds.size() < 8 || validInvite(data.codigoAcessoIds[7], 'professor', data.codigoSalas[7]));
+    }
+
+    function inProfileRooms(room) {
+      return (profile().keys().hasAny(['codigoSalas']) && profile().codigoSalas.hasAny([room]))
+        || profile().codigoSala == room;
+    }
+
     function inSameRoom(room) {
       return hasActiveAccess()
         && profile().tipo in ['aluno', 'professor']
-        && profile().codigoSala == room;
+        && inProfileRooms(room);
     }
 
     function groupPath(groupId) {
@@ -86,7 +107,7 @@ service cloud.firestore {
 
     function staffForGroup(groupId) {
       return (isCoordinator() || isTeacher()) && groupExists(groupId)
-        && (isCoordinator() || profile().codigoSala == groupData(groupId).codigoSala);
+        && (isCoordinator() || inProfileRooms(groupData(groupId).codigoSala));
     }
 
     function canReadGroup(groupId) {
@@ -106,19 +127,23 @@ service cloud.firestore {
       allow create: if signedIn() && request.auth.uid == userId
         && request.resource.data.keys().hasOnly([
           'uid', 'nome', 'email', 'tipo', 'iniciais', 'dataCadastro',
-          'codigoAcessoId', 'codigoSala', 'curso', 'ano'
+          'codigoAcessoId', 'codigoAcessoIds', 'codigoSala', 'codigoSalas', 'curso', 'ano'
         ])
         && request.resource.data.uid == userId
         && request.resource.data.email == request.auth.token.email
         && request.resource.data.tipo in ['aluno', 'professor']
         && request.resource.data.codigoAcessoId is string
         && validRoom(request.resource.data.codigoSala)
-        && validInvite(request.resource.data.codigoAcessoId,
-          request.resource.data.tipo, request.resource.data.codigoSala)
+        && request.resource.data.codigoAcessoIds is list
+        && request.resource.data.codigoAcessoId == request.resource.data.codigoAcessoIds[0]
         && ((request.resource.data.tipo == 'aluno'
-            && request.auth.token.email.matches('^[a-z0-9]+\\.[a-z0-9]+@aluno\\.cps\\.sp\\.gov\\.br$'))
+            && request.resource.data.codigoSalas == [request.resource.data.codigoSala]
+            && request.resource.data.codigoAcessoIds == [request.resource.data.codigoAcessoId]
+            && validInvite(request.resource.data.codigoAcessoId, 'aluno', request.resource.data.codigoSala))
           || (request.resource.data.tipo == 'professor'
-            && request.auth.token.email.matches('^[a-z0-9]+\\.[a-z0-9]+@professor\\.cps\\.sp\\.gov\\.br$')));
+            && request.resource.data.codigoSalas is list
+            && request.resource.data.codigoSala == request.resource.data.codigoSalas[0]
+            && validTeacherInvites(request.resource.data)));
 
       // Usuários alteram somente nome e preferências. Campos de papel, turma,
       // acesso e associação ao grupo ficam protegidos contra autoelevação.
@@ -131,7 +156,7 @@ service cloud.firestore {
       allow update: if isCoordinator()
         && resource.data.tipo != 'coordenador'
         && request.resource.data.diff(resource.data).affectedKeys()
-          .hasOnly(['nome', 'iniciais', 'usuarioRemovido', 'acessoAtivo', 'removidoEm', 'removidoPor', 'grupoId', 'grupoNome']);
+          .hasOnly(['nome', 'iniciais', 'usuarioRemovido', 'acessoAtivo', 'removidoEm', 'removidoPor', 'grupoId', 'grupoNome', 'codigoSala', 'codigoSalas', 'curso']);
 
       allow delete: if false;
     }
@@ -159,7 +184,9 @@ service cloud.firestore {
         && request.resource.data.diff(resource.data).affectedKeys()
           .hasOnly(['revogado', 'revogadoEm']))
         || (signedIn() && exists(profilePath(request.auth.uid))
-          && get(profilePath(request.auth.uid)).data.codigoAcessoId == codeId
+          && (get(profilePath(request.auth.uid)).data.codigoAcessoId == codeId
+            || (get(profilePath(request.auth.uid)).data.keys().hasAny(['codigoAcessoIds'])
+              && codeId in get(profilePath(request.auth.uid)).data.codigoAcessoIds))
           && !(request.auth.uid in resource.data.usadosPor)
           && request.auth.uid in request.resource.data.usadosPor
           && request.resource.data.usos == resource.data.usos + 1
@@ -258,7 +285,7 @@ service cloud.firestore {
       allow read: if isCoordinator() || inSameRoom(resource.data.codigoSala);
       allow create: if isStudent()
         && request.resource.data.autorUid == request.auth.uid
-        && request.resource.data.codigoSala == profile().codigoSala
+        && inProfileRooms(request.resource.data.codigoSala)
         && request.resource.data.titulo is string
         && request.resource.data.conteudo is string;
       allow update: if (isTeacher() || isCoordinator())
@@ -292,7 +319,7 @@ service cloud.firestore {
           && request.auth.uid in resource.data.membros);
       allow create: if isTeacher()
         && request.resource.data.professorUid == request.auth.uid
-        && request.resource.data.codigoSala == profile().codigoSala
+        && inProfileRooms(request.resource.data.codigoSala)
         && request.resource.data.grupoNome is string
         && request.resource.data.nota is number
         && request.resource.data.nota >= 0
@@ -304,7 +331,7 @@ service cloud.firestore {
         && request.resource.data.atividadeId is string
         && request.resource.data.membros is list
         && groupExists(request.resource.data.grupoId)
-        && groupData(request.resource.data.grupoId).codigoSala == profile().codigoSala
+        && inProfileRooms(groupData(request.resource.data.grupoId).codigoSala)
         && groupData(request.resource.data.grupoId).membros == request.resource.data.membros
         && exists(/databases/$(database)/documents/grupos/$(request.resource.data.grupoId)/submissoes/$(request.resource.data.submissionId))
         && get(/databases/$(database)/documents/grupos/$(request.resource.data.grupoId)/submissoes/$(request.resource.data.submissionId)).data.atividadeId == request.resource.data.atividadeId
