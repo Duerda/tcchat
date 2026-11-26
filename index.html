@@ -1,337 +1,93 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <link rel="stylesheet" href="Lp.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.0/css/all.min.css" rel="stylesheet">
-    <title>TCCHAT</title>
+    <meta name="description" content="TCCHAT: gestão colaborativa de projetos de TCC para alunos, professores e coordenadores.">
+    <link rel="icon" href="./img/logo.png" type="image/png">
+    <link rel="stylesheet" href="Lp.css?v=20261126-3">
+    <title>TCCHAT — Gestão de TCC</title>
 </head>
-
 <body>
-    <div id="geral">
-        <nav>
-            <div class="logo">
-                <img width="150" height="150" src="./img/logo.png" alt="logo" style="background: none;">
-            </div>
-
-            <ul class="navb">
-                <li><button id="btnInicio" class="btn-nav" onclick="scrollParaInicio()">Inicio</button></li>
-                <li><button id="btnSobre" class="btn-nav" onclick="scrollParaSobre()">Sobre</button></li>
-                <li><button id="btnIntegrantes" class="btn-nav" onclick="scrollParaIntegrantes()">Integrantes</button>
-                </li>
-                <li><button id="btnProgresso" class="btn-nav" onclick="scrollParaProgresso()">Progresso</button></li>
-            </ul>
-
-            <div class="nav-buttons">
-                <button class="btn-login" onclick="Login ()">Login</button>
-                <button class="btn-cadastrar" onclick="Cadastrar ()">Cadastrar</button>
+    <header class="site-header" id="inicio">
+        <nav class="navbar" aria-label="Navegação principal">
+            <a class="brand" href="#inicio" aria-label="TCCHAT início">
+                <img src="./img/logo.png" alt="" width="52" height="52">
+                <span>TC<span>CHAT</span></span>
+            </a>
+            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-principal">Menu</button>
+            <div class="nav-content" id="menu-principal">
+                <ul class="nav-links">
+                    <li><a class="btn-nav ativo" href="#inicio">Início</a></li>
+                    <li><a class="btn-nav" href="#sobre">Sobre</a></li>
+                    <li><a class="btn-nav" href="#equipe">Equipe</a></li>
+                    <li><a class="btn-nav" href="#progresso">Progresso</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <button class="btn btn-primary btn-small" onclick="Login()">Entrar</button>
+                    <button class="btn btn-outline btn-small" onclick="Cadastrar()">Cadastrar</button>
+                </div>
             </div>
         </nav>
-        <!--header-->
-        <header class="header">
-            <div id="header-int">
-                <h1>TCCHAT</h1>
-                <p>Bem-vindo a nova era do seu TCC com o TCCHAT!</p>
+        <section class="hero section-shell" aria-labelledby="hero-title">
+            <div class="hero-copy reveal">
+                <p class="eyebrow"><span></span> Plataforma para projetos acadêmicos</p>
+                <h1 id="hero-title">Seu TCC,<br><strong>mais claro.</strong></h1>
+                <p class="hero-text">Centralize tarefas, prazos, arquivos e conversas em um só lugar. O TCCHAT aproxima alunos, orientadores e coordenação em cada etapa do projeto.</p>
+                <div class="hero-actions">
+                    <button class="btn btn-primary" onclick="Cadastrar()">Começar agora <span aria-hidden="true">→</span></button>
+                    <a class="text-link" href="#sobre">Conheça a plataforma <span aria-hidden="true">↓</span></a>
+                </div>
+                <div class="hero-proof"><strong>Feito para TCCs</strong><span>·</span><span>Organização sem complicação</span></div>
             </div>
-        </header>
-
-        <!--Estruturas do TCCs = ET-->
-        <div id="sobre">
-            <div id="ET">
-                <div id="ET-int" class="reveal">
-                    <h1 style="margin-bottom: 20px;">Estruturas</h1>
-                    <h1><span style="color: #3D4D61; margin-bottom: 30px;">Dos Projetos</span>&nbsp;</h1>
-                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vero ad ipsum amet sequi assumenda sit
-                        officia totam repudiandae adipisci dolorem!
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae velit qui illo recusandae autem
-                        voluptate quisquam amet dignissimos ipsa! Est.
-                    </p>
+            <div class="hero-visual reveal delay-1" aria-label="Prévia do painel do TCCHAT">
+                <div class="glow"></div>
+                <div class="dashboard-window">
+                    <div class="window-bar"><span></span><span></span><span></span><small>painel.tcchat</small></div>
+                    <div class="dashboard-body">
+                        <aside><b>TC<span>CHAT</span></b><i></i><i></i><i></i><i></i></aside>
+                        <div class="dashboard-main">
+                            <div class="dash-top"><div><small>VISÃO GERAL</small><h3>Olá, equipe!</h3></div><em>Atualizado agora</em></div>
+                            <div class="dash-cards"><div><small>PROGRESSO</small><strong>76%</strong><span class="trend">+12% este mês</span></div><div><small>ATIVIDADES</small><strong>24</strong><span>8 pendentes</span></div></div>
+                            <div class="chart"><div class="chart-title"><b>Andamento do projeto</b><small>Últimas etapas</small></div><div class="chart-bars"><i style="height:48%"></i><i style="height:68%"></i><i style="height:56%"></i><i style="height:82%"></i><i style="height:72%"></i><i style="height:94%"></i><i style="height:86%"></i></div></div>
+                        </div>
+                    </div>
                 </div>
+                <div class="floating-note"><span>✓</span><div><b>Entrega aprovada</b><small>Orientador respondeu agora</small></div></div>
             </div>
-            <!--TCC - TC-->
-            <div id="TC">
-                <!--barra de scroll-->
-                <div id="scroll" style="margin-right: 80px;">
-                    <!--bloco tcc-->
+        </section>
+        <div class="hero-bottom section-shell"><span>Uma plataforma, todos os envolvidos</span><div class="hero-line"></div><span>TCCHAT 2026</span></div>
+    </header>
 
-                    <div id="TC-int" class="reveal delay-1">
-                        <div style="display: flex; height: fit-content;">
-                            <div id="pao"
-                                style="float: right; margin-right: auto; text-align: center; margin-right: 0; margin-left: 17px; text-shadow: none; color: #0077ff; background-color: #124f9681;">
-                                Grupo 1</div>
-                            <div id="pao" style="float: right; margin-left: auto; text-align: center; ">No Prazo</div>
-                        </div>
-                        <h6>Agro Connect</h6>
-                        <p>Sistema web/mobile para gestão de estoque e monitoramento de grãos via IoT, prevenindo perdas
-                            pós-colheita.</p>
-                    </div>
+    <main>
+        <section class="stats section-shell reveal" aria-label="Recursos do TCCHAT">
+            <div><strong>01</strong><span>Comunicação<br>centralizada</span></div><div><strong>02</strong><span>Projetos<br>organizados</span></div><div><strong>03</strong><span>Acompanhamento<br>em tempo real</span></div><div><strong>04</strong><span>Decisões<br>mais rápidas</span></div>
+        </section>
 
-                    <div id="TC-int" class="reveal delay-2">
-                        <div style="display: flex; height: fit-content;">
-                            <div id="pao"
-                                style="float: right; margin-right: auto; text-align: center; margin-right: 0; margin-left: 17px; text-shadow: none; color: #0077ff; background-color: #124f9681;">
-                                Grupo 2</div>
-                            <div id="pao" style="float: right; margin-left: auto; text-align: center; ">No Prazo</div>
-                        </div>
-                        <h6>SkillForge</h6>
-                        <p>Plataforma gamificada com desafios diários para ensinar lógica de programação a estudantes do
-                            ensino médio.</p>
-                    </div>
+        <section class="about section-shell" id="sobre">
+            <div class="section-heading reveal"><p class="eyebrow"><span></span> Sobre o TCCHAT</p><h2>Menos burocracia.<br><em>Mais projeto.</em></h2></div>
+            <div class="about-grid"><div class="about-image reveal"><img src="./img/sobre-n.png" alt="Equipe trabalhando em um projeto"><span class="image-tag">Colaboração que acontece</span></div><div class="about-copy reveal delay-1"><p class="lead">O TCCHAT é uma plataforma de gestão de TCC que transforma a rotina acadêmica em um processo simples, visual e colaborativo.</p><p>Alunos acompanham suas entregas, professores orientam com clareza e coordenadores enxergam o panorama completo das turmas. Tudo conectado, sem planilhas confusas ou e-mails perdidos.</p><div class="about-actions"><button class="btn btn-primary" onclick="Login()">Acessar plataforma</button><span>Para alunos, professores<br>e coordenação.</span></div></div></div>
+        </section>
 
-                    <div id="TC-int" class="reveal delay-3">
-                        <div style="display: flex; height: fit-content;">
-                            <div id="pao"
-                                style="float: right; margin-right: auto; text-align: center; margin-right: 0; margin-left: 17px; text-shadow: none; color: #0077ff; background-color: #124f9681;">
-                                Grupo 3</div>
-                            <div id="pao" style="float: right; margin-left: auto; text-align: center; ">No Prazo</div>
-                        </div>
-                        <h6>VitaSync</h6>
-                        <p>App mobile para agendamento entre psicólogos e pacientes, com diário emocional e análise de
-                            sentimentos.</p>
-                    </div>
-
-                    <div id="TC-int" class="reveal delay-4">
-                        <div style="display: flex; height: fit-content;">
-                            <div id="pao"
-                                style="float: right; margin-right: auto; text-align: center; margin-right: 0; margin-left: 17px; text-shadow: none; color: #0077ff; background-color: #124f9681;">
-                                Grupo 4</div>
-                            <div id="pao" style="float: right; margin-left: auto; text-align: center; ">No Prazo</div>
-                        </div>
-                        <h6>MoveMais</h6>
-                        <p>Sistema de otimização de rotas de transporte público usando dados de GPS para reduzir o tempo
-                            de espera dos passageiros.</p>
-                    </div>
-
-                    <div id="TC-int" class="reveal delay-1">
-                        <div style="display: flex; height: fit-content;">
-                            <div id="pao"
-                                style="float: right; margin-right: auto; text-align: center; margin-right: 0; margin-left: 17px; text-shadow: none; color: #0077ff; background-color: #124f9681;">
-                                Grupo 5</div>
-                            <div id="pao" style="float: right; margin-left: auto; text-align: center; ">No Prazo</div>
-                        </div>
-                        <h6>EcoMart</h6>
-                        <p>Marketplace sustentável para artesãos locais, com cálculo de pegada de carbono e logística
-                            reversa.</p>
-                    </div>
-
-                    <div id="TC-int" class="reveal delay-2">
-                        <div style="display: flex; height: fit-content;">
-                            <div id="pao"
-                                style="float: right; margin-right: auto; text-align: center; margin-right: 0; margin-left: 17px; text-shadow: none; color: #0077ff; background-color: #124f9681;">
-                                Grupo 6</div>
-                            <div id="pao" style="float: right; margin-left: auto; text-align: center; ">No Prazo</div>
-                        </div>
-                        <h6>InsightFlow</h6>
-                        <p>Dashboard interativo para pequenas empresas, com previsões de vendas baseadas em análise
-                            histórica de dados.</p>
-                    </div>
-
-                    <div id="TC-int" class="reveal delay-3">
-                        <div style="display: flex; height: fit-content;">
-                            <div id="pao"
-                                style="float: right; margin-right: auto; text-align: center; margin-right: 0; margin-left: 17px; text-shadow: none; color: #0077ff; background-color: #124f9681;">
-                                Grupo 7</div>
-                            <div id="pao" style="float: right; margin-left: auto; text-align: center; ">No Prazo</div>
-                        </div>
-                        <h6>PassGuard</h6>
-                        <p>Gerenciador de senhas com autenticação multifator e armazenamento criptografado para uso
-                            corporativo.</p>
-                    </div>
-
-                    <div id="TC-int" class="reveal delay-4">
-                        <div style="display: flex; height: fit-content;">
-                            <div id="pao"
-                                style="float: right; margin-right: auto; text-align: center; margin-right: 0; margin-left: 17px; text-shadow: none; color: #0077ff; background-color: #124f9681;">
-                                Grupo 8</div>
-                            <div id="pao" style="float: right; margin-left: auto; text-align: center; ">No Prazo</div>
-                        </div>
-                        <h6>EscolaOnline</h6>
-                        <p>Sistema de presença e boletim escolar com notificações automáticas enviadas aos pais pelo
-                            app.</p>
-                    </div>
-
-                </div>
+        <section class="projects section-shell" id="projetos">
+            <div class="section-heading projects-heading reveal"><div><p class="eyebrow"><span></span> Projetos em destaque</p><h2>Ideias que estão<br><em>saindo do papel.</em></h2></div><p class="heading-note">Acompanhe o andamento dos projetos da turma em um só painel.</p></div>
+            <div class="project-grid">
+                <article class="project-card featured reveal"><div class="card-top"><span class="group-label">Grupo 01</span><span class="status"><i></i> No prazo</span></div><h3>Agro Connect</h3><p>Sistema web/mobile para gestão de estoque e monitoramento de grãos via IoT.</p><div class="progress-line"><span style="width:76%"></span></div><small>76% concluído</small></article>
+                <article class="project-card reveal delay-1"><div class="card-top"><span class="group-label">Grupo 02</span><span class="status"><i></i> No prazo</span></div><h3>SkillForge</h3><p>Plataforma gamificada para ensinar lógica de programação.</p><div class="progress-line"><span style="width:67%"></span></div><small>67% concluído</small></article>
+                <article class="project-card reveal delay-2"><div class="card-top"><span class="group-label">Grupo 03</span><span class="status"><i></i> No prazo</span></div><h3>VitaSync</h3><p>App mobile para agendamento entre psicólogos e pacientes.</p><div class="progress-line"><span style="width:48%"></span></div><small>48% concluído</small></article>
+                <article class="project-card reveal delay-1"><div class="card-top"><span class="group-label">Grupo 04</span><span class="status"><i></i> No prazo</span></div><h3>MoveMais</h3><p>Otimização de rotas de transporte público com dados de GPS.</p><div class="progress-line"><span style="width:34%"></span></div><small>34% concluído</small></article>
+                <article class="project-card reveal delay-2"><div class="card-top"><span class="group-label">Grupo 05</span><span class="status"><i></i> No prazo</span></div><h3>EcoMart</h3><p>Marketplace sustentável para artesãos locais.</p><div class="progress-line"><span style="width:17%"></span></div><small>17% concluído</small></article>
+                <article class="project-card project-more reveal"><strong>+ 3</strong><span>outros projetos<br>em andamento</span></article>
             </div>
-        </div>
+        </section>
 
-        <!--Parte de sobre-->
-        <div id="sobreP">
-            <section class="conceito">
-                <div class="container-s">
-                    <!-- Imagem na esquerda -->
-                    <div class="img-s reveal">
-                        <img src="./img/sobre-n.png" alt="Lighting Collection" />
-                    </div>
-                    <!-- Texto p lado direito -->
-                    <div class="bloco-texto reveal delay-2">
-                        <span class="titulo-s">SOBRE</span>
-                        <h2 class="sub-t">Conceito</h2>
-                        <p class="paragrafo-s">
-                            O TCCHat é uma plataforma de gestão de TCC que une alunos, orientadores e coordenadores em
-                            um só lugar. Intuitiva e colaborativa,
-                            ela simplifica cada etapa do projeto, transformando a burocracia
-                            acadêmica em um processo fluido e amigável.
-                        </p>
-                        <div style="display: flex; gap: 17px; margin-top: 20px;">
-                            <button style="padding: 10px 48px; font-size: 18px;" class="btn-login"
-                                onclick="Login ()">Login</button>
-                            <button style="padding: 10px 39px; font-size: 18px;" class="btn-cadastrar"
-                                onclick="Cadastrar ()">Cadastrar</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
+        <section class="team" id="equipe"><div class="section-shell"><div class="section-heading reveal"><p class="eyebrow"><span></span> Quem faz acontecer</p><h2>Uma equipe por trás<br><em>de cada detalhe.</em></h2></div><div class="team-grid"><article class="member reveal"><img src="./img/dft.jfif" alt="Eduarda"><div><h3>Eduarda</h3><p>Direção Backend</p></div></article><article class="member reveal delay-1"><img src="./img/dft.jfif" alt="Enrico"><div><h3>Enrico</h3><p>Backend</p></div></article><article class="member reveal delay-2"><img src="./img/dft.jfif" alt="João Bonato"><div><h3>João Bonato</h3><p>Frontend e Design</p></div></article><article class="member reveal delay-1"><img src="./img/dft.jfif" alt="Tiago"><div><h3>Tiago</h3><p>Direção, Backend e Relatório</p></div></article><article class="member reveal delay-2"><img src="./img/dft.jfif" alt="Kauã Silva"><div><h3>Kauã Silva</h3><p>Frontend e Backend</p></div></article></div></div></section>
 
-    </div>
+        <section class="progress-section section-shell" id="progresso"><div class="progress-copy reveal"><p class="eyebrow"><span></span> Acompanhe de perto</p><h2>O progresso<br>que você <em>vê.</em></h2><p>Alunos atualizam o andamento, orientadores validam cada etapa e coordenadores enxergam o panorama completo da turma — tudo sincronizado automaticamente.</p><button class="text-link" onclick="Login()">Ver meu progresso <span aria-hidden="true">→</span></button></div><div class="progress-visual reveal delay-1"><div class="progress-head"><span>PROGRESSO DA TURMA</span><strong>76%</strong></div><div class="big-progress"><span style="width:76%"></span></div><div class="progress-row"><span>Pesquisa e planejamento</span><b>100%</b><i class="done"></i></div><div class="progress-row"><span>Desenvolvimento</span><b>76%</b><i></i></div><div class="progress-row"><span>Testes e validação</span><b>48%</b><i></i></div><div class="progress-row"><span>Apresentação final</span><b>17%</b><i></i></div></div></section>
+    </main>
 
-    <div id="carrossel-wrapper">
-        <h2 class="carrossel-titulo">Nossa Equipe</h2>
-        <div id="carrossel-continuo">
-            <div class="faixa">
-                <!-- Integrante 1 -->
-                <div class="item-integrante">
-                    <img src="./img/dft.jfif" alt="Integrante 1" class="foto-integrante">
-                    <h3>Eduarda</h3>
-                    <p>Diretor Backend</p>
-                </div>
-                <!-- Integrante 2 -->
-                <div class="item-integrante">
-                    <img src="./img/dft.jfif" alt="Integrante 2" class="foto-integrante">
-                    <h3>Enrico</h3>
-                    <p>Backend</p>
-                </div>
-                <!-- Integrante 3 -->
-                <div class="item-integrante">
-                    <img src="./img/dft.jfif" alt="Integrante 3" class="foto-integrante">
-                    <h3>João Bonato</h3>
-                    <p>Frontend e Design</p>
-                </div>
-                <!-- Integrante 4 -->
-                <div class="item-integrante">
-                    <img src="./img/dft.jfif" alt="Integrante 4" class="foto-integrante">
-                    <h3>Tiago</h3>
-                    <p>DIretor Líder, Backend, Relatório</p>
-                </div>
-                <!-- Integrante 5 -->
-                <div class="item-integrante">
-                    <img src="./img/dft.jfif" alt="Integrante 5" class="foto-integrante">
-                    <h3>Kauã Silva</h3>
-                    <p>Diretor Frontend e Backend</p>
-                </div>
-
-                <div class="item-integrante">
-                    <img src="./img/dft.jfif" alt="Integrante 1" class="foto-integrante">
-                    <h3>Eduarda</h3>
-                    <p>Diretor Backend</p>
-                </div>
-                <!-- Integrante 2 -->
-                <div class="item-integrante">
-                    <img src="./img/dft.jfif" alt="Integrante 2" class="foto-integrante">
-                    <h3>Enrico</h3>
-                    <p>Backend</p>
-                </div>
-                <!-- Integrante 3 -->
-                <div class="item-integrante">
-                    <img src="./img/dft.jfif" alt="Integrante 3" class="foto-integrante">
-                    <h3>João Bonato</h3>
-                    <p>Frontend e Design</p>
-                </div>
-                <!-- Integrante 4 -->
-                <div class="item-integrante">
-                    <img src="./img/dft.jfif" alt="Integrante 4" class="foto-integrante">
-                    <h3>Tiago</h3>
-                    <p>DIretor Líder, Backend, Relatório</p>
-                </div>
-                <!-- Integrante 5 -->
-                <div class="item-integrante">
-                    <img src="./img/dft.jfif" alt="Integrante 5" class="foto-integrante">
-                    <h3>Kauã Silva</h3>
-                    <p>Diretor Frontend e Backend</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="porcentagem">
-
-        <div id="porcentagem">
-            <!--PORCENTAGEM-->
-            <div id="paragrafo-porcentagem" class="reveal">
-                <h1>Acompanhe seu <br>
-                    progresso em tempo
-                    real.</h1>
-                <p style="margin-bottom: 5px;"><strong>Acompanhamento simples e transparente para todos.</strong> <br>
-
-                    Alunos atualizam o andamento, orientadores validam cada etapa e coordenadores enxergam o panorama
-                    completo da turma — tudo sincronizado automaticamente em um só <br> painel, eliminando reuniões
-                    improdutivas e trocas de e-mail desnecessárias.</p>
-                <p style="margin-top: 20px;">Sem Grande enrolação. Interface intuitiva, direta e pronta para usar.</p>
-            </div>
-            <div class="grafico-barras reveal delay-2">
-                <div class="barra-item">
-                    <div class="barra-bg">
-                        <div class="barra-fill" style="width: 76%;"></div>
-                        <span class="barra-valor" style="color: var(--red1);">76%</span>
-                    </div>
-                </div>
-                <div class="barra-item">
-                    <div class="barra-bg">
-                        <div class="barra-fill" style="width: 67%;"></div>
-                        <span class="barra-valor">67%</span>
-                    </div>
-                </div>
-                <div class="barra-item">
-                    <div class="barra-bg">
-                        <div class="barra-fill" style="width: 48%;"></div>
-                        <span class="barra-valor">48%</span>
-                    </div>
-                </div>
-                <div class="barra-item">
-                    <div class="barra-bg">
-                        <div class="barra-fill" style="width: 34%;"></div>
-                        <span class="barra-valor">34%</span>
-                    </div>
-                </div>
-                <div class="barra-item">
-                    <div class="barra-bg">
-                        <div class="barra-fill" style="width: 17%;"></div>
-                        <span class="barra-valor">17%</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--Footer-->
-
-    <div class="footer-up">
-
-        <div class="f1">
-            <img src="./img/logo.png" alt="logo">
-            <p>© 2026 TCCHAT – Gestão de Projetos com alma de chat. Todos os direitos reservados. <br> Este produto é
-                desenvolvido para organizações que buscam eficiência real, <br>
-                unindo comunicação, tarefas e indicadores em uma plataforma única.<br>
-                Ao utilizar o TCCHAT, você concorda com nossa Política de Privacidade e Termos de Uso.</p>
-            <div class="input-wrapper">
-                <i class="fa-regular fa-house" style="color: #d9d9d9;"></i>
-                <button class="btnVoltar" onclick="scrollParaInicio()">VOLTAR</button>
-            </div>
-        </div>
-        <div class="f2">
-            <h2>Site Map</h2>
-            <div class="container-btnf">
-                <button class="btn-footer" onclick="scrollParaInicio()">Inicio</button>
-                <button class="btn-footer" onclick="scrollParaSobre()">Sobre</button>
-                <button class="btn-footer" onclick="scrollParaIntegrantes()">Integrantes</button>
-                <button class="btn-footer" onclick="scrollParaProgresso()">Progresso</button>
-            </div>
-        </div>
-
-    </div>
+    <footer class="footer"><div class="section-shell footer-grid"><div><a class="brand" href="#inicio"><img src="./img/logo.png" alt="" width="48" height="48"><span>TC<span>CHAT</span></span></a><p>Gestão de projetos com alma de chat.</p></div><div><h3>Navegação</h3><a href="#inicio">Início</a><a href="#sobre">Sobre</a><a href="#projetos">Projetos</a><a href="#equipe">Equipe</a></div><div><h3>Acesso</h3><button onclick="Login()">Entrar</button><button onclick="Cadastrar()">Cadastrar</button></div></div><div class="footer-bottom section-shell"><span>© 2026 TCCHAT. Todos os direitos reservados.</span><button class="back-top" onclick="scrollParaInicio()">Voltar ao topo ↑</button></div></footer>
+    <script src="index.js"></script>
+    <script src="lp.js"></script>
 </body>
-<script src="index.js"></script>
-<script src="lp.js"></script>
-
 </html>
