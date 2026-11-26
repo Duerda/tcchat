@@ -225,8 +225,8 @@ function loadUsers() {
     const selectedSeries = seriesFilter?.value || "";
     const selectedProfile = profileFilter?.value || "";
     const people = [...userRecords.alunos, ...userRecords.professores].map((item) => item.data());
-    const courses = [...new Set(people.flatMap(getCourses))].sort((a, b) => a.localeCompare(b, "pt-BR"));
-    const series = [...new Set(people.flatMap(getSeries))].sort((a, b) => Number(a) - Number(b));
+    const courses = [...new Set([...Object.values(COURSE_NAMES), ...people.flatMap(getCourses)])].sort((a, b) => a.localeCompare(b, "pt-BR"));
+    const series = [...new Set(["1", "2", "3", ...people.flatMap(getSeries)])].sort((a, b) => Number(a) - Number(b));
     if (courseFilter) {
       courseFilter.replaceChildren(new Option("Todos os cursos", ""));
       courses.forEach((course) => courseFilter.add(new Option(course, course)));
@@ -279,8 +279,8 @@ function loadUsers() {
     const selectedCourse = codeCourseFilter?.value || "";
     const selectedSeries = codeSeriesFilter?.value || "";
     const selectedProfile = codeProfileFilter?.value || "";
-    const courses = [...new Set(accessCodes.flatMap(({ data }) => getCourses(data)))].sort((a, b) => a.localeCompare(b, "pt-BR"));
-    const series = [...new Set(accessCodes.flatMap(({ data }) => getSeries(data)))].sort((a, b) => Number(a) - Number(b));
+    const courses = [...new Set([...Object.values(COURSE_NAMES), ...accessCodes.flatMap(({ data }) => getCourses(data))])].sort((a, b) => a.localeCompare(b, "pt-BR"));
+    const series = [...new Set(["1", "2", "3", ...accessCodes.flatMap(({ data }) => getSeries(data))])].sort((a, b) => Number(a) - Number(b));
     if (codeCourseFilter) {
       codeCourseFilter.replaceChildren(new Option("Todos os cursos", ""));
       courses.forEach((course) => codeCourseFilter.add(new Option(course, course)));
