@@ -200,11 +200,13 @@ function loadUsers() {
   const filters = document.getElementById("filtros-usuarios");
   const courseFilter = document.getElementById("filtro-curso");
   const seriesFilter = document.getElementById("filtro-serie");
+  const profileFilter = document.getElementById("filtro-perfil");
   const clearFilters = document.getElementById("limpar-filtros-usuarios");
   const filterSummary = document.getElementById("resumo-filtros-usuarios");
   const codeFilters = document.getElementById("filtros-codigos");
   const codeCourseFilter = document.getElementById("filtro-codigo-curso");
   const codeSeriesFilter = document.getElementById("filtro-codigo-serie");
+  const codeProfileFilter = document.getElementById("filtro-codigo-perfil");
   const clearCodeFilters = document.getElementById("limpar-filtros-codigos");
   const codeFilterSummary = document.getElementById("resumo-filtros-codigos");
   let accessCodes = [];
@@ -213,16 +215,17 @@ function loadUsers() {
   if (teacherRows) teacherRows.replaceChildren();
 
   const getRooms = (data) => [...new Set([...(data.codigoSalas || []), data.codigoSala].filter(Boolean))];
-  const getCourse = (data) => {
-    const roomCode = getRooms(data)[0]?.split("-")[0];
-    return COURSE_NAMES[roomCode] || data.curso || "Não informado";
+  const getCourses = (data) => {
+    const roomCourses = getRooms(data).map((room) => COURSE_NAMES[room.split("-")[0]] || room.split("-")[0]);
+    return [...new Set((roomCourses.length ? roomCourses : [data.curso || "Não informado"]).filter(Boolean))];
   };
   const getSeries = (data) => [...new Set(getRooms(data).map((room) => room.split("-")[1]).filter((series) => /^[123]$/.test(series)))];
   const updateFilterOptions = () => {
     const selectedCourse = courseFilter?.value || "";
     const selectedSeries = seriesFilter?.value || "";
+    const selectedProfile = profileFilter?.value || "";
     const people = [...userRecords.alunos, ...userRecords.professores].map((item) => item.data());
-    const courses = [...new Set(people.map(getCourse))].sort((a, b) => a.localeCompare(b, "pt-BR"));
+    const courses = [...new Set(people.flatMap(getCourses))].sort((a, b) => a.localeCompare(b, "pt-BR"));
     const series = [...new Set(people.flatMap(getSeries))].sort((a, b) => Number(a) - Number(b));
     if (courseFilter) {
       courseFilter.replaceChildren(new Option("Todos os cursos", ""));
@@ -234,14 +237,17 @@ function loadUsers() {
       series.forEach((item) => seriesFilter.add(new Option(`${item}ª série`, item)));
       seriesFilter.value = series.includes(selectedSeries) ? selectedSeries : "";
     }
+    if (profileFilter) profileFilter.value = ["", "aluno", "professor"].includes(selectedProfile) ? selectedProfile : "";
   };
   const renderFilteredUsers = () => {
     const selectedCourse = courseFilter?.value || "";
     const selectedSeries = seriesFilter?.value || "";
+    const selectedProfile = profileFilter?.value || "";
     const filter = (record) => {
       const data = record.data();
-      return (!selectedCourse || getCourse(data) === selectedCourse)
-        && (!selectedSeries || getSeries(data).includes(selectedSeries));
+      return (!selectedCourse || getCourses(data).includes(selectedCourse))
+        && (!selectedSeries || getSeries(data).includes(selectedSeries))
+        && (!selectedProfile || data.tipo === selectedProfile);
     };
     const students = userRecords.alunos.filter(filter);
     const teachers = userRecords.professores.filter(filter);
@@ -255,9 +261,11 @@ function loadUsers() {
   const onFilterChange = () => renderFilteredUsers();
   courseFilter?.addEventListener("change", onFilterChange);
   seriesFilter?.addEventListener("change", onFilterChange);
+  profileFilter?.addEventListener("change", onFilterChange);
   clearFilters?.addEventListener("click", () => {
     if (courseFilter) courseFilter.value = "";
     if (seriesFilter) seriesFilter.value = "";
+    if (profileFilter) profileFilter.value = "";
     renderFilteredUsers();
   });
   document.querySelectorAll("#EnCad .aba").forEach((button) => button.addEventListener("click", () => {
@@ -270,8 +278,9 @@ function loadUsers() {
   const updateCodeFilterOptions = () => {
     const selectedCourse = codeCourseFilter?.value || "";
     const selectedSeries = codeSeriesFilter?.value || "";
-    const courses = [...new Set(accessCodes.map(getCourse))].sort((a, b) => a.localeCompare(b, "pt-BR"));
-    const series = [...new Set(accessCodes.flatMap(getSeries))].sort((a, b) => Number(a) - Number(b));
+    const selectedProfile = codeProfileFilter?.value || "";
+    const courses = [...new Set(accessCodes.flatMap(({ data }) => getCourses(data)))].sort((a, b) => a.localeCompare(b, "pt-BR"));
+    const series = [...new Set(accessCodes.flatMap(({ data }) => getSeries(data)))].sort((a, b) => Number(a) - Number(b));
     if (codeCourseFilter) {
       codeCourseFilter.replaceChildren(new Option("Todos os cursos", ""));
       courses.forEach((course) => codeCourseFilter.add(new Option(course, course)));
@@ -282,13 +291,16 @@ function loadUsers() {
       series.forEach((item) => codeSeriesFilter.add(new Option(`${item}ª série`, item)));
       codeSeriesFilter.value = series.includes(selectedSeries) ? selectedSeries : "";
     }
+    if (codeProfileFilter) codeProfileFilter.value = ["", "aluno", "professor"].includes(selectedProfile) ? selectedProfile : "";
   };
   const renderCodeRows = () => {
     if (!codeRows) return;
     const selectedCourse = codeCourseFilter?.value || "";
     const selectedSeries = codeSeriesFilter?.value || "";
-    const filteredCodes = accessCodes.filter((code) => (!selectedCourse || getCourse(code) === selectedCourse)
-      && (!selectedSeries || getSeries(code).includes(selectedSeries)));
+    const selectedProfile = codeProfileFilter?.value || "";
+    const filteredCodes = accessCodes.filter(({ data }) => (!selectedCourse || getCourses(data).includes(selectedCourse))
+      && (!selectedSeries || getSeries(data).includes(selectedSeries))
+      && (!selectedProfile || data.tipo === selectedProfile));
     codeRows.replaceChildren();
     if (!filteredCodes.length) {
       const row = document.createElement("tr");
@@ -312,9 +324,11 @@ function loadUsers() {
   const onCodeFilterChange = () => renderCodeRows();
   codeCourseFilter?.addEventListener("change", onCodeFilterChange);
   codeSeriesFilter?.addEventListener("change", onCodeFilterChange);
+  codeProfileFilter?.addEventListener("change", onCodeFilterChange);
   clearCodeFilters?.addEventListener("click", () => {
     if (codeCourseFilter) codeCourseFilter.value = "";
     if (codeSeriesFilter) codeSeriesFilter.value = "";
+    if (codeProfileFilter) codeProfileFilter.value = "";
     renderCodeRows();
   });
 
