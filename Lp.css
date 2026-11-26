@@ -62,7 +62,7 @@ header {
     color: var(--white-text);
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
      px;
-    font-size: clamp(110px, 16vw, 210px);
+    font-size: clamp(90px, 12vw, 170px);
     margin-bottom: 80px;
     margin-right: 0;
 }
@@ -439,7 +439,7 @@ p {
 }
 
 #ET-int {
-    width: 850px;
+    width: calc(100% - 80px);
     max-width: 1000px;
     max-height: 900px;
     height: 250px;
@@ -469,7 +469,7 @@ p {
     line-height: 25px;
     font-family: "arial";
     font-weight: 500;
-    width: 650px;
+    width: 100%;
     display: flex;
     align-items: center;
     margin-bottom: 17px;
@@ -485,7 +485,7 @@ p {
 }
 
 #TC-int {
-    width: 100%;
+    width: calc(100% - 80px);
     background-color: var(--cinza-escuro);
     margin-right: 80px;
     border-radius: 18px;
@@ -1098,7 +1098,7 @@ p {
     #ET-int h1 { font-size: clamp(48px, 13vw, 78px); line-height: .95; }
     #ET-int p { width: 100%; margin-top: 28px; font-size: 16px; line-height: 1.55; }
     #scroll { height: auto; max-height: none; margin: 0; overflow: visible; }
-    #TC-int { margin-right: 0; }
+    #TC-int { width: 100%; margin-right: 0; }
 
     #sobreP { height: auto; }
     .conceito { padding: 70px 6%; }
