@@ -1051,123 +1051,68 @@ p {
 .reveal.delay-3 { transition-delay: 0.3s; }
 .reveal.delay-4 { transition-delay: 0.4s; }
 
-/* ===== LANDING PAGE RESPONSIVA ===== */
-@media (max-width: 1024px) {
+/* Ajustes pontuais para telas menores, mantendo o visual original no desktop. */
+.menu-toggle { display: none; }
+
+@media (max-width: 700px) {
     body { height: auto; overflow-x: hidden; }
+    nav { height: auto; min-height: 70px; flex-wrap: wrap; gap: 10px; padding: 8px 5%; }
+    nav .logo img { width: 72px; height: 72px; object-fit: contain; }
+    .menu-toggle {
+        display: block;
+        order: 2;
+        padding: 8px 14px;
+        border: 1px solid var(--red1);
+        border-radius: 18px;
+        background: transparent;
+        color: var(--white-text);
+        font: 600 14px 'Segoe UI', sans-serif;
+        cursor: pointer;
+    }
+    .navb {
+        display: none;
+        order: 4;
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 0;
+    }
+    body.menu-aberto .navb { display: flex; }
+    .nav-buttons { order: 3; gap: 8px; }
+    .btn-login, .btn-cadastrar { padding: 7px 14px; font-size: 13px; }
 
-    nav { height: auto; min-height: 70px; gap: 18px; padding: 10px 4%; }
-    nav .logo img { width: 90px; height: 90px; object-fit: contain; }
-    .navb { gap: 1.5rem; }
-    .btn-login, .btn-cadastrar { padding: 8px 20px; }
+    header { height: 620px; min-height: 0; }
+    #header-int { margin: 0; padding: 210px 24px 0; height: auto; text-align: center; }
+    #header-int h1 { margin: 0 0 28px; font-size: clamp(64px, 18vw, 120px); line-height: .9; text-align: center; }
+    #header-int p { margin: 0; font-size: 15px; line-height: 1.45; text-align: center; }
 
-    #header-int { margin-left: 42%; padding-top: 28vh; margin-right: 24px; }
-    #header-int h1 { font-size: clamp(100px, 18vw, 190px); margin-right: 0; margin-bottom: 36px; }
-
-    #sobre { height: auto; min-height: 900px; padding: 70px 5%; gap: 50px; }
-    #ET { width: 42%; }
+    #sobre { display: block; height: auto; padding: 70px 6%; }
+    #ET, #TC { display: block; width: 100%; height: auto; }
+    #ET { margin-bottom: 45px; }
     #ET-int { width: 100%; height: auto; margin: 0; }
-    #ET-int h1 { font-size: clamp(58px, 8vw, 92px); }
-    #ET-int p { width: 100%; font-size: 16px; }
-    #TC { width: 58%; height: auto; }
-    #scroll { width: 100%; height: 650px; margin: 0; padding-right: 4px; }
+    #ET-int h1 { font-size: clamp(48px, 13vw, 78px); line-height: .95; }
+    #ET-int p { width: 100%; margin-top: 28px; font-size: 16px; line-height: 1.55; }
+    #scroll { height: auto; max-height: none; margin: 0; overflow: visible; }
     #TC-int { margin-right: 0; }
 
-    #sobreP { height: auto; min-height: 760px; }
-    .conceito { padding: 80px 5%; }
-    .container-s { gap: 35px; }
+    #sobreP { height: auto; }
+    .conceito { padding: 70px 6%; }
+    .container-s { flex-direction: column; gap: 35px; }
+    .bloco-texto { max-width: none; text-align: center; }
+    .img-s { justify-content: center; width: 100%; }
+    .img-s img { width: 100%; max-height: 300px; object-fit: cover; }
+    .sub-t { font-size: 3rem; }
+    .paragrafo-s { font-size: 1rem; line-height: 1.6; }
 
-    #porcentagem { height: auto; min-height: 650px; padding: 70px 5%; gap: 30px; }
-    #paragrafo-porcentagem { width: 50%; height: auto; margin-left: 0; padding-top: 0; }
-    #paragrafo-porcentagem p { font-size: 18px; }
-    .grafico-barras { margin: 0; padding-top: 0; width: 50%; }
+    #porcentagem { height: auto; min-height: 0; flex-direction: column; padding: 70px 6%; }
+    #paragrafo-porcentagem { width: 100%; height: auto; margin: 0; padding: 0; }
+    #paragrafo-porcentagem h1 { font-size: 32px; line-height: 1.15; }
+    #paragrafo-porcentagem p { font-size: 16px; line-height: 1.55; }
+    .grafico-barras { width: 100%; margin: 0; padding: 20px 0 0; }
 
-    .footer-up { height: auto; min-height: 320px; padding: 45px 5%; gap: 40px; }
-    .f1, .f2 { width: 50%; }
+    .footer-up { height: auto; min-height: 0; flex-direction: column; gap: 30px; padding: 45px 8%; }
+    .f1, .f2 { width: 100%; height: auto; }
     .f1 img, .f1 p { padding-left: 0; }
     .input-wrapper { margin-left: 0; }
-}
-
-@media (max-width: 768px) {
-    nav { flex-wrap: wrap; justify-content: center; }
-    nav .logo { margin-right: auto; }
-    nav .logo img { width: 70px; height: 70px; }
-    .navb { order: 3; width: 100%; justify-content: center; gap: 1.2rem; }
-    .nav-buttons { margin-left: auto; gap: 8px; }
-    .btn-nav { font-size: 14px; }
-    .btn-login, .btn-cadastrar { font-size: 13px; padding: 7px 14px; }
-
-    header { min-height: 620px; height: 76vh; }
-    #header-int { margin: 0; padding: 22vh 7% 0; height: auto; text-align: center; }
-    #header-int h1 { font-size: clamp(72px, 19vw, 140px); line-height: .9; text-align: center; }
-    #header-int p { margin: 0; font-size: 16px; line-height: 1.45; text-align: center; }
-
-    #sobre { display: block; min-height: 0; padding: 70px 6%; }
-    #ET, #TC { width: 100%; display: block; }
-    #ET { margin-bottom: 45px; }
-    #ET-int { max-width: none; }
-    #ET-int h1 { font-size: clamp(48px, 14vw, 82px); line-height: .95; }
-    #ET-int p { margin-top: 28px; font-size: 16px; line-height: 1.55; }
-    #scroll { height: auto; max-height: none; overflow: visible; }
-    #TC-int { padding: 16px; }
-    #TC-int h6 { font-size: 24px; }
-    #TC-int p { font-size: 15px; margin-left: 0; }
-    #TC-int #pao { margin-left: 0; margin-right: 8px; font-size: 12px; }
-
-    .container-s { flex-direction: column; text-align: center; }
-    .conceito { padding: 65px 6%; }
-    .bloco-texto { text-align: center; }
-    .img-s { width: 100%; }
-    .img-s img { max-height: 300px; width: 100%; object-fit: cover; }
-    .sub-t { font-size: clamp(42px, 12vw, 64px); }
-    .paragrafo-s { font-size: 1rem; line-height: 1.6; }
-    .bloco-texto > div { justify-content: center; flex-wrap: wrap; }
-
-    #porcentagem { display: flex; flex-direction: column; min-height: 0; padding: 70px 6%; }
-    #paragrafo-porcentagem, .grafico-barras { width: 100%; }
-    #paragrafo-porcentagem h1 { font-size: clamp(30px, 9vw, 44px); line-height: 1.15; }
-    #paragrafo-porcentagem p { font-size: 16px; line-height: 1.55; }
-    .grafico-barras { padding-top: 20px; }
-    .barra-bg { height: 48px; }
-
-    #carrossel-wrapper { padding: 50px 0 30px; }
-    .carrossel-titulo { font-size: 2rem; margin-bottom: 25px; }
-
-    .footer-up { flex-direction: column; min-height: 0; padding: 45px 8%; gap: 30px; }
-    .f1, .f2 { width: 100%; height: auto; }
-    .f1 img { width: 210px; height: auto; padding-top: 0; }
-    .f1 p { font-size: 13px; line-height: 1.6; }
-    .f2 h2 { padding-top: 0; }
-}
-
-@media (max-width: 480px) {
-    nav { padding: 8px 5%; }
-    nav .logo img { width: 58px; height: 58px; }
-    .nav-buttons { width: 100%; justify-content: center; margin: 0; }
-    .nav-buttons button { flex: 1; max-width: 140px; }
-    .navb { gap: .7rem; }
-    .btn-nav { font-size: 12px; }
-
-    header { min-height: 520px; height: 70vh; }
-    #header-int { padding-top: 18vh; }
-    #header-int h1 { font-size: clamp(58px, 18vw, 90px); margin-bottom: 25px; }
-    #header-int p { font-size: 14px; }
-
-    #sobre { padding: 55px 5%; }
-    #ET-int h1 { font-size: clamp(42px, 13vw, 62px); }
-    #ET-int p { font-size: 15px; }
-    #TC-int h6 { font-size: 21px; }
-    #TC-int p { font-size: 14px; line-height: 1.5; }
-    #TC-int > div { flex-wrap: wrap; }
-
-    .conceito { padding: 55px 5%; }
-    .img-s img { max-height: 230px; }
-    .sub-t { font-size: 2.5rem; }
-    .paragrafo-s { font-size: .95rem; }
-    .bloco-texto > div button { padding: 10px 24px !important; font-size: 15px !important; }
-
-    #porcentagem { padding: 55px 5%; }
-    #paragrafo-porcentagem h1 { font-size: 29px; }
-    #paragrafo-porcentagem p { font-size: 15px; }
-    .barra-valor { font-size: 17px; }
-    .barra-bg { height: 42px; }
 }
