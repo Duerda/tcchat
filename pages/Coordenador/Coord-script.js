@@ -202,6 +202,12 @@ function loadUsers() {
   const seriesFilter = document.getElementById("filtro-serie");
   const clearFilters = document.getElementById("limpar-filtros-usuarios");
   const filterSummary = document.getElementById("resumo-filtros-usuarios");
+  const codeFilters = document.getElementById("filtros-codigos");
+  const codeCourseFilter = document.getElementById("filtro-codigo-curso");
+  const codeSeriesFilter = document.getElementById("filtro-codigo-serie");
+  const clearCodeFilters = document.getElementById("limpar-filtros-codigos");
+  const codeFilterSummary = document.getElementById("resumo-filtros-codigos");
+  let accessCodes = [];
   if (codeRows) codeRows.replaceChildren();
   if (studentRows) studentRows.replaceChildren();
   if (teacherRows) teacherRows.replaceChildren();
@@ -256,8 +262,61 @@ function loadUsers() {
   });
   document.querySelectorAll("#EnCad .aba").forEach((button) => button.addEventListener("click", () => {
     if (filters) filters.hidden = button.id === "aba-codigos";
+    if (codeFilters) codeFilters.hidden = button.id !== "aba-codigos";
   }));
   if (filters) filters.hidden = true;
+  if (codeFilters) codeFilters.hidden = false;
+
+  const updateCodeFilterOptions = () => {
+    const selectedCourse = codeCourseFilter?.value || "";
+    const selectedSeries = codeSeriesFilter?.value || "";
+    const courses = [...new Set(accessCodes.map(getCourse))].sort((a, b) => a.localeCompare(b, "pt-BR"));
+    const series = [...new Set(accessCodes.flatMap(getSeries))].sort((a, b) => Number(a) - Number(b));
+    if (codeCourseFilter) {
+      codeCourseFilter.replaceChildren(new Option("Todos os cursos", ""));
+      courses.forEach((course) => codeCourseFilter.add(new Option(course, course)));
+      codeCourseFilter.value = courses.includes(selectedCourse) ? selectedCourse : "";
+    }
+    if (codeSeriesFilter) {
+      codeSeriesFilter.replaceChildren(new Option("Todas as séries", ""));
+      series.forEach((item) => codeSeriesFilter.add(new Option(`${item}ª série`, item)));
+      codeSeriesFilter.value = series.includes(selectedSeries) ? selectedSeries : "";
+    }
+  };
+  const renderCodeRows = () => {
+    if (!codeRows) return;
+    const selectedCourse = codeCourseFilter?.value || "";
+    const selectedSeries = codeSeriesFilter?.value || "";
+    const filteredCodes = accessCodes.filter((code) => (!selectedCourse || getCourse(code) === selectedCourse)
+      && (!selectedSeries || getSeries(code).includes(selectedSeries)));
+    codeRows.replaceChildren();
+    if (!filteredCodes.length) {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td colspan="6">${accessCodes.length ? "Nenhum código corresponde aos filtros." : "Nenhum código de acesso encontrado."}</td>`;
+      codeRows.appendChild(row);
+    }
+    filteredCodes.forEach(({ id, data: code }) => {
+      const row = document.createElement("tr");
+      const expiry = code.expiraEm?.toDate?.();
+      const dateText = expiry ? expiry.toLocaleDateString("pt-BR") : "Sem limite";
+      const rooms = code.codigoSalas || [code.codigoSala || code.curso || "Turma não informada"];
+      const usage = `${Number(code.usos || 0)}${code.limiteUsos ? `/${code.limiteUsos}` : ""}`;
+      row.innerHTML = `<td><span class="Chip">${safe(code.codigo || id)}</span></td><td>${safe(code.tipo)}</td><td>${safe(rooms.join(", "))}</td><td>${safe(usage)}</td><td>${safe(dateText)}${code.revogado ? " · Revogado" : ""}</td><td><button class="btn-tabela vermelho" data-revogar="${id}" ${code.revogado ? "disabled" : ""}>Revogar</button></td>`;
+      row.querySelector("[data-revogar]")?.addEventListener("click", () => revokeCode(id));
+      codeRows.appendChild(row);
+    });
+    if (codeFilterSummary) {
+      codeFilterSummary.textContent = `${filteredCodes.length} código${filteredCodes.length === 1 ? "" : "s"} encontrado${filteredCodes.length === 1 ? "" : "s"}`;
+    }
+  };
+  const onCodeFilterChange = () => renderCodeRows();
+  codeCourseFilter?.addEventListener("change", onCodeFilterChange);
+  codeSeriesFilter?.addEventListener("change", onCodeFilterChange);
+  clearCodeFilters?.addEventListener("click", () => {
+    if (codeCourseFilter) codeCourseFilter.value = "";
+    if (codeSeriesFilter) codeSeriesFilter.value = "";
+    renderCodeRows();
+  });
 
   // Os códigos gerados ficam no Firestore junto com o tipo de conta permitido e
   // uma validade opcional. Assim, é possível contabilizar os cadastros feitos com
@@ -271,25 +330,9 @@ function loadUsers() {
     renderFilteredUsers();
   });
   onSnapshot(collection(db, "codigosAcesso"), (snapshot) => {
-    if (!codeRows) return;
-    codeRows.replaceChildren();
-    if (snapshot.empty) {
-      const row = document.createElement("tr");
-      row.innerHTML = '<td colspan="6">Nenhum código de acesso encontrado.</td>';
-      codeRows.appendChild(row);
-      return;
-    }
-    snapshot.forEach((item) => {
-      const code = item.data();
-      const row = document.createElement("tr");
-      const expiry = code.expiraEm?.toDate?.();
-      const dateText = expiry ? expiry.toLocaleDateString("pt-BR") : "Sem limite";
-      const rooms = code.codigoSalas || [code.codigoSala || code.curso || "Turma não informada"];
-      const usage = `${Number(code.usos || 0)}${code.limiteUsos ? `/${code.limiteUsos}` : ""}`;
-      row.innerHTML = `<td><span class="Chip">${safe(code.codigo || item.id)}</span></td><td>${safe(code.tipo)}</td><td>${safe(rooms.join(", "))}</td><td>${safe(usage)}</td><td>${safe(dateText)}${code.revogado ? " · Revogado" : ""}</td><td><button class="btn-tabela vermelho" data-revogar="${item.id}" ${code.revogado ? "disabled" : ""}>Revogar</button></td>`;
-      row.querySelector("[data-revogar]")?.addEventListener("click", () => revokeCode(item.id));
-      codeRows.appendChild(row);
-    });
+    accessCodes = snapshot.docs.map((item) => ({ id: item.id, data: item.data() }));
+    updateCodeFilterOptions();
+    renderCodeRows();
   });
 }
 
