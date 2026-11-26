@@ -9,7 +9,6 @@
 <body>
 <div id="Geral">
 
-    <!-- LATERAL -->
     <div id="lateral">
         <div id="lateral-superior">
             <div><h2 style="margin-top: 2px;">T<span>CCHAT</span></h2></div>
@@ -19,9 +18,9 @@
         <div class="VGABF">
             <div id="painel">Navegação</div>
             <div><button id="painel-btn" onclick="Painel ()" >Painel</button></div>
-                <div><button id="Grupo-btn"onclick="MeuGrupo ()">Meu Grupo</button></div>
-                <div><button id="Forum-btn"onclick="Forum ()" >Fórum</button></div>
-                <div><button id="Inspiracoes-btn" onclick="Inspiracoes ()">Inspirações</button></div>
+            <div><button id="Grupo-btn"onclick="MeuGrupo ()">Meu Grupo</button></div>
+            <div><button id="Forum-btn"onclick="Forum ()" >Fórum</button></div>
+            <div><button id="Inspiracoes-btn" onclick="Inspiracoes ()">Inspirações</button></div>
         </div>
 
         <div id="sistema">
@@ -40,7 +39,6 @@
         </div>
     </div>
 
-    <!-- CONTEUDO -->
     <div id="conteudo">
 
         <div id="conteudo-superior">
@@ -49,39 +47,39 @@
         </div>
 
         <!-- FONTE -->
-<div class="set-card">
-    <h3 class="set-titulo">Fonte da interface</h3>
-    <p class="set-sub">Escolha uma fonte pré-definida ou digite o nome de qualquer fonte instalada no seu computador.</p>
-    
-    <div class="fontes-grid">
-        <div class="fonte-op ativa" data-fonte="'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif" onclick="setFonte(this.dataset.fonte, this)">
-            <div class="fonte-prev" style="font-family: 'Franklin Gothic Medium', sans-serif;">Aa</div>
-            <div class="fonte-nm">Padrão</div>
-        </div>
-        <div class="fonte-op" data-fonte="system-ui, -apple-system, sans-serif" onclick="setFonte(this.dataset.fonte, this)">
-            <div class="fonte-prev" style="font-family: system-ui;">Aa</div>
-            <div class="fonte-nm">Sistema</div>
-        </div>
-        <div class="fonte-op" data-fonte="Arial, sans-serif" onclick="setFonte(this.dataset.fonte, this)">
-            <div class="fonte-prev" style="font-family: Arial;">Aa</div>
-            <div class="fonte-nm">Arial</div>
-        </div>
-        <div class="fonte-op" data-fonte="Verdana, sans-serif" onclick="setFonte(this.dataset.fonte, this)">
-            <div class="fonte-prev" style="font-family: Verdana;">Aa</div>
-            <div class="fonte-nm">Verdana</div>
-        </div>
-        <div class="fonte-op" data-fonte="Georgia, serif" onclick="setFonte(this.dataset.fonte, this)">
-            <div class="fonte-prev" style="font-family: Georgia;">Aa</div>
-            <div class="fonte-nm">Georgia</div>
-        </div>
-    </div>
+        <div class="set-card">
+            <h3 class="set-titulo">Fonte da interface</h3>
+            <p class="set-sub">Escolha uma fonte pré-definida ou digite o nome de qualquer fonte instalada no seu computador.</p>
+            
+            <div class="fontes-grid">
+                <div class="fonte-op ativa" data-fonte="'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif" onclick="setFonte(this.dataset.fonte, this)">
+                    <div class="fonte-prev" style="font-family: 'Franklin Gothic Medium', sans-serif;">Aa</div>
+                    <div class="fonte-nm">Padrão</div>
+                </div>
+                <div class="fonte-op" data-fonte="system-ui, -apple-system, sans-serif" onclick="setFonte(this.dataset.fonte, this)">
+                    <div class="fonte-prev" style="font-family: system-ui;">Aa</div>
+                    <div class="fonte-nm">Sistema</div>
+                </div>
+                <div class="fonte-op" data-fonte="Arial, sans-serif" onclick="setFonte(this.dataset.fonte, this)">
+                    <div class="fonte-prev" style="font-family: Arial;">Aa</div>
+                    <div class="fonte-nm">Arial</div>
+                </div>
+                <div class="fonte-op" data-fonte="Verdana, sans-serif" onclick="setFonte(this.dataset.fonte, this)">
+                    <div class="fonte-prev" style="font-family: Verdana;">Aa</div>
+                    <div class="fonte-nm">Verdana</div>
+                </div>
+                <div class="fonte-op" data-fonte="Georgia, serif" onclick="setFonte(this.dataset.fonte, this)">
+                    <div class="fonte-prev" style="font-family: Georgia;">Aa</div>
+                    <div class="fonte-nm">Georgia</div>
+                </div>
+            </div>
 
-    <div class="campo-inline">
-        <input type="text" id="inp-fonte-custom" placeholder="Ex: Impact, Comic Sans MS, Segoe UI...">
-        <button class="btn-aplicar" onclick="aplicarFonteCustom()">Aplicar</button>
-    </div>
-    <div id="fonte-preview">Texto de exemplo para testar a fonte.</div>
-</div>
+            <div class="campo-inline">
+                <input type="text" id="inp-fonte-custom" placeholder="Ex: Impact, Comic Sans MS, Segoe UI...">
+                <button class="btn-aplicar" onclick="aplicarFonteCustom()">Aplicar</button>
+            </div>
+            <div id="fonte-preview">Texto de exemplo para testar a fonte.</div>
+        </div>
 
         <!-- TAMANHO -->
         <div class="set-card">
@@ -91,19 +89,6 @@
                 <button class="size-btn" onclick="setTamanho(14, this)" style="font-size:13px;">A<sup>P</sup></button>
                 <button class="size-btn ativo" onclick="setTamanho(16, this)" style="font-size:16px;">A</button>
                 <button class="size-btn" onclick="setTamanho(18, this)" style="font-size:19px;">A</button>
-            </div>
-        </div>
-
-        <!-- O tema escolhido é mantido junto das outras preferências do aluno. -->
-        <div class="set-card">
-            <h3 class="set-titulo">Tema da interface</h3>
-            <p class="set-sub">Escolha o tema claro ou escuro para as páginas do aluno.</p>
-            <div class="campo">
-                <label for="select-tema">Tema</label>
-                <select id="select-tema" onchange="setTema(this.value)">
-                    <option value="dark-mode">Escuro</option>
-                    <option value="light-mode">Claro</option>
-                </select>
             </div>
         </div>
 
