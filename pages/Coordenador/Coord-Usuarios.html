@@ -48,6 +48,23 @@
             <button class="aba"       id="aba-professores" onclick="mudarAba('professores')"> Professores</button>
         </div>
 
+        <div id="filtros-usuarios" class="filtros-usuarios" hidden>
+            <label>
+                Curso
+                <select id="filtro-curso">
+                    <option value="">Todos os cursos</option>
+                </select>
+            </label>
+            <label>
+                Série
+                <select id="filtro-serie">
+                    <option value="">Todas as séries</option>
+                </select>
+            </label>
+            <button type="button" class="btn-tabela" id="limpar-filtros-usuarios">Limpar filtros</button>
+            <span id="resumo-filtros-usuarios" class="resumo-filtros-usuarios" aria-live="polite"></span>
+        </div>
+
         <!-- CÓDIGOS DE ACESSO -->
         <div class="conteudo-aba" id="tab-codigos">
             <div style="display:flex; gap:10px; margin-bottom:16px;">

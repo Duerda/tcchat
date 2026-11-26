@@ -28,6 +28,7 @@ let creationRoomCode = "";
 let creationStudents = [];
 let creationAdvisors = [];
 let selectedCreationStudentIds = new Set();
+let userRecords = { alunos: [], professores: [] };
 
 window.Voltar = async () => { await signOut(auth); window.location.href = LOGIN; };
 window.Painel = () => (window.location.href = "Coord-Index.html");
@@ -196,18 +197,78 @@ function loadUsers() {
   const codeRows = document.getElementById("lista-codigos");
   const studentRows = document.querySelector("#tab-alunos tbody");
   const teacherRows = document.querySelector("#tab-professores tbody");
+  const filters = document.getElementById("filtros-usuarios");
+  const courseFilter = document.getElementById("filtro-curso");
+  const seriesFilter = document.getElementById("filtro-serie");
+  const clearFilters = document.getElementById("limpar-filtros-usuarios");
+  const filterSummary = document.getElementById("resumo-filtros-usuarios");
   if (codeRows) codeRows.replaceChildren();
   if (studentRows) studentRows.replaceChildren();
   if (teacherRows) teacherRows.replaceChildren();
+
+  const getRooms = (data) => [...new Set([...(data.codigoSalas || []), data.codigoSala].filter(Boolean))];
+  const getCourse = (data) => {
+    const roomCode = getRooms(data)[0]?.split("-")[0];
+    return COURSE_NAMES[roomCode] || data.curso || "Não informado";
+  };
+  const getSeries = (data) => [...new Set(getRooms(data).map((room) => room.split("-")[1]).filter((series) => /^[123]$/.test(series)))];
+  const updateFilterOptions = () => {
+    const selectedCourse = courseFilter?.value || "";
+    const selectedSeries = seriesFilter?.value || "";
+    const people = [...userRecords.alunos, ...userRecords.professores].map((item) => item.data());
+    const courses = [...new Set(people.map(getCourse))].sort((a, b) => a.localeCompare(b, "pt-BR"));
+    const series = [...new Set(people.flatMap(getSeries))].sort((a, b) => Number(a) - Number(b));
+    if (courseFilter) {
+      courseFilter.replaceChildren(new Option("Todos os cursos", ""));
+      courses.forEach((course) => courseFilter.add(new Option(course, course)));
+      courseFilter.value = courses.includes(selectedCourse) ? selectedCourse : "";
+    }
+    if (seriesFilter) {
+      seriesFilter.replaceChildren(new Option("Todas as séries", ""));
+      series.forEach((item) => seriesFilter.add(new Option(`${item}ª série`, item)));
+      seriesFilter.value = series.includes(selectedSeries) ? selectedSeries : "";
+    }
+  };
+  const renderFilteredUsers = () => {
+    const selectedCourse = courseFilter?.value || "";
+    const selectedSeries = seriesFilter?.value || "";
+    const filter = (record) => {
+      const data = record.data();
+      return (!selectedCourse || getCourse(data) === selectedCourse)
+        && (!selectedSeries || getSeries(data).includes(selectedSeries));
+    };
+    const students = userRecords.alunos.filter(filter);
+    const teachers = userRecords.professores.filter(filter);
+    renderUserRows(studentRows, students, "aluno");
+    renderUserRows(teacherRows, teachers, "professor");
+    if (filterSummary) {
+      const total = students.length + teachers.length;
+      filterSummary.textContent = `${total} usuário${total === 1 ? "" : "s"} encontrado${total === 1 ? "" : "s"}`;
+    }
+  };
+  const onFilterChange = () => renderFilteredUsers();
+  courseFilter?.addEventListener("change", onFilterChange);
+  seriesFilter?.addEventListener("change", onFilterChange);
+  clearFilters?.addEventListener("click", () => {
+    if (courseFilter) courseFilter.value = "";
+    if (seriesFilter) seriesFilter.value = "";
+    renderFilteredUsers();
+  });
+  document.querySelectorAll("#EnCad .aba").forEach((button) => button.addEventListener("click", () => {
+    if (filters) filters.hidden = button.id === "aba-codigos";
+  }));
+  if (filters) filters.hidden = true;
 
   // Os códigos gerados ficam no Firestore junto com o tipo de conta permitido e
   // uma validade opcional. Assim, é possível contabilizar os cadastros feitos com
   // cada código e revogá-lo posteriormente.
   stopUsers = onSnapshot(classQuery("usuarios"), (snapshot) => {
-    const students = snapshot.docs.filter((item) => item.data().tipo === "aluno");
-    const teachers = snapshot.docs.filter((item) => item.data().tipo === "professor");
-    renderUserRows(studentRows, students, "aluno");
-    renderUserRows(teacherRows, teachers, "professor");
+    userRecords = {
+      alunos: snapshot.docs.filter((item) => item.data().tipo === "aluno"),
+      professores: snapshot.docs.filter((item) => item.data().tipo === "professor"),
+    };
+    updateFilterOptions();
+    renderFilteredUsers();
   });
   onSnapshot(collection(db, "codigosAcesso"), (snapshot) => {
     if (!codeRows) return;
