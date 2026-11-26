@@ -1,6 +1,7 @@
 import { addDoc, collection, deleteDoc, doc, onSnapshot, query, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { db } from "../../../backend/firebase/config.js";
 import { fillHeader, logout, navigate, requireProfessor } from "../../../backend/firebase/professor.js";
+import { chooseProfileRoom, profileRooms } from "../../../backend/firebase/rooms.js";
 
 window.Voltar = logout;
 window.Avaliacoes = () => navigate("../Avaliacoes/ava.html");
@@ -17,9 +18,10 @@ let profile;
 async function addResource(type) {
   const name = prompt("Nome do recurso:")?.trim();
   const url = prompt(type === "link" ? "URL do site:" : "URL do arquivo:")?.trim();
-  if (!name || !url || !profile?.codigoSala) return;
+  const codigoSala = chooseProfileRoom(profile || {});
+  if (!name || !url || !codigoSala) return;
   try {
-    await addDoc(collection(db, "biblioteca"), { nome: name, url, tipo: type, icone: type === "link" ? "" : "", enviadoPor: user.uid, autorNome: profile.nome || "", codigoSala: profile.codigoSala, criadoEm: serverTimestamp() });
+    await addDoc(collection(db, "biblioteca"), { nome: name, url, tipo: type, icone: type === "link" ? "" : "", enviadoPor: user.uid, autorNome: profile.nome || "", codigoSala, criadoEm: serverTimestamp() });
   } catch (error) {
     console.error(error);
     alert("Não foi possível salvar o recurso.");
@@ -51,7 +53,8 @@ function renderResource(item, id) {
 }
 
 function watchResources() {
-  const resourcesQuery = query(collection(db, "biblioteca"), where("codigoSala", "==", profile.codigoSala));
+  const rooms = profileRooms(profile);
+  const resourcesQuery = query(collection(db, "biblioteca"), where("codigoSala", rooms.length === 1 ? "==" : "in", rooms.length === 1 ? rooms[0] : rooms));
   onSnapshot(resourcesQuery, (snapshot) => {
     if (linksArea) linksArea.innerHTML = "";
     if (filesArea) filesArea.innerHTML = "";

@@ -11,6 +11,7 @@ import {
 
 import { db } from "../../../backend/firebase/config.js";
 import { fillHeader, navigate, requireProfessor } from "../../../backend/firebase/professor.js";
+import { profileRooms } from "../../../backend/firebase/rooms.js";
 import { supabase, SUPABASE_STORAGE_BUCKET } from "../../../backend/supabase/supabase.js";
 
 
@@ -100,7 +101,7 @@ async function carregarGrupo() {
         }
 
         const groupData = snap.data();
-        if (!perfilAtual?.codigoSala || groupData.codigoSala !== perfilAtual.codigoSala) {
+        if (!profileRooms(perfilAtual || {}).includes(groupData.codigoSala)) {
             painel.textContent = "Acesso negado: este grupo não pertence à sua turma.";
             return;
         }

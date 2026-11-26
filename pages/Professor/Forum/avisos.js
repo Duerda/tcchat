@@ -1,6 +1,7 @@
 import { addDoc, collection, onSnapshot, query, serverTimestamp, updateDoc, where, doc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { db } from "../../../backend/firebase/config.js";
 import { fillHeader, logout, navigate, requireProfessor } from "../../../backend/firebase/professor.js";
+import { chooseProfileRoom, profileRooms } from "../../../backend/firebase/rooms.js";
 
 window.Voltar = logout;
 window.Avaliacoes = () => navigate("../Avaliacoes/ava.html");
@@ -17,14 +18,15 @@ let profile;
 let stopDoubts;
 
 window.Cadastrar = async () => {
-  if (!content || !profile?.codigoSala) return;
+  if (!content || !profileRooms(profile || {}).length) return;
   content.querySelectorAll(".lista-duvidas-professor").forEach((node) => node.remove());
   const list = document.createElement("section");
   list.className = "lista-duvidas-professor";
   list.innerHTML = "<h2>Dúvidas dos alunos</h2><p>As dúvidas pendentes da sua turma aparecem aqui.</p>";
   content.appendChild(list);
   stopDoubts?.();
-  const doubtsQuery = query(collection(db, "duvidas"), where("codigoSala", "==", profile.codigoSala));
+  const rooms = profileRooms(profile);
+  const doubtsQuery = query(collection(db, "duvidas"), where("codigoSala", rooms.length === 1 ? "==" : "in", rooms.length === 1 ? rooms[0] : rooms));
   stopDoubts = onSnapshot(doubtsQuery, (snapshot) => {
     list.querySelectorAll(".card-duvida").forEach((card) => card.remove());
     const questions = [...snapshot.docs].sort((a, b) => (b.data().data?.toMillis?.() || 0) - (a.data().data?.toMillis?.() || 0));
@@ -93,7 +95,8 @@ function renderNotice(item) {
 }
 
 function watchNotices() {
-  const noticesQuery = query(collection(db, "avisos"), where("codigoSala", "==", profile.codigoSala));
+  const rooms = profileRooms(profile);
+  const noticesQuery = query(collection(db, "avisos"), where("codigoSala", rooms.length === 1 ? "==" : "in", rooms.length === 1 ? rooms[0] : rooms));
   onSnapshot(noticesQuery, (snapshot) => {
     const list = document.getElementById("lista-avisos");
     const emptyMessage = document.getElementById("avisos-vazio");
@@ -107,9 +110,10 @@ function watchNotices() {
 createButton?.addEventListener("click", async () => {
   const title = prompt("Título do aviso:")?.trim();
   const text = prompt("Conteúdo do aviso:")?.trim();
-  if (!title || !text || !profile?.codigoSala) return;
+  const codigoSala = chooseProfileRoom(profile || {});
+  if (!title || !text || !codigoSala) return;
   try {
-    await addDoc(collection(db, "avisos"), { titulo: title, conteudo: text, autor: profile.nome || "", autorUid: user.uid, tipoAutor: profile.tipo, codigoSala: profile.codigoSala, data: serverTimestamp() });
+    await addDoc(collection(db, "avisos"), { titulo: title, conteudo: text, autor: profile.nome || "", autorUid: user.uid, tipoAutor: profile.tipo, codigoSala, data: serverTimestamp() });
     alert("Aviso publicado no Firestore.");
   } catch (error) {
     console.error(error);

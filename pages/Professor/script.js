@@ -1,6 +1,7 @@
 import { collection, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { db } from "../../backend/firebase/config.js";
 import { fillHeader, logout, navigate, requireProfessor } from "../../backend/firebase/professor.js";
+import { profileRooms } from "../../backend/firebase/rooms.js";
 
 window.Voltar = logout;
 window.Avaliacoes = () => navigate("Avaliacoes/ava.html");
@@ -157,9 +158,11 @@ function watchGroupData() {
 
 requireProfessor((user, profile) => {
   fillHeader(profile);
-  if (!profile.codigoSala) return;
+  const rooms = profileRooms(profile);
+  if (!rooms.length) return;
+  const roomConstraint = where("codigoSala", rooms.length === 1 ? "==" : "in", rooms.length === 1 ? rooms[0] : rooms);
 
-  stopGroupListener = onSnapshot(query(collection(db, "grupos"), where("codigoSala", "==", profile.codigoSala)), (snapshot) => {
+  stopGroupListener = onSnapshot(query(collection(db, "grupos"), roomConstraint), (snapshot) => {
     groupRecords = snapshot.docs.map((item) => ({ id: item.id, data: item.data() }));
     renderGroupCards();
     watchGroupData();
@@ -169,12 +172,12 @@ requireProfessor((user, profile) => {
     if (list) list.textContent = "Não foi possível carregar os grupos.";
   });
 
-  stopEvaluationListener = onSnapshot(query(collection(db, "avaliacoes"), where("codigoSala", "==", profile.codigoSala)), (snapshot) => {
+  stopEvaluationListener = onSnapshot(query(collection(db, "avaliacoes"), roomConstraint), (snapshot) => {
     evaluations = snapshot.docs.map((item) => item.data());
     renderGroupSummaries();
   }, (error) => console.error("Não foi possível carregar o estado das avaliações:", error));
 
-  stopDoubtListener = onSnapshot(query(collection(db, "duvidas"), where("codigoSala", "==", profile.codigoSala)), (snapshot) => {
+  stopDoubtListener = onSnapshot(query(collection(db, "duvidas"), roomConstraint), (snapshot) => {
     doubts = snapshot.docs.map((item) => item.data());
     renderDoubts();
   }, (error) => {

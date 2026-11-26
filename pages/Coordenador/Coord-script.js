@@ -238,13 +238,32 @@ function renderUserRows(tbody, records, role) {
         : data.ultimoAcesso?.toDate?.().toLocaleString("pt-BR") || "Ainda não entrou";
     const actions = data.usuarioRemovido
       ? `<button class="btn-tabela" data-restore="${record.id}">Restaurar</button>`
-      : `<button class="btn-tabela" data-edit="${record.id}">Editar</button><button class="btn-tabela vermelho" data-remove="${record.id}">Excluir</button>`;
-    row.innerHTML = `<td>${safe(data.nome || data.email || "Usuário")}</td><td>${safe(data.curso || "")}</td><td>${safe(data.grupoNome || "—")}</td><td>${safe(status)}</td><td>${actions}</td>`;
+      : `<button class="btn-tabela" data-edit="${record.id}">Editar</button>${role === "professor" ? `<button class="btn-tabela" data-rooms="${record.id}">Turmas</button>` : ""}<button class="btn-tabela vermelho" data-remove="${record.id}">Excluir</button>`;
+    const courseLabel = role === "professor" ? (data.codigoSalas || [data.codigoSala]).filter(Boolean).join(", ") : data.curso || "";
+    row.innerHTML = `<td>${safe(data.nome || data.email || "Usuário")}</td><td>${safe(courseLabel)}</td><td>${safe(data.grupoNome || "—")}</td><td>${safe(status)}</td><td>${actions}</td>`;
     row.querySelector("[data-edit]")?.addEventListener("click", () => editUser(record.id, data));
     row.querySelector("[data-remove]")?.addEventListener("click", () => removeUser(record.id, data));
     row.querySelector("[data-restore]")?.addEventListener("click", () => restoreUser(record.id));
+    row.querySelector("[data-rooms]")?.addEventListener("click", () => assignUserRooms(record.id, data));
     tbody.appendChild(row);
   });
+}
+
+async function assignUserRooms(id, currentData) {
+  const existing = (currentData.codigoSalas || [currentData.codigoSala]).filter(Boolean).join(", ");
+  const raw = prompt("Turmas do professor, separadas por vírgula (ex.: DS-1, ADM-2):", existing);
+  if (raw === null) return;
+  const rooms = [...new Set(raw.split(/[\s,;]+/).map((room) => room.trim().toUpperCase()).filter(Boolean))];
+  if (!rooms.length || rooms.length > 8 || rooms.some((room) => !/^(DS|DI|HOSP|IPI|MA|SEC|ADM|INF)-[123]$/.test(room))) {
+    return alert("Informe de 1 a 8 códigos de turma válidos, como DS-1, separados por vírgula.");
+  }
+  try {
+    await updateDoc(doc(db, "usuarios", id), {
+      codigoSala: rooms[0],
+      codigoSalas: rooms,
+      curso: [...new Set(rooms.map((room) => COURSE_NAMES[room.split("-")[0]]))].join(", "),
+    });
+  } catch (error) { reportError("Não foi possível atualizar as turmas do professor.", error); }
 }
 
 async function editUser(id, currentData) {
@@ -419,7 +438,10 @@ function loadGroupsByRoom() {
       if (/^(DS|DI|HOSP|IPI|MA|SEC|ADM|INF)-[123]$/.test(code)) roomCodes.add(code);
     };
     sources.users.forEach((item) => {
-      if (["aluno", "professor"].includes(item.tipo)) addRoom(item.codigoSala);
+      if (["aluno", "professor"].includes(item.tipo)) {
+        addRoom(item.codigoSala);
+        (item.codigoSalas || []).forEach(addRoom);
+      }
     });
     sources.groups.forEach((item) => addRoom(item.data.codigoSala));
     sources.accessCodes.forEach((item) => addRoom(item.codigoSala || item.codigo));
@@ -528,15 +550,16 @@ window.abrirModalCriarGrupo = async () => {
   }
   try {
     const [people, groups] = await Promise.all([
-      getDocs(queryForRoom("usuarios", roomCode)), getDocs(queryForRoom("grupos", roomCode)),
+      getDocs(classQuery("usuarios")), getDocs(queryForRoom("grupos", roomCode)),
     ]);
     const assignedIds = new Set(groups.docs.flatMap((group) => group.data().membros || []));
     creationStudents = people.docs
-      .filter((item) => item.data().tipo === "aluno")
+      .filter((item) => item.data().tipo === "aluno" && item.data().codigoSala === roomCode)
       .map((item) => ({ id: item.id, name: item.data().nome || item.data().email || "Aluno", assigned: Boolean(item.data().grupoId) || assignedIds.has(item.id) }))
       .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
     renderStudentChoices();
-    creationAdvisors = people.docs.filter((item) => item.data().tipo === "professor")
+    creationAdvisors = people.docs.filter((item) => item.data().tipo === "professor"
+      && (item.data().codigoSala === roomCode || item.data().codigoSalas?.includes(roomCode)))
       .map((item) => ({ id: item.id, name: item.data().nome || item.data().email || "Orientador", email: item.data().email || "" }))
       .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
     renderAdvisorChoices();
@@ -625,14 +648,15 @@ window.criarGrupo = async (event) => {
     if (existingGroups.size >= MAX_GROUPS_PER_ROOM) {
       return alert(`Esta turma já atingiu o limite de ${MAX_GROUPS_PER_ROOM} grupos.`);
     }
-    const people = await getDocs(queryForRoom("usuarios", roomCode));
+    const people = await getDocs(classQuery("usuarios"));
     const currentMembers = memberIds.map((id) => people.docs.find((item) => item.id === id));
-    if (currentMembers.some((member) => !member || member.data().tipo !== "aluno")) return alert("Atualize a lista e selecione alunos válidos desta turma.");
+    if (currentMembers.some((member) => !member || member.data().tipo !== "aluno" || member.data().codigoSala !== roomCode)) return alert("Atualize a lista e selecione alunos válidos desta turma.");
     const alreadyAssigned = currentMembers.filter((member) => member.data().grupoId);
     if (alreadyAssigned.length) return alert(`Estes alunos já estão em um grupo: ${alreadyAssigned.map((member) => member.data().nome).join(", ")}. Atualize a lista antes de continuar.`);
     const selectedMembers = currentMembers;
     const selectedMemberNames = currentMembers.map((member) => member.data().nome || member.data().email || "Aluno");
-    const matchedAdvisor = advisorId ? people.docs.find((item) => item.id === advisorId && item.data().tipo === "professor") : null;
+    const matchedAdvisor = advisorId ? people.docs.find((item) => item.id === advisorId && item.data().tipo === "professor"
+      && (item.data().codigoSala === roomCode || item.data().codigoSalas?.includes(roomCode))) : null;
     if (advisorId && !matchedAdvisor) return alert("Atualize a lista e escolha um orientador válido desta turma.");
     const groupRef = doc(collection(db, "grupos"));
     const batch = writeBatch(db);
@@ -750,8 +774,10 @@ async function assignAdvisor(groupId) {
   try {
     const groupSnapshot = await getDoc(doc(db, "grupos", groupId));
     if (!groupSnapshot.exists()) return alert("Grupo não encontrado.");
-    const people = await getDocs(queryForRoom("usuarios", groupSnapshot.data().codigoSala));
-    const teacher = people.docs.find((item) => item.data().tipo === "professor" && item.data().email?.toLowerCase() === email);
+    const people = await getDocs(classQuery("usuarios"));
+    const teacher = people.docs.find((item) => item.data().tipo === "professor"
+      && (item.data().codigoSala === groupSnapshot.data().codigoSala || item.data().codigoSalas?.includes(groupSnapshot.data().codigoSala))
+      && item.data().email?.toLowerCase() === email);
     if (!teacher) return alert("Professor não encontrado na turma deste grupo.");
     await updateDoc(doc(db, "grupos", groupId), { orientador: teacher.data().nome || email, orientadorUid: teacher.id });
   } catch (error) { reportError("Não foi possível definir o orientador.", error); }

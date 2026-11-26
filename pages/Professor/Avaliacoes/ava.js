@@ -2,6 +2,7 @@ import { addDoc, collection, onSnapshot, query, serverTimestamp, where } from "h
 import { db } from "../../../backend/firebase/config.js";
 import { supabase, SUPABASE_STORAGE_BUCKET } from "../../../backend/supabase/supabase.js";
 import { fillHeader, logout, navigate, requireProfessor } from "../../../backend/firebase/professor.js";
+import { profileRooms } from "../../../backend/firebase/rooms.js";
 
 window.Voltar = logout;
 window.VisaoGeral = () => navigate("../Index.html");
@@ -160,12 +161,14 @@ function watchSubmissions() {
 requireProfessor((user, profile) => {
   currentUser = user;
   fillHeader(profile);
-  if (!profile.codigoSala) {
+  const rooms = profileRooms(profile);
+  if (!rooms.length) {
     if (queue) queue.textContent = "Seu perfil não possui uma turma vinculada.";
     return;
   }
 
-  onSnapshot(query(collection(db, "grupos"), where("codigoSala", "==", profile.codigoSala)), (snapshot) => {
+  const roomConstraint = where("codigoSala", rooms.length === 1 ? "==" : "in", rooms.length === 1 ? rooms[0] : rooms);
+  onSnapshot(query(collection(db, "grupos"), roomConstraint), (snapshot) => {
     groups = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
     watchSubmissions();
   }, (error) => {
@@ -173,7 +176,7 @@ requireProfessor((user, profile) => {
     if (queue) queue.textContent = "Não foi possível carregar as entregas.";
   });
 
-  onSnapshot(query(collection(db, "avaliacoes"), where("codigoSala", "==", profile.codigoSala)), (snapshot) => {
+  onSnapshot(query(collection(db, "avaliacoes"), roomConstraint), (snapshot) => {
     evaluations = snapshot.docs.map((item) => item.data());
     renderQueue();
     renderHistory();
@@ -203,7 +206,7 @@ requireProfessor((user, profile) => {
         professorNome: profile.nome || "",
         nota: grade,
         feedback: comment,
-        codigoSala: profile.codigoSala,
+        codigoSala: submission.group.codigoSala,
         data: serverTimestamp(),
       });
       form.reset();

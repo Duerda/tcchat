@@ -1,6 +1,7 @@
 import { collection, doc, getDoc, onSnapshot, query, updateDoc, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { db } from "../../../backend/firebase/config.js";
 import { fillHeader, logout, navigate, requireProfessor } from "../../../backend/firebase/professor.js";
+import { profileRooms } from "../../../backend/firebase/rooms.js";
 
 window.Voltar = logout;
 window.VisaoGeral = () => navigate("/pages/Professor/Index.html");
@@ -28,11 +29,12 @@ function renderGroup(groupDoc) {
 
 function listenGroups(profile) {
   if (!list) return;
-  if (!profile.codigoSala) {
+  const rooms = profileRooms(profile);
+  if (!rooms.length) {
     list.innerHTML = "<p>Seu perfil não possui uma sala vinculada.</p>";
     return;
   }
-  const groupsQuery = query(collection(db, "grupos"), where("codigoSala", "==", profile.codigoSala));
+  const groupsQuery = query(collection(db, "grupos"), where("codigoSala", rooms.length === 1 ? "==" : "in", rooms.length === 1 ? rooms[0] : rooms));
   onSnapshot(groupsQuery, (snapshot) => {
     list.innerHTML = "";
     if (snapshot.empty) {
