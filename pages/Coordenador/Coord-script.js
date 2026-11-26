@@ -98,6 +98,17 @@ function requestRoomCode() {
   return roomCode;
 }
 
+function requestTeacherRooms() {
+  const raw = prompt("Turmas do professor, separadas por vírgula (ex.: DS-1, ADM-2):", "DS-1")?.trim();
+  if (!raw) return null;
+  const rooms = [...new Set(raw.split(/[\s,;]+/).map((room) => room.toUpperCase()).filter(Boolean))];
+  if (!rooms.length || rooms.length > 8 || rooms.some((room) => !/^(DS|DI|HOSP|IPI|MA|SEC|ADM|INF)-[123]$/.test(room))) {
+    alert("Informe de 1 a 8 códigos de turma válidos, separados por vírgula.");
+    return null;
+  }
+  return rooms;
+}
+
 function loadDashboard() {
   const stats = [...document.querySelectorAll("#Informacoes .Stat h3")];
   // Os contadores em tempo real substituem os números de exemplo pela lista
@@ -212,7 +223,9 @@ function loadUsers() {
       const row = document.createElement("tr");
       const expiry = code.expiraEm?.toDate?.();
       const dateText = expiry ? expiry.toLocaleDateString("pt-BR") : "Sem limite";
-      row.innerHTML = `<td><span class="Chip">${safe(code.codigo || item.id)}</span></td><td>${safe(code.tipo)}</td><td>${safe(code.codigoSala || code.curso || "Turma não informada")}</td><td>${Number(code.usos || 0)}</td><td>${safe(dateText)}${code.revogado ? " · Revogado" : ""}</td><td><button class="btn-tabela vermelho" data-revogar="${item.id}" ${code.revogado ? "disabled" : ""}>Revogar</button></td>`;
+      const rooms = code.codigoSalas || [code.codigoSala || code.curso || "Turma não informada"];
+      const usage = `${Number(code.usos || 0)}${code.limiteUsos ? `/${code.limiteUsos}` : ""}`;
+      row.innerHTML = `<td><span class="Chip">${safe(code.codigo || item.id)}</span></td><td>${safe(code.tipo)}</td><td>${safe(rooms.join(", "))}</td><td>${safe(usage)}</td><td>${safe(dateText)}${code.revogado ? " · Revogado" : ""}</td><td><button class="btn-tabela vermelho" data-revogar="${item.id}" ${code.revogado ? "disabled" : ""}>Revogar</button></td>`;
       row.querySelector("[data-revogar]")?.addEventListener("click", () => revokeCode(item.id));
       codeRows.appendChild(row);
     });
@@ -333,8 +346,9 @@ async function restoreUser(id) {
 }
 
 window.gerarCodigo = async (tipo) => {
-  const sala = requestRoomCode();
-  if (!sala) return;
+  const rooms = tipo === "professor" ? requestTeacherRooms() : [requestRoomCode()].filter(Boolean);
+  if (!rooms?.length) return;
+  const sala = rooms[0];
   const expiry = prompt("Validade opcional (DD-MM-AAAA). Deixe vazio para não expirar:")?.trim();
   if (expiry && !/^\d{2}-\d{2}-\d{4}$/.test(expiry)) return alert("Informe a data no formato DD-MM-AAAA.");
   const [day, month, year] = expiry ? expiry.split("-").map(Number) : [];
@@ -349,7 +363,8 @@ window.gerarCodigo = async (tipo) => {
     await setDoc(doc(db, "codigosAcesso", inviteCode), {
       codigo: inviteCode,
       codigoSala: sala,
-      curso: COURSE_NAMES[sala.split("-")[0]],
+      ...(tipo === "professor" ? { codigoSalas: rooms, limiteUsos: 1 } : {}),
+      curso: [...new Set(rooms.map((room) => COURSE_NAMES[room.split("-")[0]]))].join(", "),
       tipo,
       criadoPor: user.uid,
       criadoEm: serverTimestamp(),
@@ -358,7 +373,7 @@ window.gerarCodigo = async (tipo) => {
       usadosPor: [],
       revogado: false,
     });
-    prompt(`Convite criado para ${tipo} · turma ${sala}. Copie e envie somente às pessoas autorizadas:`, inviteCode);
+    prompt(`Convite criado para ${tipo} · turmas ${rooms.join(", ")}${tipo === "professor" ? " · uso único" : ""}. Copie e envie somente às pessoas autorizadas:`, inviteCode);
   } catch (error) { reportError("Não foi possível criar o código de acesso.", error); }
 };
 
