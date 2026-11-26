@@ -16,8 +16,10 @@ div {
 }
 
 #Telaprin{
-    position: absolute;
-    inset: 0; 
+    position: relative;
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 24px 16px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -25,23 +27,25 @@ div {
     width: 100%;
 }
 .Card  {
+    box-sizing: border-box;
     background-color: #111520;
     padding-left: 38px;
     padding-top: 42px;
     padding-right: 38px;
     padding-bottom: 42px;
     border-radius: 22px;
-    width: 360px;
-    height: 570px;
+    width: min(436px, 100%);
+    height: auto;
+    min-height: 570px;
     border: 1px solid rgb(255 255 255 / 7%);
-    overflow: hidden;
-}   
+    overflow: visible;
+}
 
 .logo h1 span {
     color: #EC3C3C;
 }
 .logo {
-    width: 362px;
+    width: 100%;
     height: 42px;
     margin-bottom: 20px;
 }
@@ -53,8 +57,8 @@ div {
     padding: 3px;
     margin-bottom: 10px;
 }
-#Cadastrar {   
-    width: 176px;
+#Cadastrar {
+    flex: 1;
     height: 36px;
     background: #161d2a;
     color: #e4e9f4;
@@ -64,7 +68,7 @@ div {
     margin-right: 2px;
 }
 #Entrar {
-    width: 176px;
+    flex: 1;
     height: 36px;
     background: #0c1018;
     color: #e4e9f4;
@@ -75,7 +79,7 @@ div {
 }
  /*#Entrar:hover ele serve para quando o mouse passar por cima ele muda uma coisa que eu colocar aqui*/
 #Entrar:hover {
-    width: 176px;
+    flex: 1;
     height: 36px;
     background: #161d2a;
     color: #e4e9f4;
@@ -95,7 +99,8 @@ div {
     color: #7a8699;
 }
 #Nome input {
-    width: 332px;
+    box-sizing: border-box;
+    width: 100%;
     height: 18px;
     padding-top: 11px;
     padding-bottom: 11px;
@@ -115,7 +120,8 @@ div {
     color: #7a8699;
 }
 #Campo-Email input {
-    width: 332px;
+    box-sizing: border-box;
+    width: 100%;
     height: 18px;
     padding-top: 11px;
     padding-bottom: 11px;
@@ -128,6 +134,38 @@ div {
     border: 1px solid rgb(255 255 255 / 7%);
     margin-bottom: 10px;
 }
+#Campo-Tipo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+#Campo-Tipo label {
+    display: inline-block;
+    margin: 0;
+    font-size: 14px;
+    color: #7a8699;
+    white-space: nowrap;
+}
+#Campo-Tipo select {
+    box-sizing: border-box;
+    flex: 1;
+    min-width: 0;
+    height: 42px;
+    padding: 0 14px;
+    margin: 0;
+    background: #0c1018;
+    color: #e4e9f4;
+    color-scheme: dark;
+    border: 1px solid rgb(255 255 255 / 7%);
+    border-radius: 8px;
+    outline: none;
+    font: inherit;
+}
+#Campo-Tipo select:focus {
+    border-color: #ec3c3c;
+    box-shadow: 0 0 0 2px rgb(236 60 60 / 16%);
+}
 .Senha label {
     display: block;
     margin-bottom: 7px;
@@ -135,7 +173,8 @@ div {
     color: #7a8699;
 }
 .Senha input {
-    width: 332px;
+    box-sizing: border-box;
+    width: 100%;
     height: 18px;
     padding-top: 11px;
     padding-bottom: 11px;
@@ -156,7 +195,8 @@ div {
     color: #7a8699;
 }
 #Codigo input {
-    width: 332px;
+    box-sizing: border-box;
+    width: 100%;
     height: 18px;
     padding-top: 11px;
     padding-bottom: 11px;
@@ -170,7 +210,16 @@ div {
     border: 1px solid rgb(255 255 255 / 7%);
      margin-bottom: 10px;
 }
+#Codigo small {
+    display: block;
+    margin-top: -4px;
+    margin-bottom: 10px;
+    color: #7a8699;
+    font-size: 12px;
+    line-height: 1.4;
+}
 #Entrar-al input {
+    box-sizing: border-box;
     margin-top: 20px;
     width: 100%;
     height: 40px;
@@ -183,6 +232,5 @@ div {
 
     #Entrar-al input:hover {
         transform: scale(1.05);
-        transition: all 0.5s;
+        transition: transform 0.5s;
      }
-    

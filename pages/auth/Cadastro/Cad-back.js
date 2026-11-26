@@ -33,7 +33,7 @@ async function Formulario(event) {
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return alert("Informe um e-mail válido.");
-    if (!["aluno", "professor"].includes(tipo)) return alert("Escolha Aluno ou Professor/orientador.");
+    if (!["aluno", "professor"].includes(tipo)) return alert("Escolha Aluno ou Professor.");
     if (tipo === "aluno" && inviteCodes.length !== 1) return alert("Aluno deve usar um único convite de turma.");
     if (tipo === "professor" && (inviteCodes.length < 1 || inviteCodes.length > 8)) return alert("Professor pode informar de 1 a 8 convites de turma.");
 
@@ -181,7 +181,10 @@ async function Formulario(event) {
             return;
         }
         if (profileWriteFailed) {
-            alert("A conta de autenticação foi criada, mas o perfil não foi salvo. Tente novamente com o mesmo e-mail e senha para concluir o cadastro.");
+            const detail = error.code === "permission-denied"
+                ? "O Firestore recusou a gravação. Verifique se as regras atualizadas foram publicadas no projeto Firebase."
+                : `Código do erro: ${error.code || "desconhecido"}.`;
+            alert(`A conta de autenticação foi criada, mas o perfil não foi salvo. ${detail}`);
             return;
         }
         if (error.code === "auth/invalid-email") {
