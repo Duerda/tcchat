@@ -6,13 +6,13 @@ Este documento resume os documentos e caminhos que o código atual do TCCHAT con
 
 ### `usuarios/{uid}`
 
-O ID do documento é o UID do Firebase Authentication. Perfis de aluno e professor criados pelo formulário incluem `uid`, `nome`, `email`, `tipo`, `iniciais`, `dataCadastro`; `codigoAcessoId`; e, conforme o papel, `codigoSala`, `curso` e `ano` (aluno). Preferências podem ser gravadas em `configuracoes`; o próprio usuário pode alterar nome/iniciais e preferências. O provisionamento administrativo de coordenadores usa também `escopo`, `curso` e `acessoAtivo`.
+O ID do documento é o UID do Firebase Authentication. Perfis de aluno e professor criados pelo formulário incluem `uid`, `nome`, `email`, `tipo`, `iniciais`, `dataCadastro`, `codigoAcessoId` e `codigoAcessoIds`. `codigoSala` guarda a turma principal e `codigoSalas` a lista de turmas autorizadas; em alunos essa lista contém uma turma, e em professores pode conter até oito. Alunos também têm `curso` e `ano`. Preferências podem ser gravadas em `configuracoes`; o próprio usuário pode alterar nome/iniciais e preferências. O provisionamento administrativo de coordenadores usa também `escopo`, `curso` e `acessoAtivo`.
 
 Os papéis são `aluno`, `professor` e `coordenador`. Alunos e professores recebem turma por convite. Coordenadores são provisionados administrativamente e têm escopo global. Os campos de perfil aceitos pelo cadastro e as permissões de leitura/alteração constam em `backend/firebase/firestore.rules`.
 
 ### `codigosAcesso/{id}`
 
-Convites de cadastro. O fluxo consulta o documento pelo ID digitado e valida `codigo`, `codigoSala`, `tipo` (`aluno`, `professor` ou `ambos`), `revogado` e `expiraEm`. O uso atualiza `usos`, `usadosPor` e `ultimoUso`; a coordenação pode revogar o convite.
+Convites de cadastro. O fluxo consulta o documento pelo ID digitado e valida `codigo`, `tipo` (`aluno`, `professor` ou `ambos`), `revogado` e `expiraEm`. Convites de aluno usam `codigoSala`; convites novos de professor têm `codigoSala` como principal e `codigoSalas` com uma a oito turmas autorizadas. Convites novos de professor também definem `limiteUsos: 1`. O uso atualiza `usos`, `usadosPor` e `ultimoUso`; a coordenação pode revogar o convite. Registros antigos de professor sem `codigoSalas` continuam representando uma turma por `codigoSala`.
 
 ### `grupos/{grupoId}`
 

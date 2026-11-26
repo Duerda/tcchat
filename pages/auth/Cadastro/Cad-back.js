@@ -1,7 +1,7 @@
 import { auth, db } 
 from "../../../backend/firebase/config.js";
 import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { arrayUnion, doc, getDoc, increment, serverTimestamp, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { arrayUnion, doc, getDoc, increment, serverTimestamp, writeBatch } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { parseClassCode } from "../../../backend/auth/validation.js";
 
 //Navegação
@@ -24,7 +24,7 @@ async function Formulario(event) {
     const repitaSenha = document.getElementById("RepitaSenha").value;
     const codigoDigitado = document.getElementById("Codigo-da-pessoa").value.trim().toUpperCase();
     const tipo = document.getElementById("TipoConta").value;
-    const inviteCodes = [...new Set(codigoDigitado.split(/[\s,;]+/).filter(Boolean))];
+    const inviteCode = codigoDigitado;
 
     // 1. Validação de campos vazios
     if (!nome || !email || !senha || !repitaSenha || !codigoDigitado) {
@@ -34,8 +34,7 @@ async function Formulario(event) {
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return alert("Informe um e-mail válido.");
     if (!["aluno", "professor"].includes(tipo)) return alert("Escolha Aluno ou Professor.");
-    if (tipo === "aluno" && inviteCodes.length !== 1) return alert("Aluno deve usar um único convite de turma.");
-    if (tipo === "professor" && (inviteCodes.length < 1 || inviteCodes.length > 8)) return alert("Professor pode informar de 1 a 8 convites de turma.");
+    if (!inviteCode || /[\s,;]/.test(inviteCode)) return alert("Informe um único código de convite fornecido pela coordenação.");
 
     // 2. Validação de senha
     if (senha !== repitaSenha) {
@@ -58,26 +57,27 @@ async function Formulario(event) {
         // Os cadastros de alunos e professores exigem um código ativo emitido
         // pela coordenação. Contas de coordenador são criadas pela administração.
         if (tipo === "aluno" || tipo === "professor") {
-            const validCodes = await Promise.all(inviteCodes.map((code) => getDoc(doc(db, "codigosAcesso", code))));
+            const validCode = await getDoc(doc(db, "codigosAcesso", inviteCode));
             const now = Date.now();
-            const invites = validCodes.map((snapshot) => {
-                const code = snapshot.exists() ? snapshot.data() : null;
-                const expiry = code?.expiraEm?.toDate?.()?.getTime?.() || (code?.expiraEm ? new Date(code.expiraEm).getTime() : null);
-                const room = parseClassCode(code?.codigoSala);
-                if (!code || code.codigo !== snapshot.id || code.revogado || (expiry && expiry < now)
-                    || (code.tipo !== tipo && code.tipo !== "ambos") || !room) return null;
-                return { snapshot, room };
-            });
-            if (invites.some((invite) => !invite)) {
-                alert("Um ou mais convites são inválidos, expiraram, foram revogados ou não correspondem ao tipo de conta.");
+            const code = validCode.exists() ? validCode.data() : null;
+            const expiry = code?.expiraEm?.toDate?.()?.getTime?.() || (code?.expiraEm ? new Date(code.expiraEm).getTime() : null);
+            const roomsFromInvite = tipo === "professor" && Array.isArray(code?.codigoSalas)
+                ? code.codigoSalas
+                : [code?.codigoSala];
+            classRooms = [...new Set(roomsFromInvite.filter(Boolean))];
+            const parsedRooms = classRooms.map(parseClassCode);
+            if (!code || code.codigo !== validCode.id || code.revogado || (expiry && expiry < now)
+                || (code.tipo !== tipo && code.tipo !== "ambos") || !classRooms.length
+                || classRooms.length > 8 || parsedRooms.some((room) => !room)
+                || (tipo === "aluno" && classRooms.length !== 1)
+                || (tipo === "professor" && code.codigoSalas && code.codigoSala !== classRooms[0])
+                || (code.limiteUsos && Number(code.usos || 0) >= Number(code.limiteUsos))) {
+                alert("Convite inválido, expirado, já utilizado ou incompatível com o tipo de conta.");
                 return;
             }
-            const rooms = [...new Set(invites.map((invite) => invite.room.code))];
-            if (rooms.length !== inviteCodes.length) return alert("Cada convite deve corresponder a uma turma diferente.");
-            classRooms = rooms;
-            classInfo = invites[0].room;
-            accessCodeId = invites[0].snapshot.id;
-            usedAccessCodeRef = invites.map((invite) => invite.snapshot.ref);
+            classInfo = parsedRooms[0];
+            accessCodeId = validCode.id;
+            usedAccessCodeRef = validCode.ref;
         }
 
         const { code: codigoSala, courseName: nomeCursoCompleto, year: ano } = classInfo;
@@ -125,7 +125,7 @@ async function Formulario(event) {
 
         if (accessCodeId) {
             userData.codigoAcessoId = accessCodeId;
-            userData.codigoAcessoIds = inviteCodes;
+            userData.codigoAcessoIds = [accessCodeId];
         }
 
         if (tipo === "aluno") {
@@ -143,18 +143,18 @@ async function Formulario(event) {
         }
 
         try {
-            await setDoc(doc(db, "usuarios", user.uid), userData);
+            const batch = writeBatch(db);
+            batch.set(doc(db, "usuarios", user.uid), userData);
+            if (usedAccessCodeRef) batch.update(usedAccessCodeRef, {
+                usos: increment(1),
+                usadosPor: arrayUnion(user.uid),
+                ultimoUso: serverTimestamp()
+            });
+            await batch.commit();
         } catch (profileError) {
             profileWriteFailed = true;
             await signOut(auth);
             throw profileError;
-        }
-        if (usedAccessCodeRef) {
-            await Promise.all(usedAccessCodeRef.map((inviteRef) => updateDoc(inviteRef, {
-                usos: increment(1),
-                usadosPor: arrayUnion(user.uid),
-                ultimoUso: serverTimestamp()
-            })));
         }
 
         // O perfil é criado como pendente. As regras de acesso por papel exigem
@@ -182,7 +182,7 @@ async function Formulario(event) {
         }
         if (profileWriteFailed) {
             const detail = error.code === "permission-denied"
-                ? "O Firestore recusou a gravação. Verifique se as regras atualizadas foram publicadas no projeto Firebase."
+                ? "O Firestore recusou o cadastro. Verifique se o convite está ativo e se as regras publicadas permitem esse cadastro."
                 : `Código do erro: ${error.code || "desconhecido"}.`;
             alert(`A conta de autenticação foi criada, mas o perfil não foi salvo. ${detail}`);
             return;
