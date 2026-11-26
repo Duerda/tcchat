@@ -1,5 +1,6 @@
+import { requireStudent } from "../../backend/firebase/professor.js"; // ajuste o caminho
 
-// Aplica as configurações salvas globalmente
+// --- 1. APLICA A FONTE E O TAMANHO ---
 const fonteSalva = localStorage.getItem('fontePreferida');
 if (fonteSalva) {
     let styleTag = document.createElement('style');
@@ -10,12 +11,10 @@ if (fonteSalva) {
 
 const tamanhoSalvo = localStorage.getItem('tamanhoPreferido');
 if (tamanhoSalvo) {
-    if (tamanhoSalvo == 14) document.body.style.zoom = "0.85";
-    if (tamanhoSalvo == 16) document.body.style.zoom = "1";
-    if (tamanhoSalvo == 18) document.body.style.zoom = "1.15";
+    document.documentElement.style.fontSize = `${Number(tamanhoSalvo) || 16}px`;
 }
-import { requireStudent } from "../../backend/firebase/professor.js";
 
+// --- 2. CARREGA O PERFIL (NOME E CURSO) ---
 requireStudent((_user, data) => {
   document.body.classList.add("pronto");
 
