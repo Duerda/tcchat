@@ -711,41 +711,6 @@ window.mudarStatus = async (id, status) => {
   catch (error) { reportError("Não foi possível atualizar o status.", error); }
 };
 window.scrollGrupos = (direction) => document.getElementById("GT")?.scrollBy({ left: direction * 360, behavior: "smooth" });
-window.sortearGrupos = async () => {
-  if (!confirm("Sortear grupos automaticamente entre alunos ainda sem grupo?")) return;
-  const roomCode = requestRoomCode();
-  if (!roomCode) return;
-  try {
-    const [people, groups] = await Promise.all([getDocs(queryForRoom("usuarios", roomCode)), getDocs(queryForRoom("grupos", roomCode))]);
-    const assigned = new Set(groups.docs.flatMap((item) => item.data().membros || []));
-    const students = people.docs.filter((item) => item.data().tipo === "aluno" && !assigned.has(item.id) && !item.data().grupoId).sort(() => Math.random() - 0.5);
-    if (!students.length) return alert("Não há alunos sem grupo para sortear.");
-    const remainingGroups = MAX_GROUPS_PER_ROOM - groups.size;
-    if (remainingGroups <= 0) return alert(`Esta turma já atingiu o limite de ${MAX_GROUPS_PER_ROOM} grupos.`);
-    const requestedSize = Number(prompt(`Quantidade de alunos por grupo (${GROUP_MIN_MEMBERS} a ${GROUP_MAX_MEMBERS}):`, "4"));
-    if (!Number.isInteger(requestedSize) || requestedSize < GROUP_MIN_MEMBERS || requestedSize > GROUP_MAX_MEMBERS) {
-      return alert(`Informe um tamanho entre ${GROUP_MIN_MEMBERS} e ${GROUP_MAX_MEMBERS} alunos.`);
-    }
-    const size = requestedSize;
-    const maxStudents = remainingGroups * size;
-    const eligibleStudents = students.slice(0, maxStudents);
-    const batch = writeBatch(db);
-    let created = 0;
-    for (let index = 0; index + GROUP_MIN_MEMBERS <= eligibleStudents.length; index += size) {
-      const members = eligibleStudents.slice(index, index + size);
-      if (members.length < GROUP_MIN_MEMBERS) break;
-      const ref = doc(collection(db, "grupos"));
-      const names = members.map((item) => item.data().nome || item.data().email);
-      const groupName = `Grupo sorteado ${created + 1}`;
-      batch.set(ref, { codigoSala: roomCode, nome: groupName, descricao: "Grupo formado pelo sorteio do coordenador.", tema: "A definir", membros: members.map((item) => item.id), integrantes: names, nomesMembros: names, orientador: "A definir", status: "no-prazo", criadoPor: user.uid, criadoEm: serverTimestamp() });
-      members.forEach((member) => batch.update(doc(db, "usuarios", member.id), { grupoId: ref.id, grupoNome: groupName }));
-      created++;
-    }
-    await batch.commit();
-    const leftOut = students.length - Math.min(created * size, eligibleStudents.length);
-    alert(`${created} grupo(s) criado(s). ${leftOut} aluno(s) ficaram sem associação por falta de vagas ou por não completarem o mínimo de ${GROUP_MIN_MEMBERS}.`);
-  } catch (error) { reportError("Não foi possível sortear os grupos.", error); }
-};
 window.configurarLimites = () => alert(`Limites atuais: de ${GROUP_MIN_MEMBERS} a ${GROUP_MAX_MEMBERS} alunos por grupo e até ${MAX_GROUPS_PER_ROOM} grupos por turma.`);
 
 async function addGroupMember(groupId) {
