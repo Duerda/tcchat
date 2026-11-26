@@ -41,21 +41,26 @@ window.Cadastrar = async () => {
       const title = document.createElement("h3");
       title.textContent = doubt.titulo || doubt.pergunta || "Dúvida";
       const author = document.createElement("small");
+      author.className = "duvida-autor";
       author.textContent = `Por ${doubt.autor || doubt.alunoNome || "Aluno"}`;
       const body = document.createElement("p");
+      body.className = "duvida-conteudo";
       body.textContent = doubt.conteudo || doubt.pergunta || "";
       card.append(title, author, body);
       if (doubt.resposta) {
         const previous = document.createElement("p");
+        previous.className = "duvida-resposta-anterior";
         previous.textContent = `Resposta de ${doubt.respondidoPor || "Professor"}: ${doubt.resposta}`;
         card.appendChild(previous);
       }
       const answer = document.createElement("textarea");
+      answer.className = "duvida-resposta-input";
       answer.rows = 3;
       answer.maxLength = 2000;
       answer.placeholder = "Escreva a resposta que ficará visível para o aluno";
       answer.value = doubt.resposta || "";
       const send = document.createElement("button");
+      send.className = "duvida-resposta-botao";
       send.type = "button";
       send.textContent = doubt.resposta ? "Atualizar resposta" : "Responder";
       send.addEventListener("click", async () => {
