@@ -22,6 +22,8 @@ let evaluations = [];
 let selectedSubmission = null;
 let submissionListeners = [];
 const submissionsByGroup = new Map();
+const submissionLoadErrors = new Map();
+let evaluationsLoadError = false;
 
 function node(tag, value, className = "") {
   const element = document.createElement(tag);
@@ -48,18 +50,25 @@ function selectSubmission(submission) {
 async function openSubmissionFile(submission, button) {
   const { arquivoPath, arquivoUrl, arquivoNome } = submission.data;
   if (!arquivoPath && !arquivoUrl) return;
+  const openedWindow = window.open("about:blank", "_blank");
+  if (!openedWindow) {
+    alert("O navegador bloqueou a abertura do arquivo. Permita pop-ups para este site e tente novamente.");
+    return;
+  }
+  openedWindow.opener = null;
   button.disabled = true;
   const originalText = button.textContent;
   button.textContent = "Preparando arquivo...";
   try {
     if (arquivoUrl) {
-      window.open(arquivoUrl, "_blank", "noopener,noreferrer");
+      openedWindow.location.href = arquivoUrl;
       return;
     }
     const { data, error } = await supabase.storage.from(SUPABASE_STORAGE_BUCKET).createSignedUrl(arquivoPath, 60 * 60);
     if (error) throw error;
-    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+    openedWindow.location.href = data.signedUrl;
   } catch (error) {
+    openedWindow.close();
     console.error("Não foi possível abrir o arquivo da entrega:", error);
     alert(`Não foi possível abrir ${arquivoNome || "o arquivo"}. Confira a configuração do Supabase Storage.`);
   } finally {
@@ -71,6 +80,12 @@ async function openSubmissionFile(submission, button) {
 function renderQueue() {
   if (!queue) return;
   queue.replaceChildren();
+  if (evaluationsLoadError) {
+    queue.appendChild(node("p", "Não foi possível carregar as avaliações existentes; a fila pode não refletir quais entregas já foram avaliadas.", "estado-erro"));
+  }
+  if (submissionLoadErrors.size) {
+    queue.appendChild(node("p", `Falha ao carregar entregas de: ${[...submissionLoadErrors.values()].join(", ")}.`, "estado-erro"));
+  }
   const completed = evaluatedIds();
   if (selectedSubmission && completed.has(selectedSubmission.id)) {
     selectedSubmission = null;
@@ -82,7 +97,10 @@ function renderQueue() {
   }).sort((a, b) => (b.data.enviadoEm?.toMillis?.() || 0) - (a.data.enviadoEm?.toMillis?.() || 0));
 
   if (!pending.length) {
-    queue.appendChild(node("p", "Não há entregas aguardando avaliação."));
+    const emptyMessage = submissionLoadErrors.size
+      ? "Não foi possível confirmar se há entregas pendentes."
+      : "Não há entregas aguardando avaliação.";
+    queue.appendChild(node("p", emptyMessage));
     if (selectedSubmission) {
       selectedSubmission = null;
       if (selectedLabel) selectedLabel.textContent = "Selecione uma entrega acima.";
@@ -112,6 +130,8 @@ function renderQueue() {
     selectButton.type = "button";
     selectButton.className = "btn-tabela";
     selectButton.textContent = selectedSubmission?.id === submission.id ? "Selecionada" : "Avaliar entrega";
+    selectButton.disabled = evaluationsLoadError;
+    if (evaluationsLoadError) selectButton.title = "Aguarde a recuperação da lista de avaliações para evitar duplicidade.";
     selectButton.addEventListener("click", () => selectSubmission(submission));
     actions.appendChild(selectButton);
     card.appendChild(actions);
@@ -123,12 +143,18 @@ function watchSubmissions() {
   submissionListeners.forEach((stop) => stop());
   submissionListeners = [];
   submissionsByGroup.clear();
+  submissionLoadErrors.clear();
   groups.forEach((group) => {
     const ref = collection(db, "grupos", group.id, "submissoes");
     submissionListeners.push(onSnapshot(ref, (snapshot) => {
       submissionsByGroup.set(group.id, snapshot.docs.map((item) => ({ id: item.id, data: item.data() })));
+      submissionLoadErrors.delete(group.id);
       renderQueue();
-    }, (error) => console.error(`Não foi possível carregar entregas do grupo ${group.nome || group.id}:`, error)));
+    }, (error) => {
+      console.error(`Não foi possível carregar entregas do grupo ${group.nome || group.id}:`, error);
+      submissionLoadErrors.set(group.id, group.nome || group.id);
+      renderQueue();
+    }));
   });
   renderQueue();
 }
@@ -152,9 +178,12 @@ requireProfessor((user, profile) => {
 
   onSnapshot(query(collection(db, "avaliacoes"), roomConstraint), (snapshot) => {
     evaluations = snapshot.docs.map((item) => item.data());
+    evaluationsLoadError = false;
     renderQueue();
   }, (error) => {
     console.error("Não foi possível carregar avaliações:", error);
+    evaluationsLoadError = true;
+    renderQueue();
   });
 
   form?.addEventListener("submit", async (event) => {

@@ -407,3 +407,12 @@ div {
     transform: translateY(-2px);
     background: #d13232;
 }
+.estado-erro {
+    margin: 0 0 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--cor-vermelho-transparente);
+    border-left: 3px solid var(--cor-vermelho);
+    border-radius: 8px;
+    background: var(--cor-vermelho-transparente);
+    color: var(--cor-texto);
+}
