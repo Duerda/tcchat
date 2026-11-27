@@ -99,8 +99,7 @@ div {
     color: #7a8699;
 }
 #Nome input {
-    box-sizing: border-box;
-    width: 100%;
+    width: 332px;
     height: 18px;
     padding-top: 11px;
     padding-bottom: 11px;
@@ -120,8 +119,7 @@ div {
     color: #7a8699;
 }
 #Campo-Email input {
-    box-sizing: border-box;
-    width: 100%;
+    width: 332px;
     height: 18px;
     padding-top: 11px;
     padding-bottom: 11px;
@@ -173,8 +171,7 @@ div {
     color: #7a8699;
 }
 .Senha input {
-    box-sizing: border-box;
-    width: 100%;
+    width: 332px;
     height: 18px;
     padding-top: 11px;
     padding-bottom: 11px;
@@ -195,8 +192,7 @@ div {
     color: #7a8699;
 }
 #Codigo input {
-    box-sizing: border-box;
-    width: 100%;
+    width: 332px;
     height: 18px;
     padding-top: 11px;
     padding-bottom: 11px;
