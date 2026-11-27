@@ -1,0 +1,161 @@
+/* Estados comuns dos botões nas áreas de aluno, professor e coordenação. */
+:where(button, [role="button"]) {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:where(button, [role="button"]):focus-visible {
+  outline: 2px solid var(--cor-vermelho, #ec3c3c);
+  outline-offset: 2px;
+}
+
+:where(button, [role="button"]):disabled,
+:where(button, [role="button"])[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: .58;
+  transform: none;
+}
+
+/* Navegação lateral: aparência neutra e destaque vermelho na página atual. */
+.VGABF div button,
+#configuracao {
+  border-radius: 8px;
+  transition: background-color .18s ease, color .18s ease, border-color .18s ease;
+}
+
+.VGABF div button:hover:not(:disabled),
+#configuracao:hover:not(:disabled) {
+  transform: none;
+  background: var(--cor-fundo-hover, #161d2a);
+  color: var(--cor-branco, #fff);
+}
+
+#ativo,
+#bisao,
+#painel-btn[aria-current="page"],
+#Grupo-btn[aria-current="page"],
+#Forum-btn[aria-current="page"],
+#Inspiracoes-btn[aria-current="page"],
+#configuracao[aria-current="page"] {
+  background: var(--cor-vermelho-transparente, rgb(236 60 60 / 16%)) !important;
+  color: var(--cor-vermelho, #ec3c3c) !important;
+  font-weight: 700 !important;
+}
+
+/* Ação principal: vermelho sólido. */
+.btn-acao:not(.secundario),
+.btn-salvar,
+.btn-aplicar,
+.btn-enviar,
+.chat-form button,
+.entrega-form button,
+.form-atividade-professor button,
+#novo-aviso,
+#novo-link:not(.botao-secundario),
+#novo-arquivo,
+#btn-duvida,
+#btn-publicar-aviso,
+#btn-confirmar-criar-grupo,
+#salvar-recurso-biblioteca,
+.btn-confirmar-excluir {
+  background-color: var(--cor-vermelho, #ec3c3c);
+  color: #fff;
+  border-color: var(--cor-vermelho, #ec3c3c);
+}
+
+.btn-acao:not(.secundario):hover:not(:disabled),
+.btn-salvar:hover:not(:disabled),
+.btn-aplicar:hover:not(:disabled),
+.btn-enviar:hover:not(:disabled),
+.chat-form button:hover:not(:disabled),
+.entrega-form button:hover:not(:disabled),
+.form-atividade-professor button:hover:not(:disabled),
+#novo-aviso:hover:not(:disabled),
+#novo-link:not(.botao-secundario):hover:not(:disabled),
+#novo-arquivo:hover:not(:disabled),
+#btn-duvida:hover:not(:disabled),
+#btn-publicar-aviso:hover:not(:disabled),
+#btn-confirmar-criar-grupo:hover:not(:disabled),
+#salvar-recurso-biblioteca:hover:not(:disabled),
+.btn-confirmar-excluir:hover:not(:disabled) {
+  background-color: #d13232;
+  border-color: #d13232;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+/* Ações secundárias: superfície escura e contorno discreto. */
+.btn-acao.secundario,
+.btn-tabela,
+.Cursos,
+.navbtn,
+.botao-secundario,
+.btn-voltar,
+.size-btn,
+.modal-botoes button[type="button"],
+#cancelar-modal-biblioteca,
+#cancelar-recurso-biblioteca {
+  border: 1px solid var(--cor-borda, rgb(255 255 255 / 10%));
+  background-color: var(--cor-fundo-secundario, #111520);
+  color: var(--cor-texto-secundario, #a0aec0);
+  transition: background-color .18s ease, color .18s ease, border-color .18s ease;
+}
+
+.btn-acao.secundario:hover:not(:disabled),
+.btn-tabela:hover:not(:disabled),
+.Cursos:hover:not(:disabled),
+.navbtn:hover:not(:disabled),
+.botao-secundario:hover:not(:disabled),
+.btn-voltar:hover:not(:disabled),
+.size-btn:hover:not(:disabled),
+.modal-botoes button[type="button"]:hover:not(:disabled),
+#cancelar-modal-biblioteca:hover:not(:disabled),
+#cancelar-recurso-biblioteca:hover:not(:disabled) {
+  border-color: var(--cor-vermelho, #ec3c3c);
+  background-color: var(--cor-fundo-hover, #161d2a);
+  color: var(--cor-texto, #e4e9f4);
+}
+
+/* Exclusões usam vermelho em contorno para sinalizar risco sem competir com salvar. */
+.btnExcluir,
+.GT button:last-of-type,
+.btn-tabela.vermelho {
+  border-color: var(--cor-vermelho, #ec3c3c) !important;
+  background: transparent !important;
+  color: var(--cor-vermelho, #ec3c3c) !important;
+}
+
+/* Editar é uma ação segura: fica neutra, separada visualmente de excluir. */
+.btnEditar,
+.GT button:first-of-type {
+  background: var(--cor-fundo-secundario, #111520) !important;
+  color: var(--cor-texto-secundario, #a0aec0) !important;
+  border: 1px solid var(--cor-borda, rgb(255 255 255 / 10%)) !important;
+}
+
+.btnEditar:hover:not(:disabled),
+.GT button:first-of-type:hover:not(:disabled) {
+  background: var(--cor-fundo-hover, #161d2a) !important;
+  color: var(--cor-texto, #e4e9f4) !important;
+  border-color: var(--cor-vermelho, #ec3c3c) !important;
+}
+
+.btnExcluir:hover:not(:disabled),
+.GT button:last-of-type:hover:not(:disabled),
+.btn-tabela.vermelho:hover:not(:disabled) {
+  background: var(--cor-vermelho-transparente, rgb(236 60 60 / 16%)) !important;
+  color: var(--cor-vermelho, #ec3c3c) !important;
+}
+
+/* Abas e filtros mostram a seleção com o mesmo acento usado na navegação. */
+.aba.ativa,
+.aba.ativo,
+.filtro.ativo,
+.size-btn.ativo {
+  border-color: var(--cor-vermelho, #ec3c3c);
+  background: var(--cor-vermelho-transparente, rgb(236 60 60 / 16%));
+  color: var(--cor-vermelho, #ec3c3c);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(button, [role="button"]) { transition-duration: .01ms !important; }
+}
