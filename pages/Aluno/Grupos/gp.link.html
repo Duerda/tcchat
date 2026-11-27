@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <link rel="stylesheet" href="gp.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biblioteca</title>
+    <title>Biblioteca do grupo | TCCHAT</title>
+    <link rel="stylesheet" href="gp.css">
+    <link rel="stylesheet" href="gp-library.css">
 </head>
 <body>
     <div id="Geral">
-        <div id="lateral" style="height: 100vh;">
+        <aside id="lateral">
             <div id="lateral-superior">
                 <div><h2 style="margin-top: 2px;">T<span>CCHAT</span></h2></div>
                 <div id="Logo-de-aluno">ALUNO</div>
@@ -23,71 +24,145 @@
             <div id="sistema"><button onclick="window.location.href = '/pages/Aluno/Configuracoes/Config.html'" id="configuracao">Configurações</button></div>
             <div class="lateral-inferior">
                 <div class="Usuario">
-                    <div id="foto"><span style="margin: 0px;color: #e4e9f4;"></span></div>
+                    <div id="foto"><span style="margin: 0; color: #e4e9f4;"></span></div>
                     <div id="NomeUC">
-                        <h4 style="margin: 0; color: #e4e9f4; width: 100px;"></h4> 
-                        <h5 style="height: 20px; margin: 0px; color: hsl(210,82%,58%); font-size: medium; width: 80px;"></h5> 
+                        <h4 style="margin: 0; color: #e4e9f4; width: 100px;"></h4>
+                        <h5 style="height: 20px; margin: 0; color: hsl(210,82%,58%); font-size: medium; width: 80px;"></h5>
                     </div>
                     <p id="voltar" onclick="window.location.href = '/pages/Auth/Login/Log-aluno.html'">X</p>
                 </div>
             </div>
-        </div>
+        </aside>
 
-        <div id="conteudo">
+        <main id="conteudo">
             <div id="conteudo-superior">
-                <h1>Meu <span>Grupo</span></h1><p>Carregando grupo...</p>
+                <h1>Meu <span>Grupo</span></h1>
+                <p>Carregando grupo...</p>
             </div>
             <div id="linha"></div>
-            
-            <div id="navbar">
+            <nav id="navbar" aria-label="Seções do grupo">
                 <button class="navbtn" onclick="window.location.href = '/pages/Aluno/Grupos/gp.chat.html'">Chat do Grupo</button>
                 <button class="navbtn" onclick="window.location.href = '/pages/Aluno/Grupos/gp-cha-ori.html'">Chat c/Orientador</button>
                 <button class="navbtn" onclick="window.location.href = '/pages/Aluno/Grupos/gp.ativ.html'">Atividades</button>
-                <button class="navbtn" onclick="window.location.href = '/pages/Aluno/Grupos/gp.link.html'" style="background-color:rgba(236, 60, 60, 0.16); color: rgb(236, 60, 60);">Biblioteca</button>
-            </div>
-            
-            <h6 style="font-size: 32px; margin: 20px 0;">Links por <strong style="color: #ec3c3c;">Curso</strong></h6>
-            <div id="blocao">
-                <div id="bloco-l"><h1>Figma</h1><p>DS - Programação</p></div>
-                <div id="bloco-l"><h1>Draw.io</h1><p>DS - Diagramas</p></div>
-                <div id="bloco-l"><h1>Canva</h1><p>Apresentações</p></div>
-                <div id="bloco-l"><h1>Trello</h1><p>Gestão de Tarefa</p></div>
-            </div>
+                <button class="navbtn" aria-current="page" style="background-color:rgba(236, 60, 60, 0.16); color: rgb(236, 60, 60);">Biblioteca</button>
+            </nav>
 
-            <div id="blocao" style="margin-top: 15px;">
-                <div id="bloco-l"><h1>Github</h1><p>Repositório código</p></div>
-                <div id="bloco-l"><h1>Notion</h1><p>Documentação</p></div>
-                <div id="bloco-l"><h1>Forms</h1><p>Questionário</p></div>
-            </div>
-
-            <h6 style="font-size: 32px; margin: 20px 0;">Links por Etapa do <strong style="color: #ec3c3c;">TCC</strong></h6>
-            <div id="blocao">
-                <div id="bloco-l"><h1>Template Pré-Projeto</h1><p>Etapa 1</p></div>
-                <div id="bloco-l"><h1>Normas</h1><p>Do Projeto</p></div>
-                <div id="bloco-l"><h1>Modelo de Apresentação</h1><p>Para os slides</p></div>
-                <div id="bloco-l"><h1>Checklist de Entrega</h1><p>Todas as Etapas</p></div>
-            </div>
-
-            <h6 style="font-size: 32px; margin: 20px 0;">Arquivos do <strong style="color: #ec3c3c;">Grupo</strong></h6>
-
-            <div id="arquivos">
-                <h2>Adicionar link do projeto</h2>
-                <p>Nenhum link cadastrado para esta turma ou grupo.</p>
-                <form onsubmit="event.preventDefault();">
+            <section id="arquivos" class="biblioteca-grupo" aria-labelledby="titulo-biblioteca">
+                <header class="biblioteca-cabecalho">
                     <div>
-                        <label>Título</label>
-                        <input type="text" placeholder="Ex: Protótipo" required>
+                        <p class="biblioteca-sobretitulo">ESPAÇO DO GRUPO</p>
+                        <h2 id="titulo-biblioteca">Biblioteca do <span>grupo</span></h2>
+                        <p>Reúnam aqui links e arquivos do TCC, separados por categoria e com capas personalizadas.</p>
                     </div>
-                    <div>
-                        <label>URL</label>
-                        <input type="url" placeholder="https://..." required>
+                    <div class="biblioteca-acoes">
+                        <button class="botao-biblioteca botao-secundario" id="novo-link" type="button">+ Adicionar link</button>
+                        <button class="botao-biblioteca" id="novo-arquivo" type="button">+ Enviar arquivo</button>
                     </div>
-                    <button type="submit">Salvar link</button>
-                </form>
+                </header>
+
+                <p id="status-biblioteca-grupo" class="status-biblioteca-grupo" role="status" aria-live="polite"></p>
+                <div class="biblioteca-ferramentas">
+                    <label class="campo-busca" for="busca-biblioteca">
+                        <span aria-hidden="true">⌕</span>
+                        <input id="busca-biblioteca" type="search" placeholder="Buscar materiais do grupo" autocomplete="off">
+                    </label>
+                    <label class="filtro-biblioteca">Categoria
+                        <select id="filtro-categoria">
+                            <option value="todas">Todas</option>
+                            <option>Pesquisa</option>
+                            <option>Escrita</option>
+                            <option>Referências</option>
+                            <option>Normas</option>
+                            <option>Apresentação</option>
+                            <option>Outros</option>
+                        </select>
+                    </label>
+                    <label class="filtro-biblioteca">Organizar por
+                        <select id="ordem-biblioteca">
+                            <option value="recentes">Mais recentes</option>
+                            <option value="antigos">Mais antigos</option>
+                            <option value="nome">Nome A–Z</option>
+                        </select>
+                    </label>
+                    <p id="contador-biblioteca" class="contador-biblioteca">Carregando materiais...</p>
+                </div>
+
+                <div id="lista-biblioteca" class="biblioteca-grade" aria-live="polite"></div>
+
+                <section class="materiais-turma" aria-labelledby="titulo-materiais-turma">
+                    <div class="materiais-turma-cabecalho">
+                        <div>
+                            <p class="biblioteca-sobretitulo">COMPARTILHADOS COM A TURMA</p>
+                            <h3 id="titulo-materiais-turma">Materiais da coordenação e dos professores</h3>
+                        </div>
+                    </div>
+                    <div id="lista-recursos-turma" class="biblioteca-grade biblioteca-grade-turma" aria-live="polite">
+                        <p class="estado-vazio">Carregando materiais da turma...</p>
+                    </div>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <div id="modal-biblioteca-grupo" class="modal-biblioteca" hidden>
+        <div class="modal-biblioteca-caixa" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-biblioteca">
+            <div class="modal-biblioteca-topo">
+                <div>
+                    <p class="biblioteca-sobretitulo">NOVO MATERIAL</p>
+                    <h2 id="titulo-modal-biblioteca">Adicionar à biblioteca</h2>
+                </div>
+                <button type="button" class="fechar-modal-biblioteca" id="fechar-modal-biblioteca" aria-label="Fechar">×</button>
             </div>
-            
+            <form id="form-biblioteca-grupo">
+                <fieldset class="tipo-material">
+                    <legend>O que deseja adicionar?</legend>
+                    <label><input type="radio" name="tipo-material" value="link" checked> Link</label>
+                    <label><input type="radio" name="tipo-material" value="arquivo"> Arquivo ou modelo</label>
+                </fieldset>
+
+                <label class="campo-modal" for="nome-material">Título *</label>
+                <input id="nome-material" name="nome" type="text" maxlength="120" required placeholder="Ex.: Referencial teórico do grupo">
+
+                <label class="campo-modal" for="categoria-material">Categoria *</label>
+                <select id="categoria-material" name="categoria" required>
+                    <option value="Pesquisa">Pesquisa</option>
+                    <option value="Escrita">Escrita</option>
+                    <option value="Referências">Referências</option>
+                    <option value="Normas">Normas</option>
+                    <option value="Apresentação">Apresentação</option>
+                    <option value="Outros">Outros</option>
+                </select>
+
+                <label class="campo-modal" for="descricao-material">Observação (opcional)</label>
+                <textarea id="descricao-material" name="descricao" maxlength="500" rows="3" placeholder="Contexto ou nota para o grupo"></textarea>
+
+                <div id="campos-link-grupo">
+                    <label class="campo-modal" for="url-material">Endereço do link *</label>
+                    <input id="url-material" name="url" type="url" placeholder="https://exemplo.com">
+                </div>
+                <div id="campos-arquivo-grupo" hidden>
+                    <label class="campo-modal" for="arquivo-material">Arquivo *</label>
+                    <input id="arquivo-material" name="arquivo" type="file" accept=".pdf,.doc,.docx,.odt,.zip,.png,.jpg,.jpeg">
+                    <small>PDF, DOC, DOCX, ODT, ZIP, PNG ou JPG · máximo 25 MB</small>
+                </div>
+
+                <div class="campo-capa">
+                    <label class="campo-modal" for="capa-material">Capa personalizada (opcional)</label>
+                    <input id="capa-material" name="capa" type="file" accept=".png,.jpg,.jpeg,image/png,image/jpeg">
+                    <small>Imagem PNG ou JPG · máximo 5 MB. Se não escolher, usamos uma capa do TCCHAT.</small>
+                </div>
+
+                <p id="status-item-biblioteca" class="status-item-biblioteca" role="status" aria-live="polite"></p>
+                <div class="modal-biblioteca-acoes">
+                    <button type="button" class="botao-biblioteca botao-secundario" id="cancelar-modal-biblioteca">Cancelar</button>
+                    <button type="submit" class="botao-biblioteca" id="salvar-material">Adicionar material</button>
+                </div>
+            </form>
         </div>
     </div>
+
+    <script type="module" src="../navegacao.js"></script>
+    <script type="module" src="gp.js"></script>
+    <script type="module" src="../user.info.js"></script>
 </body>
-<script type="module" src="../navegacao.js"></script>
 </html>

@@ -1,0 +1,183 @@
+/* Biblioteca própria do grupo: cartões com capa, filtros e formulário responsivo. */
+#Grupo-btn {
+    background: var(--cor-vermelho-transparente) !important;
+    color: var(--cor-branco) !important;
+    font-weight: bold !important;
+}
+
+#conteudo #navbar [aria-current="page"] {
+    background-color: rgba(236, 60, 60, 0.16) !important;
+    color: var(--cor-vermelho) !important;
+}
+
+.biblioteca-grupo { width: 100%; padding-bottom: 36px; }
+#arquivos.biblioteca-grupo {
+    display: block;
+    width: 100%;
+    max-width: none;
+    min-height: 0;
+    height: auto;
+    margin-top: 0;
+    padding: 0 0 36px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+}
+.biblioteca-cabecalho, .materiais-turma-cabecalho {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin: 8px 0 22px;
+}
+.biblioteca-cabecalho h2, .materiais-turma h3 {
+    margin: 3px 0 8px;
+    color: var(--cor-texto);
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-weight: 400;
+    letter-spacing: .2px;
+}
+.biblioteca-cabecalho h2 { font-size: clamp(28px, 3vw, 38px); }
+.biblioteca-cabecalho h2 span { color: var(--cor-vermelho); }
+.biblioteca-cabecalho > div:first-child > p:last-child {
+    max-width: 660px;
+    color: var(--cor-texto-secundario);
+    line-height: 1.55;
+    margin: 0;
+}
+.biblioteca-sobretitulo {
+    margin: 0;
+    color: var(--cor-vermelho);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.7px;
+}
+.biblioteca-acoes { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
+.botao-biblioteca {
+    min-height: 44px;
+    padding: 0 18px;
+    border: 1px solid var(--cor-vermelho);
+    border-radius: 9px;
+    background: var(--cor-vermelho);
+    color: #fff;
+    font: 700 14px Arial, sans-serif;
+    cursor: pointer;
+    transition: transform .18s ease, background .18s ease, border-color .18s ease;
+}
+.botao-biblioteca:hover { background: #d13232; border-color: #d13232; transform: translateY(-1px); }
+.botao-biblioteca:disabled { opacity: .65; cursor: wait; transform: none; }
+.botao-biblioteca.botao-secundario { background: var(--cor-fundo-secundario); color: var(--cor-texto); border-color: var(--cor-borda); }
+.botao-biblioteca.botao-secundario:hover { border-color: var(--cor-vermelho); background: var(--cor-fundo-hover); }
+.status-biblioteca-grupo { min-height: 1.35em; margin: 0 0 10px; color: var(--cor-texto-secundario); }
+.status-biblioteca-grupo.erro, .status-item-biblioteca.erro { color: #ff8181; }
+
+.biblioteca-ferramentas {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 16px 0 20px;
+    padding: 14px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 12px;
+    background: var(--cor-fundo-secundario);
+}
+.campo-busca {
+    flex: 1 1 230px;
+    min-width: 190px;
+    min-height: 43px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px;
+    background: var(--cor-fundo-principal);
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    color: var(--cor-texto-secundario);
+}
+.campo-busca span { font-size: 24px; line-height: 1; }
+.campo-busca input { min-width: 0; width: 100%; border: 0; outline: 0; background: transparent; color: var(--cor-texto); font: 14px Arial, sans-serif; }
+.filtro-biblioteca { display: grid; gap: 5px; color: var(--cor-texto-secundario); font: 600 12px Arial, sans-serif; }
+.filtro-biblioteca select, .campo-modal + input, .campo-modal + select, .campo-modal + textarea,
+#campos-link-grupo input, #campos-arquivo-grupo input, .campo-capa input {
+    min-height: 42px;
+    padding: 9px 11px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    outline: 0;
+    background: var(--cor-fundo-principal);
+    color: var(--cor-texto);
+    font: 14px Arial, sans-serif;
+}
+.filtro-biblioteca select:focus, .campo-modal + input:focus, .campo-modal + select:focus, .campo-modal + textarea:focus, #campos-link-grupo input:focus { border-color: var(--cor-vermelho); }
+.contador-biblioteca { flex: 0 0 100%; margin: 0; color: var(--cor-texto-fraco); font: 12px Arial, sans-serif; }
+
+.biblioteca-grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 245px), 1fr)); gap: 16px; }
+.cartao-material {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--cor-borda);
+    border-radius: 13px;
+    background: var(--cor-fundo-secundario);
+    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+.cartao-material:hover { transform: translateY(-3px); border-color: rgb(236 60 60 / 55%); box-shadow: 0 12px 30px rgb(0 0 0 / 18%); }
+.capa-material { position: relative; height: 146px; overflow: hidden; background: linear-gradient(135deg, #25151a, #111927 60%, #10141e); }
+.capa-material::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgb(8 11 18 / 40%), transparent 50%); pointer-events: none; }
+.capa-material img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.capa-fallback { position: absolute; inset: 0; display: grid; place-items: center; color: rgb(255 255 255 / 82%); font: 800 12px Arial, sans-serif; letter-spacing: 2px; text-transform: uppercase; }
+.conteudo-cartao-material { padding: 14px; }
+.etiquetas-material { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 9px; }
+.etiqueta-material { border-radius: 999px; padding: 5px 8px; background: rgb(236 60 60 / 13%); color: #ff8585; font: 700 10px Arial, sans-serif; }
+.etiqueta-material.tipo { background: rgb(255 255 255 / 6%); color: var(--cor-texto-secundario); }
+.conteudo-cartao-material h3 { margin: 0; color: var(--cor-texto); font: 700 16px/1.35 Arial, sans-serif; overflow-wrap: anywhere; }
+.descricao-material { margin: 8px 0 12px; color: var(--cor-texto-secundario); font: 13px/1.5 Arial, sans-serif; overflow-wrap: anywhere; }
+.rodape-cartao-material { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 10px; border-top: 1px solid var(--cor-borda); color: var(--cor-texto-fraco); font: 11px Arial, sans-serif; }
+.abrir-material { display: inline-flex; align-items: center; justify-content: center; min-height: 36px; margin-top: 12px; padding: 0 12px; border-radius: 7px; background: var(--cor-vermelho); color: white; text-decoration: none; font: 700 12px Arial, sans-serif; }
+.abrir-material:hover { background: #d13232; }
+.abrir-material[aria-disabled="true"] { pointer-events: none; opacity: .65; }
+.estado-vazio { grid-column: 1 / -1; margin: 0; padding: 22px; border: 1px dashed var(--cor-borda); border-radius: 11px; color: var(--cor-texto-secundario); text-align: center; line-height: 1.5; }
+.materiais-turma { margin-top: 44px; padding-top: 25px; border-top: 1px solid var(--cor-borda); }
+.materiais-turma h3 { font-size: 23px; }
+.biblioteca-grade-turma .capa-material { height: 105px; }
+
+.modal-biblioteca[hidden] { display: none !important; }
+.modal-biblioteca { position: fixed; z-index: 1000; inset: 0; display: flex; align-items: center; justify-content: center; padding: 18px; overflow-y: auto; background: rgb(0 0 0 / 72%); }
+.modal-biblioteca-caixa { width: min(100%, 600px); max-height: min(92vh, 900px); overflow-y: auto; padding: 24px; border: 1px solid var(--cor-borda); border-radius: 16px; background: #0c1018; box-shadow: 0 25px 80px rgb(0 0 0 / 45%); }
+.modal-biblioteca-topo { display: flex; align-items: flex-start; justify-content: space-between; gap: 15px; margin-bottom: 18px; }
+.modal-biblioteca-topo h2 { margin: 5px 0 0; color: var(--cor-texto); font-size: 24px; }
+.fechar-modal-biblioteca { width: 36px; height: 36px; border: 1px solid var(--cor-borda); border-radius: 9px; background: transparent; color: var(--cor-texto); font-size: 24px; cursor: pointer; }
+.fechar-modal-biblioteca:hover { border-color: var(--cor-vermelho); }
+.tipo-material { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 17px; padding: 12px; border: 1px solid var(--cor-borda); border-radius: 10px; }
+.tipo-material legend { padding: 0 6px; color: var(--cor-texto-secundario); font: 600 12px Arial, sans-serif; }
+.tipo-material label { display: inline-flex; align-items: center; gap: 7px; color: var(--cor-texto); font: 13px Arial, sans-serif; }
+.tipo-material input { accent-color: var(--cor-vermelho); }
+#form-biblioteca-grupo { display: grid; gap: 8px; }
+.campo-modal { margin-top: 6px; color: var(--cor-texto-secundario); font: 600 13px Arial, sans-serif; }
+#form-biblioteca-grupo input[type="text"], #form-biblioteca-grupo input[type="url"], #form-biblioteca-grupo select, #form-biblioteca-grupo textarea,
+#form-biblioteca-grupo input[type="file"] { width: 100%; }
+#form-biblioteca-grupo textarea { resize: vertical; }
+#form-biblioteca-grupo small { display: block; color: var(--cor-texto-fraco); font: 12px/1.5 Arial, sans-serif; }
+.campo-capa { display: grid; gap: 7px; margin-top: 8px; padding: 13px; border: 1px dashed var(--cor-borda); border-radius: 10px; }
+.status-item-biblioteca { min-height: 1.4em; margin: 3px 0 0; color: var(--cor-texto-secundario); font: 13px/1.4 Arial, sans-serif; }
+.modal-biblioteca-acoes { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 9px; margin-top: 7px; }
+
+@media (max-width: 850px) {
+    body { height: auto; min-height: 100vh; width: 100%; overflow: auto; }
+    #Geral { height: auto; min-height: 100vh; width: 100%; flex-direction: column; }
+    #lateral { width: 100%; height: auto !important; min-height: 0; border-right: 0; border-bottom: 1px solid var(--cor-borda); }
+    .VGABF { flex-direction: row; flex-wrap: wrap; gap: 4px; }
+    .VGABF div { width: auto; }
+    .VGABF div button { width: auto; height: 40px; }
+    #conteudo { height: auto; min-height: 70vh; padding: 22px 18px; overflow: visible; }
+    .biblioteca-cabecalho { align-items: flex-start; flex-direction: column; }
+    .biblioteca-acoes { justify-content: flex-start; }
+}
+@media (max-width: 520px) {
+    .biblioteca-ferramentas { align-items: stretch; }
+    .campo-busca, .filtro-biblioteca { flex: 1 1 100%; }
+    .filtro-biblioteca select { width: 100%; }
+    .botao-biblioteca { flex: 1 1 auto; }
+    .modal-biblioteca { align-items: flex-end; padding: 8px; }
+    .modal-biblioteca-caixa { max-height: 94vh; padding: 18px; border-radius: 16px 16px 10px 10px; }
+}

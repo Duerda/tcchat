@@ -177,90 +177,336 @@ function montarAtividades() {
 }
 
 function montarBiblioteca() {
-  const area = $("arquivos");
-  if (!area) return;
-  area.replaceChildren();
-  const form = document.createElement("form");
-  form.className = "link-form";
-  form.innerHTML = '<h2>Adicionar link do projeto</h2><label>Título<input name="titulo" required maxlength="100"></label><label>URL<input name="url" type="url" placeholder="https://..." required></label><button type="submit">Salvar link</button><p role="status"></p>';
-  const list = document.createElement("div");
-  list.id = "lista-links";
-  area.append(form, list);
-  let groupLinks = [];
-  let sharedLinks = [];
-  let libraryRenderVersion = 0;
-  const renderLinks = async () => {
-    const renderVersion = ++libraryRenderVersion;
-    list.replaceChildren();
-    const links = [...sharedLinks, ...groupLinks].filter((item) => item.url || item.arquivoPath);
-    if (!links.length) {
-      list.textContent = "Nenhum link cadastrado para esta turma ou grupo.";
-      return;
-    }
-    for (const item of links) {
-      const card = document.createElement("article");
-      const link = document.createElement("a");
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      link.textContent = item.arquivoPath ? `Preparando arquivo: ${item.arquivoNome || item.nome || "arquivo"}` : item.nome || "Recurso do projeto";
-      if (item.arquivoPath) {
-        try {
-          const { data, error } = await supabase.storage.from(SUPABASE_STORAGE_BUCKET).createSignedUrl(item.arquivoPath, 60 * 60);
-          if (error) throw error;
-          link.href = data.signedUrl;
-          link.textContent = item.arquivoNome || item.nome || "Abrir arquivo";
-        } catch (error) {
-          console.error("Não foi possível abrir o arquivo da biblioteca:", error);
-          link.textContent = `${item.arquivoNome || item.nome || "Arquivo"} (indisponível)`;
-        }
-      } else {
-        link.href = item.url;
+  const form = $("form-biblioteca-grupo");
+  const modal = $("modal-biblioteca-grupo");
+  const groupList = $("lista-biblioteca");
+  const classList = $("lista-recursos-turma");
+  const pageStatus = $("status-biblioteca-grupo");
+  const categoryFilter = $("filtro-categoria");
+  const orderFilter = $("ordem-biblioteca");
+  const searchInput = $("busca-biblioteca");
+  const counter = $("contador-biblioteca");
+  if (!form || !modal || !groupList) return;
+
+  let groupResources = [];
+  let classResources = [];
+  let renderVersion = 0;
+
+  const showStatus = (element, message, isError = false) => {
+    if (!element) return;
+    element.textContent = message;
+    element.classList.toggle("erro", isError);
+  };
+
+  const setResourceType = (type) => {
+    const isLink = type === "link";
+    $("campos-link-grupo").hidden = !isLink;
+    $("campos-arquivo-grupo").hidden = isLink;
+    $("url-material").required = isLink;
+    $("arquivo-material").required = !isLink;
+  };
+
+  const openModal = (type) => {
+    form.reset();
+    showStatus($("status-item-biblioteca"), "");
+    const radio = form.querySelector(`input[name="tipo-material"][value="${type}"]`);
+    if (radio) radio.checked = true;
+    setResourceType(type);
+    modal.hidden = false;
+    $("nome-material").focus();
+  };
+
+  const closeModal = () => {
+    modal.hidden = true;
+    showStatus($("status-item-biblioteca"), "");
+  };
+
+  $("novo-link")?.addEventListener("click", () => openModal("link"));
+  $("novo-arquivo")?.addEventListener("click", () => openModal("arquivo"));
+  $("cancelar-modal-biblioteca")?.addEventListener("click", closeModal);
+  $("fechar-modal-biblioteca")?.addEventListener("click", closeModal);
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal) closeModal();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !modal.hidden) closeModal();
+  });
+  form.querySelectorAll('input[name="tipo-material"]').forEach((radio) => {
+    radio.addEventListener("change", () => setResourceType(radio.value));
+  });
+
+  const timestampValue = (timestamp) => timestamp?.toMillis?.()
+    || (timestamp?.seconds ? timestamp.seconds * 1000 : 0)
+    || (timestamp ? Date.parse(timestamp) || 0 : 0);
+
+  const getFilteredResources = () => {
+    const search = searchInput?.value.trim().toLocaleLowerCase("pt-BR") || "";
+    const category = categoryFilter?.value || "todas";
+    const resources = groupResources.filter((item) => {
+      const matchesCategory = category === "todas" || (item.categoria || "Outros") === category;
+      const searchable = [item.nome, item.descricao, item.categoria, item.arquivoNome]
+        .filter(Boolean).join(" ").toLocaleLowerCase("pt-BR");
+      return matchesCategory && (!search || searchable.includes(search));
+    });
+    const order = orderFilter?.value || "recentes";
+    resources.sort((a, b) => {
+      if (order === "nome") return (a.nome || "").localeCompare(b.nome || "", "pt-BR", { sensitivity: "base" });
+      const difference = timestampValue(a.criadoEm) - timestampValue(b.criadoEm);
+      return order === "antigos" ? difference : -difference;
+    });
+    return resources;
+  };
+
+  const buildCard = async (item, shared, version) => {
+    const card = document.createElement("article");
+    card.className = "cartao-material";
+    const cover = document.createElement("div");
+    cover.className = "capa-material";
+    const fallback = document.createElement("span");
+    fallback.className = "capa-fallback";
+    fallback.textContent = item.categoria || (shared ? "Turma" : "TCC");
+    cover.appendChild(fallback);
+
+    if (item.capaPath) {
+      try {
+        const { data, error } = await supabase.storage.from(SUPABASE_STORAGE_BUCKET)
+          .createSignedUrl(item.capaPath, 60 * 60);
+        if (error) throw error;
+        const image = document.createElement("img");
+        image.src = data.signedUrl;
+        image.alt = "";
+        image.loading = "lazy";
+        image.onerror = () => image.remove();
+        cover.prepend(image);
+      } catch (error) {
+        console.error("Não foi possível preparar a capa da biblioteca:", error);
       }
-      if (renderVersion !== libraryRenderVersion) return;
-      const source = document.createElement("small");
-      source.textContent = `${item.tipo === "arquivo" || item.arquivoPath ? "Arquivo ou modelo" : "Link"} · ${item.compartilhado ? "Recurso compartilhado pela turma" : "Recurso do grupo"}`;
-      card.append(link, source);
-      list.appendChild(card);
+    }
+
+    const content = document.createElement("div");
+    content.className = "conteudo-cartao-material";
+    const labels = document.createElement("div");
+    labels.className = "etiquetas-material";
+    const category = document.createElement("span");
+    category.className = "etiqueta-material";
+    category.textContent = shared ? "Material da turma" : (item.categoria || "Outros");
+    const type = document.createElement("span");
+    type.className = "etiqueta-material tipo";
+    type.textContent = item.arquivoPath || item.tipo === "arquivo" ? "Arquivo" : "Link";
+    labels.append(category, type);
+
+    const title = document.createElement("h3");
+    title.textContent = item.nome || item.arquivoNome || "Material do grupo";
+    content.append(labels, title);
+    if (item.descricao) {
+      const description = document.createElement("p");
+      description.className = "descricao-material";
+      description.textContent = item.descricao;
+      content.appendChild(description);
+    }
+
+    const footer = document.createElement("div");
+    footer.className = "rodape-cartao-material";
+    const author = document.createElement("span");
+    author.textContent = shared ? (item.autorNome || "Coordenação ou professor") : (item.autorNome || "Integrante do grupo");
+    const date = document.createElement("time");
+    const createdAt = timestampValue(item.criadoEm);
+    if (createdAt) date.dateTime = new Date(createdAt).toISOString();
+    date.textContent = createdAt ? new Date(createdAt).toLocaleDateString("pt-BR") : "Agora há pouco";
+    footer.append(author, date);
+
+    const open = document.createElement("a");
+    open.className = "abrir-material";
+    open.target = "_blank";
+    open.rel = "noopener noreferrer";
+    open.textContent = item.arquivoPath ? "Abrir arquivo" : "Acessar link";
+    open.setAttribute("aria-disabled", "true");
+    if (item.arquivoPath) {
+      try {
+        const { data, error } = await supabase.storage.from(SUPABASE_STORAGE_BUCKET)
+          .createSignedUrl(item.arquivoPath, 60 * 60);
+        if (error) throw error;
+        open.href = data.signedUrl;
+        open.removeAttribute("aria-disabled");
+      } catch (error) {
+        console.error("Não foi possível abrir o arquivo da biblioteca:", error);
+        open.textContent = "Arquivo indisponível";
+      }
+    } else if (item.url) {
+      try {
+        const safeUrl = new URL(item.url);
+        if (!["http:", "https:"].includes(safeUrl.protocol)) throw new Error("Protocolo não permitido");
+        open.href = safeUrl.href;
+        open.removeAttribute("aria-disabled");
+      } catch {
+        open.textContent = "Link indisponível";
+      }
+    }
+    content.append(footer, open);
+    card.append(cover, content);
+    return version === renderVersion ? card : null;
+  };
+
+  const renderResources = async () => {
+    const version = ++renderVersion;
+    const filtered = getFilteredResources();
+    groupList.replaceChildren();
+    if (counter) counter.textContent = `${filtered.length} ${filtered.length === 1 ? "material" : "materiais"} do grupo`;
+    if (!filtered.length) {
+      const empty = document.createElement("p");
+      empty.className = "estado-vazio";
+      empty.textContent = groupResources.length
+        ? "Nenhum material corresponde à busca e à categoria selecionadas."
+        : "A biblioteca do grupo está vazia. Adicionem o primeiro link ou arquivo do TCC.";
+      groupList.appendChild(empty);
+    }
+    for (const item of filtered) {
+      const card = await buildCard(item, false, version);
+      if (version !== renderVersion) return;
+      if (card) groupList.appendChild(card);
+    }
+
+    if (classList) {
+      classList.replaceChildren();
+      if (!classResources.length) {
+        const empty = document.createElement("p");
+        empty.className = "estado-vazio";
+        empty.textContent = "Ainda não há materiais compartilhados pela coordenação ou pelos professores da turma.";
+        classList.appendChild(empty);
+      }
+      for (const item of classResources) {
+        const card = await buildCard(item, true, version);
+        if (version !== renderVersion) return;
+        if (card) classList.appendChild(card);
+      }
     }
   };
+
+  searchInput?.addEventListener("input", renderResources);
+  categoryFilter?.addEventListener("change", renderResources);
+  orderFilter?.addEventListener("change", renderResources);
+
   const filesRef = collection(db, "grupos", group.id, "arquivos");
   stopListener?.();
   stopListener = onSnapshot(filesRef, (snapshot) => {
-    groupLinks = snapshot.docs.map((item) => item.data()).filter((item) => item.url);
-    renderLinks();
+    groupResources = snapshot.docs.map((item) => item.data())
+      .filter((item) => item.url || item.arquivoPath);
+    renderResources();
   }, (error) => {
-    console.error("Erro ao carregar Biblioteca:", error);
-    list.textContent = "Não foi possível carregar a Biblioteca.";
+    console.error("Erro ao carregar a biblioteca do grupo:", error);
+    showStatus(pageStatus, "Não foi possível carregar a biblioteca do grupo.", true);
+    groupList.textContent = "Verifique sua conexão e tente atualizar a página.";
   });
-  // Professores e coordenadores publicam materiais da turma na coleção
-  // compartilhada "biblioteca". Aqui, esses materiais são combinados aos links
-  // próprios do grupo para que a tela do aluno reúna as duas fontes descritas
-  // no manual como a biblioteca do projeto.
-  stopSharedLibrary?.();
-  stopSharedLibrary = onSnapshot(query(collection(db, "biblioteca"), where("codigoSala", "==", session.profile.codigoSala)), (snapshot) => {
-    sharedLinks = snapshot.docs.map((item) => ({ ...item.data(), compartilhado: true })).filter((item) => item.url || item.arquivoPath);
-    renderLinks();
-  }, (error) => {
-    console.error("Erro ao carregar recursos compartilhados:", error);
-  });
+
+  if (classList && session.profile.codigoSala) {
+    stopSharedLibrary?.();
+    stopSharedLibrary = onSnapshot(
+      query(collection(db, "biblioteca"), where("codigoSala", "==", session.profile.codigoSala)),
+      (snapshot) => {
+        classResources = snapshot.docs.map((item) => item.data())
+          .filter((item) => item.url || item.arquivoPath);
+        renderResources();
+      },
+      (error) => {
+        console.error("Erro ao carregar os materiais compartilhados da turma:", error);
+        classResources = [];
+        renderResources();
+      }
+    );
+  }
+
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
-    const title = form.elements.titulo.value.trim();
-    const url = form.elements.url.value.trim();
-    let parsedUrl;
-    try { parsedUrl = new URL(url); }
-    catch { form.querySelector('[role="status"]').textContent = "Informe uma URL válida."; return; }
-    if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
-      form.querySelector('[role="status"]').textContent = "Use um link HTTP ou HTTPS.";
-      return;
+    const status = $("status-item-biblioteca");
+    const submit = $("salvar-material");
+    const type = form.querySelector('input[name="tipo-material"]:checked')?.value;
+    const name = $("nome-material").value.trim();
+    const description = $("descricao-material").value.trim();
+    const category = $("categoria-material").value;
+    const file = $("arquivo-material").files?.[0];
+    const coverFile = $("capa-material").files?.[0];
+    if (!name) return showStatus(status, "Informe um título para o material.", true);
+    if (type === "arquivo" && !file) return showStatus(status, "Escolha o arquivo que deseja enviar.", true);
+    if (file && file.size > TAMANHO_MAXIMO_ARQUIVO) return showStatus(status, "O arquivo ultrapassa o limite de 25 MB.", true);
+    if (coverFile && coverFile.size > 5 * 1024 * 1024) return showStatus(status, "A capa ultrapassa o limite de 5 MB.", true);
+    if (coverFile && !["image/png", "image/jpeg"].includes(coverFile.type)) {
+      return showStatus(status, "A capa precisa estar no formato PNG ou JPG.", true);
     }
+
+    let parsedUrl = "";
+    if (type === "link") {
+      try {
+        const value = new URL($("url-material").value.trim());
+        if (!["http:", "https:"].includes(value.protocol)) throw new Error("Use um endereço HTTP ou HTTPS.");
+        parsedUrl = value.href;
+      } catch (error) {
+        return showStatus(status, error.message || "Informe um link válido iniciado por http:// ou https://.", true);
+      }
+    }
+
+    if (submit?.disabled) return;
+    if (submit) { submit.disabled = true; submit.textContent = "Salvando…"; }
+    showStatus(status, "Enviando material para a biblioteca do grupo…");
+    const uploadedPaths = [];
     try {
-      await addDoc(filesRef, { nome: title, url: parsedUrl.href, uid: session.user.uid, autorNome: session.profile.nome || "Aluno", criadoEm: serverTimestamp() });
+      const resource = {
+        nome: name,
+        descricao: description,
+        categoria,
+        tipo,
+        url: parsedUrl,
+        uid: session.user.uid,
+        autorNome: session.profile.nome || "Aluno",
+        criadoEm: serverTimestamp(),
+      };
+      const safeFileName = (value) => value.normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-zA-Z0-9._-]/g, "_")
+        .slice(-120) || "material";
+
+      if (type === "arquivo") {
+        const extension = file.name.match(/\.[^.]+$/)?.[0]?.toLowerCase() || "";
+        const contentType = TIPOS_ARQUIVO.get(extension);
+        if (!contentType) throw new Error("Formato não permitido. Use PDF, DOC, DOCX, ODT, ZIP, PNG ou JPG.");
+        const path = `${session.user.uid}/biblioteca/${group.id}/arquivos/${crypto.randomUUID()}-${safeFileName(file.name)}`;
+        const { error } = await supabase.storage.from(SUPABASE_STORAGE_BUCKET)
+          .upload(path, file, { contentType, upsert: false });
+        if (error) throw error;
+        uploadedPaths.push(path);
+        resource.arquivoPath = path;
+        resource.arquivoNome = file.name;
+        resource.contentType = contentType;
+      }
+
+      if (coverFile) {
+        const extension = coverFile.type === "image/png" ? ".png" : ".jpg";
+        const path = `${session.user.uid}/biblioteca/${group.id}/capas/${crypto.randomUUID()}-${safeFileName(coverFile.name || `capa${extension}`)}`;
+        const { error } = await supabase.storage.from(SUPABASE_STORAGE_BUCKET)
+          .upload(path, coverFile, { contentType: coverFile.type, upsert: false });
+        if (error) throw error;
+        uploadedPaths.push(path);
+        resource.capaPath = path;
+        resource.capaNome = coverFile.name;
+      }
+
+      await addDoc(filesRef, resource);
+      uploadedPaths.length = 0;
       form.reset();
-      form.querySelector('[role="status"]').textContent = "Link salvo na Biblioteca.";
+      closeModal();
+      showStatus(pageStatus, "Material adicionado à biblioteca do grupo.");
     } catch (error) {
-      console.error("Erro ao salvar link:", error);
-      form.querySelector('[role="status"]').textContent = "Não foi possível salvar o link.";
+      console.error("Não foi possível adicionar o material à biblioteca do grupo:", error);
+      if (uploadedPaths.length) {
+        try {
+          const { error: cleanupError } = await supabase.storage.from(SUPABASE_STORAGE_BUCKET).remove(uploadedPaths);
+          if (cleanupError) console.error("Não foi possível remover uploads incompletos:", cleanupError);
+        } catch (cleanupError) {
+          console.error("Não foi possível remover uploads incompletos:", cleanupError);
+        }
+      }
+      showStatus(status, error.message || "Não foi possível salvar o material. Confira a conexão e o Supabase Storage.", true);
+    } finally {
+      if (submit) { submit.disabled = false; submit.textContent = "Adicionar material"; }
     }
   });
 }

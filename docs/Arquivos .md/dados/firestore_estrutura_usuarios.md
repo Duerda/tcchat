@@ -25,10 +25,10 @@ Subcoleções usadas pelo sistema:
 | `grupos/{grupoId}/mensagens/{id}` | Chat; inclui `uid`, `autor`, `chatTipo`, `texto` e `criadoEm` quando gravado pelo aluno. |
 | `grupos/{grupoId}/entregas/{atividadeId}` | Atividades publicadas; inclui `uid`, `tipo: "atividade"`, `titulo` e, conforme a tela, `descricao` e `dataLimite`. |
 | `grupos/{grupoId}/submissoes/{id}` | Entregas de alunos; inclui `atividadeId`, `alunoUid`, `alunoNome`, `observacao`, `arquivoNome`, `arquivoPath`, `enviadoAtrasado` e `enviadoEm`. |
-| `grupos/{grupoId}/arquivos/{id}` | Arquivos/links associados ao grupo; inclui `uid`, `nome` e `url`. |
+| `grupos/{grupoId}/arquivos/{id}` | Biblioteca própria dos alunos do grupo; inclui `uid`, `nome`, `tipo`, `url`, `categoria`, `descricao` e `criadoEm`; arquivos e capas usam `arquivoPath` e `capaPath` no Supabase Storage. |
 | `grupos/{grupoId}/anotacoes/{id}` | Anotações de professores, com `uid`, `autor` e `texto`. |
 
-O binário das submissões novas fica no bucket privado Supabase `tcchat-arquivos`; o Firestore guarda o caminho e metadados. O guia de configuração está em [`supabase_upload_demo.md`](../demonstracao/supabase_upload_demo.md).
+Os binários das submissões, arquivos da biblioteca do grupo e capas ficam no bucket privado Supabase `tcchat-arquivos`; o Firestore guarda caminhos e metadados. O guia de configuração está em [`supabase_upload_demo.md`](../demonstracao/supabase_upload_demo.md).
 
 ### `avisos/{id}`
 
