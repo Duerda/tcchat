@@ -304,6 +304,8 @@ h1 {
 }
 
 .excluir {
+    background: transparent;
+    border: none;
     color: var(--cor-vermelho-claro);
     margin-left: auto;
     margin-right: 15px;

@@ -250,7 +250,7 @@ h2 {font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; le
 
 /* Caixa de membros */
 .GT-int {
-    background-color: var(--cinza-escuro) !important;
+    background-color: none !important;
     border-radius: 8px !important;
     padding: 15px !important;
     margin: 0 20px 20px 20px !important;
@@ -263,7 +263,7 @@ h2 {font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; le
     border: none !important;
     height: 2px !important;
     background-color: var(--vermelho) !important;
-    width: 100% !important;
+    width: 0% !important;
     margin: 0 0 12px 0 !important;
     display: block !important;
 }

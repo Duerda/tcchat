@@ -205,7 +205,6 @@ function renderAba(aba) {
     if (aba === "anotacoes") {
         painel.innerHTML = `
             <p class="anotacoes-info">Anotações visíveis apenas para os professores e o coordenador do curso.</p>
-            <div id="listaAnotacoes" class="lista-anotacoes"></div>
             <div class="form-anotacao">
                 <h2>Salvar anotação</h2>
                 <textarea id="textoAnotacao" placeholder="Digite uma anotação sobre o grupo..."></textarea>
