@@ -48,6 +48,12 @@ function reportError(message, error) {
   console.error(message, error);
   alert(message);
 }
+function showListEmpty(container, message) {
+  const empty = document.createElement("p");
+  empty.className = "tc-list-empty";
+  empty.textContent = message;
+  container.replaceChildren(empty);
+}
 
 // A Biblioteca valida o acesso em seu próprio módulo. Evita duas validações
 // concorrentes da sessão ao abrir essa página.
@@ -933,7 +939,7 @@ function loadForum() {
     stopNotices?.();
     stopNotices = onSnapshot(classQuery("avisos"), (snapshot) => {
       notices.replaceChildren();
-      if (snapshot.empty) { notices.textContent = "Nenhum aviso publicado."; return; }
+      if (snapshot.empty) { showListEmpty(notices, "Nenhum aviso publicado."); return; }
       const publications = new Map();
       snapshot.docs.forEach((item) => {
         const notice = item.data();
@@ -943,9 +949,11 @@ function loadForum() {
         publication.docs.push(item);
         if (notice.codigoSala) publication.rooms.add(notice.codigoSala);
       });
-      publications.forEach(({ notice, docs, rooms }) => {
+      [...publications.values()]
+        .sort((a, b) => (b.notice.data?.toMillis?.() || 0) - (a.notice.data?.toMillis?.() || 0))
+        .forEach(({ notice, docs, rooms }) => {
         const card = document.createElement("article");
-        card.className = "Cards";
+        card.className = "Cards tc-list-card";
         card.innerHTML = `<div id="top-card"><div><h3>${safe(notice.titulo || "Aviso")}</h3><small>${safe([...rooms].join(", ") || "Turma não informada")} · ${safe(notice.autor || "Coordenador")} · ${safe(notice.data?.toDate?.().toLocaleDateString("pt-BR") || "Agora")}</small></div><button class="btn-tabela vermelho">Excluir</button></div><p>${safe(notice.conteudo || "")}</p>`;
         card.querySelector("button").addEventListener("click", async () => {
           if (!confirm("Excluir este aviso?")) return;
@@ -958,6 +966,9 @@ function loadForum() {
         });
         notices.appendChild(card);
       });
+    }, (error) => {
+      console.error("Não foi possível carregar avisos:", error);
+      showListEmpty(notices, "Não foi possível carregar os avisos.");
     });
   }
   populateNoticeRooms();
@@ -1032,11 +1043,13 @@ function loadDoubts() {
   stopDoubts?.();
   stopDoubts = onSnapshot(classQuery("duvidas"), (snapshot) => {
     list.replaceChildren();
-    if (snapshot.empty) { list.textContent = "Ainda não há dúvidas nesta turma."; return; }
-    snapshot.forEach((item) => {
+    if (snapshot.empty) { showListEmpty(list, "Ainda não há dúvidas nesta turma."); return; }
+    [...snapshot.docs]
+      .sort((a, b) => (b.data().data?.toMillis?.() || 0) - (a.data().data?.toMillis?.() || 0))
+      .forEach((item) => {
       const doubt = item.data();
       const card = document.createElement("article");
-      card.className = "Duvidas";
+      card.className = "Duvidas tc-list-card";
       const top = document.createElement("div");
       top.className = "duvida-cabecalho";
       const heading = document.createElement("h3");
@@ -1075,6 +1088,9 @@ function loadDoubts() {
       card.append(response, actions);
       list.appendChild(card);
     });
+  }, (error) => {
+    console.error("Não foi possível carregar dúvidas:", error);
+    showListEmpty(list, "Não foi possível carregar dúvidas nesta página.");
   });
 }
 

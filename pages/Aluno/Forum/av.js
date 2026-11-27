@@ -21,6 +21,7 @@ function escutarAvisos(codigoSala) {
       
       if (snapshot.empty) {
         const mensagem = document.createElement("p");
+        mensagem.className = "tc-list-empty";
         mensagem.textContent = "Não há avisos para sua turma no momento.";
         mensagem.style.color = "#a0aec0";
         mensagem.style.fontSize = "16px";
@@ -33,7 +34,7 @@ function escutarAvisos(codigoSala) {
       
       avisos.forEach((aviso) => {
         const card = document.createElement("div");
-        card.className = "quadro-aviso";
+        card.className = "quadro-aviso tc-list-card";
         const cabecalho = document.createElement("div");
         cabecalho.id = "q1";
         const autor = document.createElement("h1");

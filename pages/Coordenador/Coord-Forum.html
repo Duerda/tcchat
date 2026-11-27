@@ -2,6 +2,7 @@
 <html lang="pt-br">
 <head>
     <link rel="stylesheet" href="Coord-style.css">
+    <link rel="stylesheet" href="../shared/list-components.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coordenador - Fórum</title>
@@ -82,31 +83,5 @@
     </div>
 </div>
 <script type="module" src="Coord-script.js"></script>
-<script>
-    const fonteSalva = localStorage.getItem('fontePreferida');
-    if (fonteSalva) {
-        let styleTag = document.createElement('style');
-        styleTag.id = 'dynamic-font-style';
-        styleTag.innerHTML = `* { font-family: ${fonteSalva} !important; }`;
-        document.head.appendChild(styleTag);
-    }
-
-    const tamanhoSalvo = localStorage.getItem('tamanhoPreferido');
-    if (tamanhoSalvo && tamanhoSalvo != 16) {
-        let fator = tamanhoSalvo / 16;
-        setTimeout(() => {
-            document.querySelectorAll('*').forEach(el => {
-                if (['SCRIPT', 'STYLE', 'SVG', 'PATH'].includes(el.tagName)) return;
-                if (!el.dataset.originalFontSize) {
-                    el.dataset.originalFontSize = window.getComputedStyle(el).fontSize;
-                }
-                let tamanhoOriginal = parseFloat(el.dataset.originalFontSize);
-                if (tamanhoOriginal > 0) {
-                    el.style.fontSize = (tamanhoOriginal * fator) + 'px';
-                }
-            });
-        }, 100);
-    }
-</script>
 </body>
 </html>

@@ -39,6 +39,7 @@ function escutarDuvidas(codigoSala) {
     quadro.replaceChildren();
     if (snapshot.empty) {
       const vazio = document.createElement("p");
+      vazio.className = "tc-list-empty";
       vazio.textContent = "Ainda não há dúvidas publicadas nesta turma.";
       quadro.append(vazio);
       return;
@@ -46,6 +47,7 @@ function escutarDuvidas(codigoSala) {
     const duvidas = snapshot.docs.map((item) => item.data()).sort((a, b) => (b.data?.toMillis?.() || 0) - (a.data?.toMillis?.() || 0));
     duvidas.forEach((item) => {
       const card = document.createElement("article");
+      card.className = "tc-list-card aluno-duvida";
       const titulo = document.createElement("h2");
       titulo.textContent = item.titulo || "Dúvida";
       const autor = document.createElement("h3");

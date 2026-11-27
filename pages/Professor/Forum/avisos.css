@@ -244,7 +244,7 @@ h1 {
     display: flex;
     padding: 5px;
     margin-bottom: 25px;
-    width: 400px;
+    width: min(400px, 100%);
     border: 1px solid var(--cor-borda);
 }
 
@@ -258,19 +258,7 @@ h1 {
     font-weight: bold;
 }
 
-#Entrar {   
-    flex: 1;
-    height: 42px;
-    background: var(--cor-fundo-hover);
-    color: var(--cor-texto);
-    border-radius: 6px;
-    border: none;
-    font-size: 15px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-#Cadastrar {
+#EnCad button {
     flex: 1;
     height: 42px;
     background: transparent;
@@ -279,18 +267,18 @@ h1 {
     border: none;
     font-size: 15px;
     cursor: pointer;
-    transition: all 0.8s ;
-    transform: scale(1.00);
+    transition: background-color .2s ease, color .2s ease;
 }
 
- /*#Entrar:hover ele serve para quando o mouse passar por cima ele muda uma coisa que eu colocar aqui*/
-#Cadastrar:hover {
+#EnCad button.ativa {
     background: var(--cor-fundo-hover);
     color: var(--cor-texto);
-    /*transform serve para aumentar o botão quando passar o mouse por cima dele mais especificamente o scale*/
-    transform: scale(1.02);
-    /*transition Serve principalmente para suavizar meio que sendo tipo uma pequena animação*/
-    transition: all 0.8s;
+    font-weight: bold;
+}
+
+#EnCad button:not(.ativa):hover {
+    background: var(--cor-fundo-hover);
+    color: var(--cor-texto);
 }
 
 .Cards {

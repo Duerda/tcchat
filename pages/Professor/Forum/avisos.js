@@ -11,33 +11,51 @@ window.Biblioteca = () => navigate("../Biblioteca/Bib.html");
 window.Configuracoes = () => navigate("../Configuracoes/Config.html");
 window.VisaoGeral = () => navigate("../Index.html");
 
-const content = document.getElementById("conteudo");
 const createButton = document.getElementById("novo-aviso");
+const noticesPanel = document.getElementById("avisos-panel");
+const doubtsPanel = document.getElementById("duvidas-panel");
+const noticesTab = document.getElementById("Entrar");
+const doubtsTab = document.getElementById("Cadastrar");
 let user;
 let profile;
 let stopDoubts;
+let stopNotices;
 
-window.Cadastrar = async () => {
-  if (!content || !profileRooms(profile || {}).length) return;
-  content.querySelectorAll(".lista-duvidas-professor").forEach((node) => node.remove());
-  const list = document.createElement("section");
-  list.className = "lista-duvidas-professor";
-  list.innerHTML = "<h2>Dúvidas dos alunos</h2><p>As dúvidas pendentes da sua turma aparecem aqui.</p>";
-  content.appendChild(list);
-  stopDoubts?.();
+function setForumView(view) {
+  const showDoubts = view === "duvidas";
+  if (noticesPanel) noticesPanel.hidden = showDoubts;
+  if (doubtsPanel) doubtsPanel.hidden = !showDoubts;
+  noticesTab?.classList.toggle("ativa", !showDoubts);
+  doubtsTab?.classList.toggle("ativa", showDoubts);
+  noticesTab?.setAttribute("aria-selected", String(!showDoubts));
+  doubtsTab?.setAttribute("aria-selected", String(showDoubts));
+}
+
+window.Avisos = () => setForumView("avisos");
+window.Cadastrar = () => setForumView("duvidas");
+
+function watchDoubts() {
   const rooms = profileRooms(profile);
+  const list = document.getElementById("lista-duvidas-professor");
+  const status = document.getElementById("duvidas-status");
+  if (!list) return;
+  if (!rooms.length) {
+    if (status) status.textContent = "Nenhuma turma está associada ao seu perfil.";
+    return;
+  }
   const doubtsQuery = query(collection(db, "duvidas"), where("codigoSala", rooms.length === 1 ? "==" : "in", rooms.length === 1 ? rooms[0] : rooms));
   stopDoubts = onSnapshot(doubtsQuery, (snapshot) => {
-    list.querySelectorAll(".card-duvida").forEach((card) => card.remove());
+    list.replaceChildren();
     const questions = [...snapshot.docs].sort((a, b) => (b.data().data?.toMillis?.() || 0) - (a.data().data?.toMillis?.() || 0));
     if (!questions.length) {
-      list.querySelector("p").textContent = "Ainda não há dúvidas nesta turma.";
+      if (status) status.textContent = "Ainda não há dúvidas nesta turma.";
       return;
     }
+    if (status) status.textContent = "As dúvidas da sua turma aparecem aqui.";
     questions.forEach((item) => {
       const doubt = item.data();
       const card = document.createElement("article");
-      card.className = "card-aviso card-duvida";
+      card.className = "card-aviso card-duvida tc-list-card";
       const title = document.createElement("h3");
       title.textContent = doubt.titulo || doubt.pergunta || "Dúvida";
       const author = document.createElement("small");
@@ -79,14 +97,15 @@ window.Cadastrar = async () => {
     });
   }, (error) => {
     console.error("Não foi possível carregar dúvidas:", error);
-    list.querySelector("p").textContent = "Não foi possível carregar dúvidas da turma.";
+    list.replaceChildren();
+    if (status) status.textContent = "Não foi possível carregar dúvidas da turma.";
   });
-};
+}
 
 function renderNotice(item) {
   const notice = item.data();
   const card = document.createElement("article");
-  card.className = "card-aviso";
+  card.className = "card-aviso tc-list-card";
   const title = document.createElement("h3");
   title.textContent = notice.titulo || "Aviso";
   const body = document.createElement("p");
@@ -102,14 +121,23 @@ function renderNotice(item) {
 function watchNotices() {
   const rooms = profileRooms(profile);
   const noticesQuery = query(collection(db, "avisos"), where("codigoSala", rooms.length === 1 ? "==" : "in", rooms.length === 1 ? rooms[0] : rooms));
-  onSnapshot(noticesQuery, (snapshot) => {
+  stopNotices = onSnapshot(noticesQuery, (snapshot) => {
     const list = document.getElementById("lista-avisos");
     const emptyMessage = document.getElementById("avisos-vazio");
     list?.replaceChildren();
     const notices = [...snapshot.docs].sort((a, b) => (b.data().data?.toMillis?.() || 0) - (a.data().data?.toMillis?.() || 0));
     if (emptyMessage) emptyMessage.hidden = notices.length > 0;
     notices.forEach((item) => list?.appendChild(renderNotice(item)));
-  }, (error) => console.error("Erro ao carregar avisos:", error));
+  }, (error) => {
+    console.error("Erro ao carregar avisos:", error);
+    const list = document.getElementById("lista-avisos");
+    const emptyMessage = document.getElementById("avisos-vazio");
+    list?.replaceChildren();
+    if (emptyMessage) {
+      emptyMessage.hidden = false;
+      emptyMessage.textContent = "Não foi possível carregar os avisos desta turma.";
+    }
+  });
 }
 
 createButton?.addEventListener("click", async () => {
@@ -131,4 +159,10 @@ requireProfessor((authenticatedUser, currentProfile) => {
   profile = currentProfile;
   fillHeader(profile);
   watchNotices();
+  watchDoubts();
 });
+
+window.addEventListener("pagehide", () => {
+  stopDoubts?.();
+  stopNotices?.();
+}, { once: true });

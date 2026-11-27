@@ -2,6 +2,7 @@
 <html lang="pt-br">
 <head>
     <link rel="stylesheet" href="avisos.css">
+    <link rel="stylesheet" href="../../shared/list-components.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fórum — Professor</title>
@@ -45,39 +46,26 @@
                 <h1>Fórum</h1><p>Publique comunicados e responda dúvidas</p>
             </div>
         
-            <div id="EnCad"> <button id="Entrar">Avisos</button> <button id="Cadastrar" onclick="Cadastrar ()">Dúvida dos alunos</button></div>
+            <div id="EnCad" role="tablist" aria-label="Seções do fórum">
+                <button id="Entrar" class="ativa" type="button" role="tab" aria-selected="true" onclick="Avisos()">Avisos</button>
+                <button id="Cadastrar" type="button" role="tab" aria-selected="false" onclick="Cadastrar()">Dúvida dos alunos</button>
+            </div>
 
-            <button id="novo-aviso" type="button">+ Novo aviso</button>
-            <p id="avisos-vazio">Nenhum aviso nesta sala ainda. Clique em + Novo aviso para publicar.</p>
-            <div id="lista-avisos"></div>
+            <section id="avisos-panel" role="tabpanel">
+                <button id="novo-aviso" type="button">+ Novo aviso</button>
+                <p id="avisos-vazio" class="tc-list-empty">Nenhum aviso nesta sala ainda. Clique em + Novo aviso para publicar.</p>
+                <div id="lista-avisos"></div>
+            </section>
+
+            <section id="duvidas-panel" role="tabpanel" hidden>
+                <div class="lista-duvidas-professor">
+                    <h2>Dúvidas dos alunos</h2>
+                    <p id="duvidas-status" class="tc-list-empty">As dúvidas pendentes da sua turma aparecem aqui.</p>
+                    <div id="lista-duvidas-professor"></div>
+                </div>
+            </section>
         </div>
     </div>
 </body>
 <script type="module" src="avisos.js"></script>
-<script>
-    const fonteSalva = localStorage.getItem('fontePreferida');
-    if (fonteSalva) {
-        let styleTag = document.createElement('style');
-        styleTag.id = 'dynamic-font-style';
-        styleTag.innerHTML = `* { font-family: ${fonteSalva} !important; }`;
-        document.head.appendChild(styleTag);
-    }
-
-    const tamanhoSalvo = localStorage.getItem('tamanhoPreferido');
-    if (tamanhoSalvo && tamanhoSalvo != 16) {
-        let fator = tamanhoSalvo / 16;
-        setTimeout(() => {
-            document.querySelectorAll('*').forEach(el => {
-                if (['SCRIPT', 'STYLE', 'SVG', 'PATH'].includes(el.tagName)) return;
-                if (!el.dataset.originalFontSize) {
-                    el.dataset.originalFontSize = window.getComputedStyle(el).fontSize;
-                }
-                let tamanhoOriginal = parseFloat(el.dataset.originalFontSize);
-                if (tamanhoOriginal > 0) {
-                    el.style.fontSize = (tamanhoOriginal * fator) + 'px';
-                }
-            });
-        }, 100);
-    }
-</script>
 </html>

@@ -1,0 +1,30 @@
+/* Shared presentation for Firestore-backed cards and empty list states. */
+.tc-list-card {
+  box-sizing: border-box;
+  background: var(--cor-fundo-card, var(--cor-fundo-secundario, #111520));
+  border: 1px solid var(--cor-borda, rgb(255 255 255 / 7%));
+  border-left: 3px solid var(--cor-vermelho, #ec3c3c);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 0 0 16px;
+  color: var(--cor-texto, #e4e9f4);
+  cursor: default;
+  transition: border-color .2s ease, background-color .2s ease;
+}
+
+.tc-list-card:hover {
+  border-color: var(--cor-vermelho, #ec3c3c);
+  transform: none;
+}
+
+.tc-list-card > :first-child { margin-top: 0; }
+.tc-list-card > :last-child { margin-bottom: 0; }
+
+.tc-list-empty {
+  margin: 0;
+  padding: 18px 20px;
+  border: 1px dashed var(--cor-borda, rgb(255 255 255 / 14%));
+  border-radius: 10px;
+  color: var(--cor-texto-secundario, #a0aec0);
+  background: var(--cor-fundo-secundario, #0c1018);
+}
