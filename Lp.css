@@ -53,28 +53,28 @@ header {
 }
 
 #header-int {
-    margin-left: 50%;
+    margin-left: 44%;
     padding-top: 40vh;
     height: 100vh;
-    margin-right: 35px;
+    margin-right: clamp(20px, 3vw, 56px);
 }
 
 #header-int h1 {
     color: var(--white-text);
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-     px;
-    font-size: 260px;
-    margin-bottom: 80px;
-    margin-right: 120px;
+    font-size: clamp(58px, 13vw, 220px);
+    line-height: .95;
+    margin-bottom: 48px;
+    margin-right: 0;
+    white-space: nowrap;
 }
 
 #header-int p {
     color: var(--white-text);
     font-family: arial;
-     1.2px;
     font-size: 18px;
     text-align: right;
-    margin-right: 45px;
+    margin-right: 0;
 }
 
 nav {
@@ -1061,7 +1061,7 @@ p {
     .btn-login, .btn-cadastrar { padding: 8px 20px; }
 
     #header-int { margin-left: 42%; padding-top: 28vh; margin-right: 24px; }
-    #header-int h1 { font-size: clamp(100px, 18vw, 190px); margin-right: 0; margin-bottom: 36px; }
+    #header-int h1 { font-size: clamp(72px, 14vw, 150px); margin-right: 0; margin-bottom: 36px; }
 
     #sobre { height: auto; min-height: 900px; padding: 70px 5%; gap: 50px; }
     #ET { width: 42%; }
