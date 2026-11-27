@@ -32,13 +32,7 @@ body {
     color: var(--cor-texto);
 }
 
-h1 { color: var(--cor-vermelho); margin-top: 7px; margin-bottom: 5px; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-weight: 200; font-size: 38px; letter-spacing: 1.2px;}
-p {font-family: Arial, Helvetica, sans-serif;}
-h5 {font-family: Arial, Helvetica, sans-serif;}
-h3 {font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-weight: 100;}
-h2 {font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; letter-spacing: 1px; font-weight: 250;}
-
-div { font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-weight: 200; }
+/* A tipografia base vem de Coord-style.css para manter a mesma aparência no painel. */
 
 #lateral {
     display: flex;
@@ -144,7 +138,7 @@ div { font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; 
     padding: 40px;
 }
 
-#conteudo-superior p { color: var(--cor-texto-secundario); margin-top: 7px; font-size: 16px; font-family: "arial narrow", sans-serif; }
+#conteudo-superior p { color: var(--cor-texto-secundario); margin-top: 7px; font-size: 16px; }
 
 #linha { width: 100%; height: 1px; background-color: var(--cor-borda); margin: 20px 0 25px 0; }
 
@@ -177,6 +171,57 @@ div { font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; 
     background: var(--cor-fundo-hover);
     border-color: var(--cor-vermelho);
 }
+
+.biblioteca-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 22px 0 28px;
+}
+.biblioteca-toolbar label { color: var(--cor-texto-secundario); font-weight: 600; }
+.biblioteca-toolbar input {
+    width: min(100%, 220px);
+    min-height: 46px;
+    padding: 10px 14px;
+    color: var(--cor-texto);
+    background: var(--cor-fundo-card);
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    outline: none;
+}
+.biblioteca-toolbar input:focus { border-color: var(--cor-vermelho); }
+.biblioteca-toolbar .btn-acao { margin: 0; }
+.biblioteca-toolbar .secundario { background: transparent; }
+
+.seletor-tipo-recurso {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 0 0 18px;
+    padding: 14px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 10px;
+}
+.seletor-tipo-recurso legend { padding: 0 6px; color: var(--cor-texto-secundario); font-weight: 600; }
+.modal-box .seletor-tipo-recurso label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 10px 12px;
+    background: var(--cor-fundo-card);
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    cursor: pointer;
+}
+.modal-box .seletor-tipo-recurso input[type="radio"] { width: auto; margin: 0; padding: 0; accent-color: var(--cor-vermelho); }
+.modal-box input[type="file"] { padding: 10px; }
+.modal-box #campos-arquivo-recurso small { display: block; margin-top: 8px; color: var(--cor-texto-secundario); }
+.status-recurso-biblioteca { min-height: 1.4em; color: var(--cor-texto-secundario); }
+.status-recurso-biblioteca.erro { color: var(--cor-vermelho); }
+.status-biblioteca { margin: 0 0 16px; color: var(--cor-texto-secundario); }
+.status-biblioteca.erro { color: var(--cor-vermelho); }
 
 #links, #arquivos { 
     display: grid; 

@@ -39,3 +39,13 @@ drop policy if exists "TCCHAT demo: usuarios autenticados leem arquivos" on stor
 create policy "TCCHAT demo: usuarios autenticados leem arquivos"
 on storage.objects for select to authenticated
 using (bucket_id = 'tcchat-arquivos');
+
+-- Permite que cada usuário limpe objetos que enviou, por exemplo quando um
+-- recurso da biblioteca é excluído junto com seu registro no Firestore.
+drop policy if exists "TCCHAT demo: usuario remove proprio arquivo" on storage.objects;
+create policy "TCCHAT demo: usuario remove proprio arquivo"
+on storage.objects for delete to authenticated
+using (
+  bucket_id = 'tcchat-arquivos'
+  and (storage.foldername(name))[1] = (select auth.jwt() ->> 'sub')
+);

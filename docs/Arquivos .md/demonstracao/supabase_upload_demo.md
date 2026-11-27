@@ -5,6 +5,7 @@ Este guia configura o envio de arquivos das entregas de atividades. O navegador 
 ## O que já está implementado no projeto
 
 - Upload pelo formulário do aluno para o bucket `tcchat-arquivos`.
+- Upload de arquivos compartilhados pelo coordenador na Biblioteca, com o caminho do objeto e a turma salvos no Firestore.
 - Tipos aceitos: PDF, DOC, DOCX, ODT, ZIP, PNG e JPG/JPEG; limite de 25 MB por arquivo.
 - O caminho começa com o UID autenticado do Firebase e inclui grupo, atividade e nome aleatório.
 - Registro da entrega no Firestore usando `arquivoPath`, sem URL pública permanente.
@@ -40,13 +41,13 @@ Repita para cada conta da apresentação que precisa usar o Storage, incluindo a
 
 ### 3. Criar o bucket privado e as políticas
 
-No Supabase, abra **SQL Editor**, cole o conteúdo de [`../../../backend/supabase/setup_storage.sql`](../../../backend/supabase/setup_storage.sql) e execute. O script cria/atualiza o bucket privado e configura as políticas mínimas para upload e leitura na demonstração.
+No Supabase, abra **SQL Editor**, cole o conteúdo de [`../../../backend/supabase/setup_storage.sql`](../../../backend/supabase/setup_storage.sql) e execute. O script cria/atualiza o bucket privado e configura as políticas mínimas para upload, leitura e remoção dos próprios arquivos na demonstração. Se já executou uma versão anterior, execute novamente para criar a política de remoção.
 
 O upload é permitido somente quando a primeira pasta do objeto corresponde ao UID (`sub`) presente no token. A leitura está aberta a qualquer usuário autenticado do projeto para que a conta do professor consiga abrir entregas dos alunos. Esse é um atalho deliberado para a apresentação; antes de uso real com dados de alunos, limite a leitura por papel, grupo e atividade.
 
 ### 4. Verificar o fluxo
 
-1. Abra o TCCHAT com uma conta de aluno que recebeu a claim e entrou novamente.
+1. Abra o TCCHAT com uma conta de aluno ou coordenador que recebeu a claim e entrou novamente.
 2. Entre em um grupo com uma atividade publicada e envie um arquivo pequeno de um dos tipos aceitos.
 3. Confirme no Supabase **Storage > tcchat-arquivos** que o objeto foi criado e que o bucket continua privado.
 4. Confirme no Firestore que a submissão contém `arquivoPath` e `arquivoNome`.

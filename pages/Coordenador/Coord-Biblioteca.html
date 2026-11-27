@@ -47,19 +47,50 @@
             <p>Material de apoio associado à turma selecionada</p>
         </div>
 
-        <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
-            <label for="codigo-sala-biblioteca" style="color:#e4e9f4; align-self:center;">Turma do recurso</label>
-            <input id="codigo-sala-biblioteca" type="text" maxlength="20" placeholder="Ex.: DS-3" aria-describedby="ajuda-sala-biblioteca">
-            <button class="btn-acao" id="Link">+ Link</button>
-            <button class="btn-acao secundario" id="ArquivoModelo">+ Arquivo/Modelo</button>
+        <div class="biblioteca-toolbar">
+            <label for="codigo-sala-biblioteca">Turma do recurso</label>
+            <input id="codigo-sala-biblioteca" type="text" maxlength="20" placeholder="Ex.: DS-3">
+            <button class="btn-acao" id="Link" type="button">+ Link</button>
+            <button class="btn-acao secundario" id="ArquivoModelo" type="button">+ Arquivo/Modelo</button>
         </div>
-        <small id="ajuda-sala-biblioteca" style="display:block; margin-bottom:16px; color:#9aa8ba;">Use o código de turma cadastrado, como DS-3. O recurso aparecerá para essa turma.</small>
+        <p id="status-biblioteca" class="status-biblioteca" role="status" aria-live="polite"></p>
 
         <h3 style="color: #e4e9f4;">Links <span style="color: rgb(236, 60, 60);">webs</span></h3>
         <div id="links"></div>
 
         <h3 style="color: rgb(236, 60, 60); margin-top:50px">Arquivos e Modelos</h3>
         <div id="arquivos"></div>
+
+        <div id="modal-recurso-biblioteca" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-recurso">
+            <div class="modal-box">
+                <h2 id="titulo-modal-recurso">Adicionar recurso</h2>
+                <form id="form-recurso-biblioteca">
+                    <fieldset class="seletor-tipo-recurso">
+                        <legend>O que deseja compartilhar?</legend>
+                        <label><input type="radio" name="tipo-recurso" value="link" checked> Link</label>
+                        <label><input type="radio" name="tipo-recurso" value="arquivo"> Arquivo ou modelo</label>
+                    </fieldset>
+                    <label for="nome-recurso">Nome *</label>
+                    <input id="nome-recurso" type="text" maxlength="120" required placeholder="Ex.: Modelo de projeto">
+                    <div id="campos-link-recurso">
+                        <label for="url-recurso">Endereço do link *</label>
+                        <input id="url-recurso" type="url" placeholder="https://exemplo.com" required>
+                        <label for="icone-recurso">URL do ícone (opcional)</label>
+                        <input id="icone-recurso" type="url" placeholder="https://exemplo.com/icone.png">
+                    </div>
+                    <div id="campos-arquivo-recurso" hidden>
+                        <label for="arquivo-recurso">Arquivo *</label>
+                        <input id="arquivo-recurso" type="file" accept=".pdf,.doc,.docx,.odt,.zip,.png,.jpg,.jpeg">
+                        <small>PDF, DOC, DOCX, ODT, ZIP, PNG ou JPG · máximo 25 MB</small>
+                    </div>
+                    <p id="status-recurso-biblioteca" class="status-recurso-biblioteca" role="status" aria-live="polite"></p>
+                    <div class="modal-botoes">
+                        <button type="button" id="cancelar-recurso-biblioteca">Cancelar</button>
+                        <button type="submit" id="salvar-recurso-biblioteca">Adicionar à biblioteca</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 

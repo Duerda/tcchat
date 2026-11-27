@@ -188,25 +188,40 @@ function montarBiblioteca() {
   area.append(form, list);
   let groupLinks = [];
   let sharedLinks = [];
-  const renderLinks = () => {
+  let libraryRenderVersion = 0;
+  const renderLinks = async () => {
+    const renderVersion = ++libraryRenderVersion;
     list.replaceChildren();
-    const links = [...sharedLinks, ...groupLinks];
+    const links = [...sharedLinks, ...groupLinks].filter((item) => item.url || item.arquivoPath);
     if (!links.length) {
       list.textContent = "Nenhum link cadastrado para esta turma ou grupo.";
       return;
     }
-    links.forEach((item) => {
+    for (const item of links) {
       const card = document.createElement("article");
       const link = document.createElement("a");
-      link.href = item.url;
       link.target = "_blank";
       link.rel = "noopener noreferrer";
-      link.textContent = item.nome || "Link do projeto";
+      link.textContent = item.arquivoPath ? `Preparando arquivo: ${item.arquivoNome || item.nome || "arquivo"}` : item.nome || "Recurso do projeto";
+      if (item.arquivoPath) {
+        try {
+          const { data, error } = await supabase.storage.from(SUPABASE_STORAGE_BUCKET).createSignedUrl(item.arquivoPath, 60 * 60);
+          if (error) throw error;
+          link.href = data.signedUrl;
+          link.textContent = item.arquivoNome || item.nome || "Abrir arquivo";
+        } catch (error) {
+          console.error("Não foi possível abrir o arquivo da biblioteca:", error);
+          link.textContent = `${item.arquivoNome || item.nome || "Arquivo"} (indisponível)`;
+        }
+      } else {
+        link.href = item.url;
+      }
+      if (renderVersion !== libraryRenderVersion) return;
       const source = document.createElement("small");
-      source.textContent = item.compartilhado ? "Recurso compartilhado pela turma" : "Recurso do grupo";
+      source.textContent = `${item.tipo === "arquivo" || item.arquivoPath ? "Arquivo ou modelo" : "Link"} · ${item.compartilhado ? "Recurso compartilhado pela turma" : "Recurso do grupo"}`;
       card.append(link, source);
       list.appendChild(card);
-    });
+    }
   };
   const filesRef = collection(db, "grupos", group.id, "arquivos");
   stopListener?.();
@@ -223,7 +238,7 @@ function montarBiblioteca() {
   // no manual como a biblioteca do projeto.
   stopSharedLibrary?.();
   stopSharedLibrary = onSnapshot(query(collection(db, "biblioteca"), where("codigoSala", "==", session.profile.codigoSala)), (snapshot) => {
-    sharedLinks = snapshot.docs.map((item) => ({ ...item.data(), compartilhado: true })).filter((item) => item.url);
+    sharedLinks = snapshot.docs.map((item) => ({ ...item.data(), compartilhado: true })).filter((item) => item.url || item.arquivoPath);
     renderLinks();
   }, (error) => {
     console.error("Erro ao carregar recursos compartilhados:", error);

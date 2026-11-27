@@ -1,5 +1,6 @@
 import { addDoc, collection, deleteDoc, doc, onSnapshot, query, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { db } from "../../../backend/firebase/config.js";
+import { supabase, SUPABASE_STORAGE_BUCKET } from "../../../backend/supabase/supabase.js";
 import { fillHeader, logout, navigate, requireProfessor } from "../../../backend/firebase/professor.js";
 import { chooseProfileRoom, profileRooms } from "../../../backend/firebase/rooms.js";
 
@@ -31,15 +32,22 @@ async function addResource(type) {
 document.getElementById("Link")?.addEventListener("click", () => addResource("link"));
 document.getElementById("ArquivoModelo")?.addEventListener("click", () => addResource("arquivo"));
 
-function renderResource(item, id) {
+async function renderResource(item, id) {
   const card = document.createElement("div");
   card.className = item.tipo === "link" ? "card-link" : "card-arquivo";
   const anchor = document.createElement("a");
-  anchor.href = item.url;
   anchor.target = "_blank";
   anchor.rel = "noopener noreferrer";
-  anchor.textContent = item.nome || "Recurso";
+  anchor.textContent = item.arquivoPath ? `Preparando arquivo: ${item.arquivoNome || item.nome || "arquivo"}` : item.nome || "Recurso";
   anchor.className = item.tipo === "link" ? "nome-link" : "nome-arquivo";
+  if (item.arquivoPath) {
+    const { data, error } = await supabase.storage.from(SUPABASE_STORAGE_BUCKET).createSignedUrl(item.arquivoPath, 60 * 60);
+    if (error) throw error;
+    anchor.href = data.signedUrl;
+    anchor.textContent = item.arquivoNome || item.nome || "Abrir arquivo";
+  } else {
+    anchor.href = item.url || "#";
+  }
   const remove = document.createElement("button");
   remove.type = "button";
   remove.className = "excluir";
@@ -60,7 +68,12 @@ function watchResources() {
     if (filesArea) filesArea.innerHTML = "";
     snapshot.forEach((item) => {
       const resource = renderResource(item.data(), item.id);
-      (item.data().tipo === "link" ? linksArea : filesArea)?.appendChild(resource);
+      const target = item.data().tipo === "link" ? linksArea : filesArea;
+      if (item.data().url || item.data().arquivoPath) {
+        renderResource(item.data(), item.id).then((resource) => target?.appendChild(resource)).catch((error) => {
+          console.error("Não foi possível abrir o recurso:", error);
+        });
+      }
     });
   }, (error) => console.error("Erro ao carregar biblioteca:", error));
 }
