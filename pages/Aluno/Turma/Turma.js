@@ -149,14 +149,12 @@ function renderAssignments() {
   const assignmentGroups = groups.filter((group) => (group.membros || []).includes(studentUid));
   if (!assignmentGroups.length) {
     appendText(list, "p", "As atividades aparecerão aqui quando seus grupos forem associados.");
-    updateProgress();
     return;
   }
   assignmentGroups.forEach((group) => {
     const stop = onSnapshot(collection(db, "grupos", group.id, "entregas"), (snapshot) => {
       assignmentsByGroup.set(group.id, snapshot.docs.map((taskDoc) => ({ taskId: taskDoc.id, task: taskDoc.data(), group })).filter(({ task }) => task.tipo !== "envio"));
       renderList();
-      updateProgress();
     }, (error) => {
       console.error("Não foi possível carregar atividades:", error);
     });
@@ -164,24 +162,9 @@ function renderAssignments() {
     const stopSubmissions = onSnapshot(collection(db, "grupos", group.id, "submissoes"), (snapshot) => {
       completedByGroup.set(group.id, new Set(snapshot.docs.map((item) => item.data()).map((item) => item.atividadeId).filter(Boolean)));
       renderList();
-      updateProgress();
     }, (error) => console.error("Não foi possível carregar o progresso das entregas:", error));
     stopAssignments.push(stopSubmissions);
   });
-
-  function updateProgress() {
-    const all = [...assignmentsByGroup.values()].flat();
-    const completed = all.filter(({ taskId, group }) => completedByGroup.get(group.id)?.has(taskId)).length;
-    const percent = all.length ? Math.round(completed / all.length * 100) : 0;
-    const progressLabel = document.querySelector("#Prog-int h2");
-    const progressBar = document.getElementById("barra-progresso2");
-    const progressTrack = document.getElementById("barra-progresso1");
-    const progressCount = document.getElementById("resumo-atividades-entregues");
-    if (progressLabel) progressLabel.textContent = `${percent}%`;
-    if (progressBar) progressBar.style.width = `${percent}%`;
-    if (progressTrack) progressTrack.setAttribute("aria-valuenow", String(percent));
-    if (progressCount) progressCount.textContent = `${completed} de ${all.length} atividades entregues pelo grupo`;
-  }
 }
 
 function watchProjectStages() {
