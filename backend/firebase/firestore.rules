@@ -40,6 +40,11 @@ service cloud.firestore {
       return hasActiveAccess() && profile().tipo == 'aluno';
     }
 
+    function validProjectStage(stageId) {
+      return stageId in ['tema-problema', 'planejamento', 'pesquisa', 'introducao-referencial',
+        'metodologia', 'resultados-conclusao', 'revisao-normas', 'apresentacao', 'entrega-final'];
+    }
+
     function validRoom(room) {
       return room is string
         && room.matches('^(DS|DI|HOSP|IPI|MA|SEC|ADM|INF)-[123]$');
@@ -142,6 +147,7 @@ service cloud.firestore {
       // O perfil só pode ser criado para o próprio usuário autenticado e com
       // papel/turma correspondentes a um convite válido da coordenação.
       allow create: if signedIn() && request.auth.uid == userId
+        && request.auth.token.email_verified == true
         && request.resource.data.keys().hasOnly([
           'uid', 'nome', 'email', 'tipo', 'iniciais', 'dataCadastro',
           'codigoAcessoId', 'codigoAcessoIds', 'codigoSala', 'codigoSalas', 'curso', 'ano'
@@ -256,7 +262,10 @@ service cloud.firestore {
         allow create: if staffForGroup(groupId)
           && request.resource.data.uid == request.auth.uid
           && request.resource.data.tipo == 'atividade'
-          && request.resource.data.titulo is string;
+          && request.resource.data.titulo is string
+          && request.resource.data.descricao is string
+          && request.resource.data.dataLimite is timestamp
+          && validProjectStage(request.resource.data.etapaProjetoId);
         allow update: if staffForGroup(groupId)
           && request.resource.data.diff(resource.data).affectedKeys()
             .hasOnly(['titulo', 'descricao', 'dataLimite']);
@@ -277,8 +286,7 @@ service cloud.firestore {
       match /etapasProjeto/{stageId} {
         allow read: if canReadGroup(groupId);
         allow create, update: if isStudent() && groupMember(groupId)
-          && stageId in ['tema-problema', 'planejamento', 'pesquisa', 'introducao-referencial',
-            'metodologia', 'resultados-conclusao', 'revisao-normas', 'apresentacao', 'entrega-final']
+          && validProjectStage(stageId)
           && request.resource.data.keys().hasOnly(['concluida', 'atualizadoPor', 'atualizadoEm'])
           && request.resource.data.concluida is bool
           && request.resource.data.atualizadoPor == request.auth.uid

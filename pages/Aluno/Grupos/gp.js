@@ -1,6 +1,7 @@
 import { auth, db } from "../../../backend/firebase/config.js";
-import { addDoc, collection, getDocs, onSnapshot, query, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { addDoc, collection, doc, getDocs, onSnapshot, query, serverTimestamp, setDoc, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { supabase, SUPABASE_STORAGE_BUCKET } from "../../../backend/supabase/supabase.js";
+import { PROJECT_STAGES } from "../../shared/project-stages.js";
 
 const TIPOS_ARQUIVO = new Map([
   [".pdf", "application/pdf"],
@@ -17,6 +18,7 @@ let session;
 let group;
 let stopListener;
 let stopSharedLibrary;
+let stopProgressListeners = [];
 const $ = (id) => document.getElementById(id);
 window.chat = () => (location.href = "gp.chat.html");
 window.orientador = () => (location.href = "gp-cha-ori.html");
@@ -32,13 +34,14 @@ async function carregarGrupo() {
   const subtitle = document.querySelector("#conteudo-superior p");
   if (!group) {
     if (subtitle) subtitle.textContent = "Você ainda não foi associado a um grupo pelo coordenador.";
-    document.querySelectorAll("#chat, #att, #att2, #arquivos").forEach((el) => { el.hidden = true; });
+    document.querySelectorAll("#chat, #att, #att2, #arquivos, .atividades-tcc-layout, .titulo-atividades-tcc").forEach((el) => { el.hidden = true; });
     return;
   }
   if (subtitle) subtitle.textContent = group.nome || group.nomeProjeto || "Meu grupo";
   const chat = $("chat");
   if (chat) montarChat(chat, location.pathname.includes("gp-cha-ori"));
-  if (document.querySelector("#att, #att2")) montarAtividades();
+  if (document.querySelector("#att, #att2, #lista-atividades-grupo")) montarAtividades();
+  if ($("lista-etapas-tcc-grupo")) montarAcompanhamentoTCC();
   if ($("arquivos")) montarBiblioteca();
 }
 
@@ -73,17 +76,32 @@ function montarChat(container, orientador) {
         ? message.chatTipo === currentChatType
         : currentChatType === "grupo")
       .sort((a, b) => (a.criadoEm?.toMillis?.() || 0) - (b.criadoEm?.toMillis?.() || 0));
+    if (!messages.length) {
+      const empty = document.createElement("p");
+      empty.className = "chat-vazio";
+      empty.textContent = "Ainda não há mensagens nesta conversa.";
+      list.appendChild(empty);
+    }
     messages.forEach((message) => {
-      const line = document.createElement("p");
+      const propria = (message.uid || message.autorUid) === session.user.uid;
+      const line = document.createElement("article");
+      line.className = `mensagem-chat ${propria ? "mensagem-chat--propria" : "mensagem-chat--outra"}`;
       const author = document.createElement("strong");
-      author.textContent = `${message.nome || message.autor || "Integrante"}: `;
-      line.append(author, document.createTextNode(message.texto || ""));
+      author.className = "mensagem-chat__autor";
+      author.textContent = propria ? "Você" : (message.nome || message.autor || "Integrante");
+      const text = document.createElement("p");
+      text.className = "mensagem-chat__texto";
+      text.textContent = message.texto || "";
+      line.append(author, text);
       list.appendChild(line);
     });
     list.scrollTop = list.scrollHeight;
   }, (error) => {
     console.error("Erro ao carregar chat:", error);
-    list.textContent = "Não foi possível carregar as mensagens.";
+    const status = document.createElement("p");
+    status.className = "chat-vazio chat-vazio--erro";
+    status.textContent = "Não foi possível carregar as mensagens.";
+    list.replaceChildren(status);
   });
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -91,7 +109,7 @@ function montarChat(container, orientador) {
     if (!texto) return;
     send.disabled = true;
     try {
-      await addDoc(messagesRef, { texto, uid: session.user.uid, autorUid: session.user.uid, nome: session.profile.nome || "Aluno", autor: "aluno", chatTipo: orientador ? "orientador" : "grupo", criadoEm: serverTimestamp() });
+      await addDoc(messagesRef, { texto, uid: session.user.uid, autorUid: session.user.uid, nome: session.profile.nome || "Aluno", autor: "aluno", chatTipo: currentChatType, criadoEm: serverTimestamp() });
       input.value = "";
     } catch (error) {
       console.error("Erro ao enviar mensagem:", error);
@@ -125,13 +143,16 @@ function montarAtividades() {
       title.textContent = task.titulo || "Atividade";
       const description = document.createElement("p");
       description.textContent = task.descricao || "Sem instruções adicionais.";
+      const stage = PROJECT_STAGES.find((option) => option.id === task.etapaProjetoId);
+      const stageLabel = document.createElement("p");
+      stageLabel.textContent = `Etapa do TCC: ${stage?.titulo || "não vinculada"}`;
       const dueDate = task.dataLimite?.toDate?.() || (task.dataLimite ? new Date(task.dataLimite) : null);
       const overdue = dueDate && dueDate < new Date();
       const deadline = document.createElement("p");
       deadline.textContent = dueDate ? `Prazo: ${dueDate.toLocaleDateString("pt-BR")}${overdue ? " · Atrasada" : ""}` : (task.status === "atraso" ? "Atrasada" : "Prazo não informado");
       const form = document.createElement("form");
       form.className = "entrega-form";
-      form.innerHTML = '<label>Arquivo (opcional)<input type="file" accept=".pdf,.doc,.docx,.odt,.zip,.png,.jpg"></label><label>Observação<textarea rows="3" maxlength="2000"></textarea></label><button type="submit">Enviar atividade</button><p role="status"></p>';
+      form.innerHTML = '<label>Arquivo (opcional)<input type="file" accept=".pdf,.doc,.docx,.odt,.zip,.png,.jpg,.jpeg"></label><label>Observação<textarea rows="3" maxlength="2000"></textarea></label><button type="submit">Enviar atividade</button><p role="status"></p>';
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
         const fileInput = form.querySelector('input[type="file"]');
@@ -156,7 +177,7 @@ function montarAtividades() {
             if (uploadError) throw uploadError;
           }
           await addDoc(collection(db, "grupos", group.id, "submissoes"), { atividadeId: taskDoc.id, atividade: task.titulo || "Atividade", alunoUid: session.user.uid, alunoNome: session.profile.nome || "Aluno", observacao: note, arquivoNome: file?.name || "", arquivoPath, enviadoAtrasado: Boolean(dueDate && Date.now() > dueDate.getTime()), enviadoEm: serverTimestamp() });
-          status.textContent = "Atividade enviada com sucesso.";
+          status.textContent = "Atividade enviada. O avanço do grupo será atualizado automaticamente.";
           form.reset();
         } catch (error) {
           console.error("Erro ao enviar atividade:", error);
@@ -167,13 +188,133 @@ function montarAtividades() {
               : "Não foi possível enviar. Verifique a conexão e se o Supabase Storage foi configurado.";
         } finally { button.disabled = false; }
       });
-      card.append(title, description, deadline, form);
+      card.append(title, description, stageLabel, deadline, form);
       list.appendChild(card);
     });
   }, (error) => {
     console.error("Erro ao consultar atividades:", error);
     list.textContent = "Não foi possível carregar as atividades.";
   });
+}
+
+function montarAcompanhamentoTCC() {
+  const stagesList = $("lista-etapas-tcc-grupo");
+  if (!stagesList || !group) return;
+  stopProgressListeners.forEach((stop) => stop());
+  stopProgressListeners = [];
+
+  let activities = [];
+  let submittedActivityIds = new Set();
+  let manualStages = new Map();
+  let stagesLoaded = false;
+
+  const showStatus = (message, isError = false) => {
+    const status = $("status-acompanhamento-grupo");
+    if (!status) return;
+    status.textContent = message;
+    status.classList.toggle("erro", isError);
+  };
+
+  const render = () => {
+    const stageProgress = PROJECT_STAGES.map((stage) => {
+      const linkedActivities = activities.filter((activity) => activity.etapaProjetoId === stage.id);
+      if (!linkedActivities.length) return manualStages.get(stage.id) === true ? 1 : 0;
+      const delivered = linkedActivities.filter((activity) => submittedActivityIds.has(activity.id)).length;
+      return delivered / linkedActivities.length;
+    });
+    const completedStages = stageProgress.filter((progress) => progress === 1).length;
+    const inProgressStages = stageProgress.filter((progress) => progress > 0 && progress < 1).length;
+    const percent = stageProgress.length
+      ? Math.round((stageProgress.reduce((total, progress) => total + progress, 0) / stageProgress.length) * 100)
+      : 0;
+    const percentLabel = $("percentual-progresso-grupo");
+    const progressBar = $("barra-progresso-grupo");
+    const progressTrack = $("trilha-progresso-grupo");
+    const summary = $("resumo-progresso-grupo");
+    if (percentLabel) percentLabel.textContent = `${percent}%`;
+    if (progressBar) progressBar.style.width = `${percent}%`;
+    if (progressTrack) progressTrack.setAttribute("aria-valuenow", String(percent));
+    if (summary) summary.textContent = `${completedStages} de ${PROJECT_STAGES.length} etapas concluídas${inProgressStages ? ` · ${inProgressStages} em andamento` : ""}`;
+    stagesList.replaceChildren();
+
+    PROJECT_STAGES.forEach((stage) => {
+      const linkedActivities = activities.filter((activity) => activity.etapaProjetoId === stage.id);
+      const linkedDelivered = linkedActivities.filter((activity) => submittedActivityIds.has(activity.id)).length;
+      const automaticCompletion = linkedActivities.length > 0 && linkedDelivered === linkedActivities.length;
+      const checked = linkedActivities.length > 0 ? automaticCompletion : manualStages.get(stage.id) === true;
+      const row = document.createElement("article");
+      row.className = "etapa-tcc-item";
+      const label = document.createElement("label");
+      label.className = "etapa-tcc-label";
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = checked;
+      checkbox.disabled = !stagesLoaded || linkedActivities.length > 0;
+      checkbox.setAttribute("aria-label", `${stage.titulo} — ${group.nome || group.nomeProjeto || "grupo"}`);
+      const content = document.createElement("span");
+      content.className = "etapa-tcc-conteudo";
+      const title = document.createElement("span");
+      title.className = "etapa-tcc-titulo";
+      title.textContent = stage.titulo;
+      const detail = document.createElement("small");
+      detail.textContent = linkedActivities.length
+        ? (automaticCompletion
+          ? `Concluída pelas entregas · ${linkedDelivered}/${linkedActivities.length}`
+          : `Atividades entregues · ${linkedDelivered}/${linkedActivities.length}`)
+        : (checked ? "Concluída manualmente" : "Etapa sem atividade vinculada");
+      content.append(title, detail);
+      label.append(checkbox, content);
+      row.appendChild(label);
+      stagesList.appendChild(row);
+
+      checkbox.addEventListener("change", async () => {
+        const isComplete = checkbox.checked;
+        checkbox.disabled = true;
+        showStatus("Salvando etapa do projeto…");
+        try {
+          await setDoc(doc(db, "grupos", group.id, "etapasProjeto", stage.id), {
+            concluida: isComplete,
+            atualizadoPor: session.user.uid,
+            atualizadoEm: serverTimestamp(),
+          });
+          showStatus("Acompanhamento atualizado para todo o grupo.");
+        } catch (error) {
+          console.error("Não foi possível salvar a etapa do TCC:", error);
+          checkbox.checked = !isComplete;
+          showStatus("Não foi possível salvar. Confira a conexão e as regras do Firebase.", true);
+        } finally {
+          checkbox.disabled = false;
+        }
+      });
+    });
+  };
+
+  stopProgressListeners.push(onSnapshot(collection(db, "grupos", group.id, "entregas"), (snapshot) => {
+    activities = snapshot.docs
+      .map((item) => ({ id: item.id, ...item.data() }))
+      .filter((activity) => activity.tipo !== "envio");
+    render();
+  }, (error) => {
+    console.error("Não foi possível carregar atividades para o acompanhamento:", error);
+    showStatus("Não foi possível carregar as atividades do grupo.", true);
+  }));
+
+  stopProgressListeners.push(onSnapshot(collection(db, "grupos", group.id, "submissoes"), (snapshot) => {
+    submittedActivityIds = new Set(snapshot.docs.map((item) => item.data().atividadeId).filter(Boolean));
+    render();
+  }, (error) => {
+    console.error("Não foi possível carregar as entregas para o acompanhamento:", error);
+    showStatus("Não foi possível carregar as entregas do grupo.", true);
+  }));
+
+  stopProgressListeners.push(onSnapshot(collection(db, "grupos", group.id, "etapasProjeto"), (snapshot) => {
+    manualStages = new Map(snapshot.docs.map((item) => [item.id, item.data().concluida === true]));
+    stagesLoaded = true;
+    render();
+  }, (error) => {
+    console.error("Não foi possível carregar as etapas do TCC:", error);
+    showStatus("Não foi possível carregar as etapas. Confira as regras do Firebase.", true);
+  }));
 }
 
 function montarBiblioteca() {

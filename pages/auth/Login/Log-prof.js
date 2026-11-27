@@ -2,6 +2,7 @@ import { auth, db } from "../../../backend/firebase/config.js";
 import { appUrl, navigate } from "../../../backend/navigation.js";
 import { getIdToken, reload, sendEmailVerification, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, getDoc, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { completePendingRegistration } from "../../../backend/auth/pending-registration.js";
 
 // Página para onde o coordenador será enviado
 const PAGINA_COORDENADOR = appUrl("pages/Coordenador/Coord-Index.html");
@@ -82,7 +83,10 @@ async function Formulario(event) {
 
         const usuarioRef = doc(db, "usuarios", user.uid);
 
-        const usuarioDoc = await getDoc(usuarioRef);
+        let usuarioDoc = await getDoc(usuarioRef);
+        if (!usuarioDoc.exists() && await completePendingRegistration(user)) {
+            usuarioDoc = await getDoc(usuarioRef);
+        }
 
 
         if (usuarioDoc.exists()) {
@@ -107,7 +111,7 @@ async function Formulario(event) {
             await updateDoc(usuarioRef, { ultimoAcesso: serverTimestamp() });
         } else {
             await signOut(auth);
-            alert("Esta conta não possui um perfil cadastrado.");
+            alert("Esta conta não possui perfil. Se você acabou de confirmar o e-mail, entre pelo mesmo navegador usado no cadastro para concluir o registro.");
             return;
         }
 

@@ -43,13 +43,40 @@
             <div id="navbar">
                 <button class="navbtn" onclick="window.location.href = 'gp.chat.html'">Chat do Grupo</button>
                 <button class="navbtn" onclick="window.location.href = 'gp-cha-ori.html'">Chat c/Orientador</button>
-                <button class="navbtn" onclick="window.location.href = 'gp.ativ.html'" style="background-color:rgba(236, 60, 60, 0.16) ; color: rgb(236, 60, 60);">Atividades</button>
+                <button class="navbtn ativo" aria-current="page" onclick="window.location.href = 'gp.ativ.html'">Atividades</button>
                 <button class="navbtn" onclick="window.location.href = 'gp.link.html'">Biblioteca</button>
             </div>
 
-            <!-- CONTEÚDO -->
-            <h6>Atividade do Grupo</h6>
-            <section id="lista-atividades-grupo" aria-live="polite"></section>
+            <!-- Atividades e acompanhamento lado a lado -->
+            <h6 class="titulo-atividades-tcc">Atividades e acompanhamento do TCC</h6>
+            <div class="atividades-tcc-layout">
+                <section class="acompanhamento-tcc-grupo" aria-labelledby="titulo-acompanhamento-tcc">
+                    <header class="acompanhamento-cabecalho">
+                        <div>
+                            <p class="acompanhamento-sobretitulo">PROJETO DO GRUPO</p>
+                            <h2 id="titulo-acompanhamento-tcc">Acompanhamento do TCC</h2>
+                            <p>As entregas avançam as etapas vinculadas; as demais podem ser concluídas manualmente.</p>
+                        </div>
+                        <strong id="percentual-progresso-grupo">0%</strong>
+                    </header>
+                    <div id="trilha-progresso-grupo" role="progressbar" aria-label="Progresso integrado do TCC" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                        <div id="barra-progresso-grupo"></div>
+                    </div>
+                    <p id="resumo-progresso-grupo" class="resumo-progresso-grupo">Carregando progresso do TCC...</p>
+                    <p id="status-acompanhamento-grupo" class="status-acompanhamento-grupo" role="status" aria-live="polite"></p>
+                    <div id="lista-etapas-tcc-grupo" class="lista-etapas-tcc-grupo" aria-live="polite"></div>
+                </section>
+                <section class="entrega-atividades-coluna" aria-labelledby="titulo-entregas-grupo">
+                    <header class="entrega-coluna-cabecalho">
+                        <div>
+                            <p class="acompanhamento-sobretitulo">PRAZOS E ENVIOS</p>
+                            <h2 id="titulo-entregas-grupo">Atividades do grupo</h2>
+                            <p>Envie um arquivo ou escreva uma observação para registrar sua entrega.</p>
+                        </div>
+                    </header>
+                    <section id="lista-atividades-grupo" aria-live="polite"></section>
+                </section>
+            </div>
         </div>
     </div>
 </body>
