@@ -1,6 +1,5 @@
 import { auth, db } from "../../../backend/firebase/config.js";
 import { collection, doc, onSnapshot, query, serverTimestamp, setDoc, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-import { PROJECT_STAGES } from "../../shared/project-stages.js";
 
 let stopGroups = null;
 let stopAssignments = [];
@@ -12,7 +11,17 @@ let evaluations = [];
 const evaluationsByGroup = new Map();
 const projectStagesByGroup = new Map();
 const projectStagesLoadedByGroup = new Set();
-const activityStageStatsByGroup = new Map();
+const projectStages = [
+  { id: "tema-problema", titulo: "Definir o tema, o problema e os objetivos do TCC" },
+  { id: "planejamento", titulo: "Organizar cronograma e divisão de tarefas do grupo" },
+  { id: "pesquisa", titulo: "Pesquisar fontes e reunir referências confiáveis" },
+  { id: "introducao-referencial", titulo: "Escrever introdução, justificativa e referencial teórico" },
+  { id: "metodologia", titulo: "Definir a metodologia e desenvolver o projeto" },
+  { id: "resultados-conclusao", titulo: "Registrar resultados e elaborar a conclusão" },
+  { id: "revisao-normas", titulo: "Revisar o texto e as referências conforme as normas da instituição" },
+  { id: "apresentacao", titulo: "Preparar e revisar a apresentação/defesa" },
+  { id: "entrega-final", titulo: "Conferir arquivos e entregar a versão final do TCC" },
+];
 const statusInfo = (status = "no-prazo") => ({
   atraso: ["Atrasado", "status-atraso"],
   atencao: ["Atenção", "status-atencao"],
@@ -112,7 +121,6 @@ function watchEvaluationsForOwnGroups(room) {
 function renderAssignments() {
   stopAssignments.forEach((stop) => stop());
   stopAssignments = [];
-  activityStageStatsByGroup.clear();
   const list = document.getElementById("lista-atividades");
   if (!list) return;
   list.replaceChildren();
@@ -129,35 +137,26 @@ function renderAssignments() {
       const card = document.createElement("article");
       card.className = "atividade-painel";
       appendText(card, "h3", task.titulo || "Atividade do grupo");
-      appendText(card, "p", group.nome || "Grupo", "atividade-grupo");
-      appendText(card, "p", task.descricao || "Sem descrição", "atividade-descricao");
-      const stage = PROJECT_STAGES.find((item) => item.id === task.etapaProjetoId);
-      if (stage) appendText(card, "p", `Etapa do TCC · ${stage.titulo}`, "atividade-etapa");
+      appendText(card, "p", `${group.nome || "Grupo"} · ${task.descricao || "Sem descrição"}`);
       const due = task.dataLimite?.toDate?.() || (task.dataLimite ? new Date(task.dataLimite) : null);
       const isOverdue = due ? due.getTime() < Date.now() : task.status === "atraso";
       const submitted = completedByGroup.get(group.id)?.has(taskId);
-      const deadline = due ? `Prazo · ${due.toLocaleDateString("pt-BR")}` : "Prazo não informado";
-      const meta = document.createElement("div");
-      meta.className = "atividade-meta";
-      appendText(meta, "span", deadline, "atividade-prazo");
-      const deliveryStatus = submitted ? "Entregue" : isOverdue ? "Atrasada" : "Pendente";
-      const statusClass = submitted ? "status-entregue" : isOverdue ? "status-atrasada" : "status-pendente";
-      appendText(meta, "span", deliveryStatus, `atividade-status ${statusClass}`);
-      card.appendChild(meta);
+      const deadline = due ? `Prazo: ${due.toLocaleDateString("pt-BR")}` : "Prazo não informado";
+      appendText(card, "p", `${deadline}${submitted ? " · Entregue" : isOverdue ? " · Atrasada" : " · Pendente"}`);
       list.appendChild(card);
     });
   };
   const assignmentGroups = groups.filter((group) => (group.membros || []).includes(studentUid));
   if (!assignmentGroups.length) {
     appendText(list, "p", "As atividades aparecerão aqui quando seus grupos forem associados.");
-    updateProjectStageStats();
+    updateProgress();
     return;
   }
   assignmentGroups.forEach((group) => {
     const stop = onSnapshot(collection(db, "grupos", group.id, "entregas"), (snapshot) => {
       assignmentsByGroup.set(group.id, snapshot.docs.map((taskDoc) => ({ taskId: taskDoc.id, task: taskDoc.data(), group })).filter(({ task }) => task.tipo !== "envio"));
       renderList();
-      updateProjectStageStats();
+      updateProgress();
     }, (error) => {
       console.error("Não foi possível carregar atividades:", error);
     });
@@ -165,25 +164,23 @@ function renderAssignments() {
     const stopSubmissions = onSnapshot(collection(db, "grupos", group.id, "submissoes"), (snapshot) => {
       completedByGroup.set(group.id, new Set(snapshot.docs.map((item) => item.data()).map((item) => item.atividadeId).filter(Boolean)));
       renderList();
-      updateProjectStageStats();
+      updateProgress();
     }, (error) => console.error("Não foi possível carregar o progresso das entregas:", error));
     stopAssignments.push(stopSubmissions);
   });
 
-  function updateProjectStageStats() {
-    assignmentGroups.forEach((group) => {
-      const stageStats = new Map();
-      const submitted = completedByGroup.get(group.id) || new Set();
-      (assignmentsByGroup.get(group.id) || []).forEach(({ task, taskId }) => {
-        if (!PROJECT_STAGES.some((stage) => stage.id === task.etapaProjetoId)) return;
-        const stats = stageStats.get(task.etapaProjetoId) || { total: 0, entregues: 0 };
-        stats.total += 1;
-        if (submitted.has(taskId)) stats.entregues += 1;
-        stageStats.set(task.etapaProjetoId, stats);
-      });
-      activityStageStatsByGroup.set(group.id, stageStats);
-    });
-    renderProjectChecklist();
+  function updateProgress() {
+    const all = [...assignmentsByGroup.values()].flat();
+    const completed = all.filter(({ taskId, group }) => completedByGroup.get(group.id)?.has(taskId)).length;
+    const percent = all.length ? Math.round(completed / all.length * 100) : 0;
+    const progressLabel = document.querySelector("#Prog-int h2");
+    const progressBar = document.getElementById("barra-progresso2");
+    const progressTrack = document.getElementById("barra-progresso1");
+    const progressCount = document.getElementById("resumo-atividades-entregues");
+    if (progressLabel) progressLabel.textContent = `${percent}%`;
+    if (progressBar) progressBar.style.width = `${percent}%`;
+    if (progressTrack) progressTrack.setAttribute("aria-valuenow", String(percent));
+    if (progressCount) progressCount.textContent = `${completed} de ${all.length} atividades entregues pelo grupo`;
   }
 }
 
@@ -230,27 +227,21 @@ function renderProjectChecklist() {
   }
 
   let allCompleted = 0;
-  const allPossible = ownGroups.length * PROJECT_STAGES.length;
+  const allPossible = ownGroups.length * projectStages.length;
   ownGroups.forEach((group) => {
     const state = projectStagesByGroup.get(group.id) || new Map();
-    const activityStats = activityStageStatsByGroup.get(group.id) || new Map();
     const isLoaded = projectStagesLoadedByGroup.has(group.id);
     const groupName = group.nome || group.nomeProjeto || "Grupo do TCC";
-    const isStageComplete = (stage) => {
-      const linked = activityStats.get(stage.id);
-      if (linked?.total > 0) return linked.entregues === linked.total;
-      return state.get(stage.id) === true;
-    };
-    const completed = PROJECT_STAGES.filter(isStageComplete).length;
+    const completed = projectStages.filter((stage) => state.get(stage.id)).length;
     allCompleted += completed;
-    const percent = Math.round(completed / PROJECT_STAGES.length * 100);
+    const percent = Math.round(completed / projectStages.length * 100);
 
     const card = document.createElement("article");
     card.className = "checklist-grupo";
     const heading = document.createElement("div");
     heading.className = "checklist-grupo-cabecalho";
     appendText(heading, "h3", groupName);
-    appendText(heading, "p", isLoaded ? `${completed} de ${PROJECT_STAGES.length} etapas · ${percent}%` : "Carregando etapas…", "checklist-progresso-texto");
+    appendText(heading, "p", isLoaded ? `${completed} de ${projectStages.length} etapas · ${percent}%` : "Carregando etapas…", "checklist-progresso-texto");
     card.appendChild(heading);
 
     const track = document.createElement("div");
@@ -268,24 +259,16 @@ function renderProjectChecklist() {
 
     const stagesList = document.createElement("ul");
     stagesList.className = "checklist-etapas";
-    PROJECT_STAGES.forEach((stage) => {
+    projectStages.forEach((stage) => {
       const row = document.createElement("li");
       const label = document.createElement("label");
       const checkbox = document.createElement("input");
       checkbox.type = "checkbox";
-      const linked = activityStats.get(stage.id);
-      const activityComplete = Boolean(linked && linked.total > 0 && linked.entregues === linked.total);
-      checkbox.checked = isStageComplete(stage);
-      checkbox.disabled = !isLoaded || Boolean(linked);
+      checkbox.checked = state.get(stage.id) === true;
+      checkbox.disabled = !isLoaded;
       checkbox.setAttribute("aria-label", `${stage.titulo} — ${groupName}`);
       const text = document.createElement("span");
-      text.className = "checklist-etapa-texto";
-      appendText(text, "span", stage.titulo);
-      if (linked) {
-        appendText(text, "small", activityComplete
-          ? `Atividades vinculadas concluídas (${linked.entregues}/${linked.total})`
-          : `Atividades vinculadas entregues: ${linked.entregues}/${linked.total}`);
-      }
+      text.textContent = stage.titulo;
       label.append(checkbox, text);
       row.appendChild(label);
       stagesList.appendChild(row);

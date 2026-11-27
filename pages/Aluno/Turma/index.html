@@ -76,23 +76,34 @@
                 <button class="seta-grupos" id="seta-dir" onclick="scrollGrupos(1)">&#10095;</button>
             </div>
 
-            <!-- Progresso principal do TCC -->
+            <!--Atividades e Entregas-->
+            
+            <h1 style="color: var(--cor-texto-secundario); margin-left: 8px; font-family: 'arial', sans-serif; font-weight: 200; letter-spacing: 1.2px; font-size: 32px; margin-bottom: 0px; font-weight: 100; margin-top: 30px;">
+                Atividades e Entregas</h1>
+            <div id="Progresso">
+                <div id="Prog-int" style="padding-right: 20px;">
+                    <h1>Atividades entregues</h1>
+                    <h2 style="margin-left: auto;">—</h2>
+                </div>
+                <div id="barra-progresso1" role="progressbar" aria-label="Atividades entregues pelo grupo" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                    <div id="barra-progresso2"></div>
+                </div>
+                <p id="resumo-atividades-entregues" class="resumo-atividades-entregues">Calculando entregas do grupo...</p>
+            </div>
+
+            <div id="lista-atividades" aria-live="polite"></div>
             <section class="checklist-projeto" aria-labelledby="titulo-checklist-projeto">
                 <div class="checklist-cabecalho">
                     <div>
                         <p class="checklist-sobretitulo">ACOMPANHAMENTO DO TCC</p>
-                        <h1 id="titulo-checklist-projeto">Progresso do TCC</h1>
-                        <p>O avanço das atividades vinculadas atualiza as etapas automaticamente. Etapas sem atividade podem ser concluídas manualmente; confirme as exigências específicas com o orientador.</p>
+                        <h1 id="titulo-checklist-projeto">Etapas até a entrega final</h1>
+                        <p>Checklist base para o grupo acompanhar o projeto. Marcar uma etapa atualiza o avanço para todos os integrantes; confirme as exigências específicas com o orientador.</p>
                     </div>
                     <strong id="resumo-checklist-aluno">Carregando checklist...</strong>
                 </div>
                 <p id="status-checklist-aluno" class="status-checklist-aluno" role="status" aria-live="polite"></p>
                 <div id="lista-checklist-projeto" class="lista-checklist-projeto" aria-live="polite"></div>
             </section>
-
-            <!-- Atividades e Entregas -->
-            <h1 class="titulo-secao-turma">Atividades e entregas</h1>
-            <div id="lista-atividades" aria-live="polite"></div>
             <h1 class="titulo-avaliacoes">Avaliações e feedbacks</h1>
             <div id="lista-avaliacoes-aluno" aria-live="polite"></div>
         </div>

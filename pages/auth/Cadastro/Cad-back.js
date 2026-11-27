@@ -1,9 +1,8 @@
 import { auth, db } 
 from "../../../backend/firebase/config.js";
 import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { arrayUnion, doc, getDoc, increment, serverTimestamp, writeBatch } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { parseClassCode } from "../../../backend/auth/validation.js";
-import { savePendingRegistration } from "../../../backend/auth/pending-registration.js";
 
 //Navegação
 window.Entraralpr = function () {
@@ -48,8 +47,12 @@ async function Formulario(event) {
         return;
     }
 
+    let usedAccessCodeRef = null;
     let accessCodeId = null;
+    let classInfo = null;
+    let classRooms = [];
     let attemptedRecovery = false;
+    let profileWriteFailed = false;
     try {
         // Os cadastros de alunos e professores exigem um código ativo emitido
         // pela coordenação. Contas de coordenador são criadas pela administração.
@@ -61,7 +64,7 @@ async function Formulario(event) {
             const roomsFromInvite = tipo === "professor" && Array.isArray(code?.codigoSalas)
                 ? code.codigoSalas
                 : [code?.codigoSala];
-            const classRooms = [...new Set(roomsFromInvite.filter(Boolean))];
+            classRooms = [...new Set(roomsFromInvite.filter(Boolean))];
             const parsedRooms = classRooms.map(parseClassCode);
             if (!code || code.codigo !== validCode.id || code.revogado || (expiry && expiry < now)
                 || (code.tipo !== tipo && code.tipo !== "ambos") || !classRooms.length
@@ -72,8 +75,12 @@ async function Formulario(event) {
                 alert("Convite inválido, expirado, já utilizado ou incompatível com o tipo de conta.");
                 return;
             }
+            classInfo = parsedRooms[0];
             accessCodeId = validCode.id;
+            usedAccessCodeRef = validCode.ref;
         }
+
+        const { code: codigoSala, courseName: nomeCursoCompleto, year: ano } = classInfo;
         
         let userCredential;
         try {
@@ -99,9 +106,59 @@ async function Formulario(event) {
             }
         }
         const user = userCredential.user;
-        // Guardamos o convite localmente. O uso só é contabilizado depois que
-        // o usuário confirma o e-mail e conclui o primeiro login.
-        savePendingRegistration({ uid: user.uid, email, nome, tipo, codigoAcessoId: accessCodeId });
+
+        const prefixo = email.split("@")[0];
+        const partes = prefixo.split(".");
+        let iniciais = partes.length >= 2 
+            ? partes[0].charAt(0).toUpperCase() + partes[1].charAt(0).toUpperCase()
+            : prefixo.substring(0, 2).toUpperCase();
+
+        // 4. Salvar o perfil. Um coordenador tem escopo global e não recebe codigoSala.
+        const userData = {
+            uid: user.uid,
+            nome: nome,
+            email: email,
+            tipo: tipo,
+            iniciais: iniciais,
+            dataCadastro: new Date().toISOString()
+        };
+
+        if (accessCodeId) {
+            userData.codigoAcessoId = accessCodeId;
+            userData.codigoAcessoIds = [accessCodeId];
+        }
+
+        if (tipo === "aluno") {
+            userData.codigoSala = codigoSala;
+            userData.codigoSalas = [codigoSala];
+            userData.curso = nomeCursoCompleto;
+            userData.ano = ano + "º Ano";
+        } else if (tipo === "professor") {
+            userData.codigoSala = codigoSala;
+            userData.codigoSalas = classRooms;
+            userData.curso = classRooms.map((room) => parseClassCode(room).courseName).join(", ");
+        } else {
+            userData.escopo = "global";
+            userData.curso = "Coordenação global";
+        }
+
+        try {
+            const batch = writeBatch(db);
+            batch.set(doc(db, "usuarios", user.uid), userData);
+            if (usedAccessCodeRef) batch.update(usedAccessCodeRef, {
+                usos: increment(1),
+                usadosPor: arrayUnion(user.uid),
+                ultimoUso: serverTimestamp()
+            });
+            await batch.commit();
+        } catch (profileError) {
+            profileWriteFailed = true;
+            await signOut(auth);
+            throw profileError;
+        }
+
+        // O perfil é criado como pendente. As regras de acesso por papel exigem
+        // email_verified; enviamos o link e encerramos a sessão até a confirmação.
         try {
             await sendEmailVerification(user);
         } finally {
@@ -121,6 +178,13 @@ async function Formulario(event) {
         }
         if (attemptedRecovery && error.code === "auth/invalid-credential") {
             alert("Este e-mail já possui uma conta. A senha informada não confere; use a tela de login ou recupere a senha.");
+            return;
+        }
+        if (profileWriteFailed) {
+            const detail = error.code === "permission-denied"
+                ? "O Firestore recusou o cadastro. Verifique se o convite está ativo e se as regras publicadas permitem esse cadastro."
+                : `Código do erro: ${error.code || "desconhecido"}.`;
+            alert(`A conta de autenticação foi criada, mas o perfil não foi salvo. ${detail}`);
             return;
         }
         if (error.code === "auth/invalid-email") {

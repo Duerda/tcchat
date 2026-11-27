@@ -1,7 +1,6 @@
 import { auth, db } from "../../../backend/firebase/config.js";
 import { getIdToken, reload, sendEmailVerification, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, getDoc, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-import { completePendingRegistration } from "../../../backend/auth/pending-registration.js";
 
 window.Professor = function () {
     window.location.href = "Log-Prof.html";
@@ -55,10 +54,7 @@ async function Formulario(event) {
         await getIdToken(user, true);
         
         // 2. VERIFICAÇÃO CRUCIAL: Checar se o usuário existe no Banco de Dados (Firestore)
-        let userDoc = await getDoc(doc(db, "usuarios", user.uid));
-        if (!userDoc.exists() && await completePendingRegistration(user)) {
-            userDoc = await getDoc(doc(db, "usuarios", user.uid));
-        }
+        const userDoc = await getDoc(doc(db, "usuarios", user.uid));
         
         if (userDoc.exists()) {
             const userData = userDoc.data();
@@ -86,7 +82,7 @@ async function Formulario(event) {
         } else {
             // SE NÃO EXISTE NO BANCO, DESLOGA E NEGA O ACESSO
             await signOut(auth);
-            alert("Esta conta não possui perfil. Se você acabou de confirmar o e-mail, entre pelo mesmo navegador usado no cadastro para concluir o registro.");
+            alert("ERRO: Esta conta não possui um perfil registrado no sistema. Entre em contato com o administrador.");
         }
         
     } catch (error) {
