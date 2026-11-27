@@ -651,3 +651,12 @@ h6 {
     .atividade-card-cabecalho { flex-wrap: wrap; }
     .entrega-form button { width: 100%; justify-self: stretch; }
 }
+.estado-vazio {
+    margin: 12px 0;
+    padding: 14px 16px;
+    border: 1px solid var(--cor-borda);
+    border-left: 3px solid var(--cor-vermelho);
+    border-radius: 8px;
+    background: var(--cor-fundo-secundario);
+    color: var(--cor-texto-secundario);
+}

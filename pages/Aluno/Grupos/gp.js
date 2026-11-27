@@ -40,7 +40,17 @@ async function carregarGrupo() {
   }
   if (subtitle) subtitle.textContent = group.nome || group.nomeProjeto || "Meu grupo";
   const chat = $("chat");
-  if (chat) montarChat(chat, location.pathname.includes("gp-cha-ori"));
+  const isAdvisorChat = location.pathname.includes("gp-cha-ori");
+  const advisorAssigned = Boolean(group.orientadorUid || (group.orientador && group.orientador !== "A definir"));
+  if (chat && isAdvisorChat && !advisorAssigned) {
+    chat.replaceChildren();
+    const status = document.createElement("p");
+    status.className = "estado-vazio";
+    status.textContent = "O grupo ainda não tem um orientador designado. O chat ficará disponível após a atribuição.";
+    chat.appendChild(status);
+    return;
+  }
+  if (chat) montarChat(chat, isAdvisorChat);
   if ($("lista-atividades-grupo")) montarAtividades();
   if ($("lista-etapas-tcc-grupo")) montarAcompanhamentoTCC();
   if ($("arquivos")) montarBiblioteca();
@@ -181,8 +191,8 @@ function montarAtividades() {
         if (!file && !note) { status.textContent = "Anexe um arquivo ou escreva uma observação."; return; }
         const button = form.querySelector("button");
         button.disabled = true;
+        let arquivoPath = "";
         try {
-          let arquivoPath = "";
           if (file) {
             const extensao = file.name.match(/\.[^.]+$/)?.[0]?.toLowerCase() || "";
             const tipoMime = TIPOS_ARQUIVO.get(extensao);
@@ -209,6 +219,14 @@ function montarAtividades() {
           form.reset();
         } catch (error) {
           console.error("Erro ao enviar atividade:", error);
+          if (arquivoPath) {
+            try {
+              const { error: cleanupError } = await supabase.storage.from(SUPABASE_STORAGE_BUCKET).remove([arquivoPath]);
+              if (cleanupError) console.error("Não foi possível remover o arquivo da submissão incompleta:", cleanupError);
+            } catch (cleanupError) {
+              console.error("Não foi possível remover o arquivo da submissão incompleta:", cleanupError);
+            }
+          }
           status.textContent = error.message === "tipo_arquivo_nao_permitido"
             ? "Tipo de arquivo não permitido. Envie PDF, DOC, DOCX, ODT, ZIP, PNG ou JPG."
             : error.message === "arquivo_maior_que_25mb"

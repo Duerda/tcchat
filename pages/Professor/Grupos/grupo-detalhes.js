@@ -12,6 +12,7 @@ import {
 
 import { db } from "../../../backend/firebase/config.js";
 import { fillHeader, navigate, requireProfessor } from "../../../backend/firebase/professor.js";
+import { profileRooms } from "../../../backend/firebase/rooms.js";
 
 const params = new URLSearchParams(window.location.search);
 const grupoId = params.get("id");
@@ -75,7 +76,7 @@ async function carregarGrupo() {
         }
 
         const groupData = snap.data();
-        if (!perfilAtual?.codigoSala || groupData.codigoSala !== perfilAtual.codigoSala) {
+        if (!profileRooms(perfilAtual || {}).includes(groupData.codigoSala)) {
             painel.textContent = "Acesso negado: este grupo não pertence à sua turma.";
             return;
         }
@@ -251,6 +252,9 @@ function iniciarChat() {
         });
 
         mensagensDiv.scrollTop = mensagensDiv.scrollHeight;
+    }, (erro) => {
+        console.error("Erro ao carregar mensagens do grupo:", erro);
+        mensagensDiv.textContent = "Não foi possível carregar as mensagens desta conversa.";
     });
 
     botao.addEventListener("click", async () => {
@@ -326,6 +330,9 @@ function carregarAnotacoes() {
             div.appendChild(texto);
             lista.appendChild(div);
         });
+    }, (erro) => {
+        console.error("Erro ao carregar anotações do grupo:", erro);
+        lista.textContent = "Não foi possível carregar as anotações.";
     });
 }
 
@@ -345,6 +352,9 @@ function carregarArquivos() {
             lista.appendChild(link);
             lista.appendChild(document.createElement("br"));
         });
+    }, (erro) => {
+        console.error("Erro ao carregar arquivos do grupo:", erro);
+        lista.textContent = "Não foi possível carregar os arquivos.";
     });
 }
 
@@ -371,6 +381,9 @@ function carregarEntregas() {
             item.textContent = `${entrega.titulo || "Entrega"}: ${entrega.descricao || ""}`;
             lista.appendChild(item);
         });
+    }, (erro) => {
+        console.error("Erro ao carregar atividades do grupo:", erro);
+        lista.textContent = "Não foi possível carregar as atividades e entregas.";
     });
 }
 
