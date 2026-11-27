@@ -62,6 +62,11 @@ function montarChat(container, orientador) {
   send.textContent = "Enviar";
   form.append(input, send);
   container.append(list, form);
+  input.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" || event.shiftKey || event.isComposing) return;
+    event.preventDefault();
+    if (!send.disabled) form.requestSubmit(send);
+  });
   stopListener?.();
   const messagesRef = collection(db, "grupos", group.id, "mensagens");
   const currentChatType = orientador ? "orientador" : "grupo";
@@ -74,10 +79,16 @@ function montarChat(container, orientador) {
         : currentChatType === "grupo")
       .sort((a, b) => (a.criadoEm?.toMillis?.() || 0) - (b.criadoEm?.toMillis?.() || 0));
     messages.forEach((message) => {
-      const line = document.createElement("p");
+      const propria = (message.uid || message.autorUid) === session.user.uid;
+      const line = document.createElement("article");
+      line.className = `mensagem-chat ${propria ? "mensagem-chat--propria" : "mensagem-chat--outra"}`;
       const author = document.createElement("strong");
-      author.textContent = `${message.nome || message.autor || "Integrante"}: `;
-      line.append(author, document.createTextNode(message.texto || ""));
+      author.className = "mensagem-chat__autor";
+      author.textContent = propria ? "Você" : (message.nome || message.autor || "Integrante");
+      const text = document.createElement("p");
+      text.className = "mensagem-chat__texto";
+      text.textContent = message.texto || "";
+      line.append(author, text);
       list.appendChild(line);
     });
     list.scrollTop = list.scrollHeight;

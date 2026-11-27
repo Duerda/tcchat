@@ -248,17 +248,44 @@ h1, h2, h3, h4, h5, h6 { font-family: "Franklin Gothic Medium", "Arial Narrow", 
     overflow-y: auto; 
 }
 
-#lista-mensagens > div, #c1 {
+.mensagem-chat {
     width: fit-content;
     max-width: 80%;
     background-color: rgb(22, 29, 42);
     border: 1px solid var(--cor-borda);
     border-radius: 12px;
-    padding: 15px 20px;
+    padding: 10px 15px;
     color: var(--cor-texto);
     font-size: 16px;
     font-family: arial;
     line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.mensagem-chat--propria {
+    align-self: flex-end;
+    background: var(--cor-vermelho);
+    border-color: var(--cor-vermelho);
+    color: var(--cor-branco);
+}
+
+.mensagem-chat--outra { align-self: flex-start; }
+
+.mensagem-chat__autor {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--cor-texto-secundario);
+    font-size: 12px;
+}
+
+.mensagem-chat--propria .mensagem-chat__autor { color: var(--cor-branco); }
+
+.mensagem-chat__texto {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    color: inherit !important;
+    white-space: pre-wrap;
 }
 
 .chat-form {

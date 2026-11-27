@@ -17,16 +17,11 @@ const note = document.getElementById("nota");
 const feedback = document.getElementById("feedback");
 const queue = document.getElementById("fila-avaliacoes");
 const selectedLabel = document.getElementById("entrega-selecionada");
-const history = document.getElementById("historico-avaliacoes");
-let currentUser;
 let groups = [];
 let evaluations = [];
 let selectedSubmission = null;
 let submissionListeners = [];
 const submissionsByGroup = new Map();
-
-window.Cadastrar = () => history?.scrollIntoView({ behavior: "smooth" });
-window.Pendentes = () => queue?.scrollIntoView({ behavior: "smooth" });
 
 function node(tag, value, className = "") {
   const element = document.createElement(tag);
@@ -42,26 +37,6 @@ function formatDate(value) {
 
 function evaluatedIds() {
   return new Set(evaluations.map((item) => item.submissionId).filter(Boolean));
-}
-
-function renderHistory() {
-  if (!history) return;
-  history.replaceChildren();
-  const authored = evaluations
-    .filter((item) => item.professorUid === currentUser?.uid)
-    .sort((a, b) => (b.data?.toMillis?.() || 0) - (a.data?.toMillis?.() || 0));
-  if (!authored.length) {
-    history.appendChild(node("p", "Você ainda não registrou avaliações."));
-    return;
-  }
-  authored.forEach((item) => {
-    const row = document.createElement("article");
-    row.className = "avaliacao-historico";
-    row.append(node("h3", `${item.grupoNome || "Grupo"} · ${item.nota}/10`));
-    row.append(node("p", item.feedback || "Sem feedback registrado."));
-    row.append(node("small", formatDate(item.data)));
-    history.appendChild(row);
-  });
 }
 
 function selectSubmission(submission) {
@@ -159,7 +134,6 @@ function watchSubmissions() {
 }
 
 requireProfessor((user, profile) => {
-  currentUser = user;
   fillHeader(profile);
   const rooms = profileRooms(profile);
   if (!rooms.length) {
@@ -179,10 +153,8 @@ requireProfessor((user, profile) => {
   onSnapshot(query(collection(db, "avaliacoes"), roomConstraint), (snapshot) => {
     evaluations = snapshot.docs.map((item) => item.data());
     renderQueue();
-    renderHistory();
   }, (error) => {
     console.error("Não foi possível carregar avaliações:", error);
-    if (history) history.textContent = "Não foi possível carregar o histórico.";
   });
 
   form?.addEventListener("submit", async (event) => {

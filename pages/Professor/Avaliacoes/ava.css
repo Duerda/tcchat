@@ -269,16 +269,6 @@ div {
    FORMULÁRIO
 ========================= */
 
-#EnCad {
-    background-color: var(--cor-fundo-secundario);
-    border-radius: 8px;
-    display: flex;
-    padding: 5px;
-    margin-bottom: 25px;
-    width: 400px;
-    border: 1px solid var(--cor-borda);
-}
-
 .Estado {
     background: var(--cor-verde-transparente);
     color: var(--cor-verde);
@@ -287,32 +277,6 @@ div {
     text-align: center;
     font-size: 14px;
     font-weight: bold;
-}
-
-#Entrar, #Cadastrar {
-    flex: 1;
-    height: 42px;
-    color: var(--cor-texto-secundario);
-    border-radius: 6px;
-    border: none;
-    font-size: 15px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-#Entrar {
-    background: var(--cor-fundo-hover);
-    color: var(--cor-texto);
-    font-weight: bold;
-}
-
-#Cadastrar {
-    background: transparent;
-}
-
-#Cadastrar:hover {
-    background: var(--cor-fundo-hover);
-    color: var(--cor-texto);
 }
 
 /* =========================
@@ -336,10 +300,10 @@ div {
 
 .fila-avaliacoes-wrap { margin-bottom: 24px; }
 .fila-avaliacoes-wrap h2 { color: var(--cor-texto); font-size: 23px; }
-.avaliacao-pendente, .avaliacao-historico { background: var(--cor-fundo-secundario); border: 1px solid var(--cor-borda); border-radius: 10px; padding: 18px; margin: 12px 0; }
-.avaliacao-pendente h3, .avaliacao-historico h3 { margin: 0 0 8px; color: var(--cor-texto); }
-.avaliacao-pendente p, .avaliacao-historico p { color: var(--cor-texto-secundario); white-space: pre-wrap; }
-.avaliacao-pendente small, .avaliacao-historico small { color: var(--cor-texto-fraco); }
+.avaliacao-pendente { background: var(--cor-fundo-secundario); border: 1px solid var(--cor-borda); border-radius: 10px; padding: 18px; margin: 12px 0; }
+.avaliacao-pendente h3 { margin: 0 0 8px; color: var(--cor-texto); }
+.avaliacao-pendente p { color: var(--cor-texto-secundario); white-space: pre-wrap; }
+.avaliacao-pendente small { color: var(--cor-texto-fraco); }
 .avaliacao-pendente-acoes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 #entrega-selecionada { color: var(--cor-texto); }
 

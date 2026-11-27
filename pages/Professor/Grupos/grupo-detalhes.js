@@ -237,11 +237,16 @@ function iniciarChat() {
             if (mensagem.chatTipo && mensagem.chatTipo !== tipoChatAtual) return;
             if (!mensagem.chatTipo && tipoChatAtual !== "grupo") return;
 
-            const div = document.createElement("div");
-            const ehProfessor = mensagem.uid === usuarioAtual?.uid;
-
-            div.className = ehProfessor ? "mensagem professor" : "mensagem aluno";
-            div.textContent = mensagem.texto || "";
+            const div = document.createElement("article");
+            const propria = mensagem.uid === usuarioAtual?.uid;
+            div.className = `mensagem-chat ${propria ? "mensagem-chat--propria" : "mensagem-chat--outra"}`;
+            const autor = document.createElement("strong");
+            autor.className = "mensagem-chat__autor";
+            autor.textContent = propria ? "Você" : (mensagem.nome || mensagem.autor || "Integrante");
+            const texto = document.createElement("p");
+            texto.className = "mensagem-chat__texto";
+            texto.textContent = mensagem.texto || "";
+            div.append(autor, texto);
             mensagensDiv.appendChild(div);
         });
 
@@ -256,6 +261,7 @@ function iniciarChat() {
             await addDoc(mensagensRef, {
                 texto: texto,
                 uid: usuarioAtual.uid,
+                nome: perfilAtual?.nome || "Professor",
                 autor: "professor",
                 chatTipo: tipoChatAtual,
                 criadoEm: serverTimestamp()
@@ -266,6 +272,12 @@ function iniciarChat() {
             console.error("Erro ao enviar mensagem:", erro);
             alert("Não foi possível enviar a mensagem.");
         }
+    });
+
+    campo.addEventListener("keydown", (evento) => {
+        if (evento.key !== "Enter" || evento.shiftKey || evento.isComposing) return;
+        evento.preventDefault();
+        if (!botao.disabled) botao.click();
     });
 }
 
