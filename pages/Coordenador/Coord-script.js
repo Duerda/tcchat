@@ -25,6 +25,7 @@ let stopUsers;
 let stopRoomSources = [];
 let groupToDelete;
 let creationRoomCode = "";
+let creationLoadToken = 0;
 let creationStudents = [];
 let creationAdvisors = [];
 let selectedCreationStudentIds = new Set();
@@ -210,6 +211,7 @@ function loadUsers() {
   const clearCodeFilters = document.getElementById("limpar-filtros-codigos");
   const codeFilterSummary = document.getElementById("resumo-filtros-codigos");
   let accessCodes = [];
+  let activeUserRole = "";
   if (codeRows) codeRows.replaceChildren();
   if (studentRows) studentRows.replaceChildren();
   if (teacherRows) teacherRows.replaceChildren();
@@ -223,8 +225,10 @@ function loadUsers() {
   const updateFilterOptions = () => {
     const selectedCourse = courseFilter?.value || "";
     const selectedSeries = seriesFilter?.value || "";
-    const selectedProfile = profileFilter?.value || "";
-    const people = [...userRecords.alunos, ...userRecords.professores].map((item) => item.data());
+    const peopleRecords = activeUserRole === "aluno" ? userRecords.alunos
+      : activeUserRole === "professor" ? userRecords.professores
+        : [...userRecords.alunos, ...userRecords.professores];
+    const people = peopleRecords.map((item) => item.data());
     const courses = [...new Set([...Object.values(COURSE_NAMES), ...people.flatMap(getCourses)])].sort((a, b) => a.localeCompare(b, "pt-BR"));
     const series = [...new Set(["1", "2", "3", ...people.flatMap(getSeries)])].sort((a, b) => Number(a) - Number(b));
     if (courseFilter) {
@@ -237,7 +241,18 @@ function loadUsers() {
       series.forEach((item) => seriesFilter.add(new Option(`${item}ª série`, item)));
       seriesFilter.value = series.includes(selectedSeries) ? selectedSeries : "";
     }
-    if (profileFilter) profileFilter.value = ["", "aluno", "professor"].includes(selectedProfile) ? selectedProfile : "";
+    if (profileFilter) {
+      if (activeUserRole) {
+        const roleLabel = activeUserRole === "aluno" ? "Alunos" : "Professores";
+        profileFilter.replaceChildren(new Option(roleLabel, activeUserRole));
+        profileFilter.value = activeUserRole;
+        profileFilter.disabled = true;
+      } else {
+        profileFilter.replaceChildren(new Option("Alunos e professores", ""), new Option("Alunos", "aluno"), new Option("Professores", "professor"));
+        profileFilter.value = "";
+        profileFilter.disabled = false;
+      }
+    }
   };
   const renderFilteredUsers = () => {
     const selectedCourse = courseFilter?.value || "";
@@ -249,13 +264,14 @@ function loadUsers() {
         && (!selectedSeries || getSeries(data).includes(selectedSeries))
         && (!selectedProfile || data.tipo === selectedProfile);
     };
-    const students = userRecords.alunos.filter(filter);
-    const teachers = userRecords.professores.filter(filter);
+    const students = activeUserRole === "professor" ? [] : userRecords.alunos.filter(filter);
+    const teachers = activeUserRole === "aluno" ? [] : userRecords.professores.filter(filter);
     renderUserRows(studentRows, students, "aluno");
     renderUserRows(teacherRows, teachers, "professor");
     if (filterSummary) {
       const total = students.length + teachers.length;
-      filterSummary.textContent = `${total} usuário${total === 1 ? "" : "s"} encontrado${total === 1 ? "" : "s"}`;
+      const noun = activeUserRole === "aluno" ? "aluno" : activeUserRole === "professor" ? "professor" : "usuário";
+      filterSummary.textContent = `${total} ${noun}${total === 1 ? "" : "s"} encontrado${total === 1 ? "" : "s"}`;
     }
   };
   const onFilterChange = () => renderFilteredUsers();
@@ -265,12 +281,15 @@ function loadUsers() {
   clearFilters?.addEventListener("click", () => {
     if (courseFilter) courseFilter.value = "";
     if (seriesFilter) seriesFilter.value = "";
-    if (profileFilter) profileFilter.value = "";
+    if (profileFilter && !activeUserRole) profileFilter.value = "";
     renderFilteredUsers();
   });
   document.querySelectorAll("#EnCad .aba").forEach((button) => button.addEventListener("click", () => {
     if (filters) filters.hidden = button.id === "aba-codigos";
     if (codeFilters) codeFilters.hidden = button.id !== "aba-codigos";
+    activeUserRole = button.id === "aba-alunos" ? "aluno" : button.id === "aba-professores" ? "professor" : "";
+    updateFilterOptions();
+    renderFilteredUsers();
   }));
   if (filters) filters.hidden = true;
   if (codeFilters) codeFilters.hidden = false;
@@ -362,14 +381,13 @@ function renderUserRows(tbody, records, role) {
   records.forEach((record) => {
     const data = record.data();
     const row = document.createElement("tr");
-    const status = data.usuarioRemovido
-      ? "Removido do sistema"
-      : data.acessoAtivo === false
-        ? "Acesso revogado"
-        : data.ultimoAcesso?.toDate?.().toLocaleString("pt-BR") || "Ainda não entrou";
-    const actions = data.usuarioRemovido
-      ? `<button class="btn-tabela" data-restore="${record.id}">Restaurar</button>`
-      : `<button class="btn-tabela" data-edit="${record.id}">Editar</button>${role === "professor" ? `<button class="btn-tabela" data-rooms="${record.id}">Turmas</button>` : ""}<button class="btn-tabela vermelho" data-remove="${record.id}">Excluir</button>`;
+    const accessCanceled = data.usuarioRemovido || data.acessoAtivo === false;
+    const status = accessCanceled
+      ? "Acesso cancelado"
+      : data.ultimoAcesso?.toDate?.().toLocaleString("pt-BR") || "Ainda não entrou";
+    const actions = accessCanceled
+      ? `<button class="btn-tabela" data-restore="${record.id}">Reativar acesso</button>`
+      : `<button class="btn-tabela" data-edit="${record.id}">Editar</button>${role === "professor" ? `<button class="btn-tabela" data-rooms="${record.id}">Turmas</button>` : ""}<button class="btn-tabela vermelho" data-remove="${record.id}">Cancelar acesso</button>`;
     const courseLabel = role === "professor" ? (data.codigoSalas || [data.codigoSala]).filter(Boolean).join(", ") : data.curso || "";
     row.innerHTML = `<td>${safe(data.nome || data.email || "Usuário")}</td><td>${safe(courseLabel)}</td><td>${safe(data.grupoNome || "—")}</td><td>${safe(status)}</td><td>${actions}</td>`;
     row.querySelector("[data-edit]")?.addEventListener("click", () => editUser(record.id, data));
@@ -424,31 +442,14 @@ async function editUser(id, currentData) {
 
 async function removeUser(id, currentData) {
   const name = currentData.nome || currentData.email || "este usuário";
-  if (!confirm(`Excluir ${name} do sistema? O acesso será desativado e o cadastro poderá ser restaurado depois.`)) return;
+  if (!confirm(`Cancelar o acesso de ${name}? O cadastro será mantido e poderá ser reativado depois.`)) return;
   try {
-    const updates = {
-      usuarioRemovido: true,
+    await updateDoc(doc(db, "usuarios", id), {
       acessoAtivo: false,
       removidoEm: serverTimestamp(),
       removidoPor: user.uid,
-      grupoId: null,
-      grupoNome: null,
-    };
-    const batch = writeBatch(db);
-    batch.update(doc(db, "usuarios", id), updates);
-    if (currentData.grupoId) {
-      const groupRef = doc(db, "grupos", currentData.grupoId);
-      const groupSnapshot = await getDoc(groupRef);
-      if (groupSnapshot.exists()) {
-        const group = groupSnapshot.data();
-        const memberIds = (group.membros || []).filter((memberId) => memberId !== id);
-        const oldName = currentData.nome || currentData.email || "";
-        const memberNames = (group.integrantes || group.nomesMembros || []).filter((memberName) => memberName !== oldName);
-        batch.update(groupRef, { membros: memberIds, integrantes: memberNames, nomesMembros: memberNames });
-      }
-    }
-    await batch.commit();
-  } catch (error) { reportError("Não foi possível excluir o usuário.", error); }
+    });
+  } catch (error) { reportError("Não foi possível cancelar o acesso do usuário.", error); }
 }
 
 async function restoreUser(id) {
@@ -657,12 +658,27 @@ function loadGroupsByRoom() {
 }
 
 window.abrirModalCriarGrupo = async () => {
-  const roomCode = requestRoomCode();
-  if (!roomCode) return;
+  const roomSelect = document.getElementById("inp-turma-grupo");
+  const roomCode = roomSelect?.value || "";
   const modal = document.getElementById("modal-criar-grupo");
   const list = document.getElementById("lista-selecao-alunos");
   const roomLabel = document.getElementById("turma-selecao-alunos");
+  if (modal) modal.style.display = "flex";
+  if (!roomCode) {
+    creationLoadToken += 1;
+    creationRoomCode = "";
+    creationStudents = [];
+    creationAdvisors = [];
+    selectedCreationStudentIds = new Set();
+    list?.replaceChildren();
+    if (roomLabel) roomLabel.textContent = "Escolha a turma para carregar os alunos.";
+    updateSelectedStudents();
+    const advisorSelect = document.getElementById("inp-orientador");
+    if (advisorSelect) advisorSelect.replaceChildren(new Option("A definir", ""));
+    return;
+  }
   creationRoomCode = roomCode;
+  const loadToken = ++creationLoadToken;
   creationStudents = [];
   creationAdvisors = [];
   selectedCreationStudentIds = new Set();
@@ -675,7 +691,6 @@ window.abrirModalCriarGrupo = async () => {
   if (advisorSelect) advisorSelect.value = "";
   if (roomLabel) roomLabel.textContent = `Alunos da turma ${roomCode}`;
   updateSelectedStudents();
-  if (modal) modal.style.display = "flex";
   if (list) {
     const loading = document.createElement("p");
     loading.textContent = "Carregando alunos…";
@@ -685,6 +700,7 @@ window.abrirModalCriarGrupo = async () => {
     const [people, groups] = await Promise.all([
       getDocs(classQuery("usuarios")), getDocs(queryForRoom("grupos", roomCode)),
     ]);
+    if (loadToken !== creationLoadToken || roomCode !== creationRoomCode) return;
     const assignedIds = new Set(groups.docs.flatMap((group) => group.data().membros || []));
     creationStudents = people.docs
       .filter((item) => item.data().tipo === "aluno" && item.data().codigoSala === roomCode)
@@ -697,11 +713,23 @@ window.abrirModalCriarGrupo = async () => {
       .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
     renderAdvisorChoices();
   } catch (error) {
+    if (loadToken !== creationLoadToken) return;
     reportError("Não foi possível carregar os alunos desta turma.", error);
     if (list) list.textContent = "Falha ao carregar alunos.";
   }
 };
-window.fecharModalCriarGrupo = () => { const modal = document.getElementById("modal-criar-grupo"); if (modal) modal.style.display = "none"; };
+window.fecharModalCriarGrupo = () => {
+  const modal = document.getElementById("modal-criar-grupo");
+  if (modal) modal.style.display = "none";
+  creationLoadToken += 1;
+  document.getElementById("form-criar-grupo")?.reset();
+  creationRoomCode = "";
+  creationStudents = [];
+  creationAdvisors = [];
+  selectedCreationStudentIds = new Set();
+  document.getElementById("lista-selecao-alunos")?.replaceChildren();
+  updateSelectedStudents();
+};
 
 function updateSelectedStudents() {
   const selectedCount = selectedCreationStudentIds.size;
@@ -763,17 +791,25 @@ function renderStudentChoices() {
 
 document.getElementById("busca-alunos")?.addEventListener("input", renderStudentChoices);
 document.getElementById("busca-orientadores")?.addEventListener("input", renderAdvisorChoices);
+document.getElementById("inp-turma-grupo")?.addEventListener("change", () => window.abrirModalCriarGrupo());
 window.criarGrupo = async (event) => {
   event?.preventDefault();
+  const submitButton = document.getElementById("btn-confirmar-criar-grupo");
+  if (submitButton?.disabled) return;
+  const roomCode = document.getElementById("inp-turma-grupo")?.value || "";
   const name = document.getElementById("inp-nome-grupo")?.value.trim();
   const description = document.getElementById("inp-descricao")?.value.trim();
   const theme = document.getElementById("inp-tema")?.value.trim();
   const memberIds = [...selectedCreationStudentIds];
   const advisorId = document.getElementById("inp-orientador")?.value || "";
+  if (!roomCode) return alert("Selecione uma turma.");
   if (!name || !description || !theme) return alert("Preencha nome, tema e descrição.");
   if (memberIds.length < GROUP_MIN_MEMBERS || memberIds.length > GROUP_MAX_MEMBERS) return alert(`Selecione de ${GROUP_MIN_MEMBERS} a ${GROUP_MAX_MEMBERS} alunos.`);
-  const roomCode = creationRoomCode;
-  if (!roomCode) return;
+  if (roomCode !== creationRoomCode) return alert("A turma foi alterada. Feche e abra novamente o formulário para carregar os alunos corretos.");
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.textContent = "Criando…";
+  }
   try {
     // Revalida turma, grupo e vínculos no envio para evitar associar um aluno
     // que tenha sido colocado em outro grupo enquanto o modal estava aberto.
@@ -811,10 +847,18 @@ window.criarGrupo = async (event) => {
     // a mostrar a mesma composição de grupo.
     selectedMembers.forEach((member) => batch.update(doc(db, "usuarios", member.id), { grupoId: groupRef.id, grupoNome: name }));
     await batch.commit();
+    loadGroups();
     document.getElementById("form-criar-grupo")?.reset();
+    creationRoomCode = "";
     window.fecharModalCriarGrupo();
     alert("Grupo criado e integrantes associados.");
   } catch (error) { reportError("Não foi possível criar o grupo.", error); }
+  finally {
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.textContent = "Criar";
+    }
+  }
 };
 
 window.excluirGrupo = (id, name = "este grupo") => {
@@ -883,41 +927,98 @@ async function assignAdvisor(groupId) {
 
 function loadForum() {
   const notices = document.getElementById("lista-avisos");
-  const createButton = document.getElementById("novo-aviso");
   if (notices) {
     stopNotices?.();
     stopNotices = onSnapshot(classQuery("avisos"), (snapshot) => {
       notices.replaceChildren();
-      if (snapshot.empty) { notices.textContent = "Nenhum aviso publicado para esta turma."; return; }
-      snapshot.forEach((item) => {
+      if (snapshot.empty) { notices.textContent = "Nenhum aviso publicado."; return; }
+      const publications = new Map();
+      snapshot.docs.forEach((item) => {
         const notice = item.data();
+        const publicationKey = notice.publicacaoId || item.id;
+        if (!publications.has(publicationKey)) publications.set(publicationKey, { notice, docs: [], rooms: new Set() });
+        const publication = publications.get(publicationKey);
+        publication.docs.push(item);
+        if (notice.codigoSala) publication.rooms.add(notice.codigoSala);
+      });
+      publications.forEach(({ notice, docs, rooms }) => {
         const card = document.createElement("article");
         card.className = "Cards";
-        card.innerHTML = `<div id="top-card"><div><h3>${safe(notice.titulo || "Aviso")}</h3><small>${safe(notice.codigoSala || "Turma não informada")} · ${safe(notice.autor || "Coordenador")} · ${safe(notice.data?.toDate?.().toLocaleDateString("pt-BR") || "Agora")}</small></div><button class="btn-tabela vermelho">Excluir</button></div><p>${safe(notice.conteudo || "")}</p>`;
+        card.innerHTML = `<div id="top-card"><div><h3>${safe(notice.titulo || "Aviso")}</h3><small>${safe([...rooms].join(", ") || "Turma não informada")} · ${safe(notice.autor || "Coordenador")} · ${safe(notice.data?.toDate?.().toLocaleDateString("pt-BR") || "Agora")}</small></div><button class="btn-tabela vermelho">Excluir</button></div><p>${safe(notice.conteudo || "")}</p>`;
         card.querySelector("button").addEventListener("click", async () => {
           if (!confirm("Excluir este aviso?")) return;
-          try { await deleteDoc(doc(db, "avisos", item.id)); }
+          try {
+            const batch = writeBatch(db);
+            docs.forEach((item) => batch.delete(doc(db, "avisos", item.id)));
+            await batch.commit();
+          }
           catch (error) { reportError("Não foi possível excluir o aviso.", error); }
         });
         notices.appendChild(card);
       });
     });
   }
-  createButton?.addEventListener("click", window.novoAviso);
+  populateNoticeRooms();
   const doubtTab = document.getElementById("aba-duvidas");
   doubtTab?.addEventListener("click", loadDoubts);
 }
 
-window.novoAviso = async () => {
-  const roomCode = requestRoomCode();
-  if (!roomCode) return;
-  const title = prompt("Título do aviso:")?.trim();
-  const content = prompt("Conteúdo do aviso:")?.trim();
-  if (!title || !content) return;
-  try {
-    await addDoc(collection(db, "avisos"), { titulo: title, conteudo: content, autor: profile.nome || "Coordenador", autorUid: user.uid, tipoAutor: "Coordenador", codigoSala: roomCode, data: serverTimestamp() });
-  } catch (error) { reportError("Não foi possível publicar o aviso.", error); }
+function populateNoticeRooms() {
+  const list = document.getElementById("aviso-turmas");
+  if (!list || list.childElementCount) return;
+  Object.entries(COURSE_NAMES).forEach(([courseCode, courseName]) => {
+    [1, 2, 3].forEach((year) => {
+      const roomCode = `${courseCode}-${year}`;
+      const label = document.createElement("label");
+      label.className = "opcao-turma-aviso";
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.value = roomCode;
+      const name = document.createElement("span");
+      name.textContent = `${roomCode} · ${courseName}`;
+      label.append(checkbox, name);
+      list.appendChild(label);
+    });
+  });
+}
+
+window.abrirModalAviso = () => {
+  populateNoticeRooms();
+  const form = document.getElementById("form-novo-aviso");
+  form?.reset();
+  document.querySelectorAll("#aviso-turmas input[type='checkbox']").forEach((checkbox) => { checkbox.checked = false; });
+  const modal = document.getElementById("modal-novo-aviso");
+  if (modal) modal.style.display = "flex";
 };
+window.fecharModalAviso = () => {
+  const modal = document.getElementById("modal-novo-aviso");
+  if (modal) modal.style.display = "none";
+};
+
+document.getElementById("form-novo-aviso")?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const rooms = [...document.querySelectorAll("#aviso-turmas input[type='checkbox']:checked")].map((checkbox) => checkbox.value);
+  const title = document.getElementById("aviso-titulo")?.value.trim();
+  const content = document.getElementById("aviso-conteudo")?.value.trim();
+  const submitButton = document.getElementById("btn-publicar-aviso");
+  if (!rooms.length) return alert("Selecione pelo menos uma turma.");
+  if (!title || !content) return alert("Preencha o título e o conteúdo do aviso.");
+  if (submitButton?.disabled) return;
+  if (submitButton) { submitButton.disabled = true; submitButton.textContent = "Publicando…"; }
+  try {
+    const batch = writeBatch(db);
+    const publicationId = doc(collection(db, "avisos")).id;
+    rooms.forEach((roomCode) => {
+      const noticeRef = doc(collection(db, "avisos"));
+      batch.set(noticeRef, { publicacaoId: publicationId, titulo: title, conteudo: content, autor: profile.nome || "Coordenador", autorUid: user.uid, tipoAutor: "Coordenador", codigoSala: roomCode, data: serverTimestamp() });
+    });
+    await batch.commit();
+    window.fecharModalAviso();
+  } catch (error) { reportError("Não foi possível publicar o aviso.", error); }
+  finally {
+    if (submitButton) { submitButton.disabled = false; submitButton.textContent = "Publicar aviso"; }
+  }
+});
 
 function loadDoubts() {
   const panel = document.getElementById("tab-duvidas");
@@ -934,25 +1035,42 @@ function loadDoubts() {
       const doubt = item.data();
       const card = document.createElement("article");
       card.className = "Duvidas";
+      const top = document.createElement("div");
+      top.className = "duvida-cabecalho";
       const heading = document.createElement("h3");
       heading.textContent = `${doubt.codigoSala || "Turma não informada"} · ${doubt.autor || "Aluno"} — ${doubt.titulo || "Dúvida"}`;
+      const deleteButton = document.createElement("button");
+      deleteButton.className = "btn-tabela vermelho";
+      deleteButton.type = "button";
+      deleteButton.textContent = "Excluir";
+      deleteButton.addEventListener("click", async () => {
+        if (!confirm("Excluir esta dúvida?")) return;
+        try { await deleteDoc(doc(db, "duvidas", item.id)); }
+        catch (error) { reportError("Não foi possível excluir a dúvida.", error); }
+      });
+      top.append(heading, deleteButton);
       const body = document.createElement("p");
       body.textContent = doubt.conteudo || "";
-      card.append(heading, body);
+      card.append(top, body);
       const response = document.createElement("textarea");
+      response.className = "campo-resposta-duvida";
       response.rows = 3;
       response.maxLength = 2000;
       response.placeholder = "Resposta visível ao aluno";
       response.value = doubt.resposta || "";
       const button = document.createElement("button");
       button.className = "btn-acao";
+      button.type = "button";
       button.textContent = doubt.resposta ? "Atualizar resposta" : "Responder";
       button.addEventListener("click", async () => {
         if (!response.value.trim()) return alert("Escreva uma resposta antes de enviar.");
         try { await updateDoc(doc(db, "duvidas", item.id), { resposta: response.value.trim(), respondidoPor: profile.nome || "Coordenador", respondidoPorUid: user.uid, status: "respondido", respondidoEm: serverTimestamp() }); }
         catch (error) { reportError("Não foi possível salvar a resposta.", error); }
       });
-      card.append(response, button);
+      const actions = document.createElement("div");
+      actions.className = "acoes-duvida";
+      actions.appendChild(button);
+      card.append(response, actions);
       list.appendChild(card);
     });
   });

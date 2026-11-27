@@ -51,15 +51,31 @@
 
         <!-- AVISOS -->
         <div class="conteudo-aba" id="tab-avisos">
-            <button id="novo-aviso" onclick="novoAviso()">+ Novo aviso</button>
+            <button id="novo-aviso" onclick="abrirModalAviso()">+ Novo aviso</button>
 
             <div id="lista-avisos" aria-live="polite"></div>
         </div>
 
         <!-- DÚVIDAS -->
         <div class="conteudo-aba" id="tab-duvidas" style="display:none;">
-            <div class="Aviso" style="margin-bottom:16px;">
-                Responda dúvidas gerais dos alunos — visible para todos após sua resposta
+        </div>
+
+        <div id="modal-novo-aviso" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-aviso">
+            <div class="modal-box">
+                <h2 id="titulo-modal-aviso">Novo aviso</h2>
+                <form id="form-novo-aviso">
+                    <label id="label-aviso-turmas">Turmas que receberão o aviso *</label>
+                    <div id="aviso-turmas" role="group" aria-labelledby="label-aviso-turmas"></div>
+                    <p class="ajuda-selecao-alunos">Marque todas as turmas que devem receber este aviso.</p>
+                    <label for="aviso-titulo">Título *</label>
+                    <input id="aviso-titulo" type="text" maxlength="120" required>
+                    <label for="aviso-conteudo">Conteúdo *</label>
+                    <textarea id="aviso-conteudo" rows="4" maxlength="3000" required></textarea>
+                    <div class="modal-botoes">
+                        <button type="button" onclick="fecharModalAviso()">Cancelar</button>
+                        <button id="btn-publicar-aviso" type="submit">Publicar aviso</button>
+                    </div>
+                </form>
             </div>
         </div>
 

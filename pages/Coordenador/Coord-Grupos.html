@@ -45,7 +45,7 @@
         </div>
 
         <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
-            <button class="btn-acao" onclick="window.location.href='Coord-Criacao.html'">+ Criar grupo manual</button>
+            <button class="btn-acao" onclick="abrirModalCriarGrupo()">+ Criar grupo manual</button>
         </div>
 
         <div class="Aviso">
@@ -55,6 +55,60 @@
 
         <div id="abas-turmas" role="tablist" aria-label="Turmas"></div>
         <div id="painel-turmas"></div>
+
+        <div id="modal-criar-grupo" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-grupo">
+            <div class="modal-box">
+                <h2 id="titulo-modal-grupo">Criar Novo Grupo</h2>
+                <form id="form-criar-grupo" onsubmit="criarGrupo(event)">
+                    <label for="inp-turma-grupo">Turma *</label>
+                    <select id="inp-turma-grupo" required>
+                        <option value="">Selecione uma turma</option>
+                        <option value="DS-1">DS-1 · Desenvolvimento de Sistemas</option>
+                        <option value="DS-2">DS-2 · Desenvolvimento de Sistemas</option>
+                        <option value="DS-3">DS-3 · Desenvolvimento de Sistemas</option>
+                        <option value="DI-1">DI-1 · Design de Interiores</option>
+                        <option value="DI-2">DI-2 · Design de Interiores</option>
+                        <option value="DI-3">DI-3 · Design de Interiores</option>
+                        <option value="HOSP-1">HOSP-1 · Hospedagem</option>
+                        <option value="HOSP-2">HOSP-2 · Hospedagem</option>
+                        <option value="HOSP-3">HOSP-3 · Hospedagem</option>
+                        <option value="IPI-1">IPI-1 · Informática para Internet - MTEC</option>
+                        <option value="IPI-2">IPI-2 · Informática para Internet - MTEC</option>
+                        <option value="IPI-3">IPI-3 · Informática para Internet - MTEC</option>
+                        <option value="MA-1">MA-1 · Meio Ambiente</option>
+                        <option value="MA-2">MA-2 · Meio Ambiente</option>
+                        <option value="MA-3">MA-3 · Meio Ambiente</option>
+                        <option value="SEC-1">SEC-1 · Secretariado</option>
+                        <option value="SEC-2">SEC-2 · Secretariado</option>
+                        <option value="SEC-3">SEC-3 · Secretariado</option>
+                        <option value="ADM-1">ADM-1 · Administração</option>
+                        <option value="ADM-2">ADM-2 · Administração</option>
+                        <option value="ADM-3">ADM-3 · Administração</option>
+                        <option value="INF-1">INF-1 · Informática - MTEC</option>
+                        <option value="INF-2">INF-2 · Informática - MTEC</option>
+                        <option value="INF-3">INF-3 · Informática - MTEC</option>
+                    </select>
+                    <label for="inp-nome-grupo">Nome do grupo *</label>
+                    <input type="text" id="inp-nome-grupo" placeholder="Nome do projeto" required>
+                    <label for="inp-tema">Tema *</label>
+                    <input type="text" id="inp-tema" placeholder="Tema ou área do projeto" required>
+                    <label for="inp-descricao">Descrição *</label>
+                    <textarea id="inp-descricao" rows="3" placeholder="Breve descrição do projeto" required></textarea>
+                    <label for="busca-alunos">Selecionar alunos * (3 a 5)</label>
+                    <input type="search" id="busca-alunos" placeholder="Buscar aluno pelo nome" autocomplete="off">
+                    <p id="turma-selecao-alunos" class="ajuda-selecao-alunos">Escolha a turma para carregar os alunos.</p>
+                    <div id="lista-selecao-alunos" class="lista-selecao-alunos" role="group" aria-label="Alunos disponíveis"></div>
+                    <p id="contador-alunos-selecionados" class="contador-alunos-selecionados">0 de 5 alunos selecionados</p>
+                    <label for="busca-orientadores">Orientador</label>
+                    <input type="search" id="busca-orientadores" placeholder="Buscar orientador pelo nome" autocomplete="off">
+                    <select id="inp-orientador"><option value="">A definir</option></select>
+                    <div class="modal-botoes">
+                        <button type="button" onclick="fecharModalCriarGrupo()">Cancelar</button>
+                        <button id="btn-confirmar-criar-grupo" type="submit">Criar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
     </div>
 </div>
