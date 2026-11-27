@@ -477,3 +477,233 @@ body {
     border-color: var(--cor-vermelho);
     color: var(--cor-vermelho);
 }
+
+
+/* Refinamento visual do painel da turma */
+#conteudo {
+    gap: 0;
+    padding: clamp(22px, 3.2vw, 48px);
+    background:
+        radial-gradient(ellipse at 88% 0%, rgb(236 60 60 / 8%), transparent 34rem),
+        var(--cor-fundo-principal);
+}
+
+#conteudo-superior {
+    position: relative;
+    padding: clamp(22px, 3vw, 34px);
+    overflow: hidden;
+    border: 1px solid rgb(255 255 255 / 8%);
+    border-radius: 20px;
+    background: linear-gradient(120deg, rgb(236 60 60 / 12%), rgb(17 21 32 / 96%) 55%, rgb(22 29 42 / 92%));
+    box-shadow: 0 18px 50px rgb(0 0 0 / 18%);
+}
+#conteudo-superior::after {
+    content: "";
+    position: absolute;
+    right: -42px;
+    top: -68px;
+    width: 210px;
+    aspect-ratio: 1;
+    border: 1px solid rgb(255 255 255 / 7%);
+    border-radius: 50%;
+    box-shadow: 0 0 0 24px rgb(255 255 255 / 2%), 0 0 0 48px rgb(255 255 255 / 1.5%);
+    pointer-events: none;
+}
+#conteudo-superior h1 { font-size: clamp(34px, 4vw, 44px); letter-spacing: -.7px; }
+#conteudo-superior h1 span { display: inline-block; margin-left: 6px; font-size: .72em; }
+#conteudo-superior p { max-width: 620px; margin-top: 6px; line-height: 1.6; }
+
+#linha {
+    height: 0;
+    margin: 24px 0 14px;
+    background: none;
+    border-top: 1px solid var(--cor-borda);
+}
+#blocao { gap: 14px; margin-top: 10px; }
+#Bloco-st {
+    position: relative;
+    min-height: 116px;
+    max-width: none;
+    flex: 1 1 175px;
+    padding: 20px 22px;
+    overflow: hidden;
+    border-color: rgb(255 255 255 / 8%);
+    border-radius: 15px;
+    background: linear-gradient(145deg, rgb(22 29 42 / 92%), rgb(12 16 24 / 98%));
+    box-shadow: 0 10px 28px rgb(0 0 0 / 12%);
+    transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+#Bloco-st::after {
+    content: "";
+    position: absolute;
+    inset: auto 18px 0;
+    height: 2px;
+    border-radius: 2px 2px 0 0;
+    background: linear-gradient(90deg, transparent, var(--cor-vermelho), transparent);
+    opacity: .7;
+}
+#Bloco-st:hover { transform: translateY(-3px); border-color: rgb(255 255 255 / 14%); box-shadow: 0 16px 34px rgb(0 0 0 / 20%); }
+#Bloco-st h1 { font-size: 12px; letter-spacing: 1.1px; }
+#Bloco-st p { font-size: 38px; line-height: 1; }
+
+.grupos-wrapper { gap: 12px; margin-top: 22px; }
+#GT { gap: 14px; padding: 6px 4px 18px; scroll-snap-type: x mandatory; }
+#Grupos-Turma {
+    width: min(380px, 82vw);
+    min-height: 250px;
+    padding: 23px;
+    border-color: rgb(255 255 255 / 8%);
+    border-radius: 16px;
+    background: linear-gradient(150deg, #151a27, #0d1119 82%);
+    box-shadow: 0 12px 30px rgb(0 0 0 / 16%);
+    scroll-snap-align: start;
+}
+#Grupos-Turma:hover { border-color: rgb(236 60 60 / 48%); box-shadow: 0 18px 38px rgb(0 0 0 / 24%); }
+#Grupos-Turma h2 { font-size: 22px; line-height: 1.25; }
+#Grupos-Turma h3 { max-width: 100%; overflow-wrap: anywhere; font-size: 11px; letter-spacing: .8px; }
+#Grupos-Turma p { line-height: 1.65; }
+#Grupos-Turma strong { margin-top: 12px; padding: 7px 12px; font-size: 12px; }
+.seta-grupos { width: 42px; height: 42px; background: rgb(17 21 32 / 90%); }
+.seta-grupos:focus-visible,
+.VGABF div button:focus-visible,
+#configuracao:focus-visible,
+.checklist-etapas input:focus-visible {
+    outline: 2px solid var(--cor-azul-letra);
+    outline-offset: 3px;
+}
+
+#conteudo > h1:not(#conteudo-superior h1) {
+    margin: 34px 0 14px 2px !important;
+    color: var(--cor-texto) !important;
+    font-size: clamp(24px, 3vw, 30px) !important;
+    font-weight: 500 !important;
+    letter-spacing: -.3px !important;
+}
+#lista-atividades,
+#lista-avaliacoes-aluno {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+    gap: 14px;
+}
+.atividade-painel {
+    min-width: 0;
+    padding: 19px 20px;
+    border: 1px solid rgb(255 255 255 / 8%);
+    border-left: 3px solid var(--cor-azul-letra);
+    border-radius: 13px;
+    background: linear-gradient(145deg, rgb(17 21 32 / 98%), rgb(12 16 24 / 98%));
+    box-shadow: 0 10px 25px rgb(0 0 0 / 12%);
+    transition: transform .2s ease, border-color .2s ease;
+}
+.atividade-painel:hover { transform: translateY(-2px); border-color: rgb(96 165 250 / 35%); }
+.atividade-painel h2,
+.atividade-painel h3 { margin: 0 0 8px; color: var(--cor-texto); font: 700 16px/1.4 Arial, sans-serif; overflow-wrap: anywhere; }
+.atividade-painel p { margin: 0 0 8px; color: var(--cor-texto-secundario); font: 13px/1.6 Arial, sans-serif; overflow-wrap: anywhere; }
+.atividade-painel p:last-child { margin-bottom: 0; }
+.atividade-painel small { color: var(--cor-texto-fraco); font: 12px Arial, sans-serif; }
+.avaliacao-aluno { border-left-color: var(--cor-verde); }
+
+.checklist-projeto {
+    margin-top: 26px;
+    padding: clamp(19px, 2.4vw, 28px);
+    border-color: rgb(255 255 255 / 9%);
+    border-radius: 18px;
+    background: linear-gradient(145deg, rgb(17 21 32 / 96%), rgb(12 16 24 / 98%));
+    box-shadow: 0 18px 45px rgb(0 0 0 / 16%);
+}
+.checklist-cabecalho { align-items: center; gap: 16px; }
+.checklist-sobretitulo { font-size: 10px; letter-spacing: 1.8px; }
+.checklist-cabecalho h1 { font-size: clamp(23px, 3vw, 28px); letter-spacing: -.35px; }
+.checklist-cabecalho > strong { max-width: 100%; line-height: 1.4; text-align: center; }
+.checklist-grupo {
+    padding: 17px;
+    border-color: rgb(255 255 255 / 8%);
+    border-radius: 13px;
+    background: linear-gradient(145deg, #111722, #0c1018);
+    transition: border-color .2s ease, transform .2s ease;
+}
+.checklist-grupo:hover { transform: translateY(-2px); border-color: rgb(236 60 60 / 32%); }
+.checklist-grupo-cabecalho { align-items: flex-start; }
+.checklist-progresso-texto { padding: 4px 7px; border-radius: 999px; background: rgb(255 255 255 / 5%); white-space: nowrap; }
+.checklist-trilha { height: 7px; background: rgb(255 255 255 / 8%); }
+.checklist-preenchimento { background: linear-gradient(90deg, #ec3c3c, #ff7777); }
+.checklist-etapas { gap: 3px; }
+.checklist-etapas label { min-height: 40px; align-items: center; padding: 9px 10px; border: 1px solid transparent; border-radius: 9px; transition: background .18s ease, border-color .18s ease, color .18s ease; }
+.checklist-etapas label:hover { border-color: rgb(255 255 255 / 6%); }
+.checklist-etapas input { width: 18px; height: 18px; }
+.status-checklist-aluno:not(:empty) { padding: 9px 11px; border-radius: 8px; background: rgb(255 255 255 / 4%); }
+
+.titulo-avaliacoes { margin-top: 34px !important; }
+#lista-atividades > p,
+#lista-avaliacoes-aluno > p {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 18px 20px;
+    border: 1px dashed rgb(255 255 255 / 13%);
+    border-radius: 12px;
+    color: var(--cor-texto-secundario);
+    background: rgb(255 255 255 / 2%);
+    font: 14px/1.6 Arial, sans-serif;
+}
+
+@media (max-width: 900px) {
+    #conteudo { padding: 24px; }
+    #lateral { width: 220px; }
+    #blocao { gap: 11px; }
+    #Bloco-st { flex-basis: calc(50% - 6px); }
+    .grupos-wrapper { gap: 8px; }
+    .seta-grupos { width: 38px; height: 38px; }
+}
+
+@media (max-width: 640px) {
+    body, #Geral { width: 100%; min-width: 0; height: 100dvh; }
+    #Geral { flex-direction: column; }
+    #lateral { width: 100%; height: auto; flex: 0 0 auto; border-right: 0; border-bottom: 1px solid var(--cor-borda); }
+    #lateral-superior { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; margin: 0; }
+    #lateral-superior div h2 { margin: 0; font-size: 25px; }
+    #Logo-de-aluno, #Logo-de-professor { font-size: 10px; }
+    .VGABF { flex-direction: row; gap: 4px; overflow-x: auto; padding: 0 10px 9px; }
+    .VGABF > div:first-child, #sistema, .lateral-inferior { display: none; }
+    .VGABF div { flex: 0 0 auto; width: auto; }
+    .VGABF div button { width: auto; height: 38px; padding: 0 12px; font-size: 13px; white-space: nowrap; }
+    #conteudo { width: 100%; height: auto; min-height: 0; flex: 1; overflow: auto; padding: 17px 14px 32px; }
+    #conteudo-superior { padding: 22px 19px; border-radius: 16px; }
+    #conteudo-superior h1 { font-size: 34px; }
+    #conteudo-superior p { max-width: 92%; font-size: 14px; }
+    #linha { margin: 17px 0 9px; }
+    #blocao { gap: 9px; }
+    #Bloco-st { min-height: 94px; flex-basis: calc(50% - 5px); padding: 15px; border-radius: 12px; }
+    #Bloco-st h1 { font-size: 10px; }
+    #Bloco-st p { font-size: 32px; }
+    .grupos-wrapper { gap: 6px; margin-top: 15px; }
+    .seta-grupos { width: 32px; height: 32px; font-size: 15px; }
+    #GT { gap: 10px; }
+    #Grupos-Turma { width: min(330px, calc(100vw - 86px)); min-height: 235px; padding: 18px; }
+    #Grupos-Turma h2 { font-size: 20px; }
+    #conteudo > h1:not(#conteudo-superior h1) { margin-top: 25px !important; font-size: 24px !important; }
+    #lista-atividades, #lista-avaliacoes-aluno { grid-template-columns: 1fr; gap: 10px; }
+    .atividade-painel { padding: 16px; }
+    .checklist-projeto { margin-top: 20px; padding: 17px; border-radius: 15px; }
+    .checklist-cabecalho { gap: 12px; }
+    .checklist-cabecalho > strong { align-self: flex-start; }
+    .lista-checklist-projeto { grid-template-columns: minmax(0, 1fr); }
+    .checklist-grupo { padding: 13px; }
+    .checklist-grupo-cabecalho { flex-wrap: wrap; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
+
+
+/* Ajustes finais após revisão em desktop e celular */
+#conteudo > h1 { font-family: Arial, sans-serif !important; }
+#Grupos-Turma h2 { overflow-wrap: anywhere; }
+
+
+@media (max-width: 640px) {
+    .grupos-wrapper { display: block; }
+    .grupos-wrapper > .seta-grupos { display: none; }
+    #GT { width: 100%; margin: 0; padding: 5px 2px 17px; }
+    #Grupos-Turma { width: min(340px, calc(100vw - 52px)); }
+}
