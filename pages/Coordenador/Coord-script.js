@@ -831,7 +831,9 @@ window.criarGrupo = async (event) => {
     const batch = writeBatch(db);
     batch.set(groupRef, {
       codigoSala: roomCode,
-      nome, descricao, tema,
+      nome: name,
+      descricao: description,
+      tema: theme,
       proposta: theme,
       membros: selectedMembers.map((item) => item.id),
       integrantes: selectedMemberNames,
