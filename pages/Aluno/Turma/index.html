@@ -85,12 +85,25 @@
                     <h1>Atividades entregues</h1>
                     <h2 style="margin-left: auto;">—</h2>
                 </div>
-                <div id="barra-progresso1">
+                <div id="barra-progresso1" role="progressbar" aria-label="Atividades entregues pelo grupo" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
                     <div id="barra-progresso2"></div>
                 </div>
+                <p id="resumo-atividades-entregues" class="resumo-atividades-entregues">Calculando entregas do grupo...</p>
             </div>
 
             <div id="lista-atividades" aria-live="polite"></div>
+            <section class="checklist-projeto" aria-labelledby="titulo-checklist-projeto">
+                <div class="checklist-cabecalho">
+                    <div>
+                        <p class="checklist-sobretitulo">ACOMPANHAMENTO DO TCC</p>
+                        <h1 id="titulo-checklist-projeto">Etapas até a entrega final</h1>
+                        <p>Checklist base para o grupo acompanhar o projeto. Marcar uma etapa atualiza o avanço para todos os integrantes; confirme as exigências específicas com o orientador.</p>
+                    </div>
+                    <strong id="resumo-checklist-aluno">Carregando checklist...</strong>
+                </div>
+                <p id="status-checklist-aluno" class="status-checklist-aluno" role="status" aria-live="polite"></p>
+                <div id="lista-checklist-projeto" class="lista-checklist-projeto" aria-live="polite"></div>
+            </section>
             <h1 class="titulo-avaliacoes">Avaliações e feedbacks</h1>
             <div id="lista-avaliacoes-aluno" aria-live="polite"></div>
         </div>

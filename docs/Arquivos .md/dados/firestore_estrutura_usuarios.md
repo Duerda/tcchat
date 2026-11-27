@@ -25,6 +25,7 @@ Subcoleções usadas pelo sistema:
 | `grupos/{grupoId}/mensagens/{id}` | Chat; inclui `uid`, `autor`, `chatTipo`, `texto` e `criadoEm` quando gravado pelo aluno. |
 | `grupos/{grupoId}/entregas/{atividadeId}` | Atividades publicadas; inclui `uid`, `tipo: "atividade"`, `titulo` e, conforme a tela, `descricao` e `dataLimite`. |
 | `grupos/{grupoId}/submissoes/{id}` | Entregas de alunos; inclui `atividadeId`, `alunoUid`, `alunoNome`, `observacao`, `arquivoNome`, `arquivoPath`, `enviadoAtrasado` e `enviadoEm`. |
+| `grupos/{grupoId}/etapasProjeto/{etapaId}` | Checklist compartilhado do TCC; inclui `concluida`, `atualizadoPor` e `atualizadoEm`; os IDs correspondem às etapas predefinidas no painel do aluno. |
 | `grupos/{grupoId}/arquivos/{id}` | Biblioteca própria dos alunos do grupo; inclui `uid`, `nome`, `tipo`, `url`, `categoria`, `descricao` e `criadoEm`; arquivos e capas usam `arquivoPath` e `capaPath` no Supabase Storage. |
 | `grupos/{grupoId}/anotacoes/{id}` | Anotações de professores, com `uid`, `autor` e `texto`. |
 

@@ -274,6 +274,18 @@ service cloud.firestore {
         allow delete: if isCoordinator();
       }
 
+      match /etapasProjeto/{stageId} {
+        allow read: if canReadGroup(groupId);
+        allow create, update: if isStudent() && groupMember(groupId)
+          && stageId in ['tema-problema', 'planejamento', 'pesquisa', 'introducao-referencial',
+            'metodologia', 'resultados-conclusao', 'revisao-normas', 'apresentacao', 'entrega-final']
+          && request.resource.data.keys().hasOnly(['concluida', 'atualizadoPor', 'atualizadoEm'])
+          && request.resource.data.concluida is bool
+          && request.resource.data.atualizadoPor == request.auth.uid
+          && request.resource.data.atualizadoEm == request.time;
+        allow delete: if false;
+      }
+
       match /arquivos/{fileId} {
         allow read: if canReadGroup(groupId);
         allow create: if canReadGroup(groupId)
