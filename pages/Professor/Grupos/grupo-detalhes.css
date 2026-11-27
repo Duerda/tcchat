@@ -34,6 +34,7 @@ body {
     color: var(--texto-claro);
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     overflow-x: hidden;
+    overflow: hidden;
 }
 
 h1 { color: var(--vermelho); margin-top: 7px; margin-bottom: 5px; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-weight: 200; font-size: 38px; letter-spacing: 1.2px;}
@@ -161,6 +162,7 @@ h2 {font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; le
     overflow-y: auto;
     background-color: var(--bg-principal);
     padding: 40px;
+    overflow-x: hidden;
 }
 
 #conteudo-superior p { color: var(--texto-secundario); margin-top: 7px; font-size: 16px; font-family: "arial narrow", sans-serif; }
@@ -333,7 +335,6 @@ button.btnExcluir {
     cursor: pointer !important;
     transition: 0.2s !important;
 }
-
 .GT button:last-of-type:hover {
     background-color: var(--vermelho-transparente) !important;
 }
@@ -343,7 +344,7 @@ button.btnExcluir {
     gap: 6px;
     margin-top: 24px;
     border-bottom: 1px solid var(--borda);
-    overflow-x: auto;
+    overflow: hidden;
 }
 
 .aba {
@@ -379,4 +380,227 @@ button.btnExcluir {
     height: 2px;
     background: var(--vermelho);
     border-radius: 2px;
+}
+
+.form-atividade-professor {
+    display: grid;
+    gap: 10px;
+    max-width: 760px;
+    margin: 20px 0 28px;
+    padding: 20px;
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+    background: var(--cinza-escuro);
+}
+.form-atividade-professor h3 { color: var(--texto-principal); font-size: 20px; margin-bottom: 4px; }
+.form-atividade-professor label { color: var(--texto-secundario); font: 13px Arial, sans-serif; }
+.form-atividade-professor input,
+.form-atividade-professor textarea,
+.form-atividade-professor select {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid var(--borda);
+    border-radius: 8px;
+    background: var(--bg-principal);
+    color: var(--texto-principal);
+    font: 14px Arial, sans-serif;
+}
+.form-atividade-professor textarea { min-height: 92px; resize: vertical; }
+.form-atividade-professor button { justify-self: start; padding: 11px 16px; border: 0; border-radius: 8px; background: var(--vermelho); color: white; font-weight: 700; cursor: pointer; }
+.form-atividade-professor button:disabled { cursor: wait; opacity: .65; }
+.form-atividade-professor [role="status"] { min-height: 1.2em; color: var(--texto-secundario); font: 12px Arial, sans-serif; }
+.atividade-publicada-professor { margin: 10px 0; padding: 14px; border: 1px solid var(--borda); border-radius: 9px; background: var(--cinza-claro); }
+.atividade-publicada-professor h3 { color: var(--texto-principal); font-size: 16px; margin-bottom: 7px; }
+.atividade-publicada-professor p { color: var(--texto-secundario); font: 13px/1.5 Arial, sans-serif; margin-top: 4px; }
+
+/* =========================================
+   ESTILIZAÇÃO FORÇADA DOS ELEMENTOS DO JS
+   ========================================= */
+
+/* 1. INPUTS E TEXTAREAS (Arquivo, Histórico, Anotações e Chat) */
+#painelGrupo input[type="text"],
+#painelGrupo input[type="url"],
+#painelGrupo input[type="date"],
+#painelGrupo textarea,
+#nomeArquivo, 
+#urlArquivo, 
+#tituloEntrega, 
+#instrucoesEntrega, 
+#prazoEntrega,
+#textoAnotacao,
+#mensagemChat {
+    width: 100%;
+    background-color: var(--bg-principal) !important;
+    border: 1px solid var(--borda) !important;
+    border-radius: 8px !important;
+    padding: 14px 16px !important;
+    color: var(--texto-principal) !important;
+    font-size: 15px !important;
+    font-family: Arial, sans-serif !important;
+    outline: none !important;
+    margin-bottom: 15px;
+    transition: border-color 0.2s;
+}
+
+#painelGrupo input:focus,
+#painelGrupo textarea:focus {
+    border-color: var(--vermelho) !important;
+    box-shadow: 0 0 0 2px var(--vermelho-transparente) !important;
+}
+
+#painelGrupo textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* Corrige o ícone do calendário no modo escuro */
+#painelGrupo input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+/* 2. BOTÕES (Publicar atividade, Salvar anotação, Adicionar arquivo, Enviar) */
+#painelGrupo button,
+#btnPublicarEntrega,
+#btnSalvarAnotacao,
+#btnAdicionarArquivo,
+#btnEnviarMensagem {
+    background-color: var(--vermelho) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 12px 24px !important;
+    font-size: 15px !important;
+    font-family: Arial, sans-serif !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    transition: 0.2s !important;
+    width: fit-content;
+}
+
+#painelGrupo button:hover {
+    background-color: #d13232 !important;
+    transform: translateY(-2px);
+}
+
+/* 3. ÁREA DO CHAT */
+.chat-area {
+    margin-bottom: 20px;
+    margin-top: 20px;
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background-color: var(--cinza-escuro);
+    border-radius: 8px;
+    min-height: 400px;
+}
+
+/* Balões de mensagem */
+.mensagem {
+    padding: 15px 20px;
+    border-radius: 12px;
+    max-width: 70%;
+    font-size: 15px;
+    font-family: Arial, sans-serif;
+    line-height: 1.5;
+}
+
+.mensagem.professor {
+    background-color: var(--cinza-claro);
+    color: var(--texto-principal);
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+    border: 1px solid var(--borda);
+}
+
+.mensagem.aluno {
+    background-color: var(--bg-principal);
+    color: var(--texto-secundario);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+    border: 1px solid var(--borda);
+}
+
+/* Form do Chat (Input + Botão lado a lado) */
+.chat-form {
+    display: flex !important;
+    gap: 15px;
+    margin-top: 20px;
+    align-items: flex-end;
+}
+
+.chat-form textarea {
+    margin-bottom: 0 !important; /* Remove a margem do input no chat */
+    min-height: 50px !important;
+    height: 50px;
+}
+
+.chat-form button {
+    height: 50px;
+    margin-bottom: 0 !important;
+}
+
+/* 4. CONTAINERS DAS ABAS */
+.listaArquivos { margin-top: 200px; }
+.arquivo-vazio, 
+.historico-vazio, 
+.form-anotacao {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.arquivo-vazio h2, 
+.historico-vazio h2, 
+.form-anotacao h2 {
+    color: var(--texto-principal);
+    font-size: 22px;
+    font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+    margin-bottom: 20px;
+}
+
+/* Alinha os campos do Histórico (Título e Instruções) */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    color: var(--texto-secundario);
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* =========================================
+   BOTÃO VOLTAR
+   ========================================= */
+
+.cabecalho-grupo .btn-voltar, 
+button.btn-voltar {
+    background-color: transparent !important;
+    color: var(--texto-claro) !important;
+    border: 1px solid var(--borda) !important;
+    padding: 10px 18px !important;
+    border-radius: 8px !important;
+    font-size: 14px !important;
+    font-family: Arial, sans-serif !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.cabecalho-grupo .btn-voltar:hover, 
+button.btn-voltar:hover {
+    border-color: var(--vermelho) !important;
+    color: white !important;
+    background-color: var(--vermelho-transparente) !important;
+    transform: translateX(-3px) !important; /* Efeito de deslizar para a esquerda */
 }
