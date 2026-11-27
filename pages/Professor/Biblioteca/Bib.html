@@ -48,6 +48,8 @@
             <!-- Isso aqui só muda para os alunos que o professor está orientando, mais nenhum grupo, já o do Coordenador seria para todos os alunos do curso que ele coordena.-->
         <button  class="Cursos" id="Link">+Link</button> 
         <button class="Cursos" id="ArquivoModelo">+ Arquivo/Modelo</button>
+        <input id="arquivo-modelo-input" type="file" accept=".pdf,.doc,.docx,.odt,.zip,.png,.jpg,.jpeg" hidden>
+        <p id="status-biblioteca-professor" role="status" aria-live="polite"></p>
         <h3 style="color: #e4e9f4;">Links <span style="color: rgb(236, 60, 60);">webs</span></h3>
     <div id="links">
         <!--links-->
@@ -59,30 +61,4 @@
 </body>
 
 <script type="module" src="Bib.js"></script>
-<script>
-    const fonteSalva = localStorage.getItem('fontePreferida');
-    if (fonteSalva) {
-        let styleTag = document.createElement('style');
-        styleTag.id = 'dynamic-font-style';
-        styleTag.innerHTML = `* { font-family: ${fonteSalva} !important; }`;
-        document.head.appendChild(styleTag);
-    }
-
-    const tamanhoSalvo = localStorage.getItem('tamanhoPreferido');
-    if (tamanhoSalvo && tamanhoSalvo != 16) {
-        let fator = tamanhoSalvo / 16;
-        setTimeout(() => {
-            document.querySelectorAll('*').forEach(el => {
-                if (['SCRIPT', 'STYLE', 'SVG', 'PATH'].includes(el.tagName)) return;
-                if (!el.dataset.originalFontSize) {
-                    el.dataset.originalFontSize = window.getComputedStyle(el).fontSize;
-                }
-                let tamanhoOriginal = parseFloat(el.dataset.originalFontSize);
-                if (tamanhoOriginal > 0) {
-                    el.style.fontSize = (tamanhoOriginal * fator) + 'px';
-                }
-            });
-        }, 100);
-    }
-</script>
 </html>
