@@ -21,32 +21,34 @@ export async function getProfile(uid) {
   return snapshot.exists() ? { id: snapshot.id, ...snapshot.data() } : null;
 }
 
-function applyProfileAppearance(profile) {
-  const settings = profile.configuracoes || {};
-  if (typeof settings.tipoFonte === "string" && settings.tipoFonte.trim()) {
-    const savedFont = settings.tipoFonte.trim();
-    const fontFamily = savedFont.includes(",") || /['\"]/.test(savedFont)
+export function applyTextPreferences(settings = {}) {
+  const allowedSizes = [14, 16, 18];
+  const size = allowedSizes.includes(Number(settings.tamanhoFonte)) ? Number(settings.tamanhoFonte) : 16;
+  const savedFont = typeof settings.tipoFonte === "string" ? settings.tipoFonte.trim() : "";
+  const validFont = savedFont && /^[\p{L}\p{N}\s,'"_-]+$/u.test(savedFont);
+  if (validFont) {
+    const fontFamily = savedFont.includes(",") || /['"]/.test(savedFont)
       ? savedFont
       : `${JSON.stringify(savedFont)}, sans-serif`;
     const style = document.getElementById("dynamic-font-style") || document.createElement("style");
     style.id = "dynamic-font-style";
     style.textContent = `* { font-family: ${fontFamily} !important; }`;
     if (!style.isConnected) document.head.appendChild(style);
+  } else {
+    document.getElementById("dynamic-font-style")?.remove();
   }
-
-  const size = [14, 16, 18].includes(Number(settings.tamanhoFonte)) ? Number(settings.tamanhoFonte) : 16;
   const scale = size / 16;
   const resizeTree = (root) => {
     const elements = root.nodeType === Node.ELEMENT_NODE
       ? [root, ...root.querySelectorAll("*")]
       : [...(root.querySelectorAll?.("*") || [])];
     elements.forEach((element) => {
-    if (["SCRIPT", "STYLE", "SVG", "PATH"].includes(element.tagName)) return;
-    if (!element.dataset.originalFontSize) {
-      element.dataset.originalFontSize = getComputedStyle(element).fontSize;
-    }
-    const originalSize = Number.parseFloat(element.dataset.originalFontSize);
-    if (originalSize > 0) element.style.fontSize = `${originalSize * scale}px`;
+      if (["SCRIPT", "STYLE", "SVG", "PATH"].includes(element.tagName)) return;
+      if (!element.dataset.originalFontSize) {
+        element.dataset.originalFontSize = getComputedStyle(element).fontSize;
+      }
+      const originalSize = Number.parseFloat(element.dataset.originalFontSize);
+      if (originalSize > 0) element.style.fontSize = `${originalSize * scale}px`;
     });
   };
   resizeTree(document.body);
@@ -55,6 +57,10 @@ function applyProfileAppearance(profile) {
     records.forEach((record) => record.addedNodes.forEach(resizeTree));
   });
   window.__tcchatTextScaleObserver.observe(document.body, { childList: true, subtree: true });
+}
+
+function applyProfileAppearance(profile) {
+  applyTextPreferences(profile.configuracoes || {});
 }
 
 export function watchProfile(uid, callback) {

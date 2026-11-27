@@ -1,9 +1,9 @@
 import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-import { auth, db } from "../../../backend/firebase/config.js";
+import { db } from "../../../backend/firebase/config.js";
+import { applyTextPreferences } from "../../../backend/firebase/professor.js";
 
 // --- FUNÇÕES DE NAVEGAÇÃO ---
-window.Voltar = () => auth.signOut().then(() => window.location.href = "/pages/Auth/Login/Log-aluno.html");
 window.Painel = () => (location.href = "../Turma/index.html");
 window.Forum = () => (location.href = "../Forum/Fo.html");
 window.Inspiracoes = () => (location.href = "../Inspiracoes/Inspiracoes.html");
@@ -24,17 +24,7 @@ function fontFamily(value) {
 function applySettings() {
   settings.tipoFonte = fontFamily(settings.tipoFonte);
   
-  const fontStyle = document.getElementById("dynamic-font-style") || document.createElement("style");
-  fontStyle.id = "dynamic-font-style";
-  fontStyle.textContent = `* { font-family: ${settings.tipoFonte || DEFAULT_FONT} !important; }`;
-  if (!fontStyle.isConnected) document.head.appendChild(fontStyle);
-  
-  // Usa o documentElement para o tamanho funcionar de forma global
-  document.documentElement.style.fontSize = `${Number(settings.tamanhoFonte) || 16}px`;
-  
-  // Salva também no localStorage para as outras páginas lerem na hora
-  localStorage.setItem("fontePreferida", settings.tipoFonte || DEFAULT_FONT);
-  localStorage.setItem("tamanhoPreferido", String(Number(settings.tamanhoFonte) || 16));
+  applyTextPreferences(settings);
   
   // Atualiza os botões de fonte na tela
   document.querySelectorAll(".fonte-op").forEach((option) => {

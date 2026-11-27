@@ -1,20 +1,5 @@
-import { requireStudent } from "../../backend/firebase/professor.js"; // ajuste o caminho
+import { requireStudent } from "../../backend/firebase/professor.js";
 
-// --- 1. APLICA A FONTE E O TAMANHO ---
-const fonteSalva = localStorage.getItem('fontePreferida');
-if (fonteSalva) {
-    let styleTag = document.createElement('style');
-    styleTag.id = 'dynamic-font-style';
-    styleTag.innerHTML = `* { font-family: ${fonteSalva} !important; }`;
-    document.head.appendChild(styleTag);
-}
-
-const tamanhoSalvo = localStorage.getItem('tamanhoPreferido');
-if (tamanhoSalvo) {
-    document.documentElement.style.fontSize = `${Number(tamanhoSalvo) || 16}px`;
-}
-
-// --- 2. CARREGA O PERFIL (NOME E CURSO) ---
 requireStudent((_user, data) => {
   document.body.classList.add("pronto");
 

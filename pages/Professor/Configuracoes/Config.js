@@ -1,7 +1,7 @@
 import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { auth, db } from "../../../backend/firebase/config.js";
-import { fillHeader, getInitials, logout, navigate, requireProfessor } from "../../../backend/firebase/professor.js";
+import { applyTextPreferences, fillHeader, getInitials, logout, navigate, requireProfessor } from "../../../backend/firebase/professor.js";
 
 window.Voltar = logout;
 window.Avaliacoes = () => navigate("../Avaliacoes/ava.html");
@@ -23,13 +23,7 @@ function fontFamily(value) {
 
 function applySettings() {
   settings.tipoFonte = fontFamily(settings.tipoFonte);
-  const fontStyle = document.getElementById("dynamic-font-style") || document.createElement("style");
-  fontStyle.id = "dynamic-font-style";
-  fontStyle.textContent = `* { font-family: ${settings.tipoFonte || DEFAULT_FONT} !important; }`;
-  if (!fontStyle.isConnected) document.head.appendChild(fontStyle);
-  document.documentElement.style.fontSize = `${Number(settings.tamanhoFonte) || 16}px`;
-  localStorage.setItem("fontePreferida", settings.tipoFonte || DEFAULT_FONT);
-  localStorage.setItem("tamanhoPreferido", String(Number(settings.tamanhoFonte) || 16));
+  applyTextPreferences(settings);
   document.querySelectorAll(".fonte-op").forEach((option) => {
     option.classList.toggle("ativa", normalizeFont(option.dataset.fonte) === normalizeFont(settings.tipoFonte));
   });

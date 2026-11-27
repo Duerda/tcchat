@@ -164,34 +164,9 @@ form?.addEventListener("submit", async (event) => {
 
 document.getElementById("codigo-sala-biblioteca")?.addEventListener("input", () => mostrarStatusPagina(""));
 
-function aplicarPreferenciasLocais() {
-    const font = localStorage.getItem("fontePreferida");
-    if (font) {
-        const style = document.getElementById("dynamic-font-style") || document.createElement("style");
-        style.id = "dynamic-font-style";
-        style.textContent = `* { font-family: ${font} !important; }`;
-        if (!style.isConnected) document.head.appendChild(style);
-    }
-    const scale = Number(localStorage.getItem("tamanhoPreferido")) / 16 || 1;
-    const resize = (root) => {
-        const elements = root.nodeType === Node.ELEMENT_NODE ? [root, ...root.querySelectorAll("*")] : [...(root.querySelectorAll?.("*") || [])];
-        elements.forEach((element) => {
-            if (["SCRIPT", "STYLE", "SVG", "PATH"].includes(element.tagName)) return;
-            if (!element.dataset.originalFontSize) element.dataset.originalFontSize = getComputedStyle(element).fontSize;
-            const original = Number.parseFloat(element.dataset.originalFontSize);
-            if (original > 0) element.style.fontSize = `${original * scale}px`;
-        });
-    };
-    resize(document.body);
-    window.__tcchatTextScaleObserver?.disconnect();
-    window.__tcchatTextScaleObserver = new MutationObserver((records) => records.forEach((record) => record.addedNodes.forEach(resize)));
-    window.__tcchatTextScaleObserver.observe(document.body, { childList: true, subtree: true });
-}
-
 requireCoordinator((user, profile) => {
     usuarioAtual = user;
     fillHeader(profile);
-    aplicarPreferenciasLocais();
     escutarBiblioteca();
 });
 
